@@ -22,6 +22,8 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                     if (isset($shippedByItemArr[$shipLevel]['rates'])) {
                         $shippingCharges = $shippedByItemArr[$shipLevel]['rates'];
                     }
+
+                    $data['rates']['data'] = [];
                     if (count($shippingCharges) > 0) {
                         $name = current($shippingCharges)['code'];
                         $data['rates']['code'] =  $name;
@@ -41,8 +43,6 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                                 'id' => $shippingcharge['id'],
                             ];
                         }
-                    } else {
-                        $data['rates']['data'] = [];
                     }
 
                     foreach ($productData as $product) {
@@ -63,7 +63,8 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                             $productItems[$shippedBy]['title'] = $product['shop_name'];
                         }
 
-                        $priceListCount = count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]);
+                        $priceListCount = isset($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) ? count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) : 0;
+                        $data['rates']['data'] = [];
                         if ($priceListCount > 0) {
                             $name = current($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']])['code'];
                             $data['rates']['code'] =  $name;
@@ -82,8 +83,6 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                                     'id' => $shippingcharge['id'],
                                 ];
                             }
-                        } else {
-                            $data['rates']['data'] = [];
                         }
 
                         $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
@@ -102,7 +101,8 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                             $productItems[$shippedBy]['title'] = $product['shop_name'];
                         }
 
-                        $priceListCount = count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]);
+                        $priceListCount = isset($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) ? count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) : 0;
+                        $data['rates']['data'] = [];
                         if ($priceListCount > 0) {
                             $name = current($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']])['code'];
                             $data['rates']['code'] =  $name;
@@ -121,8 +121,6 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                                     'id' => $shippingcharge['id'],
                                 ];
                             }
-                        } else {
-                            $data['rates']['data'] = [];
                         }
 
                         $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));

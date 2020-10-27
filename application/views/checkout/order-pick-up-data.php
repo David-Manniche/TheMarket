@@ -10,6 +10,7 @@ if(!empty($orderPickUpData)){
                      </div>
                     <div class="review-block__content" role="cell">  
                         <div class="delivery-address"> 
+							<?php echo $address['oua_name']; ?>
 							<p><?php echo $address['oua_address1'] ;?> 
 							<?php if(strlen($address['oua_address2']) > 0) { 
 								echo ", ".$address['oua_address2'] ;?> 

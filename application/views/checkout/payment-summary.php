@@ -20,7 +20,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 </div>
                 <div class="review-block__content" role="cell">
                     <div class="delivery-address">
-                        <p><?php echo $address['addr_address1']; ?>
+                        <p><?php echo $address['addr_name'] . ', ' . $address['addr_address1']; ?>
                             <?php if (strlen($address['addr_address2']) > 0) {
                                 echo ", " . $address['addr_address2']; ?>
                             <?php } ?>
@@ -52,7 +52,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                         <div class="delivery-address">
                             <?php foreach ($orderPickUpData as $address) { ?>
                                 <p><strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong></p>
-                                <p><?php echo $address['oua_address1']; ?>
+                                <p><?php echo $address['oua_name'] . ', ' . $address['oua_address1']; ?>
                                     <?php if (strlen($address['oua_address2']) > 0) {
                                         echo ", " . $address['oua_address2']; ?>
                                     <?php } ?>
@@ -126,7 +126,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                         <?php echo Labels::getLabel('LBL_Billing_to:', $siteLangId); ?>
                     </div>
                     <div class="review-block__content" role="cell">
-                        <p><?php echo $billingAddressArr['addr_address1']; ?>
+                        <p><?php echo $billingAddressArr['addr_name'] . ', ' . $billingAddressArr['addr_address1']; ?>
                             <?php if (strlen($billingAddressArr['addr_address2']) > 0) {
                                 echo ", " . $billingAddressArr['addr_address2']; ?>
                             <?php } ?>
@@ -279,6 +279,9 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
                     <?php foreach ($paymentMethods as $key => $val) {
                         $pmethodCode = $val['plugin_code'];
+                        if ($cartHasDigitalProduct && strtolower($pmethodCode) == "cashondelivery") {
+                            continue;
+                        }
                         $pmethodId = $val['plugin_id'];
                         $pmethodName = $val['plugin_name'];
                         if (strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP) {

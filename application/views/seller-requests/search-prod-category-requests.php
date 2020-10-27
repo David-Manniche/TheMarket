@@ -1,6 +1,7 @@
 <?php 
 $variables= array('siteLangId'=>$siteLangId, 'action'=>$action);
 $this->includeTemplate('seller-requests/_partial/requests-navigation.php', $variables, false); ?>
+<div class="js-scrollable table-wrap">
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
@@ -34,10 +35,15 @@ foreach ($arr_listing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
-            case 'prodcat_name':
-                $td->appendElement('plaintext', array(), (!empty($row['prodcat_name']) ? $row['prodcat_name'] : $row['prodcat_identifier']) . '<br>', true);
-                $td->appendElement('plaintext', array(), '('.$row['prodcat_identifier'].')', true);
-                break;
+			case 'prodcat_name':
+				$catName = (!empty($row['prodcat_name'])) ? $row['prodcat_name'] : $row['prodcat_identifier'];
+				$html = '<div class="item"><figure class="item__pic"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateUrl('category', 'banner', array($row['prodcat_id'], "", 0, 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg').'" title="'.$catName.'" alt="'.$catName.'"></figure>
+				<div class="item__description">
+					<div class="item__title">'.$catName.'</div>
+					<div class="item__brand"> (' . $row['prodcat_identifier'] . ') </div>
+				</div></div>';
+				$td->appendElement('plaintext', array(), $html, true);
+				break;
 			case 'prodcat_parent':
                 $prodCat = new productCategory();
                 $name = $prodCat->getParentTreeStructure($row['prodcat_id'], 0, '', $siteLangId, false, -1);
@@ -72,8 +78,9 @@ echo $tbl->getHtml();
 if (count($arr_listing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmSrchProdCategoryRequest'));
 
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToProdCategorySearchPage');

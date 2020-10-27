@@ -1202,9 +1202,11 @@ class Orders extends MyAppModel
         $emailNotificationObj = new EmailHandler();
 
         $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($langId, $childOrderInfo['order_user_id'], array(OrderSubscription::DB_TBL_PREFIX . 'id'));
-        $currentActiveSubscrId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id'];
-        if ($currentActiveSubscrId) {
-            $this->cancelCurrentActivePlan($orderId, $currentActiveSubscrId, $childOrderInfo['order_user_id'], $notify);
+        if (false != $currentPlanData) {
+           $currentActiveSubscrId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id'];
+            if ($currentActiveSubscrId) {
+                $this->cancelCurrentActivePlan($orderId, $currentActiveSubscrId, $childOrderInfo['order_user_id'], $notify);
+            }
         }
 
         $planDetails = OrderSubscription::getAttributesById($childOrderInfo['ossubs_id']);

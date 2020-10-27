@@ -237,13 +237,93 @@ Bugs:
     => 044233 - when customer places pickup order then in admin> customer order> pickup details are not there
     => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
     => 044280 - When guest user add product in cart then there is some fatal error. 
+    => 044297 - when order is on pickup then on checkout step 2 it's displaying shipping
+    => 044261 - when vol. discount is applied on order then on success screen it's displaying it as rewards
+    => 044260 - when physical an digital items are ordered together then on success screen> under shipping method there is another field for digital which is blank
+    => 044309 - On category page >> broken image gets display if there is no image selected in admin panel.
+    => 044307 - Seller >> cancel any order >> shipping method is not getting display on cancellation page .
+    => 044301 - On thankyou page >> volume discount and reward points are combined and "rewards" gets display as label for that.
+    => 044251 - If there are digital and physical both products in one order and we choose pickup then pickup details are not getting display on thank you screen.
+    => 044237 - when an order having multiple items and both are on pickup then on parent order detail page time slot is not listing
+    => 044181 - after order is placed then in admin> order detail page> shipping details are not proper
     => 044283 - buyer> parent order> table alignment issue 
     => 044296 - seller> return request> when there is no file attached still then there is attached file option and on clicking there is blank page 
 
 ---------------------TV-9.2.2.20201020----------------------    
     => 044313 - if admin disable the setting "Enable Linking Shipping Packages To Products" then fatal error is there on "shipping " tab of catalog.
     => 044316 - If we enabled "Shipped By Admin Only" setting then fatal error is there on shipping tab of catalog.
-
+    => 044338 - Buyer >> view order return request >> submit button should not be in white color
+    => 044349 - when multiple items are there in an order (pickup+digital) then on parent order> table distorts
+    => 044317 - After order is placed on pickup then full pickup address is not there on order in admin and buyer
+    => 044315 - when case is of pickup then on buyer end (on checkout)> name and address label is not listing on address
+    => 044303 - when cart having digital item then on checkout it's displaying COD option which is not applicable
+    => 044362 - user can access another user order details just by changing order id from url
+    => 044228 - If we Quit the seller registration process on activation form and then re check the seller registration form then here is some error;
+    => 040055 - wrong commission is getting charged from seller.
+    => 044385 - Collection layout issue on view all page
+    => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display    
+    -----------------------TV-9.2.2.20201021-----------------
+    => 044325 - if order amount is in fraction then rewards applicable are displaying as fractional 
+    => 044414 - admin> orders> withdrawal request> filters> on entering character in amount field and proceeding further getting error
+    => 044234 - delivered status is not there on admin when order is on pickup
+    => 044435 - when any keyword is searched then on click of cross from search bar it's not washing the keyword entered
+    => 044434 - search> when there is no result found the don't display any suggestion list unless there is history
+    => 044433 - only search result should get removed on click
+    => 044420 - on search >>search suggestions section should get closed if we click anywhere on screen
+    => 044052 - after exporting file in arabic language data is deformed in sheet unless UTF8 is selected
+    
+    => 044380 - When guest user click on "clear cart" then "Unauthorized Request" gets display
+    => 044379 - If order status is "pay on pickup " then it stays the same even if we cancel the order.
+    => 044403 - Cart >> if all products are under "save for later section " and user move them to bag then items should get display in cart and currently they gets display in cart after refreshing the page .
+    => 044407 - buyer> profile> request data> gdpr popup> click here lick is not highlighted
+    => 044406 - user profile> when there is no image still then remove option is there
+    => 044400 - Admin >> order details page >> order payment history >> in case of bank transfer >> rejected or approved should get display .
+    => 044402 - Admin >> settings >> checkout >>display time slots after orders >> there is a validation of minimum 2 hours but when we save it blank then it shows 0 hours
+    => 044399 - Admin >> manage currency > "default " is not properly getting display in circle
+    => 044378 - When we choose pickup option then some details are missing in pickup address on thankyou screen ;: 1. state and country code gets display instead of name . 2. mobile number is missing .
+    => 044392 - On order details page >> if we choose "pay at pickup " then cod gets display . 
+    => 044405 - buyer> wishlist> when there is nothing in shop wishlist then message is not in center 
+    => 044395 - On Thankyou screen >> "-" sign should be there with discount amount .
+    => 044424 - when we add seller's shipping on admin's catalog then all products (seller's +admin's ) starts getting display on "marketplace product" section.
+    => 044451 - Home page >> FAQ collection >> Show more show less should be highlighted or underlined
+    => 044438 - Home page >> Testimonial collection >> "View all " button is not working. 
+    => 044443 - Admin >> add testimonials >> there should be some text limit for "testimonial text " .
+    --------------TV-9.2.2.20201023-------------------------
+    => 044442 - on searching item using tag there is no result found
+    => 044418 - Fulfillment method is missing from Inventory setup.
+    => 044411 - when seller adds inventory of admin catalog and opts shipping on own end and if admin changes shipping mode then it impacts seller inventory
+--------------TV-9.2.2.20201023-------------------------
+    => 044461 - TAx is not listing on buyer end in invoice
+    => 044370 - on order invoice> product option is not displaying.
+    => 044476 - when bank transfer payment is split in multiple amounts then getting invalid access
+    => 044482 - when order is of pickup then on order detail page it's listing shipping price column and pickup
+    => 044479 - Brand Collections >> view all >> identifier should get display for brand name if there is no language data added in admin panel .
+    => 044481 - when same product is added by multiple sellers then in Seo area listing 3 times same item
+    => 044478 - when there is no image added from user and when user tries to upload image then it's treating dummy image as uploaded
+    => 044502 - when order is on pickup then on order detail page> country and state code is listing instead of name
+    => 044477 - when mini cart having only item remains after deletion then getting scroll with product
+    => 044468 - Seller >> inventory setup of digital products >> there is some warnings on download page . 
+    => 044497 - extra categories are listing on page which are not even added
+    => 044506 - If admin cancel any order from "orders" page then "cancelled " should be the status instead of "order payment status cancelled
+    => 044503 - When we add product in cart which has some addons then those addons should get added with the product.
+    => 044473 - when order having only digital item then on checkout step 2 it's displaying shipping
+    => 044470 - when order is of pickup then in admin> customer orders> delivery field is listing which is not required
+    => 044322 - Bank details are not there after order is placed and user opts payment from order detail page
+    => 044562 - after clearing search> suggestion list is not disappearing
+    => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
+-------------------------TV-9.2.2.20201026---------------------------
+    => 044542 - In case of Stripe connect>>if cancellation or refund request generated then "transfer to wallet " option should not be there at admin end 
+    => 044505 - If admin disable " Linking Shipping Packages To Products" then weight fields should not get disappear from shipping tab .
+    => 044499 - when we add only digital product in cart then it shows "empty cart " on checkout page .
+    => 044500 - When we add one digital and one physical product in cart then it shows "no shipping available " for digital product and user is unable to proceed with order
+    => 044351 - Seller >> orders >> cancel order >> Total amount should get display at seller end and discount should not be deducted from that amou
+    => 044368 - Seller >> pickup address >> edit slots >> when we add multiple slots and save the changes then it shows only last slot on edit settings.
+    => 044567 - hide the print option on return request on buyer end
+    => 044576 - when full text search is enabled then shop is flooded with errors
+    => 035803 - when sub seller have read only permission to buy together and related items then on hover there is anchor tag and tooltip displaying click to edit
+    => 044475 - Checkout >> home page >> Delete products>> cart gets empty and it shows "Your shopping cart is empty!" with "0" amount and if we proceed with that then some products are still there.
+    => 044474 - When we come back on home page from checkout then it shows "invalid products " on deleting for those products which were not on checkout
+-------------------TV-9.2.2.20201027---------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

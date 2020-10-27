@@ -352,6 +352,13 @@ class BuyerController extends BuyerBaseController
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
+		
+		if (count($childOrderDetail)) {
+            foreach ($childOrderDetail as &$arr) {
+                $arr['options'] = SellerProduct::getSellerProductOptions($arr['op_selprod_id'], true, $this->siteLangId);
+            }
+        }
+		
         foreach ($childOrderDetail as $op_id => $val) {
             $childOrderDetail[$op_id]['charges'] = $orderDetail['charges'][$op_id];
 

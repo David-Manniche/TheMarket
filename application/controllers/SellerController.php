@@ -242,7 +242,7 @@ class SellerController extends SellerBaseController
 
     public function sales()
     {
-		$data = FatApp::getPostedData();
+        $data = FatApp::getPostedData();
         $frmOrderSrch = $this->getOrderSearchForm($this->siteLangId);
         if (!empty($data)) {
             $frmOrderSrch->fill($data);
@@ -475,6 +475,7 @@ class SellerController extends SellerBaseController
         $srch->joinOrderUser();
         $srch->joinShippingUsers();
         $srch->joinShippingCharges();
+        $srch->joinAddress();
         $srch->addOrderProductCharges();
         $srch->addCondition('op_selprod_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $op_id);
@@ -524,6 +525,10 @@ class SellerController extends SellerBaseController
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
         }
         /* ] */
+
+        if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
+            $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
+        }
 
         $charges = $orderObj->getOrderProductChargesArr($op_id);
         $orderDetail['charges'] = $charges;
@@ -890,6 +895,8 @@ class SellerController extends SellerBaseController
         $srch->joinSellerProducts();
         $srch->joinOrderUser();
         $srch->addOrderProductCharges();
+        $srch->joinShippingCharges();
+        $srch->joinAddress();
         $srch->addCondition('op_selprod_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $op_id);
         $rs = $srch->getResultSet();
@@ -907,6 +914,10 @@ class SellerController extends SellerBaseController
         $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
         $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : array();
         $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
+
+        $pickUpAddress = $orderObj->getOrderAddresses($orderDetail['order_id'], $op_id);
+        $orderDetail['pickupAddress'] = (!empty($pickUpAddress[Orders::PICKUP_ADDRESS_TYPE])) ? $pickUpAddress[Orders::PICKUP_ADDRESS_TYPE] : array();
+
         $orderDetail['comments'] = $orderObj->getOrderComments($this->siteLangId, array("op_id" => $op_id, 'seller_id' => $userId));
 
         $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId);
@@ -1520,6 +1531,10 @@ class SellerController extends SellerBaseController
         unset($post['page']);
         $frmSearchCatalogProduct->fill($post);
         $this->set("frmSearchCatalogProduct", $frmSearchCatalogProduct);
+        $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->siteLangId));
+        $this->set('activeInactiveClassArr', applicationConstants::getActiveInactiveClassArr());
+        $this->set('approveUnApproveArr', Product::getApproveUnApproveArr($this->siteLangId));
+        $this->set('approveUnApproveClassArr', product::getStatusClassArr());
         $this->_template->render(false, false);
     }
 
@@ -3424,9 +3439,9 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'splatform_id', $splatform_id);
         $frm->addRequiredField(Labels::getLabel('Lbl_Identifier', $this->siteLangId), 'splatform_identifier');
         $urlFld = $frm->addTextBox(Labels::getLabel('LBL_URL', $this->siteLangId), 'splatform_url');
-		$urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
+        $urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
         $urlFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_This_must_be_an_absolute_URL', $this->siteLangId));
-		$urlFld->requirements()->setRequired();
+        $urlFld->requirements()->setRequired();
         $fld = $frm->addSelectBox(Labels::getLabel('Lbl_Icon_Type_from_CSS', $this->siteLangId), 'splatform_icon_class', $iconsArr, '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId));
         if ($splatform_id > 0) {
             $fld->setFieldTagAttribute('disabled', 'disabled');
@@ -4229,13 +4244,6 @@ class SellerController extends SellerBaseController
             }
         }
 
-        $fulfillmentType = -1;
-        if ($productData['sellerProduct'] > 0) {
-            $fulfillmentType = Shop::getAttributesByUserId($productData['product_seller_id'], 'shop_fulfillment_type');
-        } else {
-            $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
-        }
-
         $frm->addRequiredField(Labels::getLabel('LBL_Title', $this->siteLangId), 'selprod_title' . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1));
         $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Maintain_Stock_Levels', $this->siteLangId), 'selprod_subtract_stock', applicationConstants::YES, array(), false, 0);
         $frm->addCheckBox(Labels::getLabel('LBL_System_Should_Track_Product_Inventory', $this->siteLangId), 'selprod_track_inventory', Product::INVENTORY_TRACK, array(), false, 0);
@@ -4304,9 +4312,20 @@ class SellerController extends SellerBaseController
                 }
             }
 
+
+            $shipBySeller = Product::isProductShippedBySeller($product_id, $productData['product_seller_id'], UserAuthentication::getLoggedUserId());
+            // $shipBySeller = SellerProduct::prodShipByseller($product_id);
+
+            $fulfillmentType = -1;
+            if ($productData['sellerProduct'] > 0 || $shipBySeller) {
+                $sellerId = ($shipBySeller > 0) ? UserAuthentication::getLoggedUserId() : $productData['product_seller_id'];
+                $fulfillmentType = Shop::getAttributesByUserId($sellerId, 'shop_fulfillment_type');
+            } else {
+                $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
+            }
             $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType);
-            $shipBySeller = SellerProduct::prodShipByseller($product_id);
-            if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && !empty($shipBySeller)) {
+
+            if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && true == $shipBySeller) {
                 $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, []);
             }
             $frm->addRequiredField(Labels::getLabel('LBL_Url_Keyword', $this->siteLangId), 'selprod_url_keyword');
@@ -5157,15 +5176,15 @@ class SellerController extends SellerBaseController
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 $shipPackArr = ShippingPackage::getAllNames();
                 $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->siteLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
-
-                $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
-                $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
-
-                $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->siteLangId), 'product_weight', '0.00');
-                $weightFld->requirements()->setRequired(true);
-                $weightFld->requirements()->setFloatPositive();
-                $weightFld->requirements()->setRange('0.01', '9999999999');
             }
+
+            $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
+            $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
+
+            $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->siteLangId), 'product_weight', '0.00');
+            $weightFld->requirements()->setRequired(true);
+            $weightFld->requirements()->setFloatPositive();
+            $weightFld->requirements()->setRange('0.01', '9999999999');
 
             if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
                 /*  $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0); */

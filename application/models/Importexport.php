@@ -548,18 +548,10 @@ class Importexport extends ImportexportCommon
                 }
                 break;
             case Importexport::TYPE_OPTIONS:
-                switch ($sheetType) {
-                    case Importexport::PRODUCT_CATALOG:
-                        $sheetName = Labels::getLabel('LBL_Options_Error', $langId);
-                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId, true);
-                        $this->importOptions($csvFilePointer, $post, $langId);
-                        break;
-                    case Importexport::PRODUCT_OPTION:
-                        $sheetName = Labels::getLabel('LBL_Option_Values_Error', $langId);
-                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId, true);
-                        $this->importOptionValues($csvFilePointer, $post, $langId);
-                        break;
-                }
+                $sheetName = Labels::getLabel('LBL_Options_Error', $langId);
+                $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId, true);
+                $this->importOptions($csvFilePointer, $post, $langId);
+                break;
                 break;
             case Importexport::TYPE_OPTION_VALUES:
                 $sheetName = Labels::getLabel('LBL_Option_Values_Error', $langId);
@@ -653,7 +645,7 @@ class Importexport extends ImportexportCommon
 
         /* Sheet Heading Row [ */
         $headingsArr = $this->getCategoryColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -691,7 +683,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getCategoryMediaColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         $languageCodes = Language::getAllCodesAssoc(true);
@@ -1035,7 +1027,7 @@ class Importexport extends ImportexportCommon
 
         /* Sheet Heading Row [ */
         $headingsArr = $this->getBrandColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
         // $data = $this->db->fetchAll($rs);
 
@@ -1182,7 +1174,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getBrandMediaColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         $languageCodes = Language::getAllCodesAssoc(true);
@@ -1465,7 +1457,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getProductsCatalogColoumArr($langId, $userId, $this->actionType);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -2115,7 +2107,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getProductOptionColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -2276,7 +2268,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getProductTagColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -2445,7 +2437,7 @@ class Importexport extends ImportexportCommon
         /* Sheet Heading Row [ */
         $headingsArr = $this->getProductSpecificationColoumArr($langId);
 
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
         $languageCodes = Language::getAllCodesAssoc();
 
@@ -2647,7 +2639,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getProductShippingColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -2890,7 +2882,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getProductMediaColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         $languageCodes = Language::getAllCodesAssoc(true);
@@ -3163,7 +3155,7 @@ class Importexport extends ImportexportCommon
 
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdMediaColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         $languageCodes = Language::getAllCodesAssoc(true);
@@ -3216,7 +3208,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdGeneralColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         $conditionArr = Product::getConditionArr($langId);
@@ -3555,7 +3547,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdOptionsColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -3770,7 +3762,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdSeoColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -3913,7 +3905,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdSpecialPriceColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
 
@@ -4071,7 +4063,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdVolumeDiscountColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -4190,7 +4182,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdBuyTogetherColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -4338,7 +4330,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdRelatedProductColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -4453,7 +4445,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSelProdPolicyColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -4592,7 +4584,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getOptionsColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         /* $optionTypeArr = Option::getOptionTypes($langId); */
@@ -4756,7 +4748,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getOptionsValueColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -4916,7 +4908,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getTagColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -5080,7 +5072,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getCountryColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -5257,7 +5249,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getStatesColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {
@@ -5409,7 +5401,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getPolicyPointsColoumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         $usePolicyPointId = false;
@@ -5575,7 +5567,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getUsersColoumArr($langId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         $userTypeArr = User::getUserTypesArr($langId);
@@ -5621,7 +5613,7 @@ class Importexport extends ImportexportCommon
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getSalesTaxColumArr($langId, $userId);
-        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr);
+        CommonHelper::writeExportDataToCSV($this->CSVfileObj, $headingsArr, false, '', true);
         /* ] */
 
         while ($row = $this->db->fetch($rs)) {

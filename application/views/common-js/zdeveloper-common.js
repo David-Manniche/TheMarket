@@ -850,20 +850,20 @@ $(function() { // this will be called when the DOM is ready
     var doneTypingInterval = 800; //time in ms, 5 second for example
     var $input = $('#header_search_keyword');
 
-    $input.focus(function() {
+    $input.focus(function(e) {       
         searchProductTagsAuto($input.val());
     });
 
-    $input.keyup(function() {
+    $input.keyup(function(e) {             
         clearTimeout(typingTimer);
         typingTimer = setTimeout(doneTyping, doneTypingInterval);
     });
 
-    $input.keydown(function() {
+    $input.keydown(function(e) {        
         clearTimeout(typingTimer);
     });
 
-    doneTyping = function() {
+    doneTyping = function(e) {        
         searchProductTagsAuto($input.val());
     };
 
@@ -882,14 +882,25 @@ $(function() { // this will be called when the DOM is ready
     });
 
     $(document).on('click', '.clearSearch-js', function() {
-        clearSearchKeyword();
+		var obj = $(this).hasClass('clear-all') ? 'all' : '';
+        clearSearchKeyword(obj);
     });
 
 });
 
-$(document).ready(function() {
-    removeAutoSuggest = function() {
+$(document).mouseup(function (e) { 
+    var container = $('#search-suggestions-js'); 
+    var inputFld = $('#header_search_keyword'); 
+    if((!container.is(e.target) && container.has(e.target).length === 0) && (!inputFld.is(e.target) && inputFld.has(e.target).length === 0)) {         
         $('#search-suggestions-js').html('');
+    } 
+}); 
+  
+$(document).ready(function() {    
+    var searchSuggestionsJs = $('#search-suggestions-js');
+    removeAutoSuggest = function() {
+        $('#header_search_keyword').val('');
+        searchSuggestionsJs.html('');
     };
     searchTags = function(obj) {
         var frmSiteSearch = document.frmSiteSearch;
@@ -902,15 +913,15 @@ $(document).ready(function() {
             return;
         }   */
         var data = 'keyword=' + keyword;
-        fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {
-            if (t.html.length > 0) {
-                if (!$('#search-suggestions-js').find('div').hasClass('search-suggestions')) {
-                    $('#search-suggestions-js').html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');
+        fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {      if (t.html.length > 0) {
+                if (!searchSuggestionsJs.find('div').hasClass('search-suggestions')) {
+                    searchSuggestionsJs.html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a><div class="search-suggestions" id="tagsSuggetionList"></div>');
                 }
-                $('#tagsSuggetionList').html(t.html);
+                $('#tagsSuggetionList').html(t.html);                
             } else {
-                $('#search-suggestions-js').html('');
+                searchSuggestionsJs.html('<a href="javascript:void(0)" onClick="removeAutoSuggest()" class="close-layer"></a>');
             }
+            
         }, '', false);
     };
 
@@ -920,8 +931,15 @@ $(document).ready(function() {
         if (typeof keyword != 'undefined') {
             data = 'keyword=' + keyword;
         }
-        fcom.ajax(fcom.makeUrl('Products', 'clearSearchKeywords'), data, function(t) {
-            $('#search-suggestions-js').html('');
+        fcom.ajax(fcom.makeUrl('Products', 'clearSearchKeywords'), data, function(t) {            
+			if ('all' == obj) {
+				$('#search-suggestions-js').html("");
+			} else {
+				$(obj).closest('li').remove();
+				if (0 < $('#search-suggestions-js').length && 1 > $('.recentSearch-js').length) {
+					$('#search-suggestions-js').html("");
+				}
+			}
         });
     };
 
@@ -1522,8 +1540,8 @@ $("document").ready(function() {
         var yourArray = [];
         var selprodId = $(this).siblings('input[name="selprod_id"]').val();
         if (typeof mainSelprodId != 'undefined' && mainSelprodId == selprodId) {
-            $(".cart-tbl").find("input").each(function(e) {
-                if (($(this).val() > 0) && (!$(this).closest("td").siblings().hasClass("cancelled--js"))) {
+            $(".list-addons--js").find("input").each(function(e) {
+                if (($(this).val() > 0) && (!$(this).closest(".addon--js").hasClass("cancelled--js"))) {
                     data = data + '&' + $(this).attr('lang') + "=" + $(this).val();
                 }
             });

@@ -645,21 +645,3 @@
         }
     }
 }
-
-.product-items {
-    display: grid;
-    grid-gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(206px, 1fr));
-    @include media-breakpoint-down(sm) {
-        & {
-            grid-gap: 3px;
-            grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
-            .products {
-                border-radius: 0;
-            }
-        }
-    }
-    .products {
-        height: 100%;
-    }
-}

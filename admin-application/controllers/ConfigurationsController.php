@@ -897,6 +897,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addTextBox(Labels::getLabel('LBL_Display_Time_Slots_After_Order', $this->adminLangId) . ' [' . Labels::getLabel('LBL_Hours', $this->adminLangId) . ']', 'CONF_TIME_SLOT_ADDITION', 2);
                 $fld->requirements()->setInt();
                 $fld->requirements()->setRange('2', '9999999999');
+                $fld->requirements()->setRequired(true);
 
                 $frm->addHtml('', 'Checkout', '<h3>' . Labels::getLabel('LBL_Checkout_Process', $this->adminLangId) . '</h3>');
                 $fld1 = $frm->addCheckBox(Labels::getLabel('LBL_Activate_Live_Payment_Transaction_Mode', $this->adminLangId), 'CONF_TRANSACTION_MODE', 1, array(), false, 0);
@@ -1648,11 +1649,10 @@ class ConfigurationsController extends AdminBaseController
             case Configurations::FORM_GENERAL:
                 $frm->addTextBox(Labels::getLabel("LBL_Site_Name", $this->adminLangId), 'CONF_WEBSITE_NAME_' . $langId);
                 $frm->addTextBox(Labels::getLabel("LBL_Site_Owner", $this->adminLangId), 'CONF_SITE_OWNER_' . $langId);
-                $frm->addTextarea(Labels::getLabel("LBL_ADDRESS", $this->adminLangId), 'CONF_ADDRESS_' . $langId);
                 $frm->addTextarea(Labels::getLabel('LBL_Cookies_Policies_Text', $this->adminLangId), 'CONF_COOKIES_TEXT_' . $langId);
                 break;
             case Configurations::FORM_LOCAL:
-                $frm->addTextBox(Labels::getLabel("LBL_Address", $this->adminLangId), 'CONF_ADDRESS_' . $langId);
+				$frm->addTextarea(Labels::getLabel("LBL_Address", $this->adminLangId), 'CONF_ADDRESS_' . $langId);
                 $frm->addTextBox(Labels::getLabel("LBL_City", $this->adminLangId), 'CONF_CITY_' . $langId);
                 break;
             case Configurations::FORM_EMAIL:

@@ -13,10 +13,6 @@ $(document).ready(function(){
         }
 		$('#cartList').html( fcom.getLoader() );
 		fcom.ajax(fcom.makeUrl('Cart','listing', [fulfilmentType]),'',function(res){
-			/*if (1 > $("#cartList").length) {
-				location.reload();
-			}*/
-			
 			var json = $.parseJSON(res);  
             if(json.hasPhysicalProduct == false){
                 $("#js-shiporpickup").remove();
@@ -160,6 +156,11 @@ $(document).ready(function(){
             addRemoveWishListProduct(selprod_id, wish_list_id, event);
             listCartProducts(fulfilmentType);
             $('#cartSummary').load(fcom.makeUrl('cart', 'getCartSummary'));
+            setTimeout(function(){
+                if (1 > $("#cartList").length) {
+                    location.reload();
+                }
+            }, 500);
 		});
 	};
     

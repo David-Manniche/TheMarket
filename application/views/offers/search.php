@@ -16,7 +16,7 @@ if (!empty($arr_listing) && is_array($arr_listing) ){
 						   <h6><?php echo ($row['coupon_title'] == '')?$row['coupon_identifier']:$row['coupon_title'];?></h6>
 						   <p><span class="lessText"><?php echo CommonHelper::truncateCharacters($row['coupon_description'],85,'','',true);?></span>
 						   <?php if(strlen($row['coupon_description']) > 85) { ?>
-						  <span class="moreText" hidden><?php echo nl2br($row['coupon_description']);?></span> <a class="readMore link--arrow" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE',$siteLangId) ; ?> </a></p>
+						  <span class="moreText" hidden><?php echo nl2br($row['coupon_description']);?></span> <a class="readMore link--arrow btn-link" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE',$siteLangId) ; ?> </a></p>
 						   <?php }?>
 							<div class="offer__footer">
 							   <div class="offer__grid">

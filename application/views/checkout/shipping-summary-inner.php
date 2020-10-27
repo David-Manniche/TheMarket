@@ -12,7 +12,7 @@
                 </div>
                 <div class="review-block__content" role="cell">
                     <div class="delivery-address">
-                        <p><?php echo $addresses['addr_address1']; ?>
+                        <p><?php echo $addresses['addr_name'] . ', ' . $addresses['addr_address1']; ?>
                             <?php if (strlen($addresses['addr_address2']) > 0) {
                                 echo ", " . $addresses['addr_address2']; ?>
                             <?php } ?>
@@ -32,7 +32,15 @@
 
         <div class="step__section">
             <div class="step__section__head">
-                <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_Shipping_Summary', $siteLangId); ?>
+                <h5 class="step__section__head__title">
+                    <?php
+                    $cartObj = new Cart();
+                    if ($cartObj->hasPhysicalProduct()) {
+                        echo Labels::getLabel('LBL_Shipping_Summary', $siteLangId);
+                    } else {
+                        echo Labels::getLabel('LBL_REVIEW_CHECKOUT', $siteLangId);
+                    }
+                    ?>
                 </h5>
             </div>
             <?php

@@ -8,11 +8,16 @@
 						<!--main Start-->
 						<table width="100%" border="0" cellpadding="0" cellspacing="0">
 							<tbody><tr>
-								<td style="font-size: 32px;font-weight: 700;color: #000;padding: 15px;text-align:center;border-bottom: 1px solid #ddd;"><?php echo Labels::getlabel('LBL_Tax_Invoice', $siteLangId);?></td>
+								<td style="font-size: 32px;font-weight: 700;color: #000;padding: 15px;text-align:center;"><?php echo Labels::getlabel('LBL_Tax_Invoice', $siteLangId);?></td>
 							</tr>
-						</tbody></table>
-						<?php foreach ($childOrderDetail as $childOrder) { ?> 
-							<table width="100%" border="0" cellpadding="10px" cellspacing="0">      
+						</tbody>
+						</table>
+						<?php $count = 0;
+						foreach ($childOrderDetail as $childOrder) { ?>
+							<?php if($count != 0) { ?>
+								<br pagebreak="true"/>
+							<?php } ?>
+							<table width="100%" border="0" cellpadding="10px" cellspacing="0" style="border-top: 1px solid #ddd;">      
 								<tbody>
 									<tr>
 										<td style="padding:15px;border-bottom: 1px solid #ddd;">
@@ -39,7 +44,6 @@
 									</tr>
 								</tbody>
 							</table>
-							<?php if ($childOrder['op_product_type'] != Product::PRODUCT_TYPE_DIGITAL) { ?>
 							<table width="100%" border="0" cellpadding="0" cellspacing="0">        
 								<tbody>
 									<tr>
@@ -82,7 +86,7 @@
 																<?php echo $billingAddress; ?>
 															</p>                                                  
 														</td>
-														<?php if (!empty($orderDetail['shippingAddress'])) {  ?>
+														<?php if (($childOrder['op_product_type'] != Product::PRODUCT_TYPE_DIGITAL) && !empty($orderDetail['shippingAddress'])) {  ?>
 														<td style="padding:15px;">
 															<h4 style="margin:0;font-size:18px;font-weight:bold;padding-bottom: 5px;"><?php echo Labels::getLabel('LBL_Ship_to', $siteLangId); ?></h4>
 															<p style="margin:0;padding-bottom: 15px;">
@@ -156,8 +160,7 @@
 										</td>
 									</tr>
 								</tbody>
-							</table> 
-							<?php } ?>
+							</table>
 
 						<table width="100%" border="0" cellpadding="0" cellspacing="0">
 							<tbody>
@@ -182,9 +185,12 @@
 												</td>
 												<td style="padding:15px;">
 													<p><strong><?php echo Labels::getLabel('LBL_Order_Date', $siteLangId);?>:</strong>  <?php echo FatDate::format($childOrder['order_date_added']);?> </p>
-													<p><strong><?php echo Labels::getLabel('LBL_Invoice_Date', $siteLangId);?>:</strong> <?php echo (!empty($childOrder['opshipping_date'])) ? FatDate::format($childOrder['opshipping_date']) : 'NA'; ?></p>
-													<p><strong><?php echo Labels::getLabel('LBL_Tracking_ID', $siteLangId);?>:</strong>  <?php echo (!empty($childOrder['opship_tracking_number'])) ? $childOrder['opship_tracking_number'] : 'NA'; ?> </p>
-													<?php /* <p><strong><?php echo Labels::getLabel('LBL_Tote-Id', $siteLangId);?>: </strong>  LOREM </p> */ ?>
+													<?php if (!empty($childOrder['opshipping_date'])) { ?>
+													<p><strong><?php echo Labels::getLabel('LBL_Invoice_Date', $siteLangId);?>:</strong> <?php echo FatDate::format($childOrder['opshipping_date']); ?></p>
+													<?php } ?>
+													<?php if (!empty($childOrder['opship_tracking_number'])) { ?>
+													<p><strong><?php echo Labels::getLabel('LBL_Tracking_ID', $siteLangId);?>:</strong>  <?php echo $childOrder['opship_tracking_number']; ?> </p>
+													<?php } ?>
 												</td>
 											</tr>
 										</tbody></table>                                        
@@ -210,13 +216,26 @@
 											<th style="padding:10px 15px;text-align: center; border-bottom:1px solid #ddd;"><?php echo Labels::getLabel('LBL_Savings', $siteLangId);?></th>                                           
 											<th style="padding:10px 15px;text-align: center; border-bottom:1px solid #ddd;"><?php echo Labels::getLabel('LBL_Total_Amount', $siteLangId);?></th>
 										</tr>
-										<tr> 
-											<?php $volumeDiscount = CommonHelper::orderProductAmount($childOrder, 'VOLUME_DISCOUNT'); ?>
+										<tr>
 											<td style="padding:10px 15px;text-align: left;">
-											<?php echo ($childOrder['op_selprod_title'] != '') ? $childOrder['op_selprod_title'] : $childOrder['op_product_name']; ?></td>
+											<?php echo ($childOrder['op_selprod_title'] != '') ? $childOrder['op_selprod_title'] : $childOrder['op_product_name']; ?>
+											<?php if (is_array($childOrder['options']) && count($childOrder['options'])) {
+												$variantStr ='<br> (';
+												$count = count($childOrder['options']);
+												foreach ($childOrder['options'] as $op) {
+													$variantStr .= '' . wordwrap($op['optionvalue_name'], 150, "<br>\n");
+													if ($count != 1) {
+														$variantStr .= ' | ';
+													}
+													$count--;
+												}
+												$variantStr .= ')';
+												echo $variantStr;
+											} ?>
+											</td>
 											<td style="padding:10px 15px;text-align: center;">
 												<?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true); ?>
-											</td>                                          
+											</td>											
 											<td style="padding:10px 15px;text-align: center;"><?php echo $childOrder['op_qty']; ?></td>                   
 											<td style="padding:10px 15px;text-align: center;"><?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?></td>
 											<?php $couponDiscount = CommonHelper::orderProductAmount($childOrder, 'DISCOUNT'); 
@@ -246,10 +265,12 @@
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('Lbl_Cart_Total', $siteLangId) ?></td>                    
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'cart_total'), true, false, true, false, true); ?></td>                                           
 										</tr>
+										<?php if ($childOrder['op_product_type'] != Product::PRODUCT_TYPE_DIGITAL) {  ?>
 										<tr>                                                                              
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId) ?></td>                    
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?></td>                                           
 										</tr>
+										<?php } ?>
 										<?php /* $rewardPointDiscount = CommonHelper::orderProductAmount($childOrder, 'REWARDPOINT');
 										if ($rewardPointDiscount != 0) { ?>
 										<tr>                                                                              
@@ -257,13 +278,12 @@
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?></td>                                           
 										</tr>
 										<?php } */ ?>
-										<?php
-										/* if (CommonHelper::orderProductAmount($childOrder, 'TAX') > 0) { ?>
+										<?php if (CommonHelper::orderProductAmount($childOrder, 'TAX') > 0) { ?>
 										<tr>                                                                              
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId) ?></td>                    
 											<td style="padding:10px 15px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'TAX'), true, false, true, false, true); ?></td>      
 										</tr>
-										<?php } */ ?>
+										<?php } ?>
 										<?php
 										if ($totalSavings != 0) { ?>
 										<tr>                                                                              
@@ -343,7 +363,7 @@
 								</td>
 							</tr>
 						</tbody></table>
-						<?php } ?>
+						<?php $count++; } ?>
 						<table width="100%" border="0" cellpadding="10px" cellspacing="0"> 
 							<tbody><tr>
 								<td style="padding:20px 15px;border-top:1px solid #ddd">

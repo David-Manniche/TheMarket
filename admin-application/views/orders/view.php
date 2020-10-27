@@ -114,7 +114,9 @@ if ($order['order_reward_point_used'] > 0) {
                                 <?php  } ?>
                                 <th><?php echo Labels::getLabel('LBL_Unit_Price', $adminLangId); ?></th>
                                 <th><?php echo Labels::getLabel('LBL_Qty', $adminLangId); ?></th>
-                                <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
+                                <?php if (!empty($order['products']) && Shipping::FULFILMENT_PICKUP != current($order['products'])['opshipping_fulfillment_type']) { ?>
+                                    <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
+                                <?php } ?>
                                 <th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId); ?></th>
                                 <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?></th>
                             </tr>
@@ -172,9 +174,9 @@ if ($order['order_reward_point_used'] > 0) {
                                                 <strong>
                                                     <?php
                                                     $opshippingDate = isset($op['opshipping_date']) ? $op['opshipping_date'] . ' ' : '';
-                                                    $timeSlotFrom = isset($op['opshipping_time_slot_from']) ? date('H:i', strtotime($op['opshipping_time_slot_from'])) . ' - ' : '';
-                                                    $timeSlotTo = isset($op['opshipping_time_slot_to']) ? date('H:i', strtotime($op['opshipping_time_slot_to'])) : '';
-                                                    echo $opshippingDate . ' (' . $timeSlotFrom . $timeSlotTo . ')'; 
+                                                    $timeSlotFrom = isset($op['opshipping_time_slot_from']) ? ' (' . date('H:i', strtotime($op['opshipping_time_slot_from'])) . ' - ' : '';
+                                                    $timeSlotTo = isset($op['opshipping_time_slot_to']) ? date('H:i', strtotime($op['opshipping_time_slot_to'])) . ')' : '';
+                                                    echo $opshippingDate . $timeSlotFrom . $timeSlotTo;
                                                     ?>
                                                 </strong><br>
                                                 <?php echo $op['addr_name']; ?>,
@@ -195,10 +197,12 @@ if ($order['order_reward_point_used'] > 0) {
                                             </strong>
                                             <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_label"]); ?>
                                             <br>
-                                            <strong>
-                                                <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
-                                            </strong>
+                                            <?php if (!empty($op["opshipping_service_code"])) { ?>
+                                                <strong>
+                                                    <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES:', $adminLangId); ?>
+                                                </strong>
                                             <?php echo CommonHelper::displayNotApplicable($adminLangId, $op["opshipping_service_code"]);
+                                            }
                                             $orderStatusLbl = '';
                                             if (!empty($op["thirdPartyorderInfo"]) && isset($op["thirdPartyorderInfo"]['orderStatus'])) {
                                                 $orderStatus = $op["thirdPartyorderInfo"]['orderStatus'];
@@ -225,9 +229,11 @@ if ($order['order_reward_point_used'] > 0) {
                                     <td>
                                         <?php echo $op['op_qty']; ?>
                                     </td>
-                                    <td class="text-right">
-                                        <?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
-                                    </td>
+                                    <?php if (Shipping::FULFILMENT_PICKUP != current($order['products'])['opshipping_fulfillment_type']) { ?>
+                                        <td class="text-right">
+                                            <?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
+                                        </td>
+                                    <?php } ?>
                                     <td>
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
                                     </td>
@@ -253,12 +259,14 @@ if ($order['order_reward_point_used'] > 0) {
                                 <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($cartTotal, true, true); ?>
                                     </th>
                             </tr>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?>
-                                </td>
-                                <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?>
-                                </td>
-                            </tr>
+                            <?php if (0 < $shippingTotal) { ?>
+                                <tr>
+                                    <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                             <?php if (empty($taxOptionsTotal)) { ?>
                                 <tr>
                                     <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?>
@@ -471,6 +479,8 @@ if ($order['order_reward_point_used'] > 0) {
                                             </th>
                                             <th width="25%"><?php echo Labels::getLabel('LBL_Gateway_Response', $adminLangId); ?>
                                             </th>
+                                            <th width="15%"><?php echo Labels::getLabel('LBL_STATUS', $adminLangId); ?>
+                                            </th>
                                             <th width="15%"><?php echo Labels::getLabel('LBL_ACTION', $adminLangId); ?>
                                             </th>
                                         </tr>
@@ -490,6 +500,29 @@ if ($order['order_reward_point_used'] > 0) {
                                                 </td>
                                                 <td>
                                                     <div class="break-me"><?php echo nl2br($row['opayment_gateway_response']); ?>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="break-me">
+                                                        <?php
+                                                        $cls = '';
+                                                        $msg = '';
+                                                        switch ($row['opayment_txn_status']) {
+                                                            case Orders::ORDER_PAYMENT_PENDING:
+                                                                $cls = 'label-info';
+                                                                $msg = Labels::getLabel("LBL_PENDING", $adminLangId);
+                                                                break;
+                                                            case Orders::ORDER_PAYMENT_PAID:
+                                                                $cls = 'label-success';
+                                                                $msg = Labels::getLabel("LBL_APPROVED", $adminLangId);
+                                                                break;
+                                                            case Orders::ORDER_PAYMENT_CANCELLED:
+                                                                $cls = 'label-danger';
+                                                                $msg = Labels::getLabel("LBL_REJECTED", $adminLangId);
+                                                                break;
+                                                        }
+                                                        ?>
+                                                        <span class='label <?php echo $cls; ?>'><?php echo $msg; ?></span>
                                                     </div>
                                                 </td>
                                                 <td>

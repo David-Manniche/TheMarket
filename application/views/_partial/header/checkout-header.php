@@ -18,13 +18,24 @@
         } elseif ($controllerName == 'walletpay') {
             $backUrl = UrlHelper::generateUrl('Account', 'Credits');
         }  */ ?>
-            <?php if ($controllerName == 'checkout' || $controllerName == 'subscriptioncheckout') {   ?>
+            <?php if ($controllerName == 'checkout' || $controllerName == 'subscriptioncheckout') {
+                $cartObj = new Cart();
+                $fulfillmentType = $cartObj->getCartCheckoutType();
+                ?>
                 <div class="checkout-progress">
                     <div class="progress-track checkout-flow-js"></div>
                     <?php if ($controllerName == 'checkout') {  ?>
                         <div id="step1" class="progress-step checkoutNav-js billing-js"><?php echo Labels::getLabel('LBL_Billing', $siteLangId); ?>
                         </div>
-                        <div id="step2" class="progress-step checkoutNav-js shipping-js"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?>
+                        <div id="step2" class="progress-step checkoutNav-js shipping-js">
+                            <?php								
+								if ($fulfillmentType == Shipping::FULFILMENT_SHIP && $cartObj->hasPhysicalProduct()) { 
+                                    echo Labels::getLabel('LBL_Shipping', $siteLangId); 
+                                } else if ($cartObj->hasPhysicalProduct()) {
+                                    echo Labels::getLabel('LBL_PICKUP', $siteLangId); 
+                                } else {
+									echo Labels::getLabel('LBL_REVIEW', $siteLangId); 
+								} ?>
                         </div>
                         <div id="step3" class="progress-step checkoutNav-js payment-js"><?php echo Labels::getLabel('LBL_Payment', $siteLangId); ?>
                         </div>

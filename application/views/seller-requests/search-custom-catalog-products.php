@@ -1,8 +1,8 @@
 <?php
 $variables = array('siteLangId' => $siteLangId, 'action' => $action);
 $this->includeTemplate('seller-requests/_partial/requests-navigation.php', $variables, false); ?>
-<?php
-defined('SYSTEM_INIT') or die('Invalid Usage.');
+<div class="js-scrollable table-wrap">
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
@@ -34,8 +34,12 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'product_identifier':
-                $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
-                $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
+					$html = '<div class="item"><figure class="item__pic"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'CustomProduct', array($row['preq_id'], "SMALL", 0, 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg').'" title="'.$row['product_name'].'" alt="'.$row['product_name'].'"></figure>
+					<div class="item__description">
+						<div class="item__title">'.$row['product_name'].'</div>
+						<div class="item__brand"> (' . $row[$key] . ') </div>
+					</div></div>';
+                $td->appendElement('plaintext', array(), $html, true);
                 break;
             case 'preq_status':
                 $td->appendElement('span', array('class' => 'label label-inline ' . $statusClassArr[$row[$key]]), $statusArr[$row[$key]] . '<br>', true);
@@ -80,9 +84,9 @@ echo $tbl->getHtml();
 if (count($arr_listing) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
-
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'callBackJsFunc' => 'goToCustomCatalogProductSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

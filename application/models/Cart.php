@@ -345,7 +345,7 @@ class Cart extends FatModel
                     continue;
                 }
 
-                /* CommonHelper::printArray($keyDecoded); die; */
+                /* CommonHelper::printArray($keyDecoded); die ; */
                 // if( strpos($keyDecoded, static::CART_KEY_PREFIX_BATCH ) !== FALSE ){
                 // $prodgroup_id = FatUtility::int(str_replace( static::CART_KEY_PREFIX_BATCH, '', $keyDecoded ));
                 // }
@@ -725,12 +725,15 @@ class Cart extends FatModel
 
         $fulfillmentType = $sellerProductRow['selprod_fulfillment_type'];
         if (true == $isProductShippedBySeller) {
-            if ($sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
+            if ($sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL && $sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
                 $fulfillmentType = $sellerProductRow['shop_fulfillment_type'];
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             }
         } else {
-            if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
+            $defaultFulfillmentType = $sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL ?  Shipping::FULFILMENT_ALL : Shipping::FULFILMENT_SHIP;
+            $fulfillmentType = isset($sellerProductRow['product_fulfillment_type']) ? $sellerProductRow['product_fulfillment_type'] : $defaultFulfillmentType;
+            $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
+            if ($sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL && FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
                 $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             }
@@ -753,6 +756,7 @@ class Cart extends FatModel
     public function remove($key)
     {
         $this->products = array();
+        $this->invalidateCheckoutType();
         $cartProducts = $this->getProducts($this->cart_lang_id);
         $found = false;
         if (is_array($cartProducts)) {

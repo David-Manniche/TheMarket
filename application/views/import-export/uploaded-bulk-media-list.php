@@ -1,4 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
 <?php
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
@@ -68,8 +69,9 @@ foreach ($arr_listing as $sn => $row) {
 if (count($arr_listing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $siteLangId));
 }
-echo $tbl->getHtml();
-$postedData['page'] = $page;
+echo $tbl->getHtml();?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
     'name' => 'frmSearchPaging'
 ));

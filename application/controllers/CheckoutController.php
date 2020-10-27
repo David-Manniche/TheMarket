@@ -1090,8 +1090,8 @@ class CheckoutController extends MyAppController
             if ($this->cartObj->getCartShippingApi()) {
                 $shippingApiLangRow = ShippingApi::getAttributesByLangId($lang_id, $this->cartObj->getCartShippingApi());
                 $order_shippingapi_name = $shippingApiLangRow['shippingapi_name'];
-                if (empty($shippingApiLangRow)) {
-                    $order_shippingapi_name = $shippingApiRow['shippingapi_identifier'];
+                if (empty($order_shippingapi_name)) {
+                    $order_shippingapi_name = $shippingApiLangRow['shippingapi_identifier'];
                 }
             }
 
@@ -1441,10 +1441,13 @@ class CheckoutController extends MyAppController
             $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => 0));
         }
 
+        $cartHasDigitalProduct = $this->cartObj->hasDigitalProduct();
+
         $this->set('paymentMethods', $paymentMethods);
         $this->set('userWalletBalance', $userWalletBalance);
         $this->set('cartSummary', $cartSummary);
         $this->set('fulfillmentType', $fulfillmentType);
+        $this->set('cartHasDigitalProduct', $cartHasDigitalProduct);
         if (false === MOBILE_APP_API_CALL) {
             $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
             //            $cartHasPhysicalProduct = false;
@@ -1598,8 +1601,9 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
+        $rewardPoints = floor($post['redeem_rewards']);
 
-        if (empty($post['redeem_rewards'])) {
+        if (empty($rewardPoints)) {
             $this->errMessage = Labels::getLabel('LBL_You_cannot_use_0_reward_points._Please_add_reward_points_greater_than_0', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($this->errMessage);
@@ -1616,7 +1620,6 @@ class CheckoutController extends MyAppController
             $orderId = $post['orderId'];
         }
 
-        $rewardPoints = $post['redeem_rewards'];
         $totalBalance = UserRewardBreakup::rewardPointBalance($loggedUserId, $orderId);
 
         /* var_dump($totalBalance);exit; */
@@ -2132,7 +2135,7 @@ class CheckoutController extends MyAppController
         $post = FatApp::getPostedData();
 
         $pickupAddressArr = array();
-        //        $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
+        // $basketProducts = $this->cartObj->getBasketProducts($this->siteLangId);
         $basketProducts = [];
         $pickupOptions = $this->cartObj->getPickupOptions($basketProducts);
 
@@ -2144,25 +2147,25 @@ class CheckoutController extends MyAppController
 
             $slotData = TimeSlot::getAttributesById($slotId);
             if (empty($slotData)) {
-                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                $message = Labels::getLabel('MSG_NO_TIME_SLOT_FOUND.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
 
             $selectedDate = $post['slot_date'][$pickUpBy];
             $selectedDay = date('w', strtotime($selectedDate));
             if ($selectedDay != $slotData['tslot_day']) {
-                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                $message = Labels::getLabel('MSG_INVALID_SLOT_DAY.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
 
             if (array_search($slotData['tslot_record_id'], array_column($pickupOptions[$pickUpBy]['pickup_options'], 'addr_id')) === false) {
-                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                $message = Labels::getLabel('MSG_INVALID_PICKUP_ADDRESS.', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
 
             $cartProducts = $this->cartObj->getProducts($this->siteLangId);
             if (empty($cartProducts)) {
-                $message = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+                $message = Labels::getLabel('MSG_YOUR_CART_IS_EMPTY', $this->siteLangId);
                 LibHelper::exitWithError($message, true);
             }
 
@@ -2203,6 +2206,9 @@ class CheckoutController extends MyAppController
 
         $this->cartObj->setProductPickUpAddresses($pickupAddressArr);
         $this->set('msg', Labels::getLabel('MSG_Pickup_Method_selected_successfully.', $this->siteLangId));
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
         $this->_template->render(false, false, 'json-success.php');
     }
 

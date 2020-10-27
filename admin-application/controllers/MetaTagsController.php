@@ -575,6 +575,8 @@ class MetaTagsController extends AdminBaseController
         $controller = FatUtility::convertToType($tabsArr[$metaType]['controller'], FatUtility::VAR_STRING);
         $action = FatUtility::convertToType($tabsArr[$metaType]['action'], FatUtility::VAR_STRING);
         $srch = SellerProduct::getSearchObject($this->adminLangId);
+        $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'selprod_user_id = u.user_id', 'u');
+        $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'u.user_id = uc.credential_user_id', 'uc');
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->adminLangId, 'p_l');
         $srch->joinTable(MetaTag::DB_TBL, 'LEFT OUTER JOIN', "mt.meta_record_id = sp.selprod_id and mt.meta_controller = '$controller' and mt.meta_action = '$action' ", 'mt');
@@ -594,7 +596,7 @@ class MetaTagsController extends AdminBaseController
             }
         }
 
-        $srch->addMultipleFields(array('meta_id', 'meta_title', 'selprod_id', 'IF(selprod_title is NULL or selprod_title = "" ,product_name, selprod_title) as selprod_title'));
+        $srch->addMultipleFields(array('meta_id', 'meta_title', 'selprod_id', 'CONCAT(IF(selprod_title is NULL or selprod_title = "" ,product_name, selprod_title), " - ", u.user_name) as selprod_title', 'selprod_user_id'));
         $srch->addOrder('meta_id', 'DESC');
         $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);

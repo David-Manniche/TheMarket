@@ -15267,19 +15267,6 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     height: 2.5rem;
     line-height: 2; }
 
-.product-items {
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(206px, 1fr)); }
-  @media (max-width: 767.98px) {
-    .product-items {
-      grid-gap: 3px;
-      grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); }
-      .product-items .products {
-        border-radius: 0; } }
-  .product-items .products {
-    height: 100%; }
-
 .prod-info {
   width: 100%;
   display: -webkit-box;
@@ -16363,6 +16350,10 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     min-width: inherit; } }
 .listing-tbl {
   overflow-x: auto; }
+
+.table-wrap {
+  overflow: hidden !important;
+  overflow-x: auto !important; }
 
 .table {
   background-color: #fff;

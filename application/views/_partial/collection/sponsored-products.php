@@ -10,11 +10,16 @@
                 <div class="section__action"><a href="<?php echo UrlHelper::generateUrl('Collections', 'View', array($collection['collection_id']));?>" class="link"><?php echo Labels::getLabel('LBL_View_More', $siteLangId); ?></a> </div>
                 <?php } */ ?>
             </div>
-            <div class="product-items" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
+            <div class="product-listing" data-view="6" dir="<?php echo CommonHelper::getLayoutDirection(); ?>">
                 <?php foreach ($collection['products'] as $product) { ?>
-                <div class="items">
-                    <?php include('product-layout-1-list.php'); ?>
-                </div>
+                    <div class="items">
+                        <?php
+                        $displayProductNotAvailableLable = false;
+                        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+                            $displayProductNotAvailableLable = true;
+                        }
+                        include('product-layout-1-list.php'); ?>
+                    </div>
                 <?php } ?>
             </div>
         </div>

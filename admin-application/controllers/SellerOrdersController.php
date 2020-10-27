@@ -260,30 +260,30 @@ class SellerOrdersController extends AdminBaseController
         if ($opRow['opshipping_fulfillment_type'] == Shipping::FULFILMENT_SHIP) {
             /* ShipStation */
             $this->loadShippingService();
-            $this->set('canShipByPlugin', (NULL !== $this->shippingService));
+            $this->set('canShipByPlugin', (null !== $this->shippingService));
 
             if (!empty($opRow["opship_orderid"])) {
-                if (NULL != $this->shippingService && false === $this->shippingService->loadOrder($opRow["opship_orderid"])) {
+                if (null != $this->shippingService && false === $this->shippingService->loadOrder($opRow["opship_orderid"])) {
                     Message::addErrorMessage($this->shippingService->getError());
                     FatApp::redirectUser(UrlHelper::generateUrl("SellerOrders"));
                 }
-                $opRow['thirdPartyorderInfo'] = (NULL != $this->shippingService ? $this->shippingService->getResponse() : []);
+                $opRow['thirdPartyorderInfo'] = (null != $this->shippingService ? $this->shippingService->getResponse() : []);
             }
             /* ShipStation */
 
             /* AfterShip */
             $this->loadTrackingService();
-            $this->set('canTrackByPlugin', (NULL !== $this->trackingService));
+            $this->set('canTrackByPlugin', (null !== $this->trackingService));
             /* AfterShip */
 
-            if (NULL !== $this->shippingService && NULL !== $this->trackingService) {
+            if (null !== $this->shippingService && null !== $this->trackingService) {
                 $srch = TrackingCourierCodeRelation::getSearchObject();
                 $srch->addCondition("tccr_shipapi_courier_code", "=", $opRow['opshipping_carrier_code']);
                 $srch->doNotCalculateRecords();
                 $srch->setPageSize(1);
                 $rs = $srch->getResultSet();
                 $data = FatApp::getDb()->fetch($rs);
-                if (NULL === $data) {
+                if (null === $data) {
                     Message::addErrorMessage(Labels::getLabel("MSG_PLEASE_MAP_YOUR_SHIPPING_CARRIER_CODE_WITH_TRACKING_CARRIER_CODE", $this->adminLangId));
                     FatApp::redirectUser(UrlHelper::generateUrl("TrackingCodeRelation"));
                 }
@@ -320,7 +320,7 @@ class SellerOrdersController extends AdminBaseController
 
         if ($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-            $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+            // $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
         }
         $frm = $this->getOrderCommentsForm($opRow, $processingStatuses);
         $frm->fill($data);
@@ -911,7 +911,7 @@ class SellerOrdersController extends AdminBaseController
         return $frm;
     }
 
-    private function getOrderCommentsForm($orderData = array(), $processingOrderStatus)
+    private function getOrderCommentsForm($orderData = array(), $processingOrderStatus = [])
     {
         $frm = new Form('frmOrderComments');
         $frm->addTextArea(Labels::getLabel('LBL_Your_Comments', $this->adminLangId), 'comments');

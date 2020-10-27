@@ -7,70 +7,71 @@
 	</div>
 </div>
 <div class="box__body">
-<?php
-$arr_flds = array(
-	'listserial'=>'Sr.',
-	'scatrequest_reference' => Labels::getLabel('LBL_Reference_number', $siteLangId),
-	'scatrequest_title' => Labels::getLabel('LBL_Title', $siteLangId),
-	'scatrequest_status' => Labels::getLabel('LBL_Status', $siteLangId),
-	'action' => Labels::getLabel('LBL_Action', $siteLangId)
-);
-$tableClass = '';
-if (0 < count($arr_listing)) {
-	$tableClass = "table-justified";
-}
-$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table '.$tableClass));
-$th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));
-foreach ($arr_flds as $val) {
-	$e = $th->appendElement('th', array(), $val);
-}
-
-$sr_no = ($page == 1) ? 0 : ($pageSize*($page-1));
-foreach ($arr_listing as $sn => $row){
-	$sr_no++;
-	$tr = $tbl->appendElement('tr',array('class' => ''));
-
-	foreach ($arr_flds as $key=>$val){
-		$td = $tr->appendElement('td');
-		switch ($key){
-			case 'listserial':
-				$td->appendElement('plaintext', array(), $sr_no,true);
-			break;
-			case 'scatrequest_title':
-				$td->appendElement('plaintext', array(), $row[$key] . '<br>', true);
-			break;
-			case 'scatrequest_status':
-				$td->appendElement('plaintext', array(), $catalogReqStatusArr[$row[$key]],true);
-			break;
-			case 'action':
-				$ul = $td->appendElement("ul",array('class'=>'actions'),'',true);
-				$li = $ul->appendElement("li");
-				$li->appendElement('a', array('href'=>'javascript:void(0)','onClick'=>'viewRequestedCatalog('.$row['scatrequest_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_View',$siteLangId)),
-				'<i class="fa fa-eye"></i>', true);
-				if($row['scatrequest_status'] == User::CATALOG_REQUEST_PENDING){
-					$li = $ul->appendElement("li");
-					$li->appendElement('a', array('href'=>'javascript:void(0)','onClick'=>'deleteRequestedCatalog('.$row['scatrequest_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_Delete',$siteLangId)),
-				'<i class="fa fa-trash"></i>', true);
-				}
-				$li = $ul->appendElement("li");
-				$li->appendElement('a', array('href'=>'javascript:void(0)','onClick'=>'messageForm('.$row['scatrequest_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_Messages',$siteLangId)),
-				'<i class="fa fa-envelope"></i>', true);
-			break;
-			default:
-				$td->appendElement('plaintext', array(), $row[$key],true);
-			break;
+	<div class="js-scrollable table-wrap">
+		<?php $arr_flds = array(
+			'listserial'=>'Sr.',
+			'scatrequest_reference' => Labels::getLabel('LBL_Reference_number', $siteLangId),
+			'scatrequest_title' => Labels::getLabel('LBL_Title', $siteLangId),
+			'scatrequest_status' => Labels::getLabel('LBL_Status', $siteLangId),
+			'action' => Labels::getLabel('LBL_Action', $siteLangId)
+		);
+		$tableClass = '';
+		if (0 < count($arr_listing)) {
+			$tableClass = "table-justified";
 		}
-	}
-}
-echo $tbl->getHtml();
-if (count($arr_listing) == 0) {
-    $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
-    $this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
-}
-$postedData['page'] = $page;
-echo FatUtility::createHiddenFormFromData ( $postedData, array ('name' => 'frmCatalogReqSearchPaging') );
+		$tbl = new HtmlElement('table', array('width'=>'100%', 'class'=>'table '.$tableClass));
+		$th = $tbl->appendElement('thead')->appendElement('tr',array('class' => ''));
+		foreach ($arr_flds as $val) {
+			$e = $th->appendElement('th', array(), $val);
+		}
 
-$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCatalogReqSearchPage');
-$this->includeTemplate('_partial/pagination.php', $pagingArr,false);
-?>
+		$sr_no = ($page == 1) ? 0 : ($pageSize*($page-1));
+		foreach ($arr_listing as $sn => $row){
+			$sr_no++;
+			$tr = $tbl->appendElement('tr',array('class' => ''));
+
+			foreach ($arr_flds as $key=>$val){
+				$td = $tr->appendElement('td');
+				switch ($key){
+					case 'listserial':
+						$td->appendElement('plaintext', array(), $sr_no,true);
+					break;
+					case 'scatrequest_title':
+						$td->appendElement('plaintext', array(), $row[$key] . '<br>', true);
+					break;
+					case 'scatrequest_status':
+						$td->appendElement('plaintext', array(), $catalogReqStatusArr[$row[$key]],true);
+					break;
+					case 'action':
+						$ul = $td->appendElement("ul",array('class'=>'actions'),'',true);
+						$li = $ul->appendElement("li");
+						$li->appendElement('a', array('href'=>'javascript:void(0)','onClick'=>'viewRequestedCatalog('.$row['scatrequest_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_View',$siteLangId)),
+						'<i class="fa fa-eye"></i>', true);
+						if($row['scatrequest_status'] == User::CATALOG_REQUEST_PENDING){
+							$li = $ul->appendElement("li");
+							$li->appendElement('a', array('href'=>'javascript:void(0)','onClick'=>'deleteRequestedCatalog('.$row['scatrequest_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_Delete',$siteLangId)),
+						'<i class="fa fa-trash"></i>', true);
+						}
+						$li = $ul->appendElement("li");
+						$li->appendElement('a', array('href'=>'javascript:void(0)','onClick'=>'messageForm('.$row['scatrequest_id'].')', 'class'=>'','title'=>Labels::getLabel('LBL_Messages',$siteLangId)),
+						'<i class="fa fa-envelope"></i>', true);
+					break;
+					default:
+						$td->appendElement('plaintext', array(), $row[$key],true);
+					break;
+				}
+			}
+		}
+		echo $tbl->getHtml();
+		if (count($arr_listing) == 0) {
+			$message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
+			$this->includeTemplate('_partial/no-record-found.php', array('siteLangId'=>$siteLangId,'message'=>$message));
+		} ?>
+	</div>
+	<?php $postedData['page'] = $page;
+	echo FatUtility::createHiddenFormFromData ( $postedData, array ('name' => 'frmCatalogReqSearchPaging') );
+
+	$pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'callBackJsFunc' => 'goToCatalogReqSearchPage');
+	$this->includeTemplate('_partial/pagination.php', $pagingArr,false);
+	?>
 </div>

@@ -35,7 +35,7 @@
 			</div>
 			 
 
-            <div class=""> <?php
+            <div class="js-scrollable table-wrap"> <?php
             $arr_flds = array(
                 'shop_name'    =>    Labels::getLabel('LBL_Seller', $siteLangId),
                 'theprice'    =>    Labels::getLabel('LBL_Price', $siteLangId),

@@ -260,7 +260,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     </div>
                 </div>
                 <div class="listing-products -listing-products ">
-                    <div id="productsList" role="main-listing" class="product-listing"> 
+                    <div id="productsList" role="main-listing" class="product-listing" data-view="4"> 
                         <?php
                         $productsData = array(
                                         'products'=> $products,

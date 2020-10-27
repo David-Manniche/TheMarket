@@ -571,6 +571,8 @@ class OrderReturnRequestsController extends AdminBaseController
         $moveRefundLocationArr = PaymentMethods::moveRefundLocationsArr($this->adminLangId);
         if (false == $canRefundToCard) {
             unset($moveRefundLocationArr[PaymentMethods::MOVE_TO_CUSTOMER_CARD]);
+        } else {
+            unset($moveRefundLocationArr[PaymentMethods::MOVE_TO_CUSTOMER_WALLET]);
         }
 
         $frm->addRadioButtons(Labels::getLabel('LBL_TRANSFER_REFUND', $this->adminLangId), 'orrequest_refund_in_wallet', $moveRefundLocationArr, PaymentMethods::MOVE_TO_ADMIN_WALLET, array('class' => 'list-inline'));

@@ -2,7 +2,7 @@
 if (!empty($collections)) {
     switch ($collection['collection_type']) {
         case Collections::COLLECTION_TYPE_PRODUCT: ?>
-            <div class="row listing-products -listing-products listing-products--grid ">
+            <div class="product-listing" data-view="4">
                 <?php $this->includeTemplate('products/products-list.php', array('products' => $collections,'pageCount' => $pageCount,'recordCount' => $recordCount,'siteLangId' => $siteLangId,'colMdVal'=>3), false);	?>
             </div>
         <?php break;

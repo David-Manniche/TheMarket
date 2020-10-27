@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'order_id'    =>    Labels::getLabel('LBL_Order_ID_Date', $siteLangId),
     'product'    =>    Labels::getLabel('LBL_Details', $siteLangId),
     'total'        =>    Labels::getLabel('LBL_Total', $siteLangId),
@@ -85,14 +86,14 @@ foreach ($orders as $sn => $order) {
                 break;
             case 'status':
                 if (Orders::ORDER_PAYMENT_CANCELLED == $order["order_payment_status"]) {
-                    $orderStatus = Orders::getOrderPaymentStatusArr($siteLangId)[$order["order_payment_status"]];
+                    $orderStatus = Labels::getLabel('LBL_CANCELLED', $siteLangId);
                     $labelClass = 'label-danger';
                 } else {
                     $pMethod = '';
                     $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
                     
                     $orderStatus = "";
-                    if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                    if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP && $order['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) {
                         $orderStatus = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                     } else if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
                         $pMethod = " - " . $order['plugin_name'];
@@ -200,8 +201,9 @@ echo $tbl->getHtml();
 if (count($orders) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmOrderSrchPaging'));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToOrderSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

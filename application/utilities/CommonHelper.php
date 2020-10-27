@@ -366,7 +366,7 @@ class CommonHelper extends FatUtility
         $cartAmount = $requestRow["op_unit_price"] * $requestRow["orrequest_qty"];
 
         $commissionCostValue = $requestRow["op_unit_price"];
-        if ($requestRow['op_commission_include_tax'] && $taxPerQty) {
+        if ($requestRow['op_commission_include_tax'] && $taxPerQty && FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0)) {
             $commissionCostValue = $commissionCostValue + $taxPerQty;
         }
 
@@ -741,9 +741,9 @@ class CommonHelper extends FatUtility
     }
 
     /* File creation in temporary memory. */
-    public static function writeExportDataToCSV($handle, $fileContent = array(), $download = false, $output_file_name = '')
+    public static function writeExportDataToCSV($handle, $fileContent = array(), $download = false, $output_file_name = '', $headerRow = false)
     {
-        self::addToCSV($handle, $fileContent);
+        self::addToCSV($handle, $fileContent, $headerRow);
 
         if ($download) {
             /** rewrind the "file" with the csv lines **/
@@ -1388,7 +1388,7 @@ class CommonHelper extends FatUtility
         //Make alphanumeric (removes all other characters)
         //$string = preg_replace("/[^a-z0-9,&_\s-\/]/", "", $string);
         //covert / to -
-        $string = preg_replace("/[\s,&#%]/", "-", $string);
+        $string = preg_replace("/[\s,&#%+]/", "-", $string);
         //Clean up multiple dashes or whitespaces
         $string = preg_replace("/[\s-]+/", " ", $string);
         //Convert whitespaces and underscore to dash

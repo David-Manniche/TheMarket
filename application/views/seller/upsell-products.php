@@ -9,61 +9,63 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
             </div>
         </div>
         <div class="content-body">
-			<?php if($canEdit){ ?>
-            <div class="row mb-4">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
-                            $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
-                            $prodFld = $relProdFrm->getField('product_name');
-                            $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product', $siteLangId));
+            <?php if ($canEdit) { ?>
+                <div class="row mb-4">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <?php $relProdFrm->setFormTagAttribute('onsubmit', 'setUpSellerProductLinks(this); return(false);');
+                                $relProdFrm->setFormTagAttribute('class', 'form form--horizontal');
+                                $prodFld = $relProdFrm->getField('product_name');
+                                $prodFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Search_Product', $siteLangId));
 
-                            $relProdFld = $relProdFrm->getField('products_upsell');
-                            $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Buy_Together_Products', $siteLangId));
+                                $relProdFld = $relProdFrm->getField('products_upsell');
+                                $relProdFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Add_Buy_Together_Products', $siteLangId));
 
-                            $submitBtnFld = $relProdFrm->getField('btn_submit');
-                            $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block '); ?>
-                            <?php echo $relProdFrm->getFormTag(); ?>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="field-set">
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <?php echo $relProdFrm->getFieldHTML('product_name');?>
-                                                <div class='dvFocus-js form-control focused-div'></div>
+                                $submitBtnFld = $relProdFrm->getField('btn_submit');
+                                $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block '); ?>
+                                <?php echo $relProdFrm->getFormTag(); ?>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="field-set">
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <?php echo $relProdFrm->getFieldHTML('product_name'); ?>
+                                                    <div class='dvFocus-js form-control focused-div'></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="field-set">
+                                            <div class="field-wraper">
+                                                <div class="field_cover custom-tagify">
+                                                    <?php echo $relProdFrm->getFieldHTML('products_upsell'); ?>
+                                                    <div class="list-tag-wrapper" data-scroll-height="150" data-simplebar>
+                                                        <ul class="list-tags" id="upsell-products"></ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="field-set">
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <?php echo $relProdFrm->getFieldHTML('btn_submit'); ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-7">
-                                    <div class="field-set">
-                                        <div class="field-wraper">
-                                            <div class="field_cover custom-tagify">
-                                                <?php echo $relProdFrm->getFieldHTML('products_upsell');?>
-                                                <div class="list-tag-wrapper" data-scroll-height="150" data-simplebar><ul class="list-tags" id="upsell-products"></ul></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="field-set">
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <?php echo $relProdFrm->getFieldHTML('btn_submit');?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php echo $relProdFrm->getFieldHTML('selprod_id'); ?>
+                                </form>
+                                <?php echo $relProdFrm->getExternalJS(); ?>
                             </div>
-                            <?php echo $relProdFrm->getFieldHTML('selprod_id'); ?>
-                            </form>
-                            <?php echo $relProdFrm->getExternalJS();?>
                         </div>
                     </div>
                 </div>
-            </div>
-			<?php }?>
+            <?php } ?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">

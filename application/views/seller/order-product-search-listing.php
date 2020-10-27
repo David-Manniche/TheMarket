@@ -1,5 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'order_id'  =>    Labels::getLabel('LBL_Order_Id_Date', $siteLangId),
     'product'   =>    Labels::getLabel('LBL_Ordered_Product', $siteLangId),
     'op_qty'    =>    Labels::getLabel('LBL_Qty', $siteLangId),
@@ -64,7 +65,7 @@ foreach ($orders as $sn => $order) {
                 break;
             case 'status':
                 if (Orders::ORDER_PAYMENT_CANCELLED == $order["order_payment_status"]) {
-                    $txt = Orders::getOrderPaymentStatusArr($siteLangId)[$order["order_payment_status"]];
+                    $txt = Labels::getLabel('LBL_CANCELLED', $siteLangId);
                     $labelClass = 'label-danger';
                 } else {
                     $txt = $order['orderstatus_name'];
@@ -123,8 +124,9 @@ echo $tbl->getHtml();
 if (count($orders) == 0) {
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
     $this->includeTemplate('_partial/no-record-found.php', array('siteLangId' => $siteLangId, 'message' => $message));
-}
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmOrderSrchPaging'));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToOrderSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

@@ -569,9 +569,9 @@ class ImportExportController extends AdminBaseController
                     case Importexport::TYPE_INVENTORIES:
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getSellerProductContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
                         break;
-                    case Importexport::TYPE_OPTIONS:
+                    /* case Importexport::TYPE_OPTIONS:
                         $frm->addSelectBox(Labels::getLabel('LBL_Select_Data', $langId), 'sheet_type', Importexport::getOptionContentTypeArr($langId), '', array(), '')->requirements()->setRequired();
-                        break;
+                        break; */
                 }
                 $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_File_to_be_uploaded:', $langId), 'import_file', array('id' => 'import_file'));
                 $fldImg->requirement->setRequired(true);

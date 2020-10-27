@@ -1333,18 +1333,19 @@ class ProductsController extends AdminBaseController
 
         $productFrm->fill($productData);
         $this->set('productFrm', $productFrm);
+        $this->set('shippedByUserId', $shippedByUserId);
         $this->_template->render(false, false, 'products/product-shipping-frm.php');
     }
 
     private function getProductShippingFrm($productId, $shippedByUserId = 0)
     {
         $frm = new Form('frmProductShipping');
-        $productType = Product::getAttributesById($productId, 'product_type');
+        $productData = Product::getAttributesById($productId, ['product_type', 'product_seller_id']);
 
         $shipProfileArr = ShippingProfile::getProfileArr($shippedByUserId, true, true);
         $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
 
-        if ($productType == Product::PRODUCT_TYPE_PHYSICAL) {
+        if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 $shipPackArr = ShippingPackage::getAllNames();
                 $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
@@ -1366,6 +1367,11 @@ class ProductsController extends AdminBaseController
                 $codFld->htmlAfterField = '<br/><small>' . Labels::getLabel('LBL_COD_option_is_disabled_in_payment_gateway_settings', $this->adminLangId) . '</small>';
             }
             /* ] */
+
+            if (!$shippedByUserId) {
+                $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId, FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1));
+                $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'product_fulfillment_type', $fulFillmentArr, applicationConstants::NO, []);
+            }
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Country_of_Origin', $this->adminLangId), 'shipping_country');

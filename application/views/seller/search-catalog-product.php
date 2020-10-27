@@ -1,7 +1,6 @@
-<?php
-
-defined('SYSTEM_INIT') or die('Invalid Usage.');
-$arr_flds = array(
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="js-scrollable table-wrap">
+<?php $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $siteLangId),
     'product_identifier' => Labels::getLabel('LBL_Product', $siteLangId),
     //'attrgrp_name' => Labels::getLabel('LBL_Attribute_Group', $siteLangId),
@@ -35,19 +34,21 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'product_identifier':
-                $td->appendElement('plaintext', array(), $row['product_name'] . '<br>', true);
-                $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
+					$html = '<div class="item"><figure class="item__pic"><img src="'.UrlHelper::getCachedUrl(UrlHelper::generateUrl('image', 'product', array($row['product_id'], "SMALL", 0, 0, $siteLangId), CONF_WEBROOT_URL), CONF_IMG_CACHE_TIME, '.jpg').'" title="'.$row['product_name'].'" alt="'.$row['product_name'].'"></figure>
+					<div class="item__description">
+						<div class="item__title">'.$row['product_name'].'</div>
+						<div class="item__brand"> (' . $row[$key] . ') </div>
+					</div></div>';
+                $td->appendElement('plaintext', array(), $html, true);
                 break;
             case 'attrgrp_name':
                 $td->appendElement('plaintext', array(), CommonHelper::displayNotApplicable($siteLangId, $row[$key]), true);
                 break;
             case 'product_approved':
-                $approveUnApproveArr = Product::getApproveUnApproveArr($siteLangId);
-                $td->appendElement('plaintext', array(), $approveUnApproveArr[$row[$key]], true);
+				$td->appendElement('span', array('class' => 'label label-inline ' . $approveUnApproveClassArr[$row[$key]]), $approveUnApproveArr[$row[$key]] . '<br>', true);
                 break;
             case 'product_active':
-                $activeInactiveArr = applicationConstants::getActiveInactiveArr($siteLangId);
-                $td->appendElement('plaintext', array(), $activeInactiveArr[$row[$key]], true);
+                $td->appendElement('span', array('class' => 'label label-inline ' . $activeInactiveClassArr[$row[$key]]), $activeInactiveArr[$row[$key]] . '<br>', true);
                 break;
             case 'product_shipped_by':
                 $active = "";
@@ -140,9 +141,9 @@ if (count($arr_listing) == 0) {
 
 if (!isset($postedData['type']) || '' == $postedData['type']) {
     $postedData['type'] = -1;
-}
-
-$postedData['page'] = $page;
+} ?>
+</div>
+<?php $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCatalogProductSearchPaging'));
 
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'callBackJsFunc' => 'goToCatalogProductSearchPage');

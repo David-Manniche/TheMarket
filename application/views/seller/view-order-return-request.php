@@ -62,86 +62,88 @@ if (null != $btn) {
                 </div>
             <div class="gap"></div>
             <?php if (!empty($request)) { ?>
-            <table class="table">
-             <thead>
-                <tr class="">
-                  <th width="15%"><?php echo Labels::getLabel('LBL_ID', $siteLangId); ?></th>
-                  <th width="20%"><?php echo Labels::getLabel('LBL_Order_Id/Invoice_Number', $siteLangId); ?></th>
-                  <th ><?php echo Labels::getLabel('LBL_Product', $siteLangId); ?></th>
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Return_Qty', $siteLangId); ?></th>
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Request_Type', $siteLangId); ?></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td><?php echo $request['orrequest_reference'] /* CommonHelper::formatOrderReturnRequestNumber($request['orrequest_id']) */; ?></td>
-                  <td><?php echo $request['op_invoice_number']; ?>
-                  <td>
-                    <div class="item__description">
-                      <?php if ($request['op_selprod_title'] != '') { ?>
-                        <div class="item__title" title="<?php echo $request['op_selprod_title'];?>"><?php echo $request['op_selprod_title']; ?></div>
-                        <div class="item__sub_title"><?php echo $request['op_product_name']; ?></div>
-                        <?php } else { ?>
-                        <div class="item__title" title="<?php echo $request['op_product_name']; ?>"><?php echo $request['op_product_name']; ?></div>
-                        <?php } ?>
-                        <?php if (!empty($request['op_brand_name'])) { ?>
-                        <div class="item__brand"><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?>: <?php echo $request['op_brand_name']; ?></div>
-                        <?php } ?>
-                        <?php
-                        if ($request['op_selprod_options'] != '') { ?>
-                          <div class="item__specification"><?php echo $request['op_selprod_options']; ?></div>
-                        <?php } ?>
-                        <?php if ($request['op_selprod_sku'] != '') { ?>
-                          <div class="item__sku"><?php echo Labels::getLabel('LBL_SKU', $siteLangId).':  ' . $request['op_selprod_sku']; ?> </div>
-                        <?php } ?>
+			<div class="js-scrollable table-wrap">
+				<table class="table">
+				 <thead>
+					<tr class="">
+					  <th width="15%"><?php echo Labels::getLabel('LBL_ID', $siteLangId); ?></th>
+					  <th width="20%"><?php echo Labels::getLabel('LBL_Order_Id/Invoice_Number', $siteLangId); ?></th>
+					  <th ><?php echo Labels::getLabel('LBL_Product', $siteLangId); ?></th>
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Return_Qty', $siteLangId); ?></th>
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Request_Type', $siteLangId); ?></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+					  <td><?php echo $request['orrequest_reference'] /* CommonHelper::formatOrderReturnRequestNumber($request['orrequest_id']) */; ?></td>
+					  <td><?php echo $request['op_invoice_number']; ?>
+					  <td>
+						<div class="item__description">
+						  <?php if ($request['op_selprod_title'] != '') { ?>
+							<div class="item__title" title="<?php echo $request['op_selprod_title'];?>"><?php echo $request['op_selprod_title']; ?></div>
+							<div class="item__sub_title"><?php echo $request['op_product_name']; ?></div>
+							<?php } else { ?>
+							<div class="item__title" title="<?php echo $request['op_product_name']; ?>"><?php echo $request['op_product_name']; ?></div>
+							<?php } ?>
+							<?php if (!empty($request['op_brand_name'])) { ?>
+							<div class="item__brand"><?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?>: <?php echo $request['op_brand_name']; ?></div>
+							<?php } ?>
+							<?php
+							if ($request['op_selprod_options'] != '') { ?>
+							  <div class="item__specification"><?php echo $request['op_selprod_options']; ?></div>
+							<?php } ?>
+							<?php if ($request['op_selprod_sku'] != '') { ?>
+							  <div class="item__sku"><?php echo Labels::getLabel('LBL_SKU', $siteLangId).':  ' . $request['op_selprod_sku']; ?> </div>
+							<?php } ?>
 
-                        <?php if ($request['op_product_model'] != '') { ?>
-                          <div class="item__model"><?php echo Labels::getLabel('LBL_Model', $siteLangId).':  ' . $request['op_product_model']; ?></div>
-                        <?php }    ?>
-                    </div>
-                  </td>
-                  <td><?php echo $request['orrequest_qty']; ?></td>
-                  <td><?php echo $returnRequestTypeArr[$request['orrequest_type']]; ?></td>
-                </tr>
-              </tbody>
-            </table>
-
-           <div class="gap"></div>
-            <table class="table">
-              <thead>
-                              <tr class="">
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Reason', $siteLangId); ?></th>
-                  <th><?php echo Labels::getLabel('LBL_Date', $siteLangId); ?></th>
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Product_Price', $siteLangId); ?></th>
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?></th>
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></th>
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Status', $siteLangId); ?></th>
-                  <th width="15%"><?php echo Labels::getLabel('LBL_Total_Amount', $siteLangId); ?></th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <tr>
-                  <?php $returnDataArr = CommonHelper::getOrderProductRefundAmtArr($request);?>
-                  <td><?php echo $request['orreason_title']; ?></td>
-                  <td>
-                    <div class="item__description">
-                      <span class=""><?php echo FatDate::format($request['orrequest_date']); ?></span>
-                    </div>
-                  </td>
-                  <td>
-                  <?php echo CommonHelper::displayMoneyFormat($returnDataArr['op_prod_price'], true, false);?></td>
-                  <td>
-                  <?php echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_tax'], true, false); ?></td>
-                  <td>
-                  <?php echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_shipping'], true, false); ?></td>
-                  <td><?php echo $requestRequestStatusArr[$request['orrequest_status']]; ?></td>
-                  <td><?php
-                    echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_amount'], true, false);  ?></td>
-                </tr>
-              </tbody>
-            </table>
-            <?php }    ?>
+							<?php if ($request['op_product_model'] != '') { ?>
+							  <div class="item__model"><?php echo Labels::getLabel('LBL_Model', $siteLangId).':  ' . $request['op_product_model']; ?></div>
+							<?php }    ?>
+						</div>
+					  </td>
+					  <td><?php echo $request['orrequest_qty']; ?></td>
+					  <td><?php echo $returnRequestTypeArr[$request['orrequest_type']]; ?></td>
+					</tr>
+				  </tbody>
+				</table>
+			</div>
+			<div class="gap"></div>
+			<div class="js-scrollable table-wrap">
+				<table class="table">
+				  <thead>
+					<tr class="">
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Reason', $siteLangId); ?></th>
+					  <th><?php echo Labels::getLabel('LBL_Date', $siteLangId); ?></th>
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Product_Price', $siteLangId); ?></th>
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?></th>
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></th>
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Status', $siteLangId); ?></th>
+					  <th width="15%"><?php echo Labels::getLabel('LBL_Total_Amount', $siteLangId); ?></th>
+					</tr>
+				  </thead>
+				  <tbody>
+					<tr>
+					  <?php $returnDataArr = CommonHelper::getOrderProductRefundAmtArr($request);?>
+					  <td><?php echo $request['orreason_title']; ?></td>
+					  <td>
+						<div class="item__description">
+						  <span class=""><?php echo FatDate::format($request['orrequest_date']); ?></span>
+						</div>
+					  </td>
+					  <td>
+					  <?php echo CommonHelper::displayMoneyFormat($returnDataArr['op_prod_price'], true, false);?></td>
+					  <td>
+					  <?php echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_tax'], true, false); ?></td>
+					  <td>
+					  <?php echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_shipping'], true, false); ?></td>
+					  <td><?php echo $requestRequestStatusArr[$request['orrequest_status']]; ?></td>
+					  <td><?php
+						echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_amount'], true, false);  ?></td>
+					</tr>
+				  </tbody>
+				</table>
+			</div>
+            <?php } ?>
 
             <?php echo ($canEdit) ? $returnRequestMsgsForm->getFormHtml() : ''; ?>
             <div class="gap"></div>
