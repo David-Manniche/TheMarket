@@ -114,7 +114,9 @@ if ($order['order_reward_point_used'] > 0) {
                                 <?php  } ?>
                                 <th><?php echo Labels::getLabel('LBL_Unit_Price', $adminLangId); ?></th>
                                 <th><?php echo Labels::getLabel('LBL_Qty', $adminLangId); ?></th>
-                                <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
+                                <?php if (!empty($order['products']) && Shipping::FULFILMENT_PICKUP != current($order['products'])['opshipping_fulfillment_type']) { ?>
+                                    <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
+                                <?php } ?>
                                 <th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId); ?></th>
                                 <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?></th>
                             </tr>
@@ -227,9 +229,11 @@ if ($order['order_reward_point_used'] > 0) {
                                     <td>
                                         <?php echo $op['op_qty']; ?>
                                     </td>
-                                    <td class="text-right">
-                                        <?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
-                                    </td>
+                                    <?php if (Shipping::FULFILMENT_PICKUP != current($order['products'])['opshipping_fulfillment_type']) { ?>
+                                        <td class="text-right">
+                                            <?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
+                                        </td>
+                                    <?php } ?>
                                     <td>
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
                                     </td>
