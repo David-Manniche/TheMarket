@@ -92,13 +92,7 @@ if (!isset($error)) {
                                 $btn->addFieldTagAttribute('class', 'btn btn-brand');
                                 $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
                             echo $frm->getFieldHtml('btn_submit'); ?>
-                            <?php if (FatUtility::isAjaxCall()) { ?>
-                                <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-brand">
-                                    <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
-                                </a>
-                            <?php } else { ?>
-                                <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel',$siteLangId);?></a>
-                            <?php } ?>
+                            <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel',$siteLangId);?></a>
                         </div>
                     </div>
                 </div>
