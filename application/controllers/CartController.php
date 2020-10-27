@@ -749,6 +749,7 @@ class CartController extends MyAppController
     public function getCartSummary()
     {
         $cartObj = new Cart();
+        $cartObj->invalidateCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
         $this->set('siteLangId', $this->siteLangId);

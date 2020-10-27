@@ -321,6 +321,7 @@ Bugs:
     => 044567 - hide the print option on return request on buyer end
     => 044576 - when full text search is enabled then shop is flooded with errors
     => 044475 - Checkout >> home page >> Delete products>> cart gets empty and it shows "Your shopping cart is empty!" with "0" amount and if we proceed with that then some products are still there.
+    => 044474 - When we come back on home page from checkout then it shows "invalid products " on deleting for those products which were not on checkout
 
 Enhancements:
     => Tax module upgrade
