@@ -376,7 +376,7 @@ class Cart extends FatModel
                     if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type'])) {
                         $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
                     }
-                    
+
                     if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
                         unset($this->products[$key]);
                         continue;
@@ -756,6 +756,7 @@ class Cart extends FatModel
     public function remove($key)
     {
         $this->products = array();
+        $this->invalidateCheckoutType();
         $cartProducts = $this->getProducts($this->cart_lang_id);
         $found = false;
         if (is_array($cartProducts)) {

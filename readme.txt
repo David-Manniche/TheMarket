@@ -320,6 +320,7 @@ Bugs:
     => 044368 - Seller >> pickup address >> edit slots >> when we add multiple slots and save the changes then it shows only last slot on edit settings.
     => 044567 - hide the print option on return request on buyer end
     => 044576 - when full text search is enabled then shop is flooded with errors
+    => 044475 - Checkout >> home page >> Delete products>> cart gets empty and it shows "Your shopping cart is empty!" with "0" amount and if we proceed with that then some products are still there.
 
 Enhancements:
     => Tax module upgrade
