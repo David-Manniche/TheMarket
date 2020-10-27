@@ -5,7 +5,9 @@ $productFrm->developerTags['colClassPrefix'] = 'col-md-';
 $productFrm->developerTags['fld_default_col'] = 6;
 
 $codEnabledFld = $productFrm->getField('product_cod_enabled');
-$codEnabledFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+if (null != $codEnabledFld) {
+    $codEnabledFld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+}
 
 $btnBackFld = $productFrm->getField('btn_back');
 $btnBackFld->setFieldTagAttribute('onClick', 'productOptionsAndTag(' . $productId . ')');
@@ -22,7 +24,8 @@ $btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
         <div class="row">
             <?php 
             $dimenEnabled = FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1);
-            if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
+            $shippedByAdminOnly = FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0);
+            if (!$shippedByAdminOnly) { ?>
                 <div class="col-md-<?php echo (1 > $dimenEnabled ? '12' : '6'); ?>">
                     <div class="field-set">
                         <div class="caption-wraper">
@@ -41,7 +44,7 @@ $btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
                 </div>
             <?php } ?>
             <?php if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) { ?>
-                <div class="col-md-6">
+                <div class="col-md-<?php echo (1 > $shippedByAdminOnly ? '6' : '12'); ?>">
                     <div class="field-set">
                         <div class="caption-wraper d-flex justify-content-between">
                             <label class="field_label">
