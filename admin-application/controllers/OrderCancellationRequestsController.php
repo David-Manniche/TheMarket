@@ -53,9 +53,11 @@ class OrderCancellationRequestsController extends AdminBaseController
         $srch->setPageSize($pageSize);
         $srch->addOrder('ocrequest_date', 'DESC');
         $srch->addMultipleFields(
-            array('ocrequest_id', 'ocrequest_message', 'ocrequest_date', 'ocrequest_status',
-            'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name', 'seller_cred.credential_username as seller_username', 'seller_cred.credential_email as seller_email', 'seller.user_phone as seller_phone', 'op_invoice_number',
-            'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'op_qty', 'op_unit_price', 'order_tax_charged', 'op_other_charges')
+            array(
+                'ocrequest_id', 'ocrequest_message', 'ocrequest_date', 'ocrequest_status',
+                'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name', 'seller_cred.credential_username as seller_username', 'seller_cred.credential_email as seller_email', 'seller.user_phone as seller_phone', 'op_invoice_number',
+                'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'op_qty', 'op_unit_price', 'order_tax_charged', 'op_other_charges'
+            )
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -143,10 +145,10 @@ class OrderCancellationRequestsController extends AdminBaseController
 
         $canRefundToCard = false;
         $pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
-		$paymentMethodObj = new PaymentMethods();
-		if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->adminLangId)) {
-			$canRefundToCard = true;
-		}
+        $paymentMethodObj = new PaymentMethods();
+        if (true === $paymentMethodObj->canRefundToCard($pluginKey, $this->adminLangId)) {
+            $canRefundToCard = true;
+        }
 
         $this->set('orderRewardUsed', $orderRewardUsed);
         $this->objPrivilege->canEditOrderCancellationRequests();
@@ -199,48 +201,48 @@ class OrderCancellationRequestsController extends AdminBaseController
                 }
 
                 $transferTo = FatApp::getPostedData('ocrequest_refund_in_wallet', FatUtility::VAR_INT, 0);
-                $dataToUpdate = array( 'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED, 'ocrequest_refund_in_wallet' => $transferTo, 'ocrequest_admin_comment' => $post['ocrequest_admin_comment'] );
+                $dataToUpdate = array('ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED, 'ocrequest_refund_in_wallet' => $transferTo, 'ocrequest_admin_comment' => $post['ocrequest_admin_comment']);
                 $successMsgString = str_replace(strToLower('{updatedStatus}'), OrderCancelRequest::getRequestStatusArr($this->adminLangId)[OrderCancelRequest::CANCELLATION_REQUEST_STATUS_APPROVED], $msgString);
                 $oObj = new Orders();
                 if (true == $oObj->addChildProductOrderHistory($row['ocrequest_op_id'], $row['order_language_id'], FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"), Labels::getLabel('MSG_Cancellation_Request_Approved', $row['order_language_id']), true, '', 0, $transferTo)) {
                     if ((PaymentMethods::MOVE_TO_CUSTOMER_CARD == $transferTo)) {
-						$pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
-	
-						$paymentMethodObj = new PaymentMethods();
-						if (true === $paymentMethodObj->canRefundToCard($pluginKey, $row['order_language_id'])) {
-							if (false == $paymentMethodObj->initiateRefund($row, PaymentMethods::REFUND_TYPE_CANCEL)) {
-								$db->rollbackTransaction();
-								FatUtility::dieJsonError($paymentMethodObj->getError());
-							}
-							$resp = $paymentMethodObj->getResponse();
-							if (empty($resp)) {
-								$db->rollbackTransaction();
-								FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $row['order_language_id']));
-							}
-							$dataToUpdate['ocrequest_payment_gateway_req_id'] = $resp->id;
-							
-							// Debit from wallet if plugin/payment method support's direct payment to card.
-							if (!empty($resp->id)) {
-								$childOrderInfo = $oObj->getOrderProductsByOpId($row['ocrequest_op_id'], $this->adminLangId);
-								$txnAmount = $paymentMethodObj->getTxnAmount();
-								$comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->adminLangId);
-								$comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
-								Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->adminLangId, $comments, $row['ocrequest_op_id'], $resp->id);
-							}
-						}
+                        $pluginKey = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
+
+                        $paymentMethodObj = new PaymentMethods();
+                        if (true === $paymentMethodObj->canRefundToCard($pluginKey, $row['order_language_id'])) {
+                            if (false == $paymentMethodObj->initiateRefund($row, PaymentMethods::REFUND_TYPE_CANCEL)) {
+                                $db->rollbackTransaction();
+                                FatUtility::dieJsonError($paymentMethodObj->getError());
+                            }
+                            $resp = $paymentMethodObj->getResponse();
+                            if (empty($resp)) {
+                                $db->rollbackTransaction();
+                                FatUtility::dieJsonError(Labels::getLabel('LBL_UNABLE_TO_PLACE_GATEWAY_REFUND_REQUEST', $row['order_language_id']));
+                            }
+                            $dataToUpdate['ocrequest_payment_gateway_req_id'] = $resp->id;
+
+                            // Debit from wallet if plugin/payment method support's direct payment to card.
+                            if (!empty($resp->id)) {
+                                $childOrderInfo = $oObj->getOrderProductsByOpId($row['ocrequest_op_id'], $this->adminLangId);
+                                $txnAmount = $paymentMethodObj->getTxnAmount();
+                                $comments = Labels::getLabel('LBL_TRANSFERED_TO_YOUR_CARD._INVOICE_#{invoice-no}', $this->adminLangId);
+                                $comments = CommonHelper::replaceStringData($comments, ['{invoice-no}' => $childOrderInfo['op_invoice_number']]);
+                                Transactions::debitWallet($childOrderInfo['order_user_id'], Transactions::TYPE_ORDER_REFUND, $txnAmount, $this->adminLangId, $comments, $row['ocrequest_op_id'], $resp->id);
+                            }
+                        }
                     }
                 }
                 break;
             case OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED:
                 $successMsgString = str_replace(strToLower('{updatedStatus}'), OrderCancelRequest::getRequestStatusArr($this->adminLangId)[OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED], $msgString);
-                $dataToUpdate = array( 'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED );
+                $dataToUpdate = array('ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_DECLINED);
                 break;
             case OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING:
                 $successMsgString = str_replace(strToLower('{updatedStatus}'), OrderCancelRequest::getRequestStatusArr($this->adminLangId)[OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING], $msgString);
-                $dataToUpdate = array( 'ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING );
+                $dataToUpdate = array('ocrequest_status' => OrderCancelRequest::CANCELLATION_REQUEST_STATUS_PENDING);
                 break;
         }
-        $whereArr = array( 'smt' => 'ocrequest_id = ?', 'vals' => array( $row['ocrequest_id'] ) );
+        $whereArr = array('smt' => 'ocrequest_id = ?', 'vals' => array($row['ocrequest_id']));
         $db = FatApp::getDb();
         if (!empty($dataToUpdate)) {
             if (!$db->updateFromArray(OrderCancelRequest::DB_TBL, $dataToUpdate, $whereArr)) {
@@ -288,6 +290,8 @@ class OrderCancellationRequestsController extends AdminBaseController
         $moveRefundLocationArr = PaymentMethods::moveRefundLocationsArr($this->adminLangId);
         if (false == $canRefundToCard) {
             unset($moveRefundLocationArr[PaymentMethods::MOVE_TO_CUSTOMER_CARD]);
+        } else {
+            unset($moveRefundLocationArr[PaymentMethods::MOVE_TO_CUSTOMER_WALLET]);
         }
 
         $frm->addRadioButtons(Labels::getLabel('LBL_TRANSFER_REFUND', $this->adminLangId), 'ocrequest_refund_in_wallet', $moveRefundLocationArr, PaymentMethods::MOVE_TO_ADMIN_WALLET, array('class' => 'list-inline'));

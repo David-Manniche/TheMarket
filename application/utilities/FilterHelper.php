@@ -191,9 +191,12 @@ class FilterHelper extends FatUtility
             $srch->setPageNumber(0);
             $srch->setPageSize(9999);
             $result = $srch->fetch(true);
-            $priceArr = [];
+            $priceArr = [
+                'minPrice' => 0,
+                'maxPrice' => 0
+            ];
 
-            if (array_key_exists('aggregations', $result)) {
+            if (is_array($result) && array_key_exists('aggregations', $result)) {
                 $priceArr = [
                     'minPrice' => $result['aggregations']['min_price']['value'],
                     'maxPrice' =>  $result['aggregations']['max_price']['value']

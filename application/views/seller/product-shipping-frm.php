@@ -19,15 +19,17 @@ $btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
 <div class="row justify-content-center">
     <div class="col-md-12">
         <?php echo $productFrm->getFormTag(); ?>
-            <div class="row">
-				<?php if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
-                <div class="col-md-6">
+        <div class="row">
+            <?php 
+            $dimenEnabled = FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1);
+            if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
+                <div class="col-md-<?php echo (1 > $dimenEnabled ? '12' : '6'); ?>">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
                                 <?php $fld = $productFrm->getField('shipping_profile');
-                              echo $fld->getCaption(); ?>
-                              <span class="spn_must_field">*</span>
+                                echo $fld->getCaption(); ?>
+                                <span class="spn_must_field">*</span>
                             </label>
                         </div>
                         <div class="field-wraper">
@@ -37,8 +39,8 @@ $btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
                         </div>
                     </div>
                 </div>
-				<?php } ?>
-				<?php if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) { ?>
+            <?php } ?>
+            <?php if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) { ?>
                 <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper d-flex justify-content-between">
@@ -48,8 +50,7 @@ $btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
                                 <span class="spn_must_field">*</span>
                             </label>
                             <?php if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
-                                <small><a class="form-text text-muted" href="javascript:void(0)"
-                                onClick="shippingPackages()"><?php echo Labels::getLabel('LBL_Shipping_Packages', $siteLangId); ?></a></small>
+                                <small><a class="form-text text-muted" href="javascript:void(0)" onClick="shippingPackages()"><?php echo Labels::getLabel('LBL_Shipping_Packages', $siteLangId); ?></a></small>
                             <?php } ?>
                         </div>
                         <div class="field-wraper">
@@ -59,61 +60,59 @@ $btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
                         </div>
                     </div>
                 </div>
-				<?php } ?>
-            </div>
-			<?php if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) { ?>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="field-set">
-                        <div class="caption-wraper">
-                            <label class="field_label">
-                                <?php $fld = $productFrm->getField('product_weight_unit');
-                                echo $fld->getCaption(); ?>
-                                <span class="spn_must_field">*</span>
-                            </label>
-                        </div>
-                        <div class="field-wraper">
-                            <div class="field_cover">
-                                <?php echo $productFrm->getFieldHtml('product_weight_unit'); ?>
-                            </div>
-                        </div>
+            <?php } ?>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="field-set">
+                    <div class="caption-wraper">
+                        <label class="field_label">
+                            <?php $fld = $productFrm->getField('product_weight_unit');
+                            echo $fld->getCaption(); ?>
+                            <span class="spn_must_field">*</span>
+                        </label>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="field-set">
-                        <div class="caption-wraper">
-                            <label class="field_label">
-                                <?php $fld = $productFrm->getField('product_weight');
-                                echo $fld->getCaption(); ?>
-                                <span class="spn_must_field">*</span>
-                            </label>
-                        </div>
-                        <div class="field-wraper">
-                            <div class="field_cover">
-                                <?php echo $productFrm->getFieldHtml('product_weight'); ?>
-                            </div>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                            <?php echo $productFrm->getFieldHtml('product_weight_unit'); ?>
                         </div>
                     </div>
                 </div>
             </div>
-			<?php } ?>
-            <div class="row">
-				<?php $fld = $productFrm->getField('shipping_country');
-				if (null != $fld) { ?>
+            <div class="col-md-6">
+                <div class="field-set">
+                    <div class="caption-wraper">
+                        <label class="field_label">
+                            <?php $fld = $productFrm->getField('product_weight');
+                            echo $fld->getCaption(); ?>
+                            <span class="spn_must_field">*</span>
+                        </label>
+                    </div>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                            <?php echo $productFrm->getFieldHtml('product_weight'); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <?php $fld = $productFrm->getField('shipping_country');
+            if (null != $fld) { ?>
                 <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
-							<label class="field_label">
-								<?php echo $fld->getCaption(); ?>
-							</label>
-						</div>
+                            <label class="field_label">
+                                <?php echo $fld->getCaption(); ?>
+                            </label>
+                        </div>
                         <div class="field-wraper">
                             <div class="field_cover"><?php echo $productFrm->getFieldHtml('shipping_country'); ?></div>
                         </div>
                     </div>
                 </div>
-				<?php } ?>
-				<?php if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
+            <?php } ?>
+            <?php if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) { ?>
                 <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">&nbsp;</div>
@@ -124,31 +123,31 @@ $btnSubmitFld->setFieldTagAttribute('class', "btn btn-brand");
                         </div>
                     </div>
                 </div>
-				<?php } ?>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="field-set">
-                        <div class="caption-wraper"><label class="field_label"></label></div>
-                        <div class="field-wraper">
-                            <div class="field_cover"><?php echo $productFrm->getFieldHtml('btn_back'); ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-right col-md-6">
-                    <div class="field-set">
-                        <div class="caption-wraper"><label class="field_label"></label></div>
-                        <div class="field-wraper">
-                            <div class="field_cover"><?php echo $productFrm->getFieldHtml('btn_submit'); ?></div>
-                        </div>
+            <?php } ?>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="field-set">
+                    <div class="caption-wraper"><label class="field_label"></label></div>
+                    <div class="field-wraper">
+                        <div class="field_cover"><?php echo $productFrm->getFieldHtml('btn_back'); ?></div>
                     </div>
                 </div>
             </div>
-            <?php
-                echo $productFrm->getFieldHtml('ps_from_country_id');
-                echo $productFrm->getFieldHtml('product_id');
-                echo $productFrm->getFieldHtml('preq_id');
-            ?>
+            <div class="text-right col-md-6">
+                <div class="field-set">
+                    <div class="caption-wraper"><label class="field_label"></label></div>
+                    <div class="field-wraper">
+                        <div class="field_cover"><?php echo $productFrm->getFieldHtml('btn_submit'); ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+        echo $productFrm->getFieldHtml('ps_from_country_id');
+        echo $productFrm->getFieldHtml('product_id');
+        echo $productFrm->getFieldHtml('preq_id');
+        ?>
         </form>
         <?php echo $productFrm->getExternalJS(); ?>
     </div>

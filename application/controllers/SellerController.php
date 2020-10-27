@@ -5176,15 +5176,15 @@ class SellerController extends SellerBaseController
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 $shipPackArr = ShippingPackage::getAllNames();
                 $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->siteLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
-
-                $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
-                $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
-
-                $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->siteLangId), 'product_weight', '0.00');
-                $weightFld->requirements()->setRequired(true);
-                $weightFld->requirements()->setFloatPositive();
-                $weightFld->requirements()->setRange('0.01', '9999999999');
             }
+
+            $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->siteLangId);
+            $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->siteLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
+
+            $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->siteLangId), 'product_weight', '0.00');
+            $weightFld->requirements()->setRequired(true);
+            $weightFld->requirements()->setFloatPositive();
+            $weightFld->requirements()->setRange('0.01', '9999999999');
 
             if (!FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
                 /*  $frm->addCheckBox(Labels::getLabel('LBL_Product_Is_Eligible_For_Free_Shipping?', $this->siteLangId), 'ps_free', 1, array(), false, 0); */
