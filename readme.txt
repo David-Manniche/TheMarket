@@ -318,6 +318,7 @@ Bugs:
     => 044351 - Seller >> orders >> cancel order >> Total amount should get display at seller end and discount should not be deducted from that amou
     => 044368 - Seller >> pickup address >> edit slots >> when we add multiple slots and save the changes then it shows only last slot on edit settings.
     => 044567 - hide the print option on return request on buyer end
+    => 044576 - when full text search is enabled then shop is flooded with errors
 
 Enhancements:
     => Tax module upgrade
