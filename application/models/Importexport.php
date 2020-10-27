@@ -548,18 +548,10 @@ class Importexport extends ImportexportCommon
                 }
                 break;
             case Importexport::TYPE_OPTIONS:
-                switch ($sheetType) {
-                    case Importexport::PRODUCT_CATALOG:
-                        $sheetName = Labels::getLabel('LBL_Options_Error', $langId);
-                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId, true);
-                        $this->importOptions($csvFilePointer, $post, $langId);
-                        break;
-                    case Importexport::PRODUCT_OPTION:
-                        $sheetName = Labels::getLabel('LBL_Option_Values_Error', $langId);
-                        $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId, true);
-                        $this->importOptionValues($csvFilePointer, $post, $langId);
-                        break;
-                }
+                $sheetName = Labels::getLabel('LBL_Options_Error', $langId);
+                $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId, true);
+                $this->importOptions($csvFilePointer, $post, $langId);
+                break;
                 break;
             case Importexport::TYPE_OPTION_VALUES:
                 $sheetName = Labels::getLabel('LBL_Option_Values_Error', $langId);
