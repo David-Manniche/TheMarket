@@ -174,14 +174,9 @@ class Paypal extends PaymentMethodBase
             "name" => [
                 "given_name" => $orderInfo['customer_name'],
             ],
-            "email_address" => $orderInfo['customer_email'],
-            "phone" => [
-                "phone_type" => "MOBILE",
-                "phone_number" => [
-                    "national_number" => $orderInfo['customer_phone']
-                ]
-            ]
+            "email_address" => $orderInfo['customer_email']
         ];
+
 
         if ($orderInfo['order_type'] == Orders::ORDER_PRODUCT && !empty($billingAddress)) {
             $request_body["payer"]['address'] = [
