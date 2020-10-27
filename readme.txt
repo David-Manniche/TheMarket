@@ -324,6 +324,7 @@ Bugs:
     => 044475 - Checkout >> home page >> Delete products>> cart gets empty and it shows "Your shopping cart is empty!" with "0" amount and if we proceed with that then some products are still there.
     => 044474 - When we come back on home page from checkout then it shows "invalid products " on deleting for those products which were not on checkout
 -------------------TV-9.2.2.20201027---------------------
+    => 044605	Auto create default shipping profile and linked products
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
