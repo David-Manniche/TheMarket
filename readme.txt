@@ -326,10 +326,13 @@ Bugs:
 -------------------TV-9.2.2.20201027---------------------
     => 044605	Auto create default shipping profile and linked products
     => 044367 - seller >> pickup address >> "+" icon next to slots is not getting display in first time
-    => 044371 - add money to wallet> stripe form screen> cancel button is not working 
+    => 044371 - add money to wallet> stripe form screen> cancel button is not working
     => 044467 - pickup and payment cancel orders are coming under canceled orders on seller end
     => 044383 - if ship station is on and we try to buy admin's product then some error is there on checkout. 
     => 044373 - add money to wallet> using paypal> there is error
+    => 044623 - during withdrawal restrict the numeric values only as it's getting placed with random values and on accepting from admin getting json
+    => 044619 - when add product setting is disabled from admin for seller then some settings on front end are not in use
+    => 044339 - admin >> cancellation request >> total reward points gets display there instead of reward points for that particular child order.
 
 Enhancements:
     => Tax module upgrade
@@ -339,7 +342,8 @@ Enhancements:
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
     => Advanced search UI and Auto Suggestions.
-    => Category Listing Page UI  
+    => Category Listing Page UI 
+    => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------     
 Notes:
    ==========Stripe Connect Installation Notes[:=========
