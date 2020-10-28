@@ -332,7 +332,7 @@ Bugs:
     => 044373 - add money to wallet> using paypal> there is error
     => 044623 - during withdrawal restrict the numeric values only as it's getting placed with random values and on accepting from admin getting json
     => 044619 - when add product setting is disabled from admin for seller then some settings on front end are not in use
-
+------------------TV-9.2.2.20201028-------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
