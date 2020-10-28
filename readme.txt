@@ -335,6 +335,7 @@ Bugs:
     => 044339 - admin >> cancellation request >> total reward points gets display there instead of reward points for that particular child order.
     => 044634 - on order print> default fav icon is coming
     => 042447 - Admin >> Add zone >> language data section is according to old versions .
+    => 044022 - Create a label for this button on forget password page 
 
 Enhancements:
     => Tax module upgrade
