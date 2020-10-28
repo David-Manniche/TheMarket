@@ -318,8 +318,7 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">
-                                                <?php if ($key == 0) { ?>
+                                            <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">                                            
                                                     <div class="field-set">
                                                         <div class="caption-wraper">
                                                             <label class="field_label">
@@ -327,13 +326,16 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                                         </div>
                                                         <div class="field-wraper">
                                                             <div class="field_cover">
-                                                                <?php echo $frm->getFieldHtml('btn_add_row[' . $i . ']');  ?>
+                                                                <?php if ($key != 0) {  ?>
+                                                                    <input type='button' name='btn_remove_row' value='x' data-day="<?php echo $i; ?>">                                                               
+                                                                <?php }                                                        
+                                                                if (count($slotData['tslot_from_time'][$i]) - 1 == $key) { 
+                                                                    echo $frm->getFieldHtml('btn_add_row[' . $i . ']');
+                                                                } 
+                                                                ?>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                <?php } else { ?>
-                                                    <input class='mt-4' type='button' name='btn_remove_row' value='x' data-day="<?php echo $i; ?>">
-                                                <?php } ?>
+                                                    </div>                                               
                                             </div>
                                         </div>
                                     <?php
