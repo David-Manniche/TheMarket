@@ -340,3 +340,7 @@ a:hover {
         font-size: inherit;
     }
 }
+
+.scroll {
+    padding-#{$end-direction}: 20px;
+}
