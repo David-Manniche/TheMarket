@@ -1,7 +1,7 @@
 <div class="collection-listing filters-left">
             <sidebar class="collection-sidebar" id="collection-sidebar" data-close-on-click-outside="collection-sidebar">
                 <?php if (isset($shop)) { ?>
-                <div class="bg-gray rounded shop-information p-4"> 
+                <div class="shop-information"> 
                     <div class="shop-logo">
                         <?php   
                         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_SHOP_LOGO, $shop['shop_id'], 0, 0, false);
@@ -101,7 +101,7 @@
                             <?php } ?>
                         </div>
                         <?php if ($socialPlatforms) { ?>
-                        <div class="social-profiles mt-3">
+                        <div class="social-profiles">
                             <p><strong><?php echo Labels::getLabel('LBL_Follow_Us', $siteLangId); ?></strong> </p>
                             <ul class="social-icons">
                                 <?php foreach ($socialPlatforms as $row) { ?>
@@ -116,10 +116,10 @@
                         <?php } ?>
                     </div>
                 </div>
-                <div class="gap"></div>
+                 
                 <?php } ?>
                 <?php if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
-                    ?> <div class="bg-gray rounded shop-information p-4">
+                    ?> <div class="shop-information">
                     <div class="shop-logo">
                         <?php
                         $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_BRAND_LOGO, $postedData['brand_id'], 0, 0, false);
@@ -127,7 +127,7 @@
                         ?>
                         <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo (!empty($fileData['afile_attribute_alt'])) ? $fileData['afile_attribute_alt'] : $pageTitle;?>" title="<?php echo (!empty($fileData['afile_attribute_alt'])) ? $fileData['afile_attribute_alt'] : $pageTitle;?>">
                     </div>
-                </div><div class="gap"></div> <?php
+                </div> <?php
                 } ?>
                 <div class="filters">
                     <div class="filters__ele productFilters-js"></div>
