@@ -2,6 +2,11 @@
     overflow-x: auto;
 }
 
+.table-wrap {
+    overflow: hidden !important;
+    overflow-x: auto !important;
+}
+
 .table {
     background-color: #fff;
     margin-bottom: 0;

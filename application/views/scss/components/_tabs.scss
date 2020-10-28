@@ -17,9 +17,9 @@
         display: flex;
         -ms-flex-wrap: nowrap;
         flex-wrap: nowrap;
+        overflow-x: auto;
         @include media-breakpoint-down(md) {
             & {
-                overflow-x: auto;
                 overflow-y: hidden;
             }
         }

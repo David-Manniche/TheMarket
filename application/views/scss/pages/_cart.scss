@@ -265,7 +265,7 @@
             height: 1rem;
             padding: 0 0.1rem;
             position: absolute;
-            right: -0.25rem;
+            #{$end-direction}: -0.25rem;
             top: -0.25rem;
             z-index: 1;
         }

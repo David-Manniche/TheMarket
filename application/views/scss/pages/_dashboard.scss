@@ -1323,14 +1323,13 @@
 .box--offer {
     margin: 10px 0 10px;
     border: 1px dashed rgba(0, 0, 0, 0.2);
-    padding: 20px;
+    padding: 1rem;
     border-radius: $radius4;
     height: 100%;
     -webkit-transition: all 0.2s linear;
     transition: all 0.2s linear;
     &:hover {
-        -webkit-box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.1);
-        box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
     }
     .offer {
         height: 100%;
@@ -1347,6 +1346,15 @@
         -webkit-box-pack: center;
         -ms-flex-pack: center;
         justify-content: center;
+        .offer__logo {
+            width: 80px;
+            margin: 0 auto;
+            display: block;
+            img {
+                width: 100%;
+                margin: auto;
+            }
+        }
     }
     .offer__box {
         background: #f5f5f5;
@@ -1363,31 +1371,28 @@
             font-weight: normal;
         }
     }
-    .offer__logo {
-        width: 80px;
-        margin: 0 auto;
-        display: block;
-        img {
-            width: 100%;
-            margin: auto;
-        }
+    h6 {
+        font-size: 0.8rem;
+        margin: 0;
     }
     p {
         opacity: 0.6;
-        font-size: 0.9em;
+        font-size: 0.78rem;
         margin-bottom: 10px;
     }
     .offer__footer {
-        border-top: 1px solid #ededed;
-        padding: 6px 0 0;
-        width: 100%;
-        display: inline-block;
+        border-top: $border;
+        padding: 10px 0 0 0;
+        display: block;
         .coupon-code {
             margin-top: 10px;
+            display: inline-block;
+            font-weight: 600;
+            color: $brand-color;
         }
         p {
             margin: 0;
-            font-size: 0.9em;
+            font-size: 0.78rem;
         }
     }
 }
