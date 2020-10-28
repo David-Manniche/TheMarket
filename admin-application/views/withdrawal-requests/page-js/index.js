@@ -16,7 +16,7 @@ $(document).ready(function(){
 	}
 
 	reloadList = function() {
-		var frm = document.frmReqSearchPaging;
+		var frm = document.frmReqSearch;
 		searchListing(frm);
 	}
 
@@ -26,7 +26,7 @@ $(document).ready(function(){
 		if (form) {
 			data = fcom.frmData(form);
 		}
-
+        console.log(form);
 		if (!$(form).validate()) {
 			return;
 		}

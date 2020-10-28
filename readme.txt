@@ -329,6 +329,7 @@ Bugs:
     => 044467 - pickup and payment cancel orders are coming under canceled orders on seller end
     => 044383 - if ship station is on and we try to buy admin's product then some error is there on checkout. 
     => 044373 - add money to wallet> using paypal> there is error
+    => 044623 - during withdrawal restrict the numeric values only as it's getting placed with random values and on accepting from admin getting json
 
 Enhancements:
     => Tax module upgrade
