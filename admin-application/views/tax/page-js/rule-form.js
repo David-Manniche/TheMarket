@@ -3,7 +3,7 @@ $("document").ready(function() {
 
 	$('select[name="taxrule_taxstr_id[]"]').each(function() {
 		$(this).trigger('change');
-	});
+    });
 
 	$('body').on('change', 'select[name="taxruleloc_type[]"]', function() {
 		var parentIndex = $(this).parents('.tax-rule-form--js').data('index');
@@ -143,6 +143,11 @@ function getCombinedTaxes(currentSel, taxStrId) {
 		return;
 	}
 	fcom.ajax(fcom.makeUrl('Tax','getCombinedTaxes', [taxStrId, taxruleId]), '', function(t) {
-		$('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js').html(t);
+        $('.tax-rule-form-'+ parentIndex +' .combined-tax-details--js').html(t);
+        $('.combinetaxvalue--js').on("keyup", function(){
+            if ('' == $(this).val()) {
+                $(this).val(0);
+            }
+        });
 	});
 };

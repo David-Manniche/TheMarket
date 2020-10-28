@@ -109,7 +109,7 @@ class TaxController extends AdminBaseController
 
         $taxcat_id = $post['taxcat_id'];
         unset($post['taxcat_id']);
-		
+
         $record = new Tax($taxcat_id);
         if (!$record->addUpdateData($post)) {
             Message::addErrorMessage($record->getError());
@@ -168,9 +168,9 @@ class TaxController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'taxcatlang_taxcat_id' => $taxcat_id,
-        'taxcatlang_lang_id' => $lang_id,
-        'taxcat_name' => $post['taxcat_name'],
+            'taxcatlang_taxcat_id' => $taxcat_id,
+            'taxcatlang_lang_id' => $lang_id,
+            'taxcat_name' => $post['taxcat_name'],
         );
 
         $taxObj = new Tax($taxcat_id);
@@ -427,11 +427,11 @@ class TaxController extends AdminBaseController
         if ($activatedTaxServiceId) {
             $frm->addHiddenField('', 'taxcat_plugin_id', $activatedTaxServiceId)->requirements()->setRequired();
         }
-		
-		if ($activatedTaxServiceId || FatApp::getConfig('CONF_TAX_CATEGORIES_CODE', FatUtility::VAR_INT, 1)) {
-			$frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
-		}
-        
+
+        if ($activatedTaxServiceId || FatApp::getConfig('CONF_TAX_CATEGORIES_CODE', FatUtility::VAR_INT, 1)) {
+            $frm->addRequiredField(Labels::getLabel('LBL_Tax_Code', $this->adminLangId), 'taxcat_code');
+        }
+
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'taxcat_active', $activeInactiveArr, '', array(), '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
@@ -457,8 +457,8 @@ class TaxController extends AdminBaseController
 
         if (!empty($post['keyword'])) {
             $srch->addCondition('taxcat_name', 'LIKE', '%' . $post['keyword'] . '%')
-            ->attachCondition('taxcat_identifier', 'LIKE', '%' . $post['keyword'] . '%')
-            ->attachCondition('taxcat_code', 'LIKE', '%' . $post['keyword'] . '%');
+                ->attachCondition('taxcat_identifier', 'LIKE', '%' . $post['keyword'] . '%')
+                ->attachCondition('taxcat_code', 'LIKE', '%' . $post['keyword'] . '%');
         }
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
@@ -527,7 +527,6 @@ class TaxController extends AdminBaseController
     {
         $this->objPrivilege->canEditTax();
         $data = FatApp::getPostedData();
-
         if (empty($data)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -554,6 +553,19 @@ class TaxController extends AdminBaseController
         if (isset($data['rules']) && !empty($data['rules'])) {
             $rules = $data['rules'];
             foreach ($rules as $rule) {
+                $combinedTaxes = (isset($rule['combinedTaxDetails'])) ? $rule['combinedTaxDetails'] : [];
+
+                if (!empty($combinedTaxes)) {
+                    $totalCombinedTax = 0;
+                    array_walk($combinedTaxes, function ($value) use (&$totalCombinedTax) {
+                        $totalCombinedTax += $value['taxruledet_rate'];
+                    });
+                    if ($totalCombinedTax != $rule['taxrule_rate']) {
+                        Message::addErrorMessage(Labels::getLabel('LBL_INVALID_COMBINED_TAX_COMBINATION', $this->adminLangId));
+                        FatUtility::dieJsonError(Message::getHtml());
+                    }
+                }
+
                 $ruleId = 0;
                 $isCombined = FatUtility::int($rule['taxrule_is_combined']);
                 $states = (isset($rule['states'])) ? $rule['states'] : [];
@@ -578,15 +590,12 @@ class TaxController extends AdminBaseController
                 /* ] */
 
                 /* [ UPDATE COMBINED TAX DETAILS */
-				if (isset($rule['combinedTaxDetails'])) {
-					$combinedTaxes = $rule['combinedTaxDetails'];
-					if (!empty($combinedTaxes)) {
-						if (!$this->updateCombinedData($combinedTaxes, $ruleId, $this->adminLangId)) {
-							Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_Update_Combined_Tax_Data', $this->adminLangId));
-							FatUtility::dieJsonError(Message::getHtml());
-						}
-					}
-				}
+                if (!empty($combinedTaxes)) {
+                    if (!$this->updateCombinedData($combinedTaxes, $ruleId, $this->adminLangId)) {
+                        Message::addErrorMessage(Labels::getLabel('LBL_Unable_to_Update_Combined_Tax_Data', $this->adminLangId));
+                        FatUtility::dieJsonError(Message::getHtml());
+                    }
+                }
                 /* ] */
             }
         }
@@ -677,10 +686,10 @@ class TaxController extends AdminBaseController
     {
         $taxStrId = FatUtility::int($taxStrId);
         $ruleId = FatUtility::int($ruleId);
-        
+
         $taxStructure = new TaxStructure($taxStrId);
         $combTaxes =  $taxStructure->getCombinedTaxesByParent($this->adminLangId, $ruleId);
-        
+
         $this->set('taxStrId', $taxStrId);
         $this->set('combTaxes', $combTaxes);
         $this->_template->render(false, false);
