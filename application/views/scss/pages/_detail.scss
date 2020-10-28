@@ -1255,10 +1255,14 @@
 
 .addons-scrollbar {
     max-height: 250px;
+    border: $border;
+    border-radius: $radius4;
 }
 
 .list-addons {
     li {
+        padding: 1rem;
+        border-bottom: $border;
         display: flex;
         justify-content: space-between;
         position: relative;
@@ -1273,16 +1277,24 @@
                 font-weight: 300;
             }
         }
-        &.cancel {}
+        &:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
     }
     .tag--soldout {
         border-radius: $radius3;
         width: auto;
         height: auto;
-        opacity: 0.2;
+        opacity: 0.5;
         top: 0;
+        bottom: 0;
+        border-radius: 0;
         transform: none;
         cursor: not-allowed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
