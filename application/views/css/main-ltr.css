@@ -37435,141 +37435,68 @@ body {
 .testimonials-item {
   display: block;
   position: relative;
-  margin-bottom: 30px; }
-
-.testimonials-item:hover .user {
-  top: -20px; }
-
-.testimonials-item:hover .testimonials-content:before {
-  opacity: 1; }
-
-.testimonials-item:hover .testimonials-content .user-name {
-  color: #fff; }
-
-.testimonials-item:hover .testimonials-content .txt:before,
-.testimonials-item:hover .testimonials-content .txt:after {
-  opacity: .1; }
-
-.testimonials-item:hover .testimonials-content span,
-.testimonials-item:hover .testimonials-content p {
-  color: #C7E5FF !important; }
-
-.testimonials-item .user {
-  width: 60px;
-  height: 60px;
-  position: relative;
-  position: absolute;
-  top: -10px;
-  left: 25px;
-  z-index: 3;
-  -webkit-transition: all 0.3s ease 0s;
-  transition: all 0.3s ease 0s;
-  border-radius: 5px;
-  overflow: hidden;
-  background: #fff;
-  -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06);
-  box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06); }
-
-.testimonials-item .user img, .testimonials-item .user .post .post_media iframe, .post .post_media .testimonials-item .user iframe, .testimonials-item .user .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .testimonials-item .user img, .testimonials-item .user .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .testimonials-item .user img {
-  max-width: 100%; }
-
-.testimonials-item .testimonials-content {
-  background: #fff;
-  overflow: hidden;
+  height: 100%;
+  border-radius: 4px;
   -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06);
   box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 5px;
-  position: relative; }
-
-.testimonials-item .testimonials-content:before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  background: var(--secondary-color);
-  color: var(--secondary-color-inverse);
-  opacity: 0;
-  -webkit-transition: all 0.3s ease 0s;
-  transition: all 0.3s ease 0s; }
-
-.testimonials-item .testimonials-content .user-name {
-  display: block;
-  font-weight: 400;
-  font-size: 16px;
-  color: #3B566E;
-  margin-top: 20px;
-  -webkit-padding-start: 100px;
-  -moz-padding-start: 100px;
-  padding-left: 100px;
-  letter-spacing: 0.69px;
-  margin-bottom: 5px;
-  position: relative;
-  z-index: 3; }
-
-.testimonials-item .testimonials-content span {
-  display: block;
-  font-weight: 400;
-  font-size: 14px;
-  color: #6F8BA4;
-  letter-spacing: 0.6px;
-  -webkit-padding-start: 100px;
-  -moz-padding-start: 100px;
-  padding-left: 100px;
-  -webkit-padding-end: 25px;
-  -moz-padding-end: 25px;
-  padding-right: 25px;
-  position: relative;
-  z-index: 3; }
-
-.testimonials-item .testimonials-content .txt {
-  position: relative;
-  overflow: hidden; }
-
-.testimonials-item .testimonials-content .txt:before {
-  font-family: FontAwesome;
-  content: "\f10d";
-  position: absolute;
-  left: 25px;
-  top: 25px;
-  color: #3B566E;
-  z-index: 1;
-  font-size: 40px;
-  opacity: .4;
-  color: #e1ecf4;
-  -webkit-transition: all 0.3s ease 0s;
-  transition: all 0.3s ease 0s; }
-
-.testimonials-item .testimonials-content .txt:after {
-  font-family: FontAwesome;
-  content: "\f10e";
-  position: absolute;
-  right: 25px;
-  bottom: 15px;
-  color: #3B566E;
-  z-index: 1;
-  font-size: 40px;
-  opacity: .4;
-  color: #e1ecf4;
-  -webkit-transition: all 0.3s ease 0s;
-  transition: all 0.3s ease 0s; }
-
-.testimonials-item .testimonials-content .txt p {
-  -webkit-padding-start: 25px;
-  -moz-padding-start: 25px;
-  padding-left: 25px;
-  -webkit-padding-end: 25px;
-  -moz-padding-end: 25px;
-  padding-right: 25px;
-  margin-bottom: 25px;
-  margin-top: 1rem;
-  font-weight: 400;
-  font-size: 14px;
-  letter-spacing: 0.6px;
-  line-height: 26px;
-  position: relative;
-  z-index: 3;
-  max-height: 250px; }
+  background-color: #fff; }
+  .testimonials-item .user {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    position: absolute;
+    top: -10px;
+    left: 25px;
+    z-index: 3;
+    -webkit-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+    border-radius: 4px;
+    overflow: hidden;
+    -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.06); }
+    .testimonials-item .user img, .testimonials-item .user .post .post_media iframe, .post .post_media .testimonials-item .user iframe, .testimonials-item .user .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .testimonials-item .user img, .testimonials-item .user .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .testimonials-item .user img {
+      max-width: 100%; }
+  .testimonials-item .testimonials-content {
+    overflow: hidden;
+    position: relative; }
+    .testimonials-item .testimonials-content .user-name {
+      display: block;
+      font-weight: 400;
+      font-size: 1rem;
+      color: #3B566E;
+      margin-top: 20px;
+      padding-left: 100px;
+      letter-spacing: 0.69px;
+      margin-bottom: 5px;
+      position: relative;
+      z-index: 3; }
+    .testimonials-item .testimonials-content span {
+      display: block;
+      font-weight: 400;
+      font-size: 14px;
+      color: #6F8BA4;
+      letter-spacing: 0.6px;
+      padding-left: 100px;
+      padding-right: 25px;
+      position: relative;
+      z-index: 3; }
+    .testimonials-item .testimonials-content .txt {
+      position: relative;
+      overflow: hidden; }
+      .testimonials-item .testimonials-content .txt p {
+        padding-left: 25px;
+        padding-right: 25px;
+        margin-bottom: 25px;
+        margin-top: 1rem;
+        font-weight: 400;
+        font-size: 14px;
+        letter-spacing: 0.6px;
+        line-height: 26px;
+        position: relative;
+        z-index: 3;
+        max-height: 250px; }
+  .testimonials-item:hover .user {
+    top: -20px; }
 
 .sitemapcontainer h2 {
   font-size: 1.3em;
