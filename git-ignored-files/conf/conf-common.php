@@ -37,4 +37,4 @@ define('S3_REGION', 'us-east-2');
 /*CDN sub domain url which points to site document root*/
 define('CDN_DOMAIN_URL', '');
 
-
+define('ALLOW_EMAILS', false);

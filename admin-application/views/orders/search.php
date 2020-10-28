@@ -21,7 +21,8 @@ foreach ($arr_flds as $val) {
 $sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
 foreach ($ordersList as $sn => $row) {
     $tr = $tbl->appendElement('tr');
-
+    $cartData = !empty($row['order_cart_data']) ? json_decode(trim($row['order_cart_data']), true) : [];
+    $checkoutType = !empty($cartData) ? $cartData['shopping_cart']['checkout_type'] : Shipping::FULFILMENT_SHIP;
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
         switch ($key) {
@@ -63,10 +64,18 @@ foreach ($ordersList as $sn => $row) {
                         $cls = 'label-danger';
                         break;
                 }
+                if (Orders::ORDER_PAYMENT_CANCELLED == $row["order_payment_status"]) {
+                    $value = Labels::getLabel('LBL_CANCELLED', $adminLangId);
+                } else {
+                    $value = Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]];
+                }
 
-                $value = Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]];
                 if ('' != $row['plugin_name'] && 'CashOnDelivery' == $row['plugin_code']) {
-                    $value .= ' (' . $row['plugin_name'] . ' )';
+                    if ($checkoutType == Shipping::FULFILMENT_PICKUP) {
+                        $value .= ' (' . Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId) . ')';
+                    } else {
+                        $value .= ' (' . $row['plugin_name'] . ' )';
+                    }
                 }
 
                 $td->appendElement('span', array('class' => 'label ' . $cls), $value);

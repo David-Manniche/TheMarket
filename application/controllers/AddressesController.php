@@ -249,6 +249,9 @@ class AddressesController extends LoggedUserController
         $this->set('pickUpBy', $pickUpBy);
         $this->set('selectedSlot', $selectedSlot);
         if (false === $return) {
+            if (true === MOBILE_APP_API_CALL) {
+                $this->_template->render();
+            }
             $this->_template->render(false, false, 'addresses/time-slots.php');
         }
     }

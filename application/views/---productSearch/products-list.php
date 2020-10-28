@@ -4,7 +4,7 @@ if ($products) {
     $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;
     foreach ($products as $product) { 
 		
-        $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['_source']['general']['selprod_id'])); ?> <div class="column">
+        $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['_source']['general']['selprod_id'])); ?> <div class="items">
     <!--product tile-->
     <div class="products">
         <div class="products__quickview">

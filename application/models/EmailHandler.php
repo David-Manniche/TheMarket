@@ -195,6 +195,11 @@ class EmailHandler extends FatModel
         )) {
             return false;
         }
+
+        if (false == ALLOW_EMAILS) {
+            return true;
+        }
+
         include_once CONF_INSTALLATION_PATH . 'library/PHPMailer/PHPMailerAutoload.php';
         $host = isset($smtp_arr["host"]) ? $smtp_arr["host"] : FatApp::getConfig("CONF_SMTP_HOST");
         $port = isset($smtp_arr["port"]) ? $smtp_arr["port"] : FatApp::getConfig("CONF_SMTP_PORT");
@@ -263,7 +268,7 @@ class EmailHandler extends FatModel
             return false;
         }
 
-        if (FatApp::getConfig("CONF_SEND_EMAIL")) {
+        if (FatApp::getConfig("CONF_SEND_EMAIL") && ALLOW_EMAILS) {
             $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
             if (!mail($to, $subject, $body, $headers)) {
                 return false;

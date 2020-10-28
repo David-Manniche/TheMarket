@@ -9,9 +9,15 @@ class PluginBaseController extends MyAppController
     public function __construct($action)
     {
         parent::__construct($action);
+        $class = get_called_class();
+        if (!defined($class . '::KEY_NAME')) {
+            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_PLUGIN', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
+        $this->keyName = $class::KEY_NAME;
     }
 
-    protected function updateUserInfo($detail = [])
+    protected function updateUserInfo($detail = [], $redirect = false)
     {
         if (!is_array($detail)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
@@ -58,5 +64,11 @@ class PluginBaseController extends MyAppController
         $this->set('frm', $frm);
         $this->set('identifier', $this->identifier);
         $this->_template->render(false, false, 'plugins/form.php');
+    }
+
+    protected function redirectBack(string $controller = '', string $action = '')
+    {
+        $controller = empty($controller) ? $this->keyName : $controller;
+        FatApp::redirectUser(UrlHelper::generateUrl($controller, $action));
     }
 }

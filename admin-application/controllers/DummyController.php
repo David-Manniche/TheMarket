@@ -4,8 +4,7 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
-        $productId = 3;
-        Tag::updateProductTagString($productId);
+       
     }
 
     public function test123()
@@ -39,7 +38,7 @@ class DummyController extends AdminBaseController
         //FatApp::getDb()->query($qry);
         echo $query = "DELETE m FROM " . static::DB_PRODUCT_MIN_PRICE . " m LEFT OUTER JOIN (" . $tmpQry . ") ON pmp_product_id = selprod_product_id WHERE m.pmp_product_id IS NULL";
 
-die('dsdsdsdsdsd');
+        die('dsdsdsdsdsd');
 
         $langId = 1;
         $spreviewId = 1;

@@ -97,9 +97,9 @@ class PayPalPayoutController extends PayoutBaseController
     private function formatData($requestId, $amount, $receiverAddress, $type)
     {
         $sender_batch_id = "Payout_" . strtotime(date('Ymd')) . '_' . $requestId;
-        
         $currencyId = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
         $currencyCode = strtoupper(Currency::getAttributesById($currencyId, 'currency_code'));
+        $amount = FatUtility::float($amount);
         $amount = sprintf('%0.2f', $amount - static::COMMISSION[$currencyCode]);
         
         return [

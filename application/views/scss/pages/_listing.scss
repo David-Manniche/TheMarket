@@ -444,7 +444,9 @@
 }
 
 .listing-products--list {
-    grid-template-columns: repeat(2, 1fr);
+    &[data-view="4"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
     .products {
         display: -webkit-box;
         display: -ms-flexbox;

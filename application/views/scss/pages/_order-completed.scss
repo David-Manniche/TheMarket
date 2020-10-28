@@ -112,12 +112,12 @@
         font-weight: 500;
         font-size: 1rem;
         margin-bottom: 1.5rem;
+        color: $secondary-color;
         .svg {
-            display: block;
-            margin-bottom: 4px;
-            fill: $secondary-color;
-            width: 32px;
-            height: 32px;
+            margin-#{$end-direction}: 5px;
+            fill: currentColor;
+            width: 1.5rem;
+            height: 1.5rem;
         }
     }
     p {

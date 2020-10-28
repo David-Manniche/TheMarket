@@ -16,7 +16,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
 }
 ?>
 <div id="body" class="body">
-    <div class="section">
+    <section class="section">
         <div class="order-completed">
             <div class="container">
                 <div class="row justify-content-center">
@@ -182,8 +182,8 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                     <div class="completed-cart">
                                         <div class="row justify-content-between">
                                             <div class="col-md-7">
-                                                <h5><?php echo Labels::getLabel('LBL_ORDER_DETAIL', $siteLangId); ?></h5>
-                                                <ul class="list-group list-cart list-cart-checkout mt-4">
+                                            <div class="bg-gray rounded p-4"> <h5><?php echo Labels::getLabel('LBL_ORDER_DETAIL', $siteLangId); ?></h5>                                              
+                                                <ul class="list-group list-cart list-cart-checkout">
                                                     <?php
                                                     $shippingCharges = $subTotal = 0;
                                                     if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
@@ -227,11 +227,12 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                     <?php }
                                                     } ?>
                                                 </ul>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <h5><?php echo Labels::getLabel('LBL_ORDER_SUMMARY', $siteLangId); ?></h5>
-                                                <div class="cart-total mt-5">
-                                                    <ul class="list-group list-group-flush-x list-group-flush-y">
+                                            <div class="col-md-5">
+                                            <div class="bg-gray rounded p-4"><h5><?php echo Labels::getLabel('LBL_ORDER_SUMMARY', $siteLangId); ?></h5>
+                                               <div class="cart-total">
+                                                    <ul class="list-group list-group-flush-x list-group-flush-y mt-4">
                                                         <?php if (0 < $subTotal) { ?>
                                                             <li class="list-group-item">
                                                                 <span class="label">
@@ -282,6 +283,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                         </li>
                                                     </ul>
                                                 </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -292,7 +294,8 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    
 </div>
 <?php if (true === $print) { ?>
     <script>

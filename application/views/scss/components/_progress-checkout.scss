@@ -60,7 +60,7 @@ $white: #fff;
             content: "";
             position: absolute;
             top: 7px;
-            left: 50%;
+            #{$start-direction}: 50%;
             width: 0%;
             transition: width 1s ease-in;
             height: 2px;

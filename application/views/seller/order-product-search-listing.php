@@ -69,7 +69,7 @@ foreach ($orders as $sn => $order) {
                     $labelClass = 'label-danger';
                 } else {
                     $txt = $order['orderstatus_name'];
-                    if (strtolower($order['plugin_code']) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                    if (OrderStatus::ORDER_CANCELLED != $order['orderstatus_id'] && strtolower($order['plugin_code']) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
                         $txt = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                     }
                     $labelClass = $classArr[$order['orderstatus_color_class']];

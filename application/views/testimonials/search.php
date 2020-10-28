@@ -5,7 +5,7 @@ if( !empty($list) ){  ?>
 	//CommonHelper::printArray($listItem);
 	?>
 	 <!-- ***** Testimonials Item Start ***** -->
-        <div class="col-lg-4 col-md-6 col-sm-12 h-100">
+        <div class="col-lg-4 col-md-6 mb-4">
           <div class="testimonials-item">
             <div class="user">
             <?php $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_TESTIMONIAL_IMAGE, $listItem['testimonial_id']);
