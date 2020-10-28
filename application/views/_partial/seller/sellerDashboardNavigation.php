@@ -93,7 +93,7 @@ $action = strtolower($action);
                                     </i><span class="menu-item__title"><?php echo Labels::getLabel('LBL_Product_Options', $siteLangId); ?></span></a></div>
                         </li>
                     <?php } ?>
-                    <?php if ($userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId(), true)) { ?>
+                    <?php if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0) && $userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId(), true)) { ?>
                         <li class="menu__item <?php echo ($controller == 'seller' && ($action == 'taxcategories' || $action == 'taxrules')) ? 'is-active' : ''; ?>">
                             <div class="menu__item__inner"><a title="<?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Seller', 'taxCategories'); ?>">
                                     <i class="icn shop"><svg class="svg">
@@ -114,9 +114,9 @@ $action = strtolower($action);
                     <li class="divider"></li>
                 <?php } ?>
                 
-                <?php if (
-                    $userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true) ||
-                    $userPrivilege->canViewShippingPackages(UserAuthentication::getLoggedUserId(), true)
+                <?php if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0) &&
+                    ($userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId(), true) ||
+                    $userPrivilege->canViewShippingPackages(UserAuthentication::getLoggedUserId(), true))
                 ) { ?>
                     <li class="menu__item">
                         <div class="menu__item__inner"> <span class="menu-head"><?php echo Labels::getLabel('LBL_Shipping', $siteLangId); ?></span></div>

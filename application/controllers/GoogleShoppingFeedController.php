@@ -11,7 +11,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     private $googleShoppingFeed;
     private $accessToken;
     private $adsBatchId;
-        
+
     /**
      * __construct
      *
@@ -22,9 +22,9 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         parent::__construct($action);
         $this->init();
-		$this->userPrivilege->canViewAdvertisementFeed(UserAuthentication::getLoggedUserId());
+        $this->userPrivilege->canViewAdvertisementFeed(UserAuthentication::getLoggedUserId());
     }
-    
+
     /**
      * init
      *
@@ -46,7 +46,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
             $this->setError('', 'Seller');
         }
     }
-    
+
     /**
      * setError
      *
@@ -61,7 +61,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         Message::addErrorMessage($msg);
         $this->redirectBack($controller, $action);
     }
-    
+
     /**
      * index
      *
@@ -74,7 +74,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('pluginName', $this->settings['plugin_name']);
         $this->_template->render();
     }
-    
+
     /**
      * setupConfiguration
      *
@@ -92,7 +92,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->client->setAccessType('offline');
         $this->client->setApprovalPrompt('force');
     }
-    
+
     /**
      * getAccessToken
      *
@@ -114,7 +114,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $authUrl = $this->client->createAuthUrl();
         FatApp::redirectUser($authUrl);
     }
-    
+
     /**
      * setupMerchantDetail
      *
@@ -122,7 +122,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     private function setupMerchantDetail()
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $this->client->setAccessToken($this->accessToken);
         $service = new Google_Service_ShoppingContent($this->client);
         $authDetail = $service->accounts->authinfo();
@@ -134,7 +134,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $merchantId = array_shift($accountDetail)->merchantId;
         $this->updateMerchantInfo([self::KEY_NAME . '_merchantId' => $merchantId]);
     }
-    
+
     /**
      * getServiceAccountForm
      *
@@ -149,7 +149,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         return $frm;
     }
-    
+
     /**
      * serviceAccountForm
      *
@@ -157,7 +157,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function serviceAccountForm()
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $data = $this->getUserMeta();
         $frm = $this->getServiceAccountForm();
         if (!empty($data) && 0 < count($data)) {
@@ -167,7 +167,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('keyName', self::KEY_NAME);
         $this->_template->render(false, false);
     }
-    
+
     /**
      * setupServiceAccountForm
      *
@@ -175,13 +175,13 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function setupServiceAccountForm()
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $frm = $this->getServiceAccountForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         unset($post['btn_submit']);
         $this->updateMerchantInfo($post, false);
     }
-    
+
     /**
      * validateBatchRequest
      *
@@ -197,7 +197,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         return true;
     }
-    
+
     /**
      * getBatchForm
      *
@@ -215,14 +215,14 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_TARGET_COUNTRY', $this->siteLangId), 'adsbatch_target_country_id', $countriesArr);
         $fld->requirement->setRequired(true);
-        
+
         $frm->addDateField(Labels::getLabel('LBL_EXPIRY_DATE', $this->siteLangId), 'adsbatch_expired_on', '', array('readonly' => 'readonly'));
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));
         $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId), array('onclick' => 'clearForm();'));
         return $frm;
     }
-    
+
     /**
      * getBindProductForm
      *
@@ -246,7 +246,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId));
         return $frm;
     }
-        
+
     /**
      * batchForm
      *
@@ -255,7 +255,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function batchForm(int $adsBatchId = 0)
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $prodBatchAdsFrm = $this->getBatchForm($adsBatchId);
 
         if (0 < $adsBatchId) {
@@ -269,7 +269,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('frm', $prodBatchAdsFrm);
         $this->_template->render(false, false);
     }
-    
+
     /**
      * bindProducts
      *
@@ -278,12 +278,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function bindProducts(int $adsBatchId)
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $adsBatchId = FatUtility::int($adsBatchId);
         $this->set('adsBatchId', $adsBatchId);
         $this->_template->render();
     }
-    
+
     /**
      * bindProductForm
      *
@@ -293,7 +293,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function bindProductForm(int $adsBatchId, int $selProdId = 0)
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             $this->setError($this->error, 'Seller');
@@ -312,7 +312,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
-    
+
     /**
      * setupBatch
      *
@@ -320,7 +320,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function setupBatch()
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $frm = $this->getBatchForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
@@ -345,7 +345,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
     }
-    
+
     /**
      * setupProductsToBatch
      *
@@ -353,14 +353,14 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function setupProductsToBatch()
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $frm = $this->getBindProductForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if (false === $post) {
             LibHelper::dieJsonError(current($frm->getValidationErrors()));
         }
-        
+
         $productId = SellerProduct::getAttributesById($post['abprod_selprod_id'], 'selprod_product_id');
         $productIdentifier = strtoupper(Product::getAttributesById($productId, 'product_identifier'));
         $productIdentifier = explode(' ', $productIdentifier);
@@ -374,7 +374,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_ADS_BATCH_SETUP_SUCCESSFULLY', $this->siteLangId));
     }
-    
+
     /**
      * search
      *
@@ -410,10 +410,10 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('postedData', FatApp::getPostedData());
         $this->set('recordCount', $srch->recordCount());
         $this->set('pageSize', FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10));
-		$this->set('canEdit', $this->userPrivilege->canEditAdvertisementFeed(0, true));
+        $this->set('canEdit', $this->userPrivilege->canEditAdvertisementFeed(0, true));
         $this->_template->render(false, false);
     }
-    
+
     /**
      * deleteBatch
      *
@@ -422,7 +422,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function deleteBatch(int $adsBatchId)
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);
@@ -437,7 +437,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
 
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId));
     }
-    
+
     /**
      * getBatchProductsObj
      *
@@ -450,7 +450,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $srch->addCondition(AdsBatch::DB_TBL_PREFIX . 'user_id', '=', UserAuthentication::getLoggedUserId());
         return $srch;
     }
-    
+
     /**
      * searchProducts
      *
@@ -499,7 +499,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $this->set('catIdArr', $this->getProductCategory(true));
         $this->_template->render(false, false);
     }
-    
+
     /**
      * unlinkProduct
      *
@@ -510,7 +510,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function unlinkProduct(int $adsBatchId, int $selProdId, bool $return = false)
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);
@@ -526,7 +526,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId));
     }
-    
+
     /**
      * unlinkProducts
      *
@@ -535,7 +535,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function unlinkProducts(int $adsBatchId)
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $adsBatchId = FatUtility::int($adsBatchId);
         $sellerProducts = FatApp::getPostedData('selprod_ids');
         if (1 > $adsBatchId || !is_array($sellerProducts) || 1 > count($sellerProducts)) {
@@ -547,7 +547,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         FatUtility::dieJsonSuccess(Labels::getLabel('MSG_SUCCESSFULLY_DELETED', $this->siteLangId));
     }
-    
+
     /**
      * getProductCategory
      *
@@ -563,7 +563,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         CommonHelper::jsonEncodeUnicode($data, true);
     }
-    
+
     /**
      * getData
      *
@@ -573,7 +573,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
     {
         $db = FatApp::getDb();
         $srch = $this->getBatchProductsObj();
-        
+
         $srch->addMultipleFields(
             [
                 'selprod_id', 'selprod_title', 'selprod_stock', 'selprod_condition', 'selprod_price', 'selprod_available_from', 'product_id', 'product_description', 'product_upc', 'language_code', 'country_code', 'IFNULL(brand_name, brand_identifier) as brand_name', 'abprod_item_group_identifier', 'adsbatch_expired_on', 'abprod_cat_id'
@@ -600,7 +600,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         }
         return $productData;
     }
-    
+
     /**
      * publishBatch
      *
@@ -609,7 +609,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
      */
     public function publishBatch(int $adsBatchId)
     {
-		$this->userPrivilege->canEditAdvertisementFeed();
+        $this->userPrivilege->canEditAdvertisementFeed();
         $this->adsBatchId = $adsBatchId;
         if (false === $this->validateBatchRequest()) {
             LibHelper::dieJsonError($this->error);

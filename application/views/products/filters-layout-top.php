@@ -183,17 +183,17 @@
                                         </i></button>
               
                 <div class="listing-products -listing-products ">
-                    <div id="productsList" role="main-listing" class="product-listing product-items">
-                        <?php $productsData = array(
-                                        'products' => $products,
-                                        'page' => $page,
-                                        'pageCount' => $pageCount,
-                                        'postedData' => $postedData,
-                                        'recordCount' => $recordCount,
-                                        'siteLangId' => $siteLangId,
-                                    );
-                            $this->includeTemplate('products/products-list.php', $productsData, false); ?> 
-                    </div>
+                    <?php 
+                    $productsData = array(
+                        'products' => $products,
+                        'page' => $page,
+                        'pageCount' => $pageCount,
+                        'postedData' => $postedData,
+                        'recordCount' => $recordCount,
+                        'siteLangId' => $siteLangId,
+                    );
+                    $this->includeTemplate('products/products-list.php', $productsData, false);
+                    ?> 
                 </div>
             </main>
         </div>

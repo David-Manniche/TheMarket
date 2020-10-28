@@ -180,10 +180,9 @@
                 z-index: -1;
                 -webkit-box-shadow: 0 -1px 0 $border-color inset;
                 box-shadow: 0 -1px 0 $border-color inset;
-                left: 0;
+                #{$start-direction}: 0;
                 background-position: left top;
-                -webkit-box-shadow: 1px 0 0 $border-color inset;
-                box-shadow: 1px 0 0 $border-color inset;
+                border-#{$start-direction}: $border;
             }
         }
     }
@@ -586,6 +585,8 @@
                 font-weight: 500;
                 font-size: 0.9rem;
                 margin-bottom: 10px;
+                display: flex;
+                align-items: flex-start;
             }
             .tag {
                 margin: 0 5px;

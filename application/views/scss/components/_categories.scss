@@ -94,7 +94,7 @@
         position: absolute;
         list-style: none;
         top: 0px;
-        left: 98%;
+        #{$start-direction}: 98%;
         width: 1080px;
         min-height: 100%;
         padding: 0 1rem;

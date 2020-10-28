@@ -5,17 +5,17 @@ class ElasticSearchSettingsController extends FullTextSearchSettingsController
     {
         return [
                 'host' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => true,
                     'label' => "Elastic Search host Url",
                 ],
                 'username' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => false,
                     'label' => "Elastic Search username",
                 ],
                 'password' => [
-                    'type' => 'string',
+                    'type' => PluginSetting::TYPE_STRING,
                     'required' => false,
                     'label' => "Elastic Search password",
                 ]

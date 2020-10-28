@@ -4,20 +4,20 @@ $paymentMethods = User::getAffiliatePaymentMethodArr($adminLangId);
 $payoutPlugins = Plugin::getNamesByType(Plugin::TYPE_PAYOUTS, $adminLangId);
 
 $arr_flds = array(
-        'listserial' => Labels::getLabel('LBL_ID', $adminLangId),
-        'user_details' => Labels::getLabel('LBL_User_Details', $adminLangId),
-        'user_balance' => Labels::getLabel('LBL_Balance', $adminLangId),
-        'withdrawal_amount' => Labels::getLabel('LBL_Amount', $adminLangId),
-        'withdrawal_payment_method' => Labels::getLabel('LBL_Withdrawal_Mode', $adminLangId),
-        'account_details' => Labels::getLabel('LBL_Account_Details', $adminLangId),
-        'withdrawal_request_date' => Labels::getLabel('LBL_Date', $adminLangId),
-        'withdrawal_status' => Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => '',
-    );
+    'listserial' => Labels::getLabel('LBL_ID', $adminLangId),
+    'user_details' => Labels::getLabel('LBL_User_Details', $adminLangId),
+    'user_balance' => Labels::getLabel('LBL_Balance', $adminLangId),
+    'withdrawal_amount' => Labels::getLabel('LBL_Amount', $adminLangId),
+    'withdrawal_payment_method' => Labels::getLabel('LBL_Withdrawal_Mode', $adminLangId),
+    'account_details' => Labels::getLabel('LBL_Account_Details', $adminLangId),
+    'withdrawal_request_date' => Labels::getLabel('LBL_Date', $adminLangId),
+    'withdrawal_status' => Labels::getLabel('LBL_Status', $adminLangId),
+    'action' => '',
+);
 if (!$canEdit) {
     unset($arr_flds['action']);
 }
-        
+
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table--hovered table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $val) {
@@ -32,7 +32,7 @@ foreach ($arr_listing as $sn => $row) {
     }
     $sr_no++;
     $tr = $tbl->appendElement('tr');
-    
+
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
         switch ($key) {
@@ -54,7 +54,7 @@ foreach ($arr_listing as $sn => $row) {
                 if ($row['user_is_affiliate']) {
                     $str .= $arr[User::USER_TYPE_AFFILIATE] . '<br/>';
                 }
-                
+
                 $txt = '<strong>' . Labels::getLabel('LBL_N', $adminLangId) . ': </strong>' . $row["user_name"] . '<br>';
                 $txt .= '<strong>' . Labels::getLabel('LBL_U', $adminLangId) . ': </strong>' . $row["user_username"] . '<br>';
                 $txt .= '<strong>' . Labels::getLabel('LBL_E', $adminLangId) . ': </strong>' . $row["user_email"] . '<br>';
@@ -81,7 +81,7 @@ foreach ($arr_listing as $sn => $row) {
                     case User::AFFILIATE_PAYMENT_METHOD_CHEQUE:
                         $txt .= '<strong>' . Labels::getLabel('LBL_Cheque_Payee_Name', $adminLangId) . ': </strong>' . $row['withdrawal_cheque_payee_name'];
                         break;
-                    
+
                     case User::AFFILIATE_PAYMENT_METHOD_BANK:
                         $txt = '<strong>' . Labels::getLabel('LBL_Bank_Name', $adminLangId) . ': </strong>' . $row["withdrawal_bank"] . '<br>';
                         $txt .= '<strong>' . Labels::getLabel('LBL_A/C_Name', $adminLangId) . ': </strong>' . $row["withdrawal_account_holder_name"] . '<br>';
@@ -89,7 +89,7 @@ foreach ($arr_listing as $sn => $row) {
                         $txt .= '<strong>' . Labels::getLabel('LBL_IFSC_Code/Swift_Code', $adminLangId) . ': </strong>' . $row["withdrawal_ifc_swift_code"] . '<br>';
                         $txt .= '<strong>' . Labels::getLabel('LBL_Bank_Address', $adminLangId) . ': </strong>' . $row["withdrawal_bank_address"] . '<br>';
                         break;
-                    
+
                     case User::AFFILIATE_PAYMENT_METHOD_PAYPAL:
                         $txt .= '<strong>' . Labels::getLabel('LBL_Paypal_Email_Account', $adminLangId) . ': </strong>' . $row['withdrawal_paypal_email_id'];
                         break;
@@ -104,7 +104,7 @@ foreach ($arr_listing as $sn => $row) {
                 if (!empty($row["withdrawal_comments"])) {
                     $txt .= '<br><strong>' . Labels::getLabel('LBL_Comments', $adminLangId) . ': </strong>' . $row["withdrawal_comments"];
                 }
-                
+
                 $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'withdrawal_request_date':
@@ -116,8 +116,8 @@ foreach ($arr_listing as $sn => $row) {
             case 'action':
                 if ($canEdit && $row['withdrawal_status'] == Transactions::STATUS_PENDING) {
                     $approveAction = empty($pluginKeyName) ? 'updateStatus' : 'requestOutside';
-                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Approve', $adminLangId),"onclick" => $approveAction . "(" . $pluginKeyName . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_APPROVED . " , 'approve' )"), "<i class='far fa-thumbs-up'></i>", true);                    
-                    $td->appendElement('a', array('href' => 'javascript:void(0)','class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Decline', $adminLangId),"onclick" => "updateStatus(" . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_DECLINED . " , 'decline' )"), "<i class='far fa-thumbs-down'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Approve', $adminLangId), "onclick" => $approveAction . "(" . $pluginKeyName . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_APPROVED . " , 'approve' )"), "<i class='far fa-thumbs-up'></i>", true);
+                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Decline', $adminLangId), "onclick" => "updateStatus(" . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_DECLINED . " , 'decline' )"), "<i class='far fa-thumbs-down'></i>", true);
                 }
                 break;
             default:
@@ -132,7 +132,7 @@ if (count($arr_listing) == 0) {
 echo $tbl->getHtml();
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
-        'name' => 'frmReqSearchPaging'
+    'name' => 'frmReqSearchPaging'
 ));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

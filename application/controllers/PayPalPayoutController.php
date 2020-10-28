@@ -6,21 +6,19 @@ class PayPalPayoutController extends PayoutBaseController
     public static function reqFields()
     {
         $reqFields = [
-                'amount' => [
-                    'type' => 'float',
-                    'required' => true,
-                    'label' => "Amount",
-                ]
-            ];
+            'amount' => [
+                'type' => PluginSetting::TYPE_FLOAT,
+                'required' => true,
+                'label' => "Amount",
+            ]
+        ];
         $formFields = static::formFields();
         return array_merge($reqFields, $formFields);
     }
 
     public function getRequestForm()
     {
-        $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
-        //return $this->getForm(static::reqFields(), $data);
-        $frm = $this->getFormObj(static::reqFields()); 
+        $frm = $this->getFormObj(static::reqFields());
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -162,20 +160,20 @@ class PayPalPayoutController extends PayoutBaseController
         $senderBatchIdArr = explode('_', $requestData['sender_batch_id']);
         $recordId = end($senderBatchIdArr);
         $recordId = FatUtility::int($recordId);
-        
+
         $txnStatus = '';
         switch ($event_type) {
             case "PAYMENT.PAYOUTS-ITEM.SUCCEEDED":
                 $withdrawStatus = Transactions::WITHDRAWL_STATUS_COMPLETED;
                 $txnStatus = Transactions::STATUS_COMPLETED;
                 break;
-            
+
             case "PAYMENT.PAYOUTS-ITEM.CANCELED":
             case "PAYMENT.PAYOUTS-ITEM.DENIED":
                 $withdrawStatus = Transactions::WITHDRAWL_STATUS_DECLINED;
                 $txnStatus = Transactions::STATUS_DECLINED;
                 break;
-            
+
             case "PAYMENT.PAYOUTS-ITEM.FAILED":
                 $withdrawStatus = Transactions::WITHDRAWL_STATUS_PAYOUT_FAILED;
                 $txnStatus = Transactions::STATUS_DECLINED;
