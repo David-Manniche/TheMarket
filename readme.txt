@@ -324,6 +324,13 @@ Bugs:
     => 044475 - Checkout >> home page >> Delete products>> cart gets empty and it shows "Your shopping cart is empty!" with "0" amount and if we proceed with that then some products are still there.
     => 044474 - When we come back on home page from checkout then it shows "invalid products " on deleting for those products which were not on checkout
 -------------------TV-9.2.2.20201027---------------------
+    => 044605	Auto create default shipping profile and linked products
+    => 044367 - seller >> pickup address >> "+" icon next to slots is not getting display in first time
+    => 044371 - add money to wallet> stripe form screen> cancel button is not working 
+    => 044467 - pickup and payment cancel orders are coming under canceled orders on seller end
+    => 044383 - if ship station is on and we try to buy admin's product then some error is there on checkout. 
+    => 044373 - add money to wallet> using paypal> there is error
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

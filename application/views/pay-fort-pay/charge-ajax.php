@@ -14,10 +14,6 @@ if (!isset($error)) { ?>
 <?php } ?>
 <script>
     function cancel() {
-        <?php if (FatUtility::isAjaxCall()) { ?>
-            loadPaymentSummary();
-        <?php } else { ?>
-            location.href = "<?php echo $cancelBtnUrl; ?>";
-        <?php } ?>
+        location.href = "<?php echo $cancelBtnUrl; ?>";
     }
 </script>

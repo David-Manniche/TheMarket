@@ -76,14 +76,96 @@ class ShippingProfile extends MyAppModel
                 'shipprofile_default' => 1
             );
 
-            $spObj = new ShippingProfile();
-            $spObj->assignValues($dataToInsert);
+            $shippingProfile = new ShippingProfile();
+            $shippingProfile->assignValues($dataToInsert);
 
-            if (!$spObj->save()) {
-                Message::addErrorMessage($spObj->getError());
-                FatUtility::dieJsonError(Message::getHtml());
+            if (!$shippingProfile->save()) {
+                Message::addErrorMessage($shippingProfile->getError());
             }
-            return $spObj->getMainTableRecordId();
+            $shippingProfileId = $shippingProfile->getMainTableRecordId();
+
+            $zoneData = [
+                'shipzone_user_id' => $userId,
+                'shipzone_active' => applicationConstants::ACTIVE,
+                'shipzone_name' => Labels::getLabel('LBL_Standard', CommonHelper::getLangId()) . '-' . $shippingProfileId
+            ];
+            $shippingZone = new ShippingZone();
+            $shippingZone->assignValues($zoneData);
+            if (!$shippingZone->save()) {
+                Message::addErrorMessage($shippingZone->getError());
+            }
+            $shipZoneId = $shippingZone->getMainTableRecordId();
+
+            if ($shipZoneId) {
+                $location = [
+                    'shiploc_zone_id' => -1,
+                    'shiploc_country_id' => -1,
+                    'shiploc_state_id' => -1,
+                    'shiploc_shipzone_id' => $shipZoneId,
+                ];
+                $shippingZone->updateLocations($location);
+            }
+
+            $shipProZoneId = 0;
+            if ($shippingProfileId && $shipZoneId) {
+                $data = array(
+                    'shipprozone_shipprofile_id' => $shippingProfileId,
+                    'shipprozone_shipzone_id' => $shipZoneId
+                );
+                $shippingProfileZone = new ShippingProfileZone();
+                $shippingProfileZone->assignValues($data);
+                if (!$shippingProfileZone->save($data)) {
+                    Message::addErrorMessage($shippingProfileZone->getError());
+                }
+                $shipProZoneId = $shippingProfileZone->getMainTableRecordId();
+            }
+
+            $rates = [
+                'shiprate_shipprozone_id' => $shipProZoneId,
+                'shiprate_identifier' => Labels::getLabel('LBL_Standard', CommonHelper::getLangId()) . '-' . $shippingProfileId,
+                'shiprate_condition_type' => 0,
+                'shiprate_min_val' => 0,
+                'shiprate_max_val' => 0,
+            ];
+
+            $shippingRate = new ShippingRate();
+            $shippingRate->assignValues($rates);
+            if (!$shippingRate->save()) {
+                Message::addErrorMessage($shippingRate->getError());
+            }
+
+            if ($shippingProfileId) {
+                $srch = new ProductSearch(CommonHelper::getLangId(), null, null, false, false);
+                $srch->joinProductShippedBySeller($userId);
+                if (User::canAddCustomProduct()) {
+                    $srch->addDirectCondition('((product_seller_id = 0 AND product_added_by_admin_id = ' . applicationConstants::YES . ' and psbs.psbs_user_id = ' . $userId . ') OR product_seller_id = ' . $userId . ')');
+                } else {
+                    $cnd = $srch->addCondition('psbs.psbs_user_id', '=', $userId);
+                    $cnd->attachCondition('product_added_by_admin_id', '=', applicationConstants::YES, 'AND');
+                }
+
+                $srch->addCondition('product_deleted', '=', applicationConstants::NO);
+                if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
+                    $is_custom_or_catalog = FatApp::getPostedData('type', FatUtility::VAR_INT, -1);
+                    if ($is_custom_or_catalog > -1) {
+                        if ($is_custom_or_catalog > 0) {
+                            $srch->addCondition('product_seller_id', '>', 0);
+                        } else {
+                            $srch->addCondition('product_seller_id', '=', 0);
+                        }
+                    }
+                }
+                $srch->addMultipleFields(array($userId . ' as user_id', $shippingProfileId . ' as shipprofile_id', 'product_id'));
+                $srch->doNotCalculateRecords();
+                $srch->doNotLimitRecords();
+                $srch->addGroupBy('product_id');
+                $tmpQry = $srch->getQuery();
+
+                $qry = "INSERT INTO " . ShippingProfileProduct::DB_TBL . " (shippro_user_id, shippro_shipprofile_id, shippro_product_id) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE shippro_user_id = t.user_id, shippro_shipprofile_id = t.shipprofile_id, shippro_product_id = t.product_id";
+
+                FatApp::getDb()->query($qry);
+            }
+            return $shippingProfileId;
             /* ] */
         }
         return $row['shipprofile_id'];
