@@ -1650,6 +1650,10 @@ class SellerController extends SellerBaseController
 
     public function taxCategories()
     {
+        if (!FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
         $this->userPrivilege->canViewTaxCategory(UserAuthentication::getLoggedUserId());
         $frmSearch = $this->getTaxCatSearchForm($this->siteLangId);
         $this->set("frmSearch", $frmSearch);
