@@ -326,6 +326,7 @@ Bugs:
 -------------------TV-9.2.2.20201027---------------------
     => 044367 - seller >> pickup address >> "+" icon next to slots is not getting display in first time
     => 044371 - add money to wallet> stripe form screen> cancel button is not working 
+    => 044339 - admin >> cancellation request >> total reward points gets display there instead of reward points for that particular child order.
 
 Enhancements:
     => Tax module upgrade

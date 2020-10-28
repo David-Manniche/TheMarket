@@ -16,7 +16,7 @@ $frm->getField('ocrequest_admin_comment')->setWrapperAttribute('class','wrapper-
     </div>
 	<div class="sectionbody space">
 		<?php if($orderRewardUsed){?>
-		<h3><?php echo str_replace('{rewardpoint}',$orderRewardUsed,Labels::getLabel('MSG_{rewardpoint}_reward_point_used._which_will_not_credit_back_automatically',$adminLangId));?></h3>
+		<h3><?php echo Labels::getLabel("MSG_REWARDS_POINTS_USED_FOR_THIS_ORDER_WILL_NOT_BE_CREDITED_BACK_TO_THE_BUYER_ACCOUNT.",$adminLangId);?></h3>
 		<?php }?>
 		<div class="border-box border-box--space">
 			<?php echo $frm->getFormHtml(); ?>
