@@ -339,7 +339,8 @@ Enhancements:
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
     => Advanced search UI and Auto Suggestions.
-    => Category Listing Page UI  
+    => Category Listing Page UI 
+    => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------     
 Notes:
    ==========Stripe Connect Installation Notes[:=========

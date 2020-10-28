@@ -4,35 +4,7 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
-        $userId = 12;
-        $shippingProfileId = 1;
-        $srch = new ProductSearch($this->adminLangId, null, null, false, false);
-        $srch->joinProductShippedBySeller($userId);
-        if (User::canAddCustomProduct()) {
-            $srch->addDirectCondition('((product_seller_id = 0 AND product_added_by_admin_id = ' . applicationConstants::YES . ' and psbs.psbs_user_id = ' . $userId . ') OR product_seller_id = ' . $userId . ')');
-        } else {
-            $cnd = $srch->addCondition('psbs.psbs_user_id', '=', $userId);
-            $cnd->attachCondition('product_added_by_admin_id', '=', applicationConstants::YES, 'AND');
-        }
-
-        $srch->addCondition('product_deleted', '=', applicationConstants::NO);
-        if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
-            $is_custom_or_catalog = FatApp::getPostedData('type', FatUtility::VAR_INT, -1);
-            if ($is_custom_or_catalog > -1) {
-                if ($is_custom_or_catalog > 0) {
-                    $srch->addCondition('product_seller_id', '>', 0);
-                } else {
-                    $srch->addCondition('product_seller_id', '=', 0);
-                }
-            }
-        }
-        $srch->addMultipleFields(array($userId . ' as user_id',$shippingProfileId . ' as shipprofile_id','product_id'));
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $srch->addGroupBy('product_id');
-        
-        $tmpQry = $srch->getQuery();
-        echo $qry = "INSERT INTO " . ShippingProfileProduct::DB_TBL . " (shippro_user_id, shippro_shipprofile_id, shippro_product_id) SELECT * FROM (" . $tmpQry . ") AS t ON DUPLICATE KEY UPDATE shippro_user_id = t.user_id, shippro_shipprofile_id = t.shipprofile_id, shippro_product_id = t.product_id";
+       
     }
 
     public function test123()
