@@ -259,6 +259,7 @@
 .cat-accordion .acc-trigger {
     position: absolute;
     top: 9px;
+    z-index: 1;
     #{$end-direction}: 0;
     cursor: pointer;
     width: 10px;
@@ -377,16 +378,18 @@
 
 .price-text-box {
     position: relative;
-}
-
-.price-text-box .input-filter {
-    margin: 0;
-    padding-#{$end-direction}: 5px;
-    padding-#{$start-direction}: 36px;
-    display: inline-block;
-    font-size: 12px;
-    vertical-align: top;
-    height: 40px;
+    .input-filter {
+        margin: 0;
+        padding-#{$end-direction}: 5px;
+        padding-#{$start-direction}: 36px;
+        display: inline-block;
+        font-size: 12px;
+        vertical-align: top;
+        height: 40px;
+    }
+    .input-group-text {
+        font-size: 0.8rem;
+    }
 }
 
 .rsText {

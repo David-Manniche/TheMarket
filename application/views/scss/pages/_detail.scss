@@ -1277,9 +1277,14 @@
                 font-weight: 300;
             }
         }
+        .qty-wrapper {
+            margin: 0 10px;
+        }
+        .checkbox {
+            min-width: 30px;
+        }
         &:last-child {
             border-bottom: none;
-            padding-bottom: 0;
         }
     }
     .tag--soldout {

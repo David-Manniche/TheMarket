@@ -51,7 +51,7 @@ if (isset($prodcat_code)) {
         </div>
         <?php if (!$shopCatFilters) { ?>
             <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim" >
-                <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
+                <div id="accordian" class="cat-accordion toggle-target scrollbar-filters scroll" data-simplebar="init" data-simplebar-auto-hide="false" >
                 <ul >
                     <?php foreach ($categoriesArr as $cat) {
                     $catUrl = UrlHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
