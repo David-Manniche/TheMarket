@@ -334,6 +334,7 @@ Bugs:
     => 044619 - when add product setting is disabled from admin for seller then some settings on front end are not in use
     => 044339 - admin >> cancellation request >> total reward points gets display there instead of reward points for that particular child order.
     => 044634 - on order print> default fav icon is coming
+    => 042447 - Admin >> Add zone >> language data section is according to old versions .
 
 Enhancements:
     => Tax module upgrade
