@@ -9843,54 +9843,18 @@ a.link-arrow {
       .side-cart--on .side-cart {
         width: 100%; } }
   .side-cart .cartdetail__body {
-    /*max-height: 400px;
-    max-height: calc(100vh - 300px);*/
+    max-height: calc(100vh - 215px);
     background: #fff;
-    flex: 1; }
-
-.cart-summary {
-  width: 100%; }
-  .cart-summary tr {
+    flex: 1;
     border-bottom: solid 1px #dee2e6; }
-  .cart-summary th {
-    background: #ededed;
-    color: #000;
-    font-weight: 300; }
-  .cart-summary th,
-  .cart-summary td {
-    vertical-align: top;
-    padding: 10px;
-    font-size: 0.8rem; }
-  .cart-summary .products__img {
-    max-width: 100px; }
-  .cart-summary .products .products-head-title {
-    font-size: 0.8em; }
-  .cart-summary .products .products-head-specification {
-    font-size: 0.8em; }
-  .cart-summary .products .products__price {
-    font-size: 1em; }
-  .cart-summary .products .products-head {
-    height: auto; }
 
 .cart-footer {
   position: -webkit-sticky;
   position: sticky !important;
   top: 185px; }
 
-.cartdetail__footer {
-  padding: 0; }
-  .cartdetail__footer table {
-    width: 100%; }
-    .cartdetail__footer table td {
-      padding: 10px;
-      font-size: 0.9em; }
-      .cartdetail__footer table td.hightlighted {
-        font-weight: 500;
-        font-size: 0.85rem;
-        border-top: solid 1px #dee2e6;
-        border-bottom: solid 1px #dee2e6; }
-      .cartdetail__footer table td:last-child {
-        text-align: right; }
+.cartdetail__footer .buttons-group {
+  flex: 1; }
 
 .catalog-bg {
   /* background-image: url(./images/catalog-bg.png);*/
@@ -15202,7 +15166,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     overflow: hidden; }
   .item__description {
     font-size: 0.9em;
-    min-width: 200px;
+    min-width: 180px;
     max-width: 400px; }
     .item__description .item__pic {
       margin-right: 10px; }
@@ -31372,6 +31336,26 @@ a.ui-button:active,
   .list-cart-order .product-thumbnail {
     max-width: 48px;
     flex: 0 0 48px; }
+  .list-cart.cart-summary {
+    font-size: 0.7rem; }
+    .list-cart.cart-summary .list-group-item {
+      border: none; }
+      @media (max-width: 991.98px) {
+        .list-cart.cart-summary .list-group-item {
+          flex-direction: row; } }
+      .list-cart.cart-summary .list-group-item .item {
+        flex: 0 0 70%;
+        max-width: 70%; }
+      .list-cart.cart-summary .list-group-item .product_price {
+        flex: 0 0 15%;
+        max-width: 15%; }
+        @media (max-width: 767.98px) {
+          .list-cart.cart-summary .list-group-item .product_price {
+            flex: 0 0 25%;
+            max-width: 25%; } }
+      .list-cart.cart-summary .list-group-item .product-action {
+        flex: 0 0 10%;
+        max-width: 10%; }
 
 .product-profile {
   display: flex;
@@ -31387,9 +31371,13 @@ a.ui-button:active,
     position: relative;
     margin-right: 15px; }
     .product-profile__thumbnail img, .product-profile__thumbnail .post .post_media iframe, .post .post_media .product-profile__thumbnail iframe, .product-profile__thumbnail .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .product-profile__thumbnail img, .product-profile__thumbnail .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .product-profile__thumbnail img {
+      min-width: 30px;
       max-width: 72px;
       border-radius: 4px;
       border: solid 1px #dee2e6; }
+      @media (max-width: 767.98px) {
+        .product-profile__thumbnail img, .product-profile__thumbnail .post .post_media iframe, .post .post_media .product-profile__thumbnail iframe, .product-profile__thumbnail .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .product-profile__thumbnail img, .product-profile__thumbnail .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .product-profile__thumbnail img {
+          max-width: 50px; } }
     .product-profile__thumbnail .product-qty {
       font-size: 0.7rem;
       font-weight: 500;
