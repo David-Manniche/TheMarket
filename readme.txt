@@ -338,6 +338,7 @@ Bugs:
     => 044022 - Create a label for this button on forget password page 
     => 044624 - shop> reviews> flooded with errors
     => 044591 - when seller requests for catalog then in admin> specification group field is not there
+    => 044620 - buyer> share and earn> invite through email> button is not proper
 
 Enhancements:
     => Tax module upgrade
