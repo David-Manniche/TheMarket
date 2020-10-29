@@ -1765,6 +1765,9 @@ class Importexport extends ImportexportCommon
                             }
                             $taxCatId = isset($taxCategoryArr[$colValue]) ? $taxCategoryArr[$colValue] : 0;
                             break;
+                        case 'product_ship_package_id':
+							$columnKey = 'product_ship_package';
+							break;
                         case 'product_ship_package_identifier':
                             $columnKey = 'product_ship_package';
                             if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
