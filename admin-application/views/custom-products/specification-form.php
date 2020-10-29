@@ -72,17 +72,19 @@
                                                 }
                                                 ?>
                                                 <div class="row align-items-center mb-4">
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-3">
                                                         <div class="h5 mb-0">
                                                             <?php  echo $langName; ?>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-5">
+                                                    <div class="col-md-3">
                                                         <?php
                                                             $specName = !empty($productSpecifications['prod_spec_name'][$langId][$specKey])
                                                                         ? $productSpecifications['prod_spec_name'][$langId][$specKey] : '';
                                                             $specValue = !empty($productSpecifications['prod_spec_value'][$langId][$specKey])
                                                                         ? $productSpecifications['prod_spec_value'][$langId][$specKey] : '';
+                                                            $specGroup = !empty($productSpecifications['prod_spec_value'][$langId][$specKey])
+                                                                        ? $productSpecifications['prod_spec_group'][$langId][$specKey] : '';
                                                         ?>
                                                         <input
                                                             class="psec-name-js <?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
@@ -92,7 +94,7 @@
                                                             type="text"
                                                             name="prod_spec_name[<?php echo $langId ?>][<?php echo $specKey; ?>]">
                                                     </div>
-                                                    <div class="col-md-5">
+                                                    <div class="col-md-3">
                                                         <input
                                                             class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
                                                             title="<?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId)?>"
@@ -100,6 +102,15 @@
                                                             value="<?php echo $specValue; ?>"
                                                             placeholder="<?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId)?>"
                                                             name="prod_spec_value[<?php echo $langId ?>][<?php echo $specKey; ?>]">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input
+                                                            class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
+                                                            title="<?php echo Labels::getLabel('LBL_Specification_Group', $adminLangId)?>"
+                                                            type="text"
+                                                            value="<?php echo $specGroup; ?>"
+                                                            placeholder="<?php echo Labels::getLabel('LBL_Specification_Group', $adminLangId)?>"
+                                                            name="prod_spec_group[<?php echo $langId ?>][<?php echo $specKey; ?>]">
                                                     </div>
                                                     <?php if ($langId == key(array_slice($languages, -1, 1, true))) { ?>
                                                         <div class="col-lg-1 col-md-1 col-sm-4 col-xm-12 align--right">
@@ -130,12 +141,12 @@
                                         }
                                         ?>
                                         <div class="row align-items-center mb-4">
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <div class="h5 mb-0">
                                                     <?php  echo $langName; ?>
                                                 </div>
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-3">
                                                 <input
                                                     class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> psec-name-js <?php echo $class; ?>"
                                                     title="<?php echo Labels::getLabel('LBL_Specification_Name', $adminLangId)?>"
@@ -143,13 +154,22 @@
                                                     type="text"
                                                     name="prod_spec_name[<?php echo $langId ?>][0]">
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-3">
                                                 <input
                                                     class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
                                                     title="<?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId)?>"
                                                     placeholder="<?php echo Labels::getLabel('LBL_Specification_Value', $adminLangId)?>"
                                                     type="text"
                                                     name="prod_spec_value[<?php echo $langId ?>][0]">
+                                                
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input
+                                                    class="<?php echo 'layout--' . Language::getLayoutDirection($langId); ?> <?php echo $class; ?>"
+                                                    title="<?php echo Labels::getLabel('LBL_Specification_Group', $adminLangId)?>"
+                                                    placeholder="<?php echo Labels::getLabel('LBL_Specification_Group', $adminLangId)?>"
+                                                    type="text"
+                                                    name="prod_spec_group[<?php echo $langId ?>][0]">
                                                 
                                             </div>
                                         </div>

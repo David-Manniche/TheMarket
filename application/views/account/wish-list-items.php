@@ -10,7 +10,7 @@
 </div>
 <form method="post" name="wishlistForm" id="wishlistForm">
     <input type="hidden" name="uwlist_id" value="<?php echo $wishListRow['uwlist_id']; ?>" />
-    <div id="favListItems" role="main-listing" class="product-listing" data-view="4"></div>
+    <div id="favListItems" role="main-listing"></div>
 </form>
 
 <div id="loadMoreBtnDiv"></div>

@@ -140,29 +140,14 @@
     }
 }
 
-.buy-actions {
+.buy-group {
     display: flex;
+    margin: 0;
     align-items: center;
     justify-content: space-between;
-    .buy-group {
-        display: flex;
-        margin: 0;
-        align-items: center;
-        justify-content: space-between;
-        flex: 1;
-        margin-#{$start-direction}: 1rem;
-        .btn {
-            .icn {
-                line-height: 1;
-                img,
-                svg {
-                    width: 20px;
-                    height: 20px;
-                    margin-#{$end-direction}: 5px;
-                    fill: #fff;
-                }
-            }
-        }
+    flex: 1;
+    .add-to-cart {
+        min-height: 38px;
     }
 }
 
@@ -1267,8 +1252,8 @@
         justify-content: space-between;
         position: relative;
         .item {
-            flex: 0 0 70%;
-            max-width: 70%;
+            flex: 0 0 60%;
+            max-width: 60%;
             .item__title {
                 font-size: 0.8rem;
             }

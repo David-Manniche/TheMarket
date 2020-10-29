@@ -345,7 +345,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             $qtyFieldName =  $qtyField->getCaption();
                                             if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) { ?>
                                                 <div class="row align-items-end">
-                                                    <div class="col-xl-4 mb-2">
+                                                    <div class="col-md-4 mb-2">
                                                         <div class="form__group form__group-select">
                                                             <label class="h6"><?php echo $qtyFieldName; ?></label>
                                                             <div class="qty-wrapper">
@@ -363,7 +363,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xl-8 mb-2">
+                                                    <div class="col-md-8 mb-2">
                                                         <label class="h6">&nbsp;</label>
                                                         <div class="buy-group">
                                                             <?php if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {
@@ -446,7 +446,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                 <div class="gap"></div>
                                 <div class="h6"><?php echo Labels::getLabel('LBL_Product_Add-ons', $siteLangId); ?>
                                 </div>
-                                <div class="addons-scrollbar" data-simplebar>
+                                <div class="addons-scrollbar" data-simplebar="init" data-simplebar-auto-hide="false">
                                     <ul class="list-addons list-addons--js">
                                         <?php foreach ($upsellProducts as $usproduct) {
                                                 $cancelClass = '';

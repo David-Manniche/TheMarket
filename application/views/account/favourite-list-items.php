@@ -3,7 +3,7 @@
     <?php $this->includeTemplate('account/wishListItemsActions.php', array('isWishList' => false, 'siteLangId' => $siteLangId, 'wishListRow' => $wishListRow)); ?>
 </div>
 <form method="post" name="favtlistForm" id="favtlistForm">
-    <div id="favListItems" role="main-listing" class="product-listing" data-view="4"></div>
+    <div id="favListItems" role="main-listing"></div>
 </form>
 
 <div id="loadMoreBtnDiv"></div>

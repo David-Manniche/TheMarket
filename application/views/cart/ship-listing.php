@@ -142,10 +142,11 @@
                 <div class="product-action">
                     <ul class="list-actions">
                         <li>
-                            <a href="javascript:void(0)" onclick="cart.remove('<?php echo md5($product['key']); ?>','cart')"><svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
+                            <a href="javascript:void(0)" onclick="cart.remove('<?php echo md5($product['key']); ?>','cart')">
+                            <svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove">
                                     </use>
-                                </svg>
+                            </svg>
                             </a></li>
                     </ul>
                 </div>

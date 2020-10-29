@@ -1,4 +1,5 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="account-fav-listing">
 <div class="row">
     <?php if ($wishLists) {
     foreach ($wishLists as $wishlist) {
@@ -109,4 +110,5 @@
     </div>
     <?php
     } ?>
+</div>
 </div>

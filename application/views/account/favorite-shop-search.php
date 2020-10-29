@@ -1,4 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="featured">
 <?php if ($shops) { ?>
     <?php foreach ($shops as $shop) { ?>
         <div class="featured-item">
@@ -44,3 +45,4 @@
     $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'callBackJsFunc' => 'goToFavoriteShopSearchPage');
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 ?>
+</div>

@@ -66,6 +66,8 @@
          }
          &[type="file"] {
              @extend input;
+             width: auto;
+             overflow: hidden;
          }
          &[type="file"] {
              height: auto;
