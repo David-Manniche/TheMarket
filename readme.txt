@@ -341,7 +341,7 @@ Bugs:
     => 044624 - shop> reviews> flooded with errors
     => 044591 - when seller requests for catalog then in admin> specification group field is not there
     => 044620 - buyer> share and earn> invite through email> button is not proper
-
+--------------------------TV-9.2.2.20201029-----------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
