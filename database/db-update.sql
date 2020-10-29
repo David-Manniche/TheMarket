@@ -865,3 +865,7 @@ INNER JOIN tbl_products tp ON tp.product_id = tsp.selprod_product_id
 SET tsp.selprod_fulfillment_type = -1
 WHERE tp.product_type = 2;
 -- ---Change All Digital Products Fulfillment Type Both---- --
+
+-- ---Rounding off with order---- --
+ALTER TABLE `tbl_order_products` ADD `op_rounding_off` DECIMAL(4,2) NOT NULL AFTER `op_tax_code`;
+ALTER TABLE `tbl_orders` ADD `order_rounding_off` DECIMAL(4,2) NOT NULL AFTER `order_deleted`;

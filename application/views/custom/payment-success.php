@@ -215,7 +215,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
 
                                                                     $shippingCharges += $product['op_actual_shipping_charges'];
                                                                     ?>
-                                                                </div>
+                                                                </div>                                                                
                                                             </li>
                                                         <?php }
                                                     } else {
@@ -280,6 +280,12 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                             <span class="label"><?php echo Labels::getLabel('LBL_NET_AMOUNT', $siteLangId); ?></span>
                                                             <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
                                                         </li>
+                                                        <?php if(array_key_exists('order_rounding_off',$orderInfo) && 0 < $orderInfo['order_rounding_off']){?>
+                                                        <li class="list-group-item">
+                                                            <span class="label"><?php echo Labels::getLabel('LBL_Rounding_Off', $siteLangId); ?></span>
+                                                            <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_rounding_off']); ?></span>
+                                                        </li>
+                                                        <?php }?>
                                                     </ul>
                                                 </div>
                                             </div>

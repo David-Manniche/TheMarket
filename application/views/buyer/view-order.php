@@ -446,13 +446,22 @@ if (!$print) { ?>
                                             <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?>
                                         </td>
                                         <td>
-                                            <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true); ?>
+                                            <?php 
+                                                echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true);
+                                                if (array_key_exists('op_rounding_off',$childOrder) && 0 < $childOrder['op_rounding_off']) {
+                                                    echo '<br>';
+                                                    echo Labels::getLabel('LBL_Rounding_Off', $siteLangId);
+                                                    echo '(';
+                                                    echo CommonHelper::displayMoneyFormat($childOrder['op_rounding_off']);
+                                                    echo ')';
+                                                }                                                
+                                            ?>
                                         </td>
                                     </tr>
                                 <?php }
                                 if (!$primaryOrder) { ?>
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="8">
                                             <?php echo Labels::getLabel('Lbl_Cart_Total', $siteLangId) ?>
                                         </td>
                                         <td>
@@ -460,7 +469,7 @@ if (!$print) { ?>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="8">
                                             <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId) ?>
                                         </td>
                                         <td>
@@ -470,7 +479,7 @@ if (!$print) { ?>
                                     <?php
                                     if (empty($taxOptionsTotal)) { ?>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="8">
                                                 <?php echo Labels::getLabel('LBL_Tax_Charges', $siteLangId) ?>
                                             </td>
                                             <td>
@@ -480,7 +489,7 @@ if (!$print) { ?>
                                         <?php } else {
                                         foreach ($taxOptionsTotal as $key => $val) { ?>
                                             <tr>
-                                                <td colspan="7">
+                                                <td colspan="8">
                                                     <?php echo $val['title']; ?>
                                                 </td>
                                                 <td>
@@ -491,7 +500,7 @@ if (!$print) { ?>
                                     } ?>
                                     <?php if (0 < $orderDetail['order_discount_total']) { ?>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="8">
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId) ?>
                                             </td>
                                             <td>-
@@ -501,7 +510,7 @@ if (!$print) { ?>
                                     <?php } ?>
                                     <?php if (0 < $orderDetail['order_volume_discount_total']) { ?>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="8">
                                                 <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId) ?>
                                             </td>
                                             <td>-
@@ -511,7 +520,7 @@ if (!$print) { ?>
                                     <?php } ?>
                                     <?php if (0 < $orderDetail['order_reward_point_value']) { ?>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="8">
                                                 <?php echo Labels::getLabel('LBL_REWARD_POINTS', $siteLangId) ?>
                                             </td>
                                             <td>-
@@ -520,13 +529,23 @@ if (!$print) { ?>
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="8">
                                             <?php echo Labels::getLabel('LBL_Total', $siteLangId) ?>
                                         </td>
                                         <td>
                                             <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_net_amount'], true, false, true, false, true); ?>
                                         </td>
                                     </tr>
+                                    <?php if(array_key_exists('order_rounding_off',$orderDetail) && 0 < $orderDetail['order_rounding_off']){?>
+                                    <tr>
+                                        <td colspan="8">
+                                            <?php echo Labels::getLabel('LBL_Rounding_Off', $siteLangId) ?>
+                                        </td>
+                                        <td>
+                                            <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -684,7 +703,6 @@ if (!$print) { ?>
                         </div>
                     <?php } ?>
                     <?php if (!empty($orderDetail['payments'])) { ?>
-
                         <div class="section--repeated mb-3">
                             <h6>
                                 <?php echo Labels::getLabel('LBL_Payment_History', $siteLangId); ?>

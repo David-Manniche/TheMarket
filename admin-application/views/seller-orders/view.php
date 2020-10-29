@@ -156,7 +156,16 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 <td><strong><?php echo Labels::getLabel('LBL_Volume_Discount', $adminLangId); ?></strong> : <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true); ?> </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Total_Paid', $adminLangId); ?> : </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true); ?>
                                 </td>
-                            </tr>
+                            </tr>                            
+                                <?php if (array_key_exists('op_rounding_off',$order) && 0 < $order['op_rounding_off']) { ?>
+                                <tr>
+                                    <td>
+                                        <strong><?php echo Labels::getLabel('LBL_Rounding_Off', $adminLangId); ?>:
+                                        </strong><?php echo CommonHelper::displayMoneyFormat($order['op_rounding_off'], true, true); ?>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                               
                             <?php if ($order["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
                                 <tr>
                                     <td>
@@ -407,7 +416,18 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                     </td>
                                 <?php } ?> <td>
                                     <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true); ?></td>
-                                <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true); ?></td>
+                                <td>
+                                    <?php 
+                                        echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true); 
+                                        if (array_key_exists('op_rounding_off',$order) && 0 < $order['op_rounding_off']) {
+                                            echo '<br>';
+                                            echo Labels::getLabel('LBL_Rounding_Off', $adminLangId);
+                                            echo '(';
+                                            echo CommonHelper::displayMoneyFormat($order['op_rounding_off']);
+                                            echo ')';
+                                        }
+                                    ?>
+                                </td>
                             </tr>
                         </table>
                     </div>

@@ -1383,6 +1383,33 @@ class Orders extends MyAppModel
         }
     }
 
+    public function getSubOrders(){
+        $opSrch = new SearchBase(OrderProduct::DB_TBL);
+        $opSrch->doNotCalculateRecords();
+        $opSrch->doNotLimitRecords();
+        $opSrch->addMultipleFields(array('op_id','op_rounding_off'));
+        $opSrch->addCondition('op_order_id', '=', $this->orderId);
+        $opSrch->addCondition('op_status_id', '!=', intval(OrderStatus::ORDER_REFUNDED));
+        $rs = $opSrch->getResultSet();
+        $subOrders = FatApp::getDb()->fetchAll($rs);
+        if(!$subOrders){
+            return false;
+        }
+        return $subOrders;
+    }
+
+    public function getRoundingOffAmount()
+    {
+        if(!$subOrders = $this->getSubOrders()){
+            return 0;
+        }                
+        if (count($subOrders) == 1) {
+            return $subOrders['op_rounding_off'];
+        }
+
+        return 0;
+    }
+
     public function addChildProductOrderHistory($op_id, $langId, $opStatusId, $comment = '', $notify = false, $trackingNumber = '', $releasePayments = 0, $moveRefundToWallet = true, $trackingCourier = '')
     {
         $op_id = FatUtility::int($op_id);
@@ -1503,6 +1530,9 @@ class Orders extends MyAppModel
                 }
 
                 $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"]);
+                
+                $roundindOffAmount = $this->getRoundingOffAmount();
+                $txnAmount += $roundindOffAmount;
 
                 /*Refund to Buyer[*/
                 if ($txnAmount > 0) {

@@ -541,6 +541,7 @@ class Cart extends FatModel
                     $this->products[$key]['seller_address'] = Shop::getShopAddress($shopId, true, $siteLangId);
                 }
                 $this->products[$key]['fulfillment_type'] = $sellerProductRow['fulfillment_type'];
+                $this->products[$key]['rounding_off'] = $sellerProductRow['rounding_off'];
             }
 
             /* $sellerPrice = $this->getSellersProductItemsPrice($this->products);
@@ -688,6 +689,21 @@ class Cart extends FatModel
         }
 
         $tax = $taxData['tax'];
+
+        /*Vivek*/
+        $roundingOff = 0;
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
+            $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
+            $thePriceincludingTax = $taxData['tax'] + $totalPrice;
+            if ($originalTotalPrice != $thePriceincludingTax) {
+                if ($originalTotalPrice > $thePriceincludingTax) {
+                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
+                    
+                }
+            }
+        }
+        $sellerProductRow['rounding_off'] = $roundingOff;
+
         /* if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
             $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
             $thePriceincludingTax = $tax + $totalPrice;
@@ -707,8 +723,8 @@ class Cart extends FatModel
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
 
-        $sellerProductRow['total'] = $totalPrice;
-        $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'];
+        $sellerProductRow['total'] = $totalPrice+$roundingOff;
+        $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'] + $roundingOff;
 
         $sellerProductRow['is_digital_product'] = ($sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL) ? 1 : 0;
         $sellerProductRow['is_physical_product'] = ($sellerProductRow['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) ? 1 : 0;
@@ -1085,6 +1101,7 @@ class Cart extends FatModel
         $isCodEnabled = true;
         $taxOptions = [];
         $prodTaxOptions = [];
+        $roundingOff = 0;
         $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
         if (is_array($products) && count($products)) {
             foreach ($products as $product) {
@@ -1158,7 +1175,10 @@ class Cart extends FatModel
                 $shippingTotal += $product['shipping_cost'];
                 /* if (!$product['shop_eligible_for_free_shipping'] ||  $product['psbs_user_id'] == 0) {
                     $shippingTotal += $product['shipping_cost'];
-                } */
+                } */   
+                
+                $roundingOff += $product['rounding_off'];
+                
             }
         }
 
@@ -1204,7 +1224,9 @@ class Cart extends FatModel
             'netChargeAmount' => $netChargeAmt,
             'taxOptions' => $taxOptions,
             'prodTaxOptions' => $prodTaxOptions,
+            'roundingOff' => $roundingOff,
         );
+        //CommonHelper::printArray($cartSummary, true);
         return $cartSummary;
     }
 

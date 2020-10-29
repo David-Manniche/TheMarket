@@ -100,6 +100,13 @@
                         <span class="label"><?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?></span> 
                         <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderNetAmt); ?></span>
                     </li>
+                    <?php if(array_key_exists('roundingOff',$cartSummary) && 0 < $cartSummary['roundingOff']){?>
+                        <li class="list-group-item">
+                        <span class="label"><?php echo Labels::getLabel('LBL_Rounding_Off', $siteLangId); ?></span> 
+                        <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['roundingOff']); ?></span>
+                    </li>
+                    <?php }?>
+
                 </ul>
                 <?php /*  ?><p class="earn-points"><svg class="svg" width="20px" height="20px">
                         <use xlink:href="../images/retina/sprite.svg#rewards"

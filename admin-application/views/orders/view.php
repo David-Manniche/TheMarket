@@ -87,6 +87,12 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                             </tr>
                             <tr>
+                                <?php if (array_key_exists('order_rounding_off',$order) && 0 < $order['order_rounding_off']) { ?>
+                                    <td>
+                                        <strong><?php echo Labels::getLabel('LBL_Rounding_Off', $adminLangId); ?>:
+                                        </strong><?php echo CommonHelper::displayMoneyFormat($order['order_rounding_off'], true, true); ?>
+                                    </td>
+                                <?php } ?>
                                 <td><strong><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId); ?>:
                                     </strong>-<?php echo CommonHelper::displayMoneyFormat($order['order_volume_discount_total'], true, true); ?>
                                 </td>
@@ -234,7 +240,15 @@ if ($order['order_reward_point_used'] > 0) {
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
                                     </td>
                                     <td class="text-right">
-                                        <?php echo CommonHelper::displayMoneyFormat($total, true, true); ?>
+                                        <?php echo CommonHelper::displayMoneyFormat($total, true, true);
+                                        if (array_key_exists('op_rounding_off',$op) && 0 < $op['op_rounding_off']) {
+                                            echo '<br>';
+                                            echo Labels::getLabel('LBL_Rounding_Off', $adminLangId);
+                                            echo '(';
+                                            echo CommonHelper::displayMoneyFormat($op['op_rounding_off']);
+                                            echo ')';
+                                        }
+                                        ?>  
                                     </td>
                                 </tr>
                             <?php
@@ -307,7 +321,18 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                                 <td class="text-right" colspan="2"><strong><?php echo CommonHelper::displayMoneyFormat($order['order_net_amount'], true, true); ?></strong>
                                 </td>
+                            </tr>                            
+                            <?php if (array_key_exists('order_rounding_off',$order) && 0 < $order['order_rounding_off']) { ?>
+                            <tr>
+                                <td colspan="8" class="text-right">
+                                    <?php echo Labels::getLabel('LBL_Rounding_Off', $adminLangId); ?>
+                                </td>
+                                <td class="text-right" colspan="2">
+                                    </strong><?php echo CommonHelper::displayMoneyFormat($order['order_rounding_off'], true, true); ?>
+                                </td>
                             </tr>
+                            <?php } ?>
+                            
                         </table>
                     </div>
                 </section>

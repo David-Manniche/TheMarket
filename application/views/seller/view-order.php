@@ -269,7 +269,18 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                         </td>
                                     <?php } ?>
 
-                                    <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?></td>
+                                    <td>
+                                        <?php 
+                                            echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); 
+                                            if (array_key_exists('op_rounding_off',$orderDetail) && 0 < $orderDetail['op_rounding_off']) {
+                                                echo '<br>';
+                                                echo Labels::getLabel('LBL_Rounding_Off', $siteLangId);
+                                                echo '(';
+                                                echo CommonHelper::displayMoneyFormat($orderDetail['op_rounding_off']);
+                                                echo ')';
+                                            }  
+                                        ?>                                        
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
