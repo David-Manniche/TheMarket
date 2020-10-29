@@ -70,9 +70,9 @@ $(document).ready(function() {
         });
     };
 
-    editZoneLangForm = function(id, langId) {
+    editZoneLangForm = function(id, langId ,autoFillLangData = 0) {
         fcom.displayProcessing();
-        fcom.ajax(fcom.makeUrl('Zones', 'langForm', [id, langId]), '', function(t) {
+        fcom.ajax(fcom.makeUrl('Zones', 'langForm', [id, langId ,autoFillLangData]), '', function(t) {
             fcom.updateFaceboxContent(t);
         });
     };

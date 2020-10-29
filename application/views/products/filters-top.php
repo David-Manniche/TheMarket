@@ -51,7 +51,7 @@ if (isset($prodcat_code)) {
         </div>
         <?php if (!$shopCatFilters) { ?>
             <div class="sidebar-widget__body dropdown-menu dropdown-menu-anim" >
-                <div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
+                <div id="accordian" class="cat-accordion toggle-target scrollbar-filters scroll" data-simplebar="init" data-simplebar-auto-hide="false" >
                 <ul >
                     <?php foreach ($categoriesArr as $cat) {
                     $catUrl = UrlHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>
@@ -169,20 +169,22 @@ if (isset($prodcat_code)) {
                     <div class="slide__fields form">
                         <?php $symbol = CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft(); ?>
                         <div class="price-input">
-                            <div class="price-text-box">
+                            <div class="price-text-box input-group">
+                            <div class="input-group-prepend"><span class="input-group-text"><?php echo $symbol; ?></span></div>                                
                                 <input class="input-filter form-control" value="<?php echo floor($priceArr['minPrice']); ?>"
                                     data-defaultvalue="<?php echo $filterDefaultMinValue; ?>" name="priceFilterMinValue"
                                     type="text" id="priceFilterMinValue">
-                                <span class="rsText"><?php echo $symbol; ?></span>
+                                
                             </div>
                         </div>
                         <span class="dash"> - </span>
                         <div class="price-input">
-                            <div class="price-text-box">
+                            <div class="price-text-box input-group">
+                            <div class="input-group-prepend"><span class="input-group-text"><?php echo $symbol; ?></span></div>
                                 <input class="input-filter form-control" value="<?php echo ceil($priceArr['maxPrice']); ?>"
                                     data-defaultvalue="<?php echo $filterDefaultMaxValue; ?>" name="priceFilterMaxValue"
                                     type="text" id="priceFilterMaxValue">
-                                <span class="rsText"><?php echo $symbol; ?></span>
+                                 
                             </div>
                         </div>
                     </div>

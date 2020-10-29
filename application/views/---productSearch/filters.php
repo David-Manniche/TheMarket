@@ -53,7 +53,7 @@ if (isset($prodcat_code)) {
 <div class="widgets__heading filter-head-js"><?php echo Labels::getLabel('LBL_Categories', $siteLangId); ?> </div>
 <?php if (!$shopCatFilters) {
             ?>
-<div id="accordian" class="cat-accordion toggle-target scrollbar-filters">
+<div id="accordian" class="cat-accordion toggle-target scrollbar-filters scroll">
     <ul class="">
         <?php foreach ($categoriesArr as $cat) {
                 $catUrl = UrlHelper::generateUrl('category', 'view', array($cat['prodcat_id'])); ?>

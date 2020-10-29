@@ -278,7 +278,7 @@
 }
 
 .list-faqs {
-    max-width: 80%;
+    max-width: 60%;
     margin: 0 auto;
     margin-top: 2rem;
     @include media-breakpoint-down(lg) {
@@ -289,24 +289,12 @@
     ul {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        @include media-breakpoint-down(md) {
-            & {
-                flex-direction: column;
-            }
-        }
+        flex-direction: column;
         li {
-            flex: 0 0 42%;
-            max-width: 42%;
             padding: 1rem;
             margin-bottom: 1rem;
-            @include media-breakpoint-down(md) {
-                & {
-                    flex: 1;
-                    max-width: none;
-                    padding: 0;
-                }
-            }
+            border-radius: $radius4;
+            border: $border;
             h5 {
                 font-size: 1.1rem;
                 margin: 0;
@@ -315,7 +303,7 @@
                 line-height: 1.7;
                 font-size: 0.9rem;
                 color: $txt-gray;
-                margin: 1.2rem 0;
+                margin-top: 1rem;
             }
         }
     }
