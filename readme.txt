@@ -333,6 +333,7 @@ Bugs:
     => 044623 - during withdrawal restrict the numeric values only as it's getting placed with random values and on accepting from admin getting json
     => 44619 - when add product setting is disabled from admin for seller then some settings on front end are not in use
     => 043526 - when tax is combined then values field shouldn't be left blank
+    => 044645 - when conversation detail page is opened then message tab is not highlighting on left side
 
 Enhancements:
     => Tax module upgrade
