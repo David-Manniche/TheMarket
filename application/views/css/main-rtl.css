@@ -34323,25 +34323,14 @@ input.sp-input,
     font-weight: 400;
     margin-bottom: 0.5rem; }
 
-.buy-actions {
+.buy-group {
   display: flex;
+  margin: 0;
   align-items: center;
-  justify-content: space-between; }
-  .buy-actions .buy-group {
-    display: flex;
-    margin: 0;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-    margin-right: 1rem; }
-    .buy-actions .buy-group .btn .icn {
-      line-height: 1; }
-      .buy-actions .buy-group .btn .icn img, .buy-actions .buy-group .btn .icn .post .post_media iframe, .post .post_media .buy-actions .buy-group .btn .icn iframe,
-      .buy-actions .buy-group .btn .icn svg {
-        width: 20px;
-        height: 20px;
-        margin-left: 5px;
-        fill: #fff; }
+  justify-content: space-between;
+  flex: 1; }
+  .buy-group .add-to-cart {
+    min-height: 38px; }
 
 .product-content {
   margin: 0 auto;
@@ -35245,8 +35234,8 @@ transform: rotate(-135deg);*/ }
   justify-content: space-between;
   position: relative; }
   .list-addons li .item {
-    flex: 0 0 70%;
-    max-width: 70%; }
+    flex: 0 0 60%;
+    max-width: 60%; }
     .list-addons li .item .item__title {
       font-size: 0.8rem; }
     .list-addons li .item .item__price {
