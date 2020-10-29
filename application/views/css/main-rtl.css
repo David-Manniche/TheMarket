@@ -11078,6 +11078,9 @@ span.subheading {
   -moz-appearance: none;
   appearance: none; }
   .form input[type="file"], .form select[type="file"], .form [type="file"].custom-select, .form textarea[type="file"] {
+    width: auto;
+    overflow: hidden; }
+  .form input[type="file"], .form select[type="file"], .form [type="file"].custom-select, .form textarea[type="file"] {
     height: auto; }
   .form input:focus, .form select:focus, .form .custom-select:focus, .form textarea:focus {
     border-color: var(--brand-color);
