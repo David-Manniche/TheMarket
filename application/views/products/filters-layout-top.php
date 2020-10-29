@@ -191,6 +191,7 @@
                         'postedData' => $postedData,
                         'recordCount' => $recordCount,
                         'siteLangId' => $siteLangId,
+                        'colMdVal' => 5
                     );
                     $this->includeTemplate('products/products-list.php', $productsData, false);
                     ?> 

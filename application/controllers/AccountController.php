@@ -1784,7 +1784,7 @@ class AccountController extends LoggedUserController
         $this->set('products', $products);
         $this->set('showProductShortDescription', false);
         $this->set('showProductReturnPolicy', false);
-        $this->set('colMdVal', 6);
+        $this->set('colMdVal', 5);
         $this->set('page', $page);
         $this->set('recordCount', $srch->recordCount());
         $this->set('pageCount', $srch->pages());

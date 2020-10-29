@@ -188,6 +188,7 @@
                         'postedData' => $postedData,
                         'recordCount' => $recordCount,
                         'siteLangId' => $siteLangId,
+                        'colMdVal' => 4
                     );
                     $this->includeTemplate('products/products-list.php', $productsData, false); ?> 
                 </div>

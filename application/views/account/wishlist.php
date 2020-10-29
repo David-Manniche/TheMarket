@@ -35,7 +35,7 @@ if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) 
                             </li>
                         </ul>
                     </div>
-                    <div id="listingDiv" class="account-fav-listing"></div>
+                    <div id="listingDiv" ></div>
                     <div id="loadMoreBtnDiv"></div>
                 </div>
             </div>
