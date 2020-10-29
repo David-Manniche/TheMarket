@@ -191,9 +191,9 @@
                                                                 </td>
                                                                 <td style="padding:15px;">
                                                                     <p><strong><?php echo Labels::getLabel('LBL_Order_Date', $siteLangId); ?>:</strong> <?php echo FatDate::format($childOrder['order_date_added']); ?> </p>
-                                                                    <?php if (!empty($childOrder['opshipping_date'])) { ?>
+                                                                    <?php /* if (!empty($childOrder['opshipping_date'])) { ?>
                                                                         <p><strong><?php echo Labels::getLabel('LBL_Invoice_Date', $siteLangId); ?>:</strong> <?php echo FatDate::format($childOrder['opshipping_date']); ?></p>
-                                                                    <?php } ?>
+                                                                    <?php } */ ?>
                                                                     <?php if (!empty($childOrder['opship_tracking_number'])) { ?>
                                                                         <p><strong><?php echo Labels::getLabel('LBL_Tracking_ID', $siteLangId); ?>:</strong> <?php echo $childOrder['opship_tracking_number']; ?> </p>
                                                                     <?php } ?>

@@ -339,6 +339,7 @@ Bugs:
     => 042447 - Admin >> Add zone >> language data section is according to old versions .
     => 044022 - Create a label for this button on forget password page 
     => 044370 - on order invoice> product option is not displaying
+    => 044686 - seller end> order invoice> invoice date don't have any data 
 
 Enhancements:
     => Tax module upgrade
