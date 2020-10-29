@@ -340,6 +340,7 @@ Bugs:
     => 044022 - Create a label for this button on forget password page 
     => 044370 - on order invoice> product option is not displaying
     => 044686 - seller end> order invoice> invoice date don't have any data 
+    => 042577 - if seller didn't add pickup address then "pickup " option for his products should not be enabled and "shipped only" should be the fulfillment method.
 
 Enhancements:
     => Tax module upgrade
