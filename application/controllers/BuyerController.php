@@ -555,9 +555,9 @@ class BuyerController extends BuyerBaseController
 
         $op_status_id = FatApp::getPostedData('status', null, '0');
         if (in_array($op_status_id, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")))) {
-            $srch->addStatusCondition($op_status_id);
+            $srch->addStatusCondition($op_status_id, ($op_status_id == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")));
         } else {
-            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
+            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")), ($op_status_id == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")));
         }
 
         $dateFrom = FatApp::getPostedData('date_from', null, '');

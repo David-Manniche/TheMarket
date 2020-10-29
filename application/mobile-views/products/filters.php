@@ -2,7 +2,7 @@
 $conditions = array();
 $conditionTitles = Product::getConditionArr($siteLangId);
 foreach ($conditionsArr as $condition) {
-    if ($condition['selprod_condition'] == 0) {
+    if (!isset($condition['selprod_condition']) || $condition['selprod_condition'] == 0) {
         continue;
     }
     $conditions[] = array(
