@@ -131,16 +131,17 @@ class OrderCancellationRequestsController extends AdminBaseController
         $srch->joinOrderProducts();
         $srch->joinOrders();
         $srch->addCondition('ocrequest_id', '=', $ocrequest_id);
-        //$srch->joinOrderProductChargesByType(OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT);
+        $srch->joinOrderProductChargesByType(OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addMultipleFields(array('order_reward_point_used', 'order_pmethod_id'));
+        $srch->addMultipleFields(array('order_reward_point_used', 'order_pmethod_id','opcharge_amount','order_reward_point_value'));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-
+        
         $orderRewardUsed = 0;
         if (!empty($row) && $row['order_reward_point_used'] > 0) {
-            $orderRewardUsed = $row['order_reward_point_used'];
+            //$orderRewardUsed = $row['order_reward_point_used'];
+            $orderRewardUsed = -1 * ( $row['order_reward_point_used'] / $row['order_reward_point_value']) * $row['opcharge_amount'] ;
         }
 
         $canRefundToCard = false;

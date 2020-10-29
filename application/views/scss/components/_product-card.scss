@@ -543,6 +543,7 @@
         max-width: 50px;
         border: $border;
         border-radius: $radius4;
+        margin: 0;
         margin-#{$end-direction}: 10px;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -557,7 +558,7 @@
     }
     &__description {
         font-size: 0.9em;
-        min-width: 200px;
+        min-width: 180px;
         max-width: 400px;
         .item__pic {
             margin-#{$end-direction}: 10px;

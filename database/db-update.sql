@@ -866,3 +866,6 @@ SET tsp.selprod_fulfillment_type = -1
 WHERE tp.product_type = 2;
 -- ---Change All Digital Products Fulfillment Type Both---- --
 -- -------------------TV-9.2.2.20201026---------------------
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_{rewardpoint}_reward_point_used._which_will_not_credit_back_automatically';
+INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES (NULL, 'LBL_SUBMIT_FORGOT_PASSWORD', '1', 'Submit', '1');

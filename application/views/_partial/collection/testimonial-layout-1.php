@@ -18,7 +18,8 @@
 						<?php if (strlen($testimonial['testimonial_text']) > 150) { ?> 
 							<span class="moreText hidden">
 								<?php echo FatUtility::decodeHtmlEntities($testimonial['testimonial_text']); ?>
-							</span> 
+                            </span> 
+                            <br>
 							<a class="readMore link--arrow btn-link" href="javascript:void(0);">
 								<?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?>
 							</a>

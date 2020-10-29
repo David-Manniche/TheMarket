@@ -117,7 +117,7 @@ class ZonesController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($zoneId = 0, $langId = 0)
+    public function langForm($zoneId = 0, $langId = 0 ,$autoFillLangData = 0)
     {
         $zoneId = FatUtility::int($zoneId);
         $langId = FatUtility::int($langId);
@@ -126,8 +126,18 @@ class ZonesController extends AdminBaseController
             FatUtility::dieWithError($this->str_invalid_request);
         }
 
-        $langFrm = $this->getLangForm($zoneId, $langId);
-        $langData = Zone::getAttributesByLangId($langId, $zoneId);
+        $langFrm = $this->getLangForm($zoneId, $langId);        
+        if (0 < $autoFillLangData) {
+            $updateLangDataobj = new TranslateLangData(Countries::DB_TBL_LANG);
+            $translatedData = $updateLangDataobj->getTranslatedData($zoneId, $lang_id);
+            if (false === $translatedData) {
+                Message::addErrorMessage($updateLangDataobj->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $langData = current($translatedData);
+        } else {
+            $langData = Zone::getAttributesByLangId($langId, $zoneId);
+        }     
         if ($langData) {
             $langFrm->fill($langData);
         }
@@ -199,12 +209,19 @@ class ZonesController extends AdminBaseController
         return $frm;
     }
 
-    private function getLangForm($zoneId = 0, $langId = 0)
+    private function getLangForm($zoneId = 0, $lang_id = 0)
     {
         $frm = new Form('frmZoneLang');
         $frm->addHiddenField('', 'zone_id', $zoneId);
-        $frm->addHiddenField('', 'lang_id', $langId);
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');        
         $frm->addRequiredField(Labels::getLabel('LBL_Zone_Name', $this->adminLangId), 'zone_name');
+        
+        $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+
+        if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
+            $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
+        }
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

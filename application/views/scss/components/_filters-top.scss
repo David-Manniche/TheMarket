@@ -14,6 +14,10 @@
                     display: grid;
                     grid-gap: 1rem;
                     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                    @include media-breakpoint-down(md) {
+                        margin-bottom: 0;
+                        grid-template-columns: repeat(1, 1fr);
+                    }
                     .sidebar-widget {
                         border-radius: $radius4;
                         padding: 0;
@@ -52,11 +56,16 @@
                     & {
                         flex-direction: column;
                         padding: 1rem;
-                        align-items: inherit;
+                        align-items: center;
+                        border: none;
+                        border-radius: 0px;
                     }
                 }
                 .shop-logo {
                     margin: 0;
+                    @include media-breakpoint-down(md) {
+                        margin: 0 auto;
+                    }
                 }
                 .shop-info {
                     display: flex;
@@ -67,6 +76,7 @@
                     @include media-breakpoint-down(md) {
                         & {
                             flex-direction: column;
+                            align-items: center;
                         }
                     }
                     .shop-name {

@@ -326,7 +326,7 @@ Bugs:
 -------------------TV-9.2.2.20201027---------------------
     => 044605	Auto create default shipping profile and linked products
     => 044367 - seller >> pickup address >> "+" icon next to slots is not getting display in first time
-    => 044371 - add money to wallet> stripe form screen> cancel button is not working 
+    => 044371 - add money to wallet> stripe form screen> cancel button is not working
     => 044467 - pickup and payment cancel orders are coming under canceled orders on seller end
     => 044383 - if ship station is on and we try to buy admin's product then some error is there on checkout. 
     => 044373 - add money to wallet> using paypal> there is error
@@ -334,6 +334,14 @@ Bugs:
     => 044619 - when add product setting is disabled from admin for seller then some settings on front end are not in use
 ------------------TV-9.2.2.20201028-------------------
     => 044621 - product listing> pagination button are not aligned properly
+    => 044339 - admin >> cancellation request >> total reward points gets display there instead of reward points for that particular child order.
+    => 044634 - on order print> default fav icon is coming
+    => 042447 - Admin >> Add zone >> language data section is according to old versions .
+    => 044022 - Create a label for this button on forget password page 
+    => 044624 - shop> reviews> flooded with errors
+    => 044591 - when seller requests for catalog then in admin> specification group field is not there
+    => 044620 - buyer> share and earn> invite through email> button is not proper
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

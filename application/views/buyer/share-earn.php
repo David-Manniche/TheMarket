@@ -3,6 +3,9 @@ $sharingFrm->addFormTagAttribute('class', 'form');
 $sharingFrm->addFormTagAttribute('onsubmit', 'sendMailShareEarn(this);return false;');
 $sharingFrm->developerTags['colClassPrefix'] = 'col-xs-12 col-md-';
 $sharingFrm->developerTags['fld_default_col'] = 12;
+$submitFld = $sharingFrm->getField('btn_submit');
+$submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
+$submitFld->developerTags['col'] = 2;
 
 $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
