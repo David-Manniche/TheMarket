@@ -352,13 +352,13 @@ class BuyerController extends BuyerBaseController
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
-		
-		if (count($childOrderDetail)) {
+
+        if (count($childOrderDetail)) {
             foreach ($childOrderDetail as &$arr) {
                 $arr['options'] = SellerProduct::getSellerProductOptions($arr['op_selprod_id'], true, $this->siteLangId);
             }
         }
-		
+
         foreach ($childOrderDetail as $op_id => $val) {
             $childOrderDetail[$op_id]['charges'] = $orderDetail['charges'][$op_id];
 
@@ -399,12 +399,12 @@ class BuyerController extends BuyerBaseController
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
         $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->SetHeaderMargin(0);
-        $pdf->SetHeaderData('', 0, '', '', array(255,255,255), array(255,255,255));
-        $pdf->setFooterData(array(0,0,0), array(200,200,200));
+        $pdf->SetHeaderData('', 0, '', '', array(255, 255, 255), array(255, 255, 255));
+        $pdf->setFooterData(array(0, 0, 0), array(200, 200, 200));
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
         $pdf->SetMargins(10, 10, 10);
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->AddPage();
@@ -415,7 +415,7 @@ class BuyerController extends BuyerBaseController
         $html = $template->render(false, false, $templatePath, true, true);
         $pdf->writeHTML($html, true, false, true, false, '');
         $pdf->lastPage();
-        
+
         ob_end_clean();
         // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
         //$pdf->Output($saveFile, 'F');
@@ -542,9 +542,11 @@ class BuyerController extends BuyerBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
-            'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status', 'order_deleted', 'plugin_code', 'opshipping_fulfillment_type')
+            array(
+                'order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
+                'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
+                'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 'IFNULL(ocrequest_id, 0) as cancel_request', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status', 'order_deleted', 'plugin_code', 'opshipping_fulfillment_type'
+            )
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
