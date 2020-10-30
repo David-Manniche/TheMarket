@@ -34210,6 +34210,72 @@ input.sp-input,
   min-width: 65px;
   display: inline-block; }
 
+.my-addresses {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  .my-addresses > li {
+    border: solid 1px #dee2e6;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column; }
+    .my-addresses > li.add-new {
+      display: grid;
+      place-items: center;
+      padding: 3rem 0; }
+  .my-addresses__body {
+    flex: 1;
+    padding: 1.5rem;
+    padding-bottom: 0; }
+  .my-addresses .actions {
+    border-top: solid 1px #dee2e6;
+    display: flex;
+    align-items: center; }
+    .my-addresses .actions a {
+      flex: 1;
+      color: #2e384d;
+      text-align: center;
+      padding: 0.6rem 1rem;
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      position: relative; }
+      .my-addresses .actions a:after {
+        content: "";
+        border-right: solid 1px #dee2e6;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0; }
+      .my-addresses .actions a:last-child:after {
+        content: normal; }
+      .my-addresses .actions a:hover {
+        color: var(--brand-color); }
+
+.delivery-address {
+  font-size: 0.85rem;
+  color: #8798ad;
+  line-height: 1.5;
+  margin-bottom: 1rem; }
+  .delivery-address h5 {
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 0.9rem; }
+  .delivery-address .tag {
+    margin: 0 5px;
+    border: solid 1px #1dc9b7;
+    border-radius: 40px;
+    color: #1dc9b7;
+    padding: 2px 0.6rem;
+    line-height: 1;
+    font-size: 0.75rem;
+    font-weight: 400;
+    text-transform: uppercase; }
+  .delivery-address .phone-txt, .delivery-address .time-txt {
+    font-weight: 500;
+    margin-top: 8px; }
+
 .detail-page {
   position: relative; }
   .detail-page:after {
