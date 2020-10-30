@@ -346,6 +346,7 @@ Bugs:
     => 044624 - shop> reviews> flooded with errors
     => 044591 - when seller requests for catalog then in admin> specification group field is not there
     => 044620 - buyer> share and earn> invite through email> button is not proper
+    => 044714 - Seller >> shipping profile >> rates > if we save conditions without selecting the radio buttons then some json error is there. 
 
 Enhancements:
     => Tax module upgrade
