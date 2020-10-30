@@ -136,7 +136,7 @@
                 <li class="menu__item">
                     <div class="menu__item__inner"><span class="menu-head"><?php echo Labels::getLabel("LBL_General", $siteLangId); ?></span></div>
                 </li>
-                <li class="menu__item <?php echo ($controller == 'account' && $action == 'messages') ? 'is-active' : ''; ?>">
+                <li class="menu__item <?php echo ($controller == 'account' && ($action == 'messages' || strtolower($action) == 'viewmessages')) ? 'is-active' : ''; ?>">
                     <div class="menu__item__inner">
                         <a title="<?php echo Labels::getLabel("LBL_Messages", $siteLangId); ?>" href="<?php echo UrlHelper::generateUrl('Account', 'Messages'); ?>">
                             <i class="icn shop">

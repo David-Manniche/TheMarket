@@ -420,17 +420,21 @@ class OrderProductSearch extends SearchBase
         $this->addCondition('o.order_net_amount', '<=', $priceTo);
     }
 
-    public function addStatusCondition($op_status)
+    public function addStatusCondition($op_status, $orderPaymentCancel = false)
     {
         if (is_array($op_status)) {
             if (!empty($op_status)) {
-                $this->addCondition('op.op_status_id', 'IN', $op_status);
+                $cnd = $this->addCondition('op.op_status_id', 'IN', $op_status);
             } else {
-                $this->addCondition('op.op_status_id', '=', 0);
+                $cnd = $this->addCondition('op.op_status_id', '=', 0);
             }
         } else {
             $op_status_id = FatUtility::int($op_status);
-            $this->addCondition('op.op_status_id', '=', $op_status_id);
+            $cnd = $this->addCondition('op.op_status_id', '=', $op_status_id);
+        }
+
+        if (true === $orderPaymentCancel) {
+            $cnd->attachCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_CANCELLED, 'OR');
         }
     }
 
