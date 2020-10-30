@@ -218,6 +218,11 @@ class CustomController extends MyAppController
         $this->set('siteLangId', $this->siteLangId);
         $this->set('faqCatIdArr', $faqCatId);
         $this->set('list', $records);
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'custom/search-faqs.php', true, false);
@@ -268,6 +273,11 @@ class CustomController extends MyAppController
         $this->set('listCategories', $recordsCategories);
         $this->set('faqMainCat', $faqMainCat);
         $this->set('page', 'faq');
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'custom/search-faqs.php', true, false);
