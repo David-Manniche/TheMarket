@@ -332,12 +332,17 @@ Bugs:
     => 044373 - add money to wallet> using paypal> there is error
     => 044623 - during withdrawal restrict the numeric values only as it's getting placed with random values and on accepting from admin getting json
     => 044619 - when add product setting is disabled from admin for seller then some settings on front end are not in use
+    => 043526 - when tax is combined then values field shouldn't be left blank
+    => 044645 - when conversation detail page is opened then message tab is not highlighting on left side
 ------------------TV-9.2.2.20201028-------------------
     => 044621 - product listing> pagination button are not aligned properly
     => 044339 - admin >> cancellation request >> total reward points gets display there instead of reward points for that particular child order.
     => 044634 - on order print> default fav icon is coming
     => 042447 - Admin >> Add zone >> language data section is according to old versions .
     => 044022 - Create a label for this button on forget password page 
+    => 044370 - on order invoice> product option is not displaying
+    => 044686 - seller end> order invoice> invoice date don't have any data 
+    => 042577 - if seller didn't add pickup address then "pickup " option for his products should not be enabled and "shipped only" should be the fulfillment method.
     => 044624 - shop> reviews> flooded with errors
     => 044591 - when seller requests for catalog then in admin> specification group field is not there
     => 044620 - buyer> share and earn> invite through email> button is not proper

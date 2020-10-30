@@ -294,9 +294,9 @@ class SellerController extends SellerBaseController
         $op_status_id = FatApp::getPostedData('status', null, '0');
 
         if (in_array($op_status_id, unserialize(FatApp::getConfig("CONF_VENDOR_ORDER_STATUS")))) {
-            $srch->addStatusCondition($op_status_id);
+            $srch->addStatusCondition($op_status_id, ($op_status_id == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")));
         } else {
-            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_VENDOR_ORDER_STATUS")));
+            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_VENDOR_ORDER_STATUS")), ($op_status_id == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")));
         }
 
         $dateFrom = FatApp::getPostedData('date_from', null, '');
@@ -3512,7 +3512,13 @@ class SellerController extends SellerBaseController
         $fld->requirements()->setInt();
         $fld->requirements()->setPositive();
 
-        $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId);
+        $shopDetails = Shop::getAttributesByUserId(UserAuthentication::getLoggedUserId(), null, false);
+        $address = new Address(0, $this->siteLangId);
+        $addresses = $address->getData(Address::TYPE_SHOP_PICKUP, $shopDetails['shop_id']);
+
+        $fulfillmentType = empty($addresses) ? Shipping::FULFILMENT_SHIP : Shipping::FULFILMENT_ALL;
+
+        $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType);
         $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO);
 
         /* if($shop_id > 0){
@@ -4327,8 +4333,14 @@ class SellerController extends SellerBaseController
             } else {
                 $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
             }
-            $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType);
 
+            $shopDetails = Shop::getAttributesByUserId(UserAuthentication::getLoggedUserId(), null, false);
+            $address = new Address(0, $this->siteLangId);
+            $addresses = $address->getData(Address::TYPE_SHOP_PICKUP, $shopDetails['shop_id']);
+
+            $fulfillmentType = empty($addresses) ? Shipping::FULFILMENT_SHIP : $fulfillmentType;
+
+            $fulFillmentArr = Shipping::getFulFillmentArr($this->siteLangId, $fulfillmentType);
             if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL && true == $shipBySeller) {
                 $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->siteLangId), 'selprod_fulfillment_type', $fulFillmentArr, applicationConstants::NO, []);
             }

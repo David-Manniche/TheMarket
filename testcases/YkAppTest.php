@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -35,7 +35,7 @@ class YkAppTest extends TestCase
         //Get the parameters of a constructor
         $reflectionClassParam = $reflectionClass->getConstructor()->getParameters();
         $reflectMethod = $reflectionClass->getMethod($method);
-        
+
         if (!$reflectMethod->isStatic()) {
             $invalidParam = $this->validateParamType($reflectionClassParam, $constructorArgs);
 
@@ -43,18 +43,18 @@ class YkAppTest extends TestCase
                 return false;
             }
         }
-        
+
         //Get the parameters of a method
         $reflectionParam = $reflectMethod->getParameters();
-        
+
         $invalidParam = $this->validateParamType($reflectionParam, $args);
 
         if (true === $invalidParam) {
             return false;
         }
-       
-        
-       
+
+
+
         if (method_exists($this, 'init') && false === $this->init()) {
             return false;
         }
@@ -62,13 +62,13 @@ class YkAppTest extends TestCase
         if (!$reflectMethod->isStatic()) {
             $reflectionClass = $reflectionClass->newInstanceArgs($constructorArgs);
         }
-        
+
         $reflectionMethod = new ReflectionMethod($class, $method);
         $this->result = $reflectionMethod->invokeArgs($reflectionClass, $args);
-        
+
         return $this->returnResponse();
     }
-    
+
     /**
      * validateParamType
      *
@@ -76,12 +76,12 @@ class YkAppTest extends TestCase
      * @param  array $args
      * @return bool
      */
-    private function validateParamType(array $reflectionParam, array $args) :bool
+    private function validateParamType(array $reflectionParam, array $args): bool
     {
         $invalidParam = false;
         foreach ($reflectionParam as $index => $param) {
             $paramValue = (array_key_exists($index, $args)) ? $args[$index] : null;
-            
+
             if ($param->isOptional() && null == $paramValue) {
                 continue;
             }
@@ -92,10 +92,10 @@ class YkAppTest extends TestCase
                 $reflectionType = $param->getType();
                 $paramType = $reflectionType->getName();
             }
-            
+
             switch ($paramType) {
                 case 'int':
-                    $invalidParam = (false === is_int($paramValue)) ;
+                    $invalidParam = (false === is_int($paramValue));
                     break;
                 case 'string':
                     $invalidParam = (false === is_string($paramValue));
@@ -121,7 +121,7 @@ class YkAppTest extends TestCase
 
         return $invalidParam;
     }
-    
+
     /**
      * returnResponse
      *
@@ -138,7 +138,7 @@ class YkAppTest extends TestCase
                 break;
         }
     }
-    
+
     /**
      * expectedReturnType
      *
@@ -149,7 +149,7 @@ class YkAppTest extends TestCase
     {
         $this->returnType = $returnType;
     }
-        
+
     /**
      * getResult
      *
@@ -169,7 +169,7 @@ class YkAppTest extends TestCase
     {
         return $this->error;
     }
-    
+
     /**
      * InsertDbData
      *
@@ -179,11 +179,10 @@ class YkAppTest extends TestCase
      */
     protected function InsertDbData(string $table, array $arr)
     {
-        if(!empty($table) && !empty($arr)){
-            foreach($arr as $data){
+        if (!empty($table) && !empty($arr)) {
+            foreach ($arr as $data) {
                 FatApp::getDb()->insertFromArray($table, $data, false, array(), $data);
             }
         }
     }
-    
 }

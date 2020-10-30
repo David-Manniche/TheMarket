@@ -169,7 +169,7 @@ class SellerOrdersController extends AdminBaseController
 
         if (isset($post['op_status_id']) && $post['op_status_id'] != '') {
             $op_status_id = FatUtility::int($post['op_status_id']);
-            $srch->addStatusCondition($op_status_id);
+            $srch->addStatusCondition($op_status_id, ($op_status_id == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")));
         }
 
         $shop_name = FatApp::getPostedData('shop_name', null, '');
