@@ -47,7 +47,7 @@ $discountTotal = isset($scartSummary['cartDiscounts']) && isset($scartSummary['c
             </table>
         </div>
         <div class="cartdetail__footer">
-            <table class="table--justify">
+            <table class="table--justify"> 
                 <tr>
                     <td><?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?></td>
                     <td><?php echo CommonHelper::displayMoneyFormat($cartTotal, true, false, true, false, true); ?></td>

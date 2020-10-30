@@ -16,7 +16,7 @@
     <?php } ?>
     <div class="p-4">
         <div class="cartdetail__footer">
-            <table  class="table--justify">
+            <table  class="table table-justified"> 
                 <tbody>
                     <tr>
                         <td><?php echo Labels::getLabel('LBL_Total', $siteLangId); ?></td>
