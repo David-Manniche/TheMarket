@@ -532,6 +532,7 @@ class CustomController extends MyAppController
             $srch->addMultipleFields(
                 array('ops.*', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*', 'COALESCE(state_name, state_identifier) as state_name', 'COALESCE(country_name, country_code) as country_name')
             );
+            $srch->addGroupBy('opshipping_pickup_addr_id');
             $rs = $srch->getResultSet();
             $orderFulFillmentTypeArr = FatApp::getDb()->fetchAll($rs);
             // CommonHelper::printArray($orderFulFillmentTypeArr, true);
