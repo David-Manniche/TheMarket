@@ -10,17 +10,6 @@
 .table {
     background-color: #fff;
     margin-bottom: 0;
-    @include media-breakpoint-down(lg) {
-        & {
-            white-space: nowrap;
-            display: block;
-        }
-    }
-    @include media-breakpoint-down(md) {
-        & {
-            min-height: 170px;
-        }
-    }
     &-justified {
         thead {
             th:last-child {

@@ -131,8 +131,8 @@
                 $fld->addFieldTagAttribute('class','quickView'); */
                     $qtyFieldName =  $qtyField->getCaption(); ?>
                     <label class="h6"><?php echo $qtyFieldName; ?></label>
-                    <div class="buy-actions">
-
+                    <div class="row">
+                        <div class="col-auto">
                         <div class="qty-wrapper">
                             <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
                                 <span class="decrease decrease-js not-allowed"><i class="fas fa-minus"></i></span>
@@ -142,7 +142,8 @@
                                 <span class="increase increase-js"><i class="fas fa-plus"></i></span>
                             </div>
                         </div>
-
+                        </div>
+                        <div class="col">
                         <div class="buy-group">
                             <?php
                             if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {
@@ -150,6 +151,7 @@
                                 echo $frmBuyProduct->getFieldHtml('btnAddToCart');
                             }
                             echo $frmBuyProduct->getFieldHtml('selprod_id'); ?>
+                        </div>
                         </div>
                     </div>
 

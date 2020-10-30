@@ -15164,6 +15164,10 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     -ms-flex-align: center;
     align-items: center;
     overflow: hidden; }
+    .item__pic-seller {
+      flex: 0 0 100px;
+      max-width: 100px;
+      padding: 16px; }
   .item__description {
     font-size: 0.9em;
     min-width: 180px;
@@ -15208,6 +15212,11 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
 
 .item__price {
   font-weight: 600; }
+  .item__price_old {
+    color: #8798ad;
+    font-weight: 300; }
+  .item__price_off {
+    font-weight: 300; }
 
 .item__price_off {
   color: var(--primary-color); }
@@ -16357,13 +16366,6 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
 .table {
   background-color: #fff;
   margin-bottom: 0; }
-  @media (max-width: 1199.98px) {
-    .table {
-      white-space: nowrap;
-      display: block; } }
-  @media (max-width: 991.98px) {
-    .table {
-      min-height: 170px; } }
   .table-justified thead th:last-child {
     text-align: left; }
   .table-justified tr td:last-child {
