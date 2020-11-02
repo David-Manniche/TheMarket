@@ -9263,13 +9263,13 @@ a.text-dark:hover, a.text-dark:focus {
     .list-tags li span {
       background-color: #f3f4f5;
       border: solid 1px #dee2e6;
-      padding: 8px;
+      padding: 5px;
       border-radius: 3px;
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
       align-items: center;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       line-height: 1.3;
       margin: 5px 0; }
     .list-tags li:hover span {
@@ -10216,7 +10216,6 @@ a.link-arrow {
     justify-content: center;
     text-align: center; }
   .section-head .section__heading {
-    font-size: 2rem;
     color: #2e384d;
     display: inline-block;
     font-family: "Poppins", sans-serif;
@@ -10226,15 +10225,18 @@ a.link-arrow {
     .section-head .section__heading h3,
     .section-head .section__heading h4 {
       font-weight: inherit; }
-    .section-head .section__heading h1 > span,
-    .section-head .section__heading h2 > span {
-      display: block;
-      font-size: 0.875rem;
-      text-align: center; }
-    .section-head .section__heading h1 .search-results,
-    .section-head .section__heading h2 .search-results {
-      font-size: 2rem;
-      display: inline-block; }
+    .section-head .section__heading h1,
+    .section-head .section__heading h2 {
+      font-size: 2rem; }
+      .section-head .section__heading h1 > span,
+      .section-head .section__heading h2 > span {
+        display: block;
+        font-size: 0.875rem;
+        text-align: center; }
+      .section-head .section__heading h1 .search-results,
+      .section-head .section__heading h2 .search-results {
+        font-size: 2rem;
+        display: inline-block; }
     .section-head .section__heading p {
       font-size: 1rem;
       font-weight: 300; }
@@ -31315,7 +31317,8 @@ a.ui-button:active,
         @media (max-width: 767.98px) {
           .list-cart.cart-summary .list-group-item .product_price {
             flex: 0 0 25%;
-            max-width: 25%; } }
+            max-width: 25%;
+            padding-right: 20px; } }
       .list-cart.cart-summary .list-group-item .product-action {
         flex: 0 0 10%;
         max-width: 10%; }
@@ -31611,9 +31614,12 @@ a.ui-button:active,
 
 .list-cart-page .list-group-item {
   display: grid;
-  grid-template-columns: auto 30% 25px;
   gap: 1rem;
+  grid-template-columns: auto 30% 25px;
   justify-content: inherit; }
+  @media (max-width: 767.98px) {
+    .list-cart-page .list-group-item {
+      grid-template-columns: auto; } }
   .list-cart-page .list-group-item .wrap-qty-price {
     display: flex; }
     @media (max-width: 767.98px) {
@@ -35679,6 +35685,29 @@ div.faqanswer {
         font-size: 0.9rem;
         color: #8798ad;
         margin-top: 1rem; }
+  .list-faqs .faq_trigger {
+    position: relative;
+    display: block;
+    font-weight: 500;
+    padding-right: 2rem; }
+    .list-faqs .faq_trigger:after, .list-faqs .faq_trigger:before {
+      background: #2e384d;
+      content: '';
+      height: 2px;
+      position: absolute;
+      right: 0;
+      top: calc(50% - 1px);
+      width: 12px; }
+    .list-faqs .faq_trigger:before {
+      -webkit-transform: rotate(90deg);
+      transform: rotate(90deg);
+      -webkit-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out; }
+    .list-faqs .faq_trigger[aria-expanded='true']:before {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg); }
+  .list-faqs .faq_data {
+    margin-top: 2rem; }
 
 .collection-sidebar {
   flex-grow: 0;

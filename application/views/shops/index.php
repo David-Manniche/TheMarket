@@ -4,8 +4,8 @@
         <div class="container">
             <div class="section-head section--white--head justify-content-center mb-0">
                 <div class="section__heading">
-                    <h2 class="mb-0"><?php echo Labels::getLabel('Lbl_All_Shops', $siteLangId); ?>
-                    </h2>
+                    <h1 class="mb-0"><?php echo Labels::getLabel('Lbl_All_Shops', $siteLangId); ?>
+                    </h1>
                 </div>
             </div>
         </div>
