@@ -307,4 +307,33 @@
             }
         }
     }
+    .faq_trigger {
+        position: relative;
+        display: block;
+        font-weight: 500;
+        padding-#{$end-direction}: 2rem;
+        &:after,
+        &:before {
+            background: $body-color;
+            content: '';
+            height: 2px;
+            position: absolute;
+            right: 0;
+            top: calc(50% - 1px);
+            width: 12px;
+        }
+        &:before {
+            -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+            -webkit-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+        &[aria-expanded='true']:before {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+    }
+    .faq_data {
+        margin-top: 2rem;
+    }
 }

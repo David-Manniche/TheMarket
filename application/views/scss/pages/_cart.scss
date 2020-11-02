@@ -194,6 +194,7 @@
                 @include media-breakpoint-down(sm) {
                     flex: 0 0 25%;
                     max-width: 25%;
+                    padding-#{$end-direction}: 20px;
                 }
             }
             .product-action {
@@ -576,8 +577,11 @@
 .list-cart-page {
     .list-group-item {
         display: grid;
-        grid-template-columns: auto 30% 25px;
         gap: 1rem;
+        grid-template-columns: auto 30% 25px;
+        @include media-breakpoint-down(sm) {
+            grid-template-columns: auto;
+        }
         justify-content: inherit;
         .wrap-qty-price {
             display: flex;

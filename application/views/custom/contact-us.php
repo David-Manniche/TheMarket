@@ -27,8 +27,8 @@ $fld->developerTags['col'] = 12;
                 <div class="col-md-8 col-sm-8">
                     <div class="section-head section--white--head justify-content-center mb-0">
                         <div class="section__heading text-center">
-                            <h2><?php echo Labels::getLabel('LBL_Get_in_Touch', $siteLangId);?>
-                            </h2>
+                            <h1><?php echo Labels::getLabel('LBL_Get_in_Touch', $siteLangId);?>
+                            </h1>
                             <p><?php echo Labels::getLabel('LBL_Get_in_Touch_Txt', $siteLangId);?>
                             </p>
                         </div>
