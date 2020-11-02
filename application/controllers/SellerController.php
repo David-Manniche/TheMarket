@@ -742,6 +742,15 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
+
+        $status = FatApp::getPostedData('op_status_id', FatUtility::VAR_INT, 0);
+        $manualShipping = FatApp::getPostedData('manual_shipping', FatUtility::VAR_INT, 0);
+        $trackingNumber = FatApp::getPostedData('tracking_number', FatUtility::VAR_STRING, '');
+        if ($status ==  FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS") && empty($trackingNumber) && 1 > $manualShipping) {
+            Message::addErrorMessage(Labels::getLabel('MSG_PLEASE_SELECT_SELF_SHIPPING', $this->siteLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $db = FatApp::getDb();
         $db->startTransaction();
 
@@ -767,6 +776,7 @@ class SellerController extends SellerBaseController
         $orderObj = new Orders();
 
         $srch = new OrderProductSearch($this->siteLangId, true, true);
+        $srch->joinOrderProductShipment();
         $srch->joinPaymentMethod();
         $srch->joinSellerProducts();
         $srch->joinOrderUser();
@@ -3688,7 +3698,7 @@ class SellerController extends SellerBaseController
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->siteLangId), 'op_status_id', $orderStatusArr, '', [], Labels::getLabel('Lbl_Select', $this->siteLangId));
         $fld->requirements()->setRequired();
 
-        $ntf = $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->siteLangId), 'customer_notified', applicationConstants::getYesNoArr($this->siteLangId), '', array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirements()->setRequired();
+        $ntf = $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->siteLangId), 'customer_notified', applicationConstants::getYesNoArr($this->siteLangId), applicationConstants::YES, array(), Labels::getLabel('Lbl_Select', $this->siteLangId))->requirements()->setRequired();
 
         $attr = [];
         $labelGenerated = false;
@@ -3705,8 +3715,8 @@ class SellerController extends SellerBaseController
             $manualShipReqObj = new FormFieldRequirement('manual_shipping', Labels::getLabel('LBL_SELF_SHIPPING', $this->siteLangId));
             $manualShipReqObj->setRequired(true);
 
-            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'eq', 'manual_shipping', $manualShipReqObj);
-            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"), 'ne', 'manual_shipping', $manualShipUnReqObj);
+            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS", FatUtility::VAR_INT, OrderStatus::ORDER_SHIPPED), 'eq', 'manual_shipping', $manualShipReqObj);
+            $fld->requirements()->addOnChangerequirementUpdate(FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS", FatUtility::VAR_INT, OrderStatus::ORDER_SHIPPED), 'ne', 'manual_shipping', $manualShipUnReqObj);
         }
 
         $frm->addTextBox(Labels::getLabel('LBL_Tracking_Number', $this->siteLangId), 'tracking_number', '', $attr);

@@ -203,10 +203,11 @@ $(document).ready(function () {
 
     setupRate = function (frm) {
         if (!$(frm).validate()) return;
-        $("input[name='btn_submit']").attr('disabled', 'disabled');
+        var submitBtn = $("input[name='btn_submit']");
+        submitBtn.attr('disabled', 'disabled');
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'setup'), data, function (t) {
-            $("input[name='btn_submit']").removeAttr('disabled');
+            submitBtn.removeAttr('disabled');
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
             if (t.langId > 0) {
@@ -215,6 +216,12 @@ $(document).ready(function () {
             }
             $(document).trigger('close.facebox');
         });
+        setTimeout(function(){
+            var attr = submitBtn.attr('disabled');
+            if (typeof attr !== typeof undefined && attr !== false) {
+                submitBtn.removeAttr('disabled');
+            }
+        }, 3000);
     };
 
     editRateLangForm = function (zoneId, rateId, langId) {

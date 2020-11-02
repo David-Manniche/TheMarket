@@ -345,8 +345,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             $qtyFieldName =  $qtyField->getCaption();
                                             if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) { ?>
                                                 <div class="row align-items-end">
-                                                    <div class="col-md-4 mb-2">
-                                                        <div class="form__group form__group-select">
+                                                    <div class="col-auto mb-2"> 
                                                             <label class="h6"><?php echo $qtyFieldName; ?></label>
                                                             <div class="qty-wrapper">
                                                                 <div class="quantity"
@@ -361,9 +360,9 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                                             class="fas fa-plus"></i></span>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        
                                                     </div>
-                                                    <div class="col-md-8 mb-2">
+                                                    <div class="col mb-2">
                                                         <label class="h6">&nbsp;</label>
                                                         <div class="buy-group">
                                                             <?php if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {

@@ -555,6 +555,11 @@
         -ms-flex-align: center;
         align-items: center;
         overflow: hidden;
+        &-seller {
+            flex: 0 0 100px;
+            max-width: 100px;
+            padding: 16px;
+        }
     }
     &__description {
         font-size: 0.9em;
@@ -614,6 +619,13 @@
 
 .item__price {
     font-weight: 600;
+    &_old {
+        color: $txt-gray;
+        font-weight: 300;
+    }
+    &_off {
+        font-weight: 300;
+    }
 }
 
 .item__price_off {
