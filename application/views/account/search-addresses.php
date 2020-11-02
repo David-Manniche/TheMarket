@@ -5,7 +5,7 @@
         <li><a href="javascript:void(0);" onClick="addAddressForm(0)"><?php echo Labels::getLabel('LBL_Add_new_address', $siteLangId);?></a></li>
     </ul>
 </div> -->
-
+    
 <div class="container--addresses">
     <div class="row">
 <?php if (!empty($addresses)) {
