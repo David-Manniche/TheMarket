@@ -25,10 +25,12 @@
     }
     .cartdetail__body {
         //max-height: 400px;
-        max-height: calc(100vh - 215px);
+        //max-height: calc(100vh - 215px);
+        height: 100%;
         background: $bg-white;
         flex: 1;
         border-bottom: $border;
+        overflow-y: auto;
     }
 }
 

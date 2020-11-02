@@ -1,32 +1,3 @@
-.cart-page {
-    .cart-title {
-        font-weight: 300;
-        font-size: 1.3rem;
-    }
-    .cart-blocks {
-        .list-cart {
-            margin-bottom: 3rem;
-        }
-    }
-}
-
-.table--cart {
-    border: $border;
-    th {
-        font-weight: 700;
-    }
-    th,
-    td {
-        padding: 1rem;
-        border-top: $border;
-        border-bottom: $border;
-    }
-    .product-img {
-        min-width: 30px;
-        max-width: 60px;
-    }
-}
-
 .promo-code {
     max-width: 400px;
     display: flex;
@@ -78,16 +49,7 @@
     }
     .product-quantity {
         text-align: center;
-        margin: 0 1rem;
-        flex: 0 0 10%;
-        max-width: 10%;
-        @include media-breakpoint-down(md) {
-            & {
-                margin: 0;
-                flex: none;
-                max-width: none;
-            }
-        }
+        margin: 0 0;
         .remove {
             margin: 0.5rem 0;
             display: inline-block;
@@ -108,17 +70,6 @@
         margin: 0 1rem;
         color: $brand-color;
         text-align: #{$end-direction};
-        flex: 0 0 10%;
-        max-width: 10%;
-        @include media-breakpoint-down(md) {
-            & {
-                flex: 1;
-                max-width: none;
-                text-align: inherit;
-                margin: 0;
-                margin-top: 1rem;
-            }
-        }
         del {
             color: $body-color;
             font-size: 0.8rem;
@@ -126,15 +77,11 @@
         }
     }
     .product-action {
-        flex: 0 0 5%;
-        max-width: 5%;
         @include media-breakpoint-down(md) {
             & {
                 position: absolute;
                 top: 1rem;
                 #{$end-direction}: 1rem;
-                flex: 1;
-                max-width: none;
             }
         }
         .list-actions {
@@ -551,7 +498,7 @@
 
 .info {
     flex: 1;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -610,6 +557,34 @@
         &:hover {
             border-color: $brand-color;
             color: $brand-color;
+        }
+    }
+}
+
+.cart-page {
+    .cart-title {
+        font-weight: 300;
+        font-size: 1.3rem;
+    }
+    .cart-blocks {
+        .list-cart {
+            margin-bottom: 3rem;
+        }
+    }
+}
+
+.list-cart-page {
+    .list-group-item {
+        display: grid;
+        grid-template-columns: auto 30% 25px;
+        gap: 1rem;
+        justify-content: inherit;
+        .wrap-qty-price {
+            display: flex;
+            @include media-breakpoint-down(sm) {
+                flex: 1;
+                align-items: center;
+            }
         }
     }
 }
