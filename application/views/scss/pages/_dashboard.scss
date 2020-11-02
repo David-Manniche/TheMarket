@@ -1983,8 +1983,14 @@ input.sp-input {
     }
     &__body {
         flex: 1;
-        padding: 1.5rem;
+        padding: 1rem;
         padding-bottom: 0;
+        position: relative;
+        .radio {
+            position: absolute;
+            top: 1rem;
+            #{$end-direction}: 1rem;
+        }
     }
     .actions {
         border-top: $border;
@@ -2029,6 +2035,8 @@ input.sp-input {
         margin-bottom: 10px;
         font-weight: 500;
         font-size: 0.9rem;
+        line-height: 1.5;
+        color: $body-color;
     }
     .tag {
         margin: 0 5px;
