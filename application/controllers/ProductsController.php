@@ -341,7 +341,7 @@ class ProductsController extends MyAppController
         }
 
         $templateName = 'filters.php';
-        if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) != FilterHelper::LAYOUT_TOP) {
+        if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) == FilterHelper::LAYOUT_TOP) {
             $templateName = 'filters-top.php';
         }
         echo $this->_template->render(false, false, 'products/' . $templateName, true);
