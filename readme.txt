@@ -349,7 +349,7 @@ Bugs:
 --------------------------TV-9.2.2.20201029-----------------
     => 044714 - Seller >> shipping profile >> rates > if we save conditions without selecting the radio buttons then some json error is there. 
     => 043774 - when seller try to change order status to "shipped" without checking the "self shipping " checkbox then it takes forever to process
-
+------------------------TV-9.2.2.20201102-----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

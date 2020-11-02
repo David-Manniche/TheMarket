@@ -874,3 +874,4 @@ DELETE ep, epl
 FROM tbl_extra_pages ep
 INNER JOIN tbl_extra_pages_lang epl ON epl.epagelang_epage_id=ep.epage_id
 WHERE epage_type = 13 OR epage_type = 14;
+-- ------------------TV-9.2.2.20201102--------------
