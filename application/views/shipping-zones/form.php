@@ -82,7 +82,7 @@ if (!empty($excludeLocations)) {
                                                     <div class="field-wraper">
                                                         <div class="field_cover">
                                                             <label>
-                                                                <span class="checkbox zone--js" data-zoneid="<?php echo $zone['zone_id']; ?>"><input type="checkbox" name="shiploc_zone_ids[]" value="<?php echo $zone['zone_id']; ?>" class="checkbox_zone_<?php echo $zone['zone_id']; ?>" <?php echo (in_array($zone['zone_id'], $exZoneIds)) ? 'disabled' : ''; ?> <?php echo ($countCounties == $totalCountries && $countCounties != 0) ? 'checked' : ''; ?>><i class="input-helper"></i><?php echo $zone['zone_name']; ?></span>
+                                                                <span class="checkbox zone--js" data-zoneid="<?php echo $zone['zone_id']; ?>"><input type="checkbox" name="shiploc_zone_ids[]" value="<?php echo $zone['zone_id']; ?>" class="checkbox_zone_<?php echo $zone['zone_id']; ?>" <?php echo ($countCounties == $totalCountries && $countCounties != 0) ? 'checked' : ''; ?>><i class="input-helper"></i><?php echo $zone['zone_name']; ?></span>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -116,7 +116,8 @@ if (!empty($excludeLocations)) {
                                                                     <div class="field-wraper">
                                                                         <div class="field_cover">
                                                                             <label>
-                                                                                <span class="checkbox country--js " data-countryid="<?php echo $countryId; ?>" data-statecount="<?php echo $statesCount; ?>"><input type="checkbox" name="shiploc_country_ids[]" value="<?php echo $zone['zone_id']; ?>-<?php echo $countryId; ?>" class="checkbox_country_<?php echo $countryId; ?>" <?php echo $checked; ?> <?php echo $disabled; ?>><i class="input-helper"></i><?php echo $country['country_identifier']; ?></span>
+                                                                                <span class="checkbox country--js " data-countryid="<?php echo $countryId; ?>" data-statecount="<?php echo $statesCount; ?>">
+                                                                                <input type="checkbox" name="shiploc_country_ids[]" value="<?php echo $zone['zone_id']; ?>-<?php echo $countryId; ?>" class="checkbox_country_<?php echo $countryId; ?>" <?php echo $checked; ?>> <i class="input-helper"></i><?php echo $country['country_identifier']; ?></span>
                                                                             </label>
                                                                         </div>
                                                                     </div>

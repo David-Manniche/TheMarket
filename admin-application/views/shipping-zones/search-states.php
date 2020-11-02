@@ -43,7 +43,7 @@ if (!empty($excludeLocations)) {
 		<li>
 			<div class="field-wraper">
 			<div class="field_cover">
-				<label><span class="checkbox" data-stateid="<?php echo $key;?>"><input type="checkbox" name="shiploc_state_ids[]" value="<?php echo $zoneId;?>-<?php echo $countryId;?>-<?php echo $key;?>" class="state--js" <?php echo $checked; ?> <?php echo $disabled;?>><i class="input-helper"></i></span><?php echo $state;?></label>
+				<label><span class="checkbox <?php echo $disabled;?>" data-stateid="<?php echo $key;?>"><input type="checkbox" name="shiploc_state_ids[]" value="<?php echo $zoneId;?>-<?php echo $countryId;?>-<?php echo $key;?>" class="state--js" <?php echo $checked; ?> <?php echo $disabled;?>><i class="input-helper"></i></span><?php echo $state;?></label>
 			</div>
 			</div>
 		</li>
