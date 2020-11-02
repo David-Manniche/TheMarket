@@ -509,7 +509,7 @@ class CheckoutController extends MyAppController
                 $template = 'checkout/shipping-summary-pickup.php';
                 break;
             case Shipping::FULFILMENT_SHIP:
-                $shippingRates = $this->cartObj->getShippingOptions();
+                $shippingRates = $this->cartObj->getShippingOptions();                
                 if (!empty($_SESSION['order_id'])) {
                     $order = new Orders();
                     $orderShippingData = $order->getOrderShippingData($_SESSION['order_id'], $this->siteLangId);
@@ -750,9 +750,11 @@ class CheckoutController extends MyAppController
         }
     }
 
-    public function reviewCart()
+    public function reviewCart($fulfilmentType = 0)
     {
         $criteria = array('isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true);
+        $this->cartObj->setFulfilmentType($fulfilmentType);
+        $this->cartObj->setCartCheckoutType($fulfilmentType);
         if ($this->cartObj->hasPhysicalProduct()) {
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
