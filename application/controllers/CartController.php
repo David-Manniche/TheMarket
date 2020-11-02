@@ -11,6 +11,7 @@ class CartController extends MyAppController
     {
         $cartObj = new Cart();
         $cartObj->unsetCartCheckoutType();
+        $cartObj->invalidateCheckoutType();
         $cartObj->removeProductShippingMethod();
         $cartObj->removeProductPickUpAddresses();
         $this->set('total', $cartObj->countProducts());
