@@ -868,9 +868,10 @@ WHERE tp.product_type = 2;
 -- -------------------TV-9.2.2.20201026---------------------
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_{rewardpoint}_reward_point_used._which_will_not_credit_back_automatically';
-INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES (NULL, 'LBL_SUBMIT_FORGOT_PASSWORD', '1', 'Submit', '1');
-
+INSERT INTO `tbl_language_labels` (`label_id`, `label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES (NULL, 'LBL_SUBMIT_FORGOT_PASSWORD', '1', 'Submit', '1') ON DUPLICATE KEY UPDATE `label_caption` = 'LBL_SUBMIT_FORGOT_PASSWORD';
+-- ----------------TV-9.2.2.20201029----------------
 DELETE ep, epl
 FROM tbl_extra_pages ep
 INNER JOIN tbl_extra_pages_lang epl ON epl.epagelang_epage_id=ep.epage_id
 WHERE epage_type = 13 OR epage_type = 14;
+-- ------------------TV-9.2.2.20201102--------------
