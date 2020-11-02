@@ -5,6 +5,14 @@ class FilterHelper extends FatUtility
     public const LAYOUT_DEFAULT = 1;
     public const LAYOUT_TOP = 2;
 
+    public static function getLayouts(int $langId)
+    {
+        return [
+            self::LAYOUT_DEFAULT => Labels::getLabel('LBL_Default', $langId),
+            self::LAYOUT_TOP => Labels::getLabel('LBL_TOP', $langId)
+        ];
+    }
+
     public static function getSearchObj($langId, $headerFormParamsAssocArr)
     {
         $langId = FatUtility::int($langId);
