@@ -145,13 +145,13 @@ if (!empty($excludeLocations)) {
                         </div>
                     </div>
                 </div>
-                <div class="row my-3">
-                    <div class="col-lg-5">
-                        <input class="btn btn-brand btn-block" type="submit" name="btn_submit" value="<?php echo Labels::getLabel("LBL_Add_Zone", $siteLangId); ?>">
+                <div class="row mt-3 justify-content-between">
+                    <div class="col">
+                        <input class="btn btn-brand btn-wide" type="submit" name="btn_submit" value="<?php echo Labels::getLabel("LBL_Add_Zone", $siteLangId); ?>">
                     </div>
 
-                    <div class="col-lg-5">
-                        <input class="btn btn-outline-brand btn-block" type="button" name="cancel" onClick="clearForm();" value="<?php echo Labels::getLabel("LBL_Cancel", $siteLangId); ?>">
+                    <div class="col-auto">
+                        <input class="btn btn-outline-brand btn-wide" type="button" name="cancel" onClick="clearForm();" value="<?php echo Labels::getLabel("LBL_Cancel", $siteLangId); ?>">
                     </div>
 
 

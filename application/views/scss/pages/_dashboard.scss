@@ -187,7 +187,7 @@
 
 .my-dashboard {
     &.is-dashboard {
-        height: auto;
+        // height: auto;
         background: $gray-light;
         padding: 50px;
         @include media-breakpoint-down(lg) {
@@ -205,6 +205,7 @@
             position: relative;
             z-index: 1;
             max-width: 1530px;
+            min-height: 100%;
             margin: 0 auto;
             border-radius: 10px;
             overflow: hidden;
@@ -820,7 +821,7 @@
 .content-wrapper {
     &.content-space {
         padding: 3.125rem;
-        min-height: 700px;
+        //min-height: 700px;
         @include media-breakpoint-down(lg) {
             & {
                 padding: 2rem;

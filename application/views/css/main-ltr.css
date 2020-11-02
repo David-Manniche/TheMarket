@@ -16151,11 +16151,11 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
 
 /* Alerts */
 .alert {
-  font-size: 0.9em;
+  font-size: 15px;
   color: #fff;
   width: 100%;
   /*position: relative;*/
-  padding: 1rem 2.5rem;
+  padding: 1rem 3rem;
   border: 1px solid transparent;
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
@@ -31552,7 +31552,6 @@ a.ui-button:active,
 
 .info {
   flex: 1;
-  flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32736,7 +32735,6 @@ a.ui-button:active,
   100% {
     background-position: 0% 60%; } }
 .my-dashboard.is-dashboard {
-  height: auto;
   background: #f3f4f5;
   padding: 50px; }
   @media (max-width: 1199.98px) {
@@ -32751,6 +32749,7 @@ a.ui-button:active,
     position: relative;
     z-index: 1;
     max-width: 1530px;
+    min-height: 100%;
     margin: 0 auto;
     border-radius: 10px;
     overflow: hidden;
@@ -33258,8 +33257,7 @@ a.ui-button:active,
   .my-dashboard .main {
     padding-left: 0; } }
 .content-wrapper.content-space {
-  padding: 3.125rem;
-  min-height: 700px; }
+  padding: 3.125rem; }
   @media (max-width: 1199.98px) {
     .content-wrapper.content-space {
       padding: 2rem; } }
