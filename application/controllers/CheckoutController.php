@@ -750,11 +750,11 @@ class CheckoutController extends MyAppController
         }
     }
 
-    public function reviewCart($fulfilmentType = 0)
+    public function reviewCart()
     {
         $criteria = array('isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true);
-        $this->cartObj->setFulfilmentType($fulfilmentType);
-        $this->cartObj->setCartCheckoutType($fulfilmentType);
+        /* $this->cartObj->setFulfilmentType($fulfilmentType);
+        $this->cartObj->setCartCheckoutType($fulfilmentType); */
         if ($this->cartObj->hasPhysicalProduct()) {
             $criteria['hasShippingAddress'] = true;
             $criteria['isProductShippingMethodSet'] = true;
