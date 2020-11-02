@@ -26,7 +26,7 @@ $str ='<table width="100%" cellspacing="0" cellpadding="20" border="0" style="fo
                                 $discountTotal = 0;
                                 $volumeDiscountTotal = 0;
                                 $rewardPointDiscount = 0;
-                                
+                                $roundingOff = 0;
                                 foreach ($orderProductsData as $addrKey=>$orderProducts) { 
                                     $productHtml = '';
                                     $pickupHtml = '';
@@ -44,7 +44,7 @@ $str ='<table width="100%" cellspacing="0" cellpadding="20" border="0" style="fo
 
                                             $skuCodes = $val["op_selprod_sku"];
                                             $options = $val['op_selprod_options'];
-
+                                            $roundingOff = $val['op_rounding_off'];
                                             $cartTotal = $cartTotal + $opCustomerBuyingPrice;
                                             $shippingTotal = $shippingTotal + $shippingPrice;
                                             $discountTotal = $discountTotal + abs($discountedPrice);
@@ -98,8 +98,12 @@ $str ='<table width="100%" cellspacing="0" cellpadding="20" border="0" style="fo
                                                                     </table>
                                                                     <div style="color: #555555;font-size: 14px;font-weight: 600;">'.Labels::getLabel('Lbl_By', $siteLangId).':'.$val["op_shop_name"].'</div>
                                                                 </td>
-                                                                <td style="color: #555555;font-size: 14px;font-weight: 600; text-align:right;">'.CommonHelper::displayMoneyFormat($opCustomerBuyingPrice + $shippingPrice +$productTaxCharged - abs($volumeDiscount)).'</td>
-                                                              </tr>
+                                                                <td style="color: #555555;font-size: 14px;font-weight: 600; text-align:right;">';
+                                                                $productHtml .= CommonHelper::displayMoneyFormat($opCustomerBuyingPrice + $shippingPrice +$productTaxCharged - abs($volumeDiscount) + $roundingOff);
+                                                                if(0 < $roundingOff){
+                                                                    $productHtml .= '(+' .$roundingOff. ')'; 
+                                                                }
+                                            $productHtml .='</td></tr>
                                                           </table>
                                                       </td>
                                                 </tr>';
@@ -212,8 +216,15 @@ $str ='<table width="100%" cellspacing="0" cellpadding="20" border="0" style="fo
                         $str .='<tr>
                                 <td style="padding: color#000;font-size: 16px;padding: 10px 0 0 0;font-weight: 600;">'.Labels::getLabel('LBL_ORDER_TOTAL', $siteLangId).'</td>
                                 <td style="padding: color#000;font-size: 16px;padding: 10px 0 0 0;font-weight: 600;text-align: right;">'.CommonHelper::displayMoneyFormat($netAmount).'</td>
-                            </tr>
-                        </table>
+                            </tr>';
+                        
+                        if(array_key_exists('order_rounding_off',$orderInfo) && 0 < $orderInfo['order_rounding_off']){                                
+                            $str .='<tr>
+                                        <td style="padding: color#000;font-size: 14px;padding: 5px 0 0 0;">'.Labels::getLabel('LBL_Rounding_Off', $siteLangId).'</td>
+                                        <td style="padding: color#000;font-size: 14px;padding: 5px 0 0 0;text-align: right;">'.CommonHelper::displayMoneyFormat($orderInfo['order_rounding_off']).'</td>
+                                    </tr>';
+                        }
+                        $str .='</table>
                     </td>
                 </tr>';
                 

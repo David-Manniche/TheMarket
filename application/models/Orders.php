@@ -1,5 +1,7 @@
 <?php
 
+use Aws\Crypto\Cipher\Cbc;
+
 class Orders extends MyAppModel
 {
     public const DB_TBL = 'tbl_orders';
@@ -1383,33 +1385,6 @@ class Orders extends MyAppModel
         }
     }
 
-    public function getSubOrders(){
-        $opSrch = new SearchBase(OrderProduct::DB_TBL);
-        $opSrch->doNotCalculateRecords();
-        $opSrch->doNotLimitRecords();
-        $opSrch->addMultipleFields(array('op_id','op_rounding_off'));
-        $opSrch->addCondition('op_order_id', '=', $this->orderId);
-        $opSrch->addCondition('op_status_id', '!=', intval(OrderStatus::ORDER_REFUNDED));
-        $rs = $opSrch->getResultSet();
-        $subOrders = FatApp::getDb()->fetchAll($rs);
-        if(!$subOrders){
-            return false;
-        }
-        return $subOrders;
-    }
-
-    public function getRoundingOffAmount()
-    {
-        if(!$subOrders = $this->getSubOrders()){
-            return 0;
-        }                
-        if (count($subOrders) == 1) {
-            return $subOrders['op_rounding_off'];
-        }
-
-        return 0;
-    }
-
     public function addChildProductOrderHistory($op_id, $langId, $opStatusId, $comment = '', $notify = false, $trackingNumber = '', $releasePayments = 0, $moveRefundToWallet = true, $trackingCourier = '')
     {
         $op_id = FatUtility::int($op_id);
@@ -1529,11 +1504,8 @@ class Orders extends MyAppModel
                     $comments = sprintf(Labels::getLabel('LBL_Order_has_been_Cancelled', $langId), $formattedRequestValue);
                 }
 
-                $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"]);
+                $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"] + $childOrderInfo["op_rounding_off"]);
                 
-                $roundindOffAmount = $this->getRoundingOffAmount();
-                $txnAmount += $roundindOffAmount;
-
                 /*Refund to Buyer[*/
                 if ($txnAmount > 0) {
                     $txnDataArr = array(
@@ -1616,7 +1588,6 @@ class Orders extends MyAppModel
                 $formattedRequestValue = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = sprintf(Labels::getLabel('LBL_Return_Request_Approved', $langId), $formattedRequestValue);
                 $txnAmount = $childOrderInfo['op_refund_amount'];
-
                 /*Refund to Buyer[*/
                 if ($txnAmount > 0) {
                     $txnArray["utxn_user_id"] = $childOrderInfo['order_user_id'];

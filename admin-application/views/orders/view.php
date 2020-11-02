@@ -240,15 +240,7 @@ if ($order['order_reward_point_used'] > 0) {
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
                                     </td>
                                     <td class="text-right">
-                                        <?php echo CommonHelper::displayMoneyFormat($total, true, true);
-                                        if (array_key_exists('op_rounding_off',$op) && 0 < $op['op_rounding_off']) {
-                                            echo '<br>';
-                                            echo Labels::getLabel('LBL_Rounding_Off', $adminLangId);
-                                            echo '(';
-                                            echo CommonHelper::displayMoneyFormat($op['op_rounding_off']);
-                                            echo ')';
-                                        }
-                                        ?>  
+                                        <?php echo CommonHelper::displayMoneyFormat($total, true, true);?>  
                                     </td>
                                 </tr>
                             <?php

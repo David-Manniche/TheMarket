@@ -20,8 +20,9 @@ $netAmount = CommonHelper::orderProductAmount($orderProducts, 'NETAMOUNT');
 
 $skuCodes = $orderProducts["op_selprod_sku"];
 $options = $orderProducts['op_selprod_options'];
+$roundingOff = $orderProducts['op_rounding_off'];
 
-$total = ($opCustomerBuyingPrice + $shippingPrice + $taxCharged - abs($volumeDiscount));
+$total = ($opCustomerBuyingPrice + $shippingPrice + $taxCharged - abs($volumeDiscount) + $roundingOff);
 
 $prodOrBatchUrl = 'javascript:void(0)';
 /* if($orderProducts["op_is_batch"]){
@@ -54,7 +55,8 @@ $str .= '<tr>
 
             <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.$taxChargedTxt.'</td>
 
-            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($total).'</td>
+            <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($total);                 
+            $str .='</td>
         </tr>';
 
 /* $str .= '<tr><td colspan="4" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('L_TOTAL', $siteLangId).'</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($total).'</td></tr>'; */
@@ -101,10 +103,16 @@ if ($volumeDiscount) {
     <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($rewardPoints).'</td>
     </tr>';
 }
-
 $str.= '<tr>
 <td colspan="6" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.Labels::getLabel('LBL_ORDER_TOTAL', $siteLangId).'</strong></td>
-<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderProducts, 'NETAMOUNT')).'</strong></td></tr>';
+<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderProducts, 'NETAMOUNT')).'</strong></td>
+</tr>';
 
-    $str .= '</table>';
+if ( 0 < $roundingOff) {                                
+    $str.= '<tr>
+        <td colspan="6" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.Labels::getLabel('LBL_Rounding_Off', $siteLangId).'</strong></td>
+        <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.CommonHelper::displayMoneyFormat($roundingOff).'</strong></td>
+        </tr>';   
+}
+$str .= '</table>';
 echo $str;

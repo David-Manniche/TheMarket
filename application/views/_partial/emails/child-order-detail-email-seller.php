@@ -40,8 +40,9 @@ $str='<table cellspacing="0" cellpadding="0" border="0" width="100%" style="bord
 
     $skuCodes = $orderProducts["op_selprod_sku"];
     $options = $orderProducts['op_selprod_options'];
+    $roundingOff = $orderProducts['op_rounding_off'];
 
-    $total =  ($opCustomerBuyingPrice + $shippingPrice+ $taxCharged - abs($volumeDiscount));
+    $total =  ($opCustomerBuyingPrice + $shippingPrice+ $taxCharged - abs($volumeDiscount) + $roundingOff);
 
     $prodOrBatchUrl = 'javascript:void(0)';
     /* if($orderProducts["op_is_batch"]){
@@ -151,6 +152,11 @@ if ($orderProducts['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
     <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.Labels::getLabel('LBL_ORDER_TOTAL', $siteLangId).'</strong></td>
     <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right"><strong>'.CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderProducts, 'NETAMOUNT', false, $userType)).'</strong></td></tr>';
 
+    if ( 0 < $roundingOff) {  
+    $str.= '<tr>
+    <td colspan="'.$colCount.'" style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.Labels::getLabel('LBL_Rounding_Off', $siteLangId).'</td>
+    <td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;" align="right">'.CommonHelper::displayMoneyFormat($roundingOff).'</td></tr>';
+    }
     $billingInfo = $billingAddress['oua_name'].'<br>';
     if ($billingAddress['oua_address1']!='') {
         $billingInfo.=$billingAddress['oua_address1'].'<br>';

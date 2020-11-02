@@ -201,6 +201,14 @@ if (!$print) { ?>
                                         </strong>
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail), true, false, true, false, true); ?>
                                     </p>
+                                    <?php if(array_key_exists('order_rounding_off',$orderDetail) && 0 < $orderDetail['order_rounding_off']){?>
+                                    <p>
+                                        <strong>
+                                            <?php echo Labels::getLabel('LBL_Rounding_Off', $siteLangId); ?>: 
+                                        </strong>
+                                        <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
+                                    </p>
+                                    <?php }?>  
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 mb-4">
@@ -448,13 +456,10 @@ if (!$print) { ?>
                                         <td>
                                             <?php 
                                                 echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true);
-                                                if (array_key_exists('op_rounding_off',$childOrder) && 0 < $childOrder['op_rounding_off']) {
-                                                    echo '<br>';
-                                                    echo Labels::getLabel('LBL_Rounding_Off', $siteLangId);
-                                                    echo '(';
-                                                    echo CommonHelper::displayMoneyFormat($childOrder['op_rounding_off']);
-                                                    echo ')';
-                                                }                                                
+
+                                                if ($roundingOff = CommonHelper::getRoundingOff($childOrder)) {
+                                                    echo '(+'. $roundingOff . ')';
+                                                }                                          
                                             ?>
                                         </td>
                                     </tr>

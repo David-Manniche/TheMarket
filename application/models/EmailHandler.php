@@ -843,11 +843,12 @@ class EmailHandler extends FatModel
         $taxOptions = $opChargesLog->getData($langId);
         $childOrderInfo['taxOptions'] = $taxOptions;
 
+        //CommonHelper::printArray($childOrderInfo, true);
         if ($childOrderInfo) {
             $userObj = new User($OrderInfo["order_user_id"]);
             $userInfo = $userObj->getUserInfo(array('user_name', 'credential_email', 'user_dial_code', 'user_phone'));
             $tpl = new FatTemplate('', '');
-            //$tpl->set('orderInfo', $orderDetail);
+            $tpl->set('orderInfo', $OrderInfo);
             $tpl->set('orderProducts', $childOrderInfo);
             $tpl->set('siteLangId', $langId);
             $orderItemsTableFormatHtml = $tpl->render(false, false, '_partial/emails/child-order-detail-email.php', true);

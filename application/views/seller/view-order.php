@@ -128,8 +128,14 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 <p><strong><?php echo Labels::getLabel('LBL_Reward_Point_Discount',$siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount);?></p>
                                 <?php }  */ ?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?>
+                                <?php if(array_key_exists('order_rounding_off',$orderDetail) && 0 < $orderDetail['order_rounding_off']){?>
+                                <p>
+                                    <strong>
+                                        <?php echo Labels::getLabel('LBL_Rounding_Off', $siteLangId); ?>: 
+                                    </strong>
+                                    <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
                                 </p>
-
+                                <?php }?>                               
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 mb-4">
@@ -268,18 +274,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                             } ?>
                                         </td>
                                     <?php } ?>
-
                                     <td>
-                                        <?php 
-                                            echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); 
-                                            if (array_key_exists('op_rounding_off',$orderDetail) && 0 < $orderDetail['op_rounding_off']) {
-                                                echo '<br>';
-                                                echo Labels::getLabel('LBL_Rounding_Off', $siteLangId);
-                                                echo '(';
-                                                echo CommonHelper::displayMoneyFormat($orderDetail['op_rounding_off']);
-                                                echo ')';
-                                            }  
-                                        ?>                                        
+                                        <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?>                                        
                                     </td>
                                 </tr>
                             </tbody>

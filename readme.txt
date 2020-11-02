@@ -304,6 +304,8 @@ Bugs:
     => 044477 - when mini cart having only item remains after deletion then getting scroll with product
     => 044468 - Seller >> inventory setup of digital products >> there is some warnings on download page . 
     => 044497 - extra categories are listing on page which are not even added
+------------Known Bug----------------
+    => Known Bug - Added rounding off if order amount fraction with order
 
 Enhancements:
     => Tax module upgrade

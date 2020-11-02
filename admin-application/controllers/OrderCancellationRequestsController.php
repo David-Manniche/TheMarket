@@ -55,7 +55,7 @@ class OrderCancellationRequestsController extends AdminBaseController
         $srch->addMultipleFields(
             array('ocrequest_id', 'ocrequest_message', 'ocrequest_date', 'ocrequest_status',
             'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name', 'seller_cred.credential_username as seller_username', 'seller_cred.credential_email as seller_email', 'seller.user_phone as seller_phone', 'op_invoice_number',
-            'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'op_qty', 'op_unit_price', 'order_tax_charged', 'op_other_charges')
+            'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'op_qty', 'op_unit_price', 'order_tax_charged', 'op_other_charges', 'op_rounding_off')
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');

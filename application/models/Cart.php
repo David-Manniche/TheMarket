@@ -723,7 +723,7 @@ class Cart extends FatModel
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
 
-        $sellerProductRow['total'] = $totalPrice+$roundingOff;
+        $sellerProductRow['total'] = $totalPrice; 
         $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'] + $roundingOff;
 
         $sellerProductRow['is_digital_product'] = ($sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL) ? 1 : 0;
@@ -1189,7 +1189,7 @@ class Cart extends FatModel
         //$orderPaymentGatewayCharges = $netTotalAfterDiscount - $orderCreditsCharge;
 
         $totalDiscountAmount = (isset($cartDiscounts['coupon_discount_total'])) ? $cartDiscounts['coupon_discount_total'] : 0;
-        $orderNetAmount = (max($cartTotal - $cartVolumeDiscount - $totalDiscountAmount, 0) + $shippingTotal + $cartTaxTotal);
+        $orderNetAmount = (max($cartTotal - $cartVolumeDiscount - $totalDiscountAmount, 0) + $shippingTotal + $cartTaxTotal + $roundingOff);
 
         $orderNetAmount = $orderNetAmount - CommonHelper::rewardPointDiscount($orderNetAmount, $cartRewardPoints);
         $WalletAmountCharge = ($this->isCartUserWalletSelected()) ? min($orderNetAmount, $userWalletBalance) : 0;
