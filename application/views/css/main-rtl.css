@@ -36085,7 +36085,7 @@ div.faqanswer {
 .sort-by select, .sort-by .custom-select {
   height: 30px; }
 
-.listing-products--list[data-view="4"] {
+.listing-products--list .product-listing[data-view="4"] {
   grid-template-columns: repeat(2, 1fr); }
 .listing-products--list .products {
   display: -webkit-box;
