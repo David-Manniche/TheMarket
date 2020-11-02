@@ -142,7 +142,7 @@
                                     continue;
                                 }?>
                                 <li class="nav-item">
-                                    <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
+                                    <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('SubscriptionCheckout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
                                         <div class="payment-box">
                                             <span><?php echo $pmethodName; ?></span>
                                         </div>
