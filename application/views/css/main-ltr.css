@@ -11387,7 +11387,7 @@ form.custom-form {
     -ms-flex: 1;
     flex: 1;
     border-radius: 4px; }
-    @media (max-width: 991.98px) {
+    @media (min-width: 768px) {
       .ftshops .product-wrapper {
         overflow-x: auto; }
         .ftshops .product-wrapper > .row {
