@@ -478,6 +478,8 @@
 .payment-area {
     .nav-payments {
         display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
         border: solid 1px #888;
         border-radius: $radius4;
         margin: 1rem 0;
@@ -486,6 +488,7 @@
             font-size: 0.85rem;
             text-align: center;
             a {
+                white-space: nowrap;
                 padding: 0.6rem 0.8rem;
                 color: #888;
                 &.active {

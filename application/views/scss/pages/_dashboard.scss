@@ -2049,6 +2049,10 @@ input.sp-input {
         font-size: 0.75rem;
         font-weight: 400;
         text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
     }
     .phone-txt {
         font-weight: 500;
