@@ -26,6 +26,12 @@
     -o-transition: all .2s ease-in-out;
     -webkit-transition-delay: 0.15s;
     transition-delay: 0.15s;
+    @include media-breakpoint-down(lg) {
+        display: none;
+        position: sticky;
+        visibility: visible;
+        opacity: 1;
+    }
     .categories.active & {
         visibility: visible;
         opacity: 1;
@@ -103,6 +109,9 @@
         max-height: 100%;
         background-color: #fff;
         box-shadow: 2px 0px 3px rgba(0, 0, 0, 0.1);
+        @include media-breakpoint-down(lg) {
+            display: none;
+        }
         >ul {
             display: flex;
             flex-wrap: wrap;
