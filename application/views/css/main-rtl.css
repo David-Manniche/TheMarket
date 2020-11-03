@@ -11387,16 +11387,14 @@ form.custom-form {
     -ms-flex: 1;
     flex: 1;
     border-radius: 4px; }
-    @media (min-width: 768px) {
-      .ftshops .product-wrapper {
-        overflow-x: auto; }
-        .ftshops .product-wrapper > .row {
-          flex-wrap: nowrap; }
-          .ftshops .product-wrapper > .row > .col {
-            -ms-flex: 0 0 280px;
-            -webkit-box-flex: 0;
-            flex: 0 0 280px;
-            max-width: 280px; } }
+    @media (max-width: 991.98px) {
+      .ftshops .product-wrapper > .row {
+        flex-wrap: nowrap; }
+        .ftshops .product-wrapper > .row > .col {
+          -ms-flex: 0 0 280px;
+          -webkit-box-flex: 0;
+          flex: 0 0 280px;
+          max-width: 280px; } }
     .ftshops .product-wrapper .products {
       height: 100%; }
   .ftshops .ftshops_item_head {

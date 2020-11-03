@@ -9831,7 +9831,6 @@ a.link-arrow {
   color: #2e384d;
   z-index: 10;
   overflow: hidden;
-  padding-top: 50px;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
@@ -11387,7 +11386,7 @@ form.custom-form {
     -ms-flex: 1;
     flex: 1;
     border-radius: 4px; }
-    @media (min-width: 768px) {
+    @media (max-width: 991.98px) {
       .ftshops .product-wrapper {
         overflow-x: auto; }
         .ftshops .product-wrapper > .row {

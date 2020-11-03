@@ -78,7 +78,7 @@
         -ms-flex: 1;
         flex: 1;
         border-radius: $radius4;
-        @include media-breakpoint-up(md) {
+        @include media-breakpoint-down(md) {
             & {
                 overflow-x: auto;
                 >.row {
