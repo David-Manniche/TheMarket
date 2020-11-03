@@ -351,6 +351,7 @@ Bugs:
     => 043774 - when seller try to change order status to "shipped" without checking the "self shipping " checkbox then it takes forever to process
 ------------------------TV-9.2.2.20201102-----------------------
     => 044384 -  Order summary is not getting display at guest checkout before adding the address
+    => 044446 - Content block >> on home page collection of content block should be in the frame 
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

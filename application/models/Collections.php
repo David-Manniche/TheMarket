@@ -113,6 +113,8 @@ class Collections extends MyAppModel
             );
         }
 
+        $srch->addCondition('collection_type', '!=', self::COLLECTION_TYPE_CONTENT_BLOCK);
+
         return $srch;
     }
     
@@ -218,9 +220,9 @@ class Collections extends MyAppModel
             self::COLLECTION_TYPE_TESTIMONIAL => [
                 self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial', $langId),
             ],
-            self::COLLECTION_TYPE_CONTENT_BLOCK => [
+            /* self::COLLECTION_TYPE_CONTENT_BLOCK => [
                 self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_Block', $langId),
-            ]
+            ] */
         ];
     }
 	
