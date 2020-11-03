@@ -9828,7 +9828,6 @@ a.link-arrow {
   color: #2e384d;
   z-index: 10;
   overflow: hidden;
-  padding-top: 50px;
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
@@ -9840,6 +9839,7 @@ a.link-arrow {
       .side-cart--on .side-cart {
         width: 100%; } }
   .side-cart .cartdetail__body {
+    padding-top: 50px;
     height: 100%;
     width: 100%;
     background: #fff;
