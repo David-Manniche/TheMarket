@@ -352,6 +352,8 @@ Bugs:
 ------------------------TV-9.2.2.20201102-----------------------
     => 044732 - mark disable the states while creating zones when it's already used for a country
 
+    => 044384 -  Order summary is not getting display at guest checkout before adding the address
+    => 044446 - Content block >> on home page collection of content block should be in the frame 
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

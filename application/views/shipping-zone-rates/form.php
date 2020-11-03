@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'setupRate(this); return(false);');
-$frm->developerTags['colClassPrefix'] = 'col-md-';
+$frm->developerTags['colClassPrefix'] = 'col-';
 $frm->developerTags['fld_default_col'] = 12;
 
 $nameFld = $frm->getField('shiprate_identifier');
@@ -24,16 +24,17 @@ $maxFld = $frm->getField('shiprate_max_val');
 $maxFld->setWrapperAttribute('class', 'condition-field--js '. $extraClass);
 
 $submitBtnFld = $frm->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
-$submitBtnFld->setWrapperAttribute('class', 'col-lg-5');
-$submitBtnFld->developerTags['col'] = 5;
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
+$submitBtnFld->developerTags['testClass'] = 'testc';
+$submitBtnFld->setWrapperAttribute('class', 'col-auto');
+//$submitBtnFld->developerTags['col'] = 5;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frm->getField('btn_cancel');
 $cancelBtnFld->setFieldTagAttribute('onClick', 'clearForm(); return false;');
-$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
-$cancelBtnFld->setWrapperAttribute('class', 'col-lg-5');
-$cancelBtnFld->developerTags['col'] = 5;
+$cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-wide');
+//$cancelBtnFld->setWrapperAttribute('class', 'col-auto');
+//$cancelBtnFld->developerTags['col'] = 5;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?>
 <div class="card-header">

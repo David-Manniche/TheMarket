@@ -735,6 +735,9 @@ class ConfigurationsController extends AdminBaseController
 
 				$fld = $frm->addCheckBox(Labels::getLabel("LBL_Enable_tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', 1, array(), false, 0);
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_enable_tax_categories_code", $this->adminLangId) . "</small>";
+
+                $filterLayout = FilterHelper::getLayouts($this->adminLangId);
+                $frm->addSelectBox(Labels::getLabel('LBL_Filters_Layout', $this->adminLangId), 'CONF_FILTERS_LAYOUT', $filterLayout, applicationConstants::NO, array(), '');
 				
                 $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'CONF_FULFILLMENT_TYPE', $fulFillmentArr, applicationConstants::NO, array(), '');

@@ -6,7 +6,7 @@
                 <div class="col-md-6">
                     <div class="section-head section--white--head section--head--center mb-0">
                         <div class="section__heading">
-                            <h2><?php echo Labels::getLabel('LBL_Frequently_Asked_Questions', $siteLangId);?></h2>
+                            <h1><?php echo Labels::getLabel('LBL_Frequently_Asked_Questions', $siteLangId);?></h1>
                         </div>
                     </div>
                     <div class="faqsearch">

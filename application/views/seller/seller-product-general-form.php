@@ -230,7 +230,8 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand js-cancel-in
                 <?php } ?>
             </div>           
             <div class="row">
-                <div class="col-md-12 js-scrollable table-wrap">
+                <div class="col-md-12">
+                    <div class="js-scrollable table-wrap">
                     <table id="optionsTable-js" class="table table-justified">
                         <thead>
                             <tr>
@@ -305,6 +306,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand js-cancel-in
                             <?php } ?>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
             <div class="row mt-4">

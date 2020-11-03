@@ -942,7 +942,7 @@ class HomeController extends MyAppController
                     unset($tempObj);
                     break;
 
-                case Collections::COLLECTION_TYPE_CONTENT_BLOCK:
+                /* case Collections::COLLECTION_TYPE_CONTENT_BLOCK:
                     
                     $srch = Extrapage::getSearchObject($langId, true);
                     $srch->joinTable(
@@ -962,7 +962,7 @@ class HomeController extends MyAppController
 
                     unset($epageData);
                     unset($tempObj);
-                    break;
+                    break; */
             }
             $i++;
         }
