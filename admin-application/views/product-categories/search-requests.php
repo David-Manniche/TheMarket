@@ -31,7 +31,7 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'shop_name':
-                $name = $row['shop_name'] . '(' . $row['user_name'] . ')';
+                $name = (0 < $row['prodcat_seller_id'] ? $row['shop_name'] . '(' . $row['user_name'] . ')' : Labels::getLabel('LBL_ADMIN', $adminLangId));
                 $td->appendElement('plaintext', array(), $name);
                 break;
             case 'prodcat_parent':

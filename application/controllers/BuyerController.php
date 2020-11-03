@@ -6,9 +6,6 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 
 class BuyerController extends BuyerBaseController
 {
-    public const DOWNLOAD_SEARCH = 1;
-    public const DOWNLOAD_LINKS = 2;
-
     public function __construct($action)
     {
         parent::__construct($action);
@@ -612,27 +609,14 @@ class BuyerController extends BuyerBaseController
         $this->_template->render(true, true);
     }
 
+        
+    /**
+     * downloads - Used For APPs.
+     *
+     * downloadSearch and downloadLinksSearch merged
+     */
     public function downloads()
     {
-        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
-
-        /* switch ($type) {
-            case self::DOWNLOAD_SEARCH:
-                $this->downloadSearch();
-                die;
-                break;
-            case self::DOWNLOAD_LINKS:
-                $this->downloadLinksSearch();
-                die;
-                break;
-            default:
-                $this->downloadSearch(applicationConstants::YES);
-                $this->downloadLinksSearch(applicationConstants::YES);
-                $this->_template->render();
-                die;
-                break;
-        } */
-
         $frm = $this->getOrderProductDownloadSearchForm($this->siteLangId);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
