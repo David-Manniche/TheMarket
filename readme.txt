@@ -352,6 +352,7 @@ Bugs:
 ------------------------TV-9.2.2.20201102-----------------------
     => 044384 -  Order summary is not getting display at guest checkout before adding the address
     => 044446 - Content block >> on home page collection of content block should be in the frame 
+    => 044684 - in search field> string entered and cross button are overlapping
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
