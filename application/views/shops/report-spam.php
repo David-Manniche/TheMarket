@@ -24,7 +24,7 @@
           
           <div class="section-head section--white--head mb-0">
 						<div class="section__heading">
-							<h2><?php echo $shop['shop_name']; ?></h2>
+							<h1><?php echo $shop['shop_name']; ?></h1>
 							<p><?php echo $shopLocation; ?> <?php echo Labels::getLabel('LBL_Opened_on', $siteLangId); ?> <?php echo FatDate::format($shop['shop_created_on']); ?></p>
                         </div>
                     </div>
