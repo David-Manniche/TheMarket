@@ -13,9 +13,6 @@
     flex-direction: column;
     transform: translateX(100% * $transform-direction);
     transition: all 0.5s ease;
-    &--on {
-        overflow: hidden;
-    }
     &--on & {
         transform: translateX(0% * $transform-direction);
         box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.20);
