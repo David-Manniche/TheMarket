@@ -7869,10 +7869,7 @@ a.text-dark:hover, a.text-dark:focus {
   pointer-events: auto; }
 
 .cart {
-  float: right;
   position: relative;
-  -webkit-padding-start: 3.125rem;
-  -moz-padding-start: 3.125rem;
   padding-left: 3.125rem; }
   @media (max-width: 1199.98px) {
     .cart {
@@ -9831,7 +9828,6 @@ a.link-arrow {
   color: #2e384d;
   z-index: 10;
   overflow: hidden;
-  padding-top: 50px;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
@@ -9843,7 +9839,9 @@ a.link-arrow {
       .side-cart--on .side-cart {
         width: 100%; } }
   .side-cart .cartdetail__body {
+    padding-top: 50px;
     height: 100%;
+    width: 100%;
     background: #fff;
     flex: 1;
     border-bottom: solid 1px #dee2e6;
@@ -11387,7 +11385,7 @@ form.custom-form {
     -ms-flex: 1;
     flex: 1;
     border-radius: 4px; }
-    @media (min-width: 768px) {
+    @media (max-width: 991.98px) {
       .ftshops .product-wrapper {
         overflow-x: auto; }
         .ftshops .product-wrapper > .row {
