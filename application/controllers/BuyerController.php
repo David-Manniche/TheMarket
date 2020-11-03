@@ -6,6 +6,9 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 
 class BuyerController extends BuyerBaseController
 {
+    public const DOWNLOAD_SEARCH = 1;
+    public const DOWNLOAD_LINKS = 2;
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -609,6 +612,69 @@ class BuyerController extends BuyerBaseController
         $this->_template->render(true, true);
     }
 
+    public function downloads()
+    {
+        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+
+        /* switch ($type) {
+            case self::DOWNLOAD_SEARCH:
+                $this->downloadSearch();
+                die;
+                break;
+            case self::DOWNLOAD_LINKS:
+                $this->downloadLinksSearch();
+                die;
+                break;
+            default:
+                $this->downloadSearch(applicationConstants::YES);
+                $this->downloadLinksSearch(applicationConstants::YES);
+                $this->_template->render();
+                die;
+                break;
+        } */
+
+        $frm = $this->getOrderProductDownloadSearchForm($this->siteLangId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
+        $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        $user_id = UserAuthentication::getLoggedUserId();
+
+        $srch = new OrderProductSearch($this->siteLangId, true);
+        $srch->joinOrderUser();
+        $srch->joinDigitalDownloads(AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD, 'LEFT JOIN');
+        $srch->joinDigitalDownloadLinks('LEFT JOIN');
+        $srch->addDigitalDownloadCondition();
+        $srch->joinSellerProducts();
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
+        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'product_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*', 'opa.*'));
+        $srch->setPageNumber($page);
+        $srch->addCondition('order_user_id', '=', $user_id);
+        $srch->addOrder('order_date_added', 'desc');
+        $srch->setPageSize($pagesize);
+        $keyword = FatApp::getPostedData('keyword', null, '');
+        if (!empty($keyword)) {
+            $srch->addKeywordSearch($keyword);
+            $frm->fill(array('keyword' => $keyword));
+        }
+
+        $rs = $srch->getResultSet();
+        $downloads = FatApp::getDb()->fetchAll($rs);
+
+        $downloads = Orders::digitalDownloadFormat($downloads);
+        $downloads = Orders::digitalDownloadLinksFormat($downloads);
+        $this->set('downloads', $downloads);
+        $this->set('page', $page);
+        $this->set('pageCount', $srch->pages());
+        $this->set('recordCount', $srch->recordCount());
+        $this->set('postedData', $post);
+        $this->set('languages', Language::getAllNames());
+        $this->_template->render();
+    }
+    
     public function downloadSearch()
     {
         $frm = $this->getOrderProductDownloadSearchForm($this->siteLangId);
@@ -673,7 +739,7 @@ class BuyerController extends BuyerBaseController
         $srch->addDigitalDownloadCondition();
         $srch->joinSellerProducts();
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
-        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'op_selprod_id', 'product_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*'));
+        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'product_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*'));
         $srch->setPageNumber($page);
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addOrder('order_date_added', 'desc');
