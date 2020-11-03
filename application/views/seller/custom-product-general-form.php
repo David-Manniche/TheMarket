@@ -24,7 +24,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="caption-wraper">
                         <label class="field_label">
                             <?php $fld = $productFrm->getField('product_identifier');
-                              echo $fld->getCaption();
+                            echo $fld->getCaption();
                             ?>
                         </label>
                         <span class="spn_must_field">*</span>
@@ -41,8 +41,8 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="caption-wraper">
                         <label class="field_label">
                             <?php $fld = $productFrm->getField('product_type');
-                              echo $fld->getCaption();
-                        ?>
+                            echo $fld->getCaption();
+                            ?>
                         </label>
                     </div>
                     <div class="field-wraper">
@@ -60,14 +60,13 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="caption-wraper d-flex justify-content-between">
                         <label class="field_label">
                             <?php $fld = $productFrm->getField('brand_name');
-                              echo $fld->getCaption();
+                            echo $fld->getCaption();
                             ?>
                             <?php if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) { ?>
-                            <span class="spn_must_field">*</span>
+                                <span class="spn_must_field">*</span>
                             <?php } ?>
                         </label>
-                        <small><a class="form-text text-muted" href="javascript:void(0)"
-                                onClick="addBrandReqForm(0);"><?php echo (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Request_For_Brand', $siteLangId) : Labels::getLabel('LBL_Add_Brand', $siteLangId) ?></a></small>
+                        <small><a class="form-text text-muted" href="javascript:void(0)" onClick="addBrandReqForm(0);"><?php echo (FatApp::getConfig('CONF_BRAND_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Request_For_Brand', $siteLangId) : Labels::getLabel('LBL_Add_Brand', $siteLangId) ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
@@ -86,8 +85,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                             ?>
                             <span class="spn_must_field">*</span>
                         </label>
-                        <small><a class="form-text text-muted" href="javascript:void(0)"
-                                onClick="addCategoryReqForm(0);"><?php echo (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Request_For_Category', $siteLangId) : Labels::getLabel('LBL_Add_Category', $siteLangId) ?></a></small>
+                        <small><a class="form-text text-muted" href="javascript:void(0)" onClick="addCategoryReqForm(0);"><?php echo (FatApp::getConfig('CONF_PRODUCT_CATEGORY_REQUEST_APPROVAL', FatUtility::VAR_INT, 0)) ? Labels::getLabel('LBL_Request_For_Category', $siteLangId) : Labels::getLabel('LBL_Add_Category', $siteLangId) ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
@@ -101,7 +99,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
         <div class="row">
             <div class="col-md-6">
                 <div class="field-set">
-					<div class="caption-wraper d-flex justify-content-between">
+                    <div class="caption-wraper d-flex justify-content-between">
                         <label class="field_label">
                             <?php
                             $fld = $productFrm->getField('taxcat_name');
@@ -109,7 +107,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                             ?>
                             <span class="spn_must_field">*</span>
                         </label>
-                        <small><a class="form-text text-muted" target="_blank" href="<?php echo UrlHelper::generateUrl('seller', 'taxCategories'); ?>"><?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId) ; ?></a></small>
+                        <small><a class="form-text text-muted" target="_blank" href="<?php echo UrlHelper::generateUrl('seller', 'taxCategories'); ?>"><?php echo Labels::getLabel('LBL_Tax_Categories', $siteLangId); ?></a></small>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
@@ -123,7 +121,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="caption-wraper">
                         <label class="field_label">
                             <?php $fld = $productFrm->getField('product_min_selling_price');
-                              echo $fld->getCaption();
+                            echo $fld->getCaption();
                             ?>
                         </label>
                         <span class="spn_must_field">*</span>
@@ -143,7 +141,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="caption-wraper">
                         <label class="field_label">
                             <?php $fld = $productFrm->getField('product_active');
-                              echo $fld->getCaption();
+                            echo $fld->getCaption();
                             ?>
                         </label>
                     </div>
@@ -156,22 +154,21 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
             </div>
         </div>
         <?php $divLayout = Language::getLayoutDirection($siteDefaultLangId); ?>
-        <div
-            class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout;?>">
+        <div class="p-4 mb-4 bg-gray rounded layout--<?php echo $divLayout; ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
-                                <?php $fld = $productFrm->getField('product_name['.$siteDefaultLangId.']');
-                                      echo $fld->getCaption();
+                                <?php $fld = $productFrm->getField('product_name[' . $siteDefaultLangId . ']');
+                                echo $fld->getCaption();
                                 ?>
                                 <span class="spn_must_field">*</span>
                             </label>
                         </div>
                         <div class="field-wraper">
                             <div class="field_cover">
-                                <?php echo $productFrm->getFieldHtml('product_name['.$siteDefaultLangId.']'); ?>
+                                <?php echo $productFrm->getFieldHtml('product_name[' . $siteDefaultLangId . ']'); ?>
                             </div>
                         </div>
                     </div>
@@ -180,14 +177,14 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
-                                <?php $fld = $productFrm->getField('product_youtube_video['.$siteDefaultLangId.']');
-                                      echo $fld->getCaption();
+                                <?php $fld = $productFrm->getField('product_youtube_video[' . $siteDefaultLangId . ']');
+                                echo $fld->getCaption();
                                 ?>
                             </label>
                         </div>
                         <div class="field-wraper">
                             <div class="field_cover">
-                                <?php echo $productFrm->getFieldHtml('product_youtube_video['.$siteDefaultLangId.']'); ?>
+                                <?php echo $productFrm->getFieldHtml('product_youtube_video[' . $siteDefaultLangId . ']'); ?>
                             </div>
                         </div>
                     </div>
@@ -198,116 +195,105 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="field-set mb-0">
                         <div class="caption-wraper">
                             <label class="field_label">
-                                <?php $fld = $productFrm->getField('product_description_'.$siteDefaultLangId);
-                                  echo $fld->getCaption();
-                            ?>
+                                <?php $fld = $productFrm->getField('product_description_' . $siteDefaultLangId);
+                                echo $fld->getCaption();
+                                ?>
                             </label>
                         </div>
                         <div class="field-wraper">
                             <div class="field_cover">
-                                <?php echo $productFrm->getFieldHtml('product_description_'.$siteDefaultLangId); ?>
+                                <?php echo $productFrm->getFieldHtml('product_description_' . $siteDefaultLangId); ?>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <?php
-                $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
-                if (!empty($translatorSubscriptionKey) && count($otherLanguages) > 0) {
-                    ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="field-set mb-0">
-                        <div class="caption-wraper"></div>
-                        <div class="field-wraper">
-                            <div class="field_cover">
-                                <?php echo $productFrm->getFieldHtml('auto_update_other_langs_data'); ?>
+            $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+            if (!empty($translatorSubscriptionKey) && count($otherLanguages) > 0) { ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="field-set mb-0">
+                            <div class="caption-wraper"></div>
+                            <div class="field-wraper">
+                                <div class="field_cover">
+                                    <?php echo $productFrm->getFieldHtml('auto_update_other_langs_data'); ?>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             <?php
-                } ?>
+            } ?>
         </div>
 
         <?php
         if (!empty($otherLanguages)) {
             foreach ($otherLanguages as $langId => $data) {
                 $layout = Language::getLayoutDirection($langId); ?>
-        <div class="accordion my-4"
-            id="specification-accordion-<?php echo $langId; ?>">
+                <div class="accordion my-4" id="specification-accordion-<?php echo $langId; ?>">
+                    <h6 class="dropdown-toggle" data-toggle="collapse" data-target="#collapse-<?php echo $langId; ?>" aria-expanded="true" aria-controls="collapse-<?php echo $langId; ?>"><span onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
+                            <?php
+                            echo $data . " ";
+                            echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
+                        </span>
+                    </h6>
+                    <div id="collapse-<?php echo $langId; ?>" class="collapse collapse-js-<?php echo $langId; ?>" aria-labelledby="headingOne" data-parent="#specification-accordion-<?php echo $langId; ?>">
+                        <div class="p-4 mb-4 bg-gray rounded" dir="<?php echo $layout; ?>">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                                <?php $fld = $productFrm->getField('product_name[' . $langId . ']');
+                                                echo $fld->getCaption(); ?>
+                                            </label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                                <?php echo $productFrm->getFieldHtml('product_name[' . $langId . ']'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                                <?php $fld = $productFrm->getField('product_youtube_video[' . $langId . ']');
+                                                echo $fld->getCaption(); ?>
+                                            </label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                                <?php echo $productFrm->getFieldHtml('product_youtube_video[' . $langId . ']'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                                <?php $fld = $productFrm->getField('product_description_' . $langId);
+                                                echo $fld->getCaption(); ?>
+                                            </label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                                <?php echo $productFrm->getFieldHtml('product_description_' . $langId); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <h6 class="dropdown-toggle" data-toggle="collapse"
-                data-target="#collapse-<?php echo $langId; ?>"
-                aria-expanded="true"
-                aria-controls="collapse-<?php echo $langId; ?>"><span
-                    onclick="translateData(this, '<?php echo $siteDefaultLangId; ?>', '<?php echo $langId; ?>')">
-                    <?php echo $data." ";
-                echo Labels::getLabel('LBL_Language_Data', $siteLangId); ?>
-                </span>
-            </h6>
-            <div id="collapse-<?php echo $langId; ?>"
-                class="collapse collapse-js-<?php echo $langId; ?>"
-                aria-labelledby="headingOne"
-                data-parent="#specification-accordion-<?php echo $langId; ?>">
-                <div class="p-4 mb-4 bg-gray rounded"
-                    dir="<?php echo $layout; ?>">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php  $fld = $productFrm->getField('product_name['.$langId.']');
-                echo $fld->getCaption(); ?>
-                                    </label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                        <?php echo $productFrm->getFieldHtml('product_name['.$langId.']'); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php  $fld = $productFrm->getField('product_youtube_video['.$langId.']');
-                echo $fld->getCaption(); ?>
-                                    </label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                        <?php echo $productFrm->getFieldHtml('product_youtube_video['.$langId.']'); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php  $fld = $productFrm->getField('product_description_'.$langId);
-                echo $fld->getCaption(); ?>
-                                    </label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                        <?php echo $productFrm->getFieldHtml('product_description_'.$langId); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
-
-        </div>
-        <?php
-            }
+        <?php }
         } ?>
         <div class="row">
             <div class="col-6">
@@ -326,11 +312,11 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     <div class="field-wraper">
                         <div class="field_cover">
                             <?php
-                                echo $productFrm->getFieldHtml('product_id');
-                                echo $productFrm->getFieldHtml('product_brand_id');
-                                echo $productFrm->getFieldHtml('ptc_prodcat_id');
-                                echo $productFrm->getFieldHtml('ptt_taxcat_id');
-                                echo $productFrm->getFieldHtml('btn_submit');
+                            echo $productFrm->getFieldHtml('product_id');
+                            echo $productFrm->getFieldHtml('product_brand_id');
+                            echo $productFrm->getFieldHtml('ptc_prodcat_id');
+                            echo $productFrm->getFieldHtml('ptt_taxcat_id');
+                            echo $productFrm->getFieldHtml('btn_submit');
                             ?>
                         </div>
                     </div>
@@ -344,7 +330,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
 <script type="text/javascript">
     $(document).ready(function() {
         $('input[name=\'brand_name\']').autocomplete({
-             minLength : 0, 
+            minLength: 0,
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
             },
@@ -354,7 +340,7 @@ $btnDiscardFld->setFieldTagAttribute('class', "btn btn-outline-brand");
                     data: {
                         keyword: request['term'],
                         fIsAjax: 1,
-                        'fetchAllRecords' : 1
+                        'fetchAllRecords': 1
                     },
                     dataType: 'json',
                     type: 'post',

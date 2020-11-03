@@ -1096,6 +1096,10 @@ class ProductsController extends MyAppController
         }
 
         if (empty($keyword) || mb_strlen($keyword) < 3) {
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_PLEASE_ENTER_ATLEAST_3_CHARACTERS', $this->siteLangId));
+            }
+            
             $this->set('keyword', $keyword);
             $this->set('recentSearchArr', $recentSearchArr);
             $html = '';

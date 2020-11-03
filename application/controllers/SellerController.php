@@ -3524,7 +3524,7 @@ class SellerController extends SellerBaseController
 
         $shopDetails = Shop::getAttributesByUserId(UserAuthentication::getLoggedUserId(), null, false);
         $address = new Address(0, $this->siteLangId);
-        $addresses = $address->getData(Address::TYPE_SHOP_PICKUP, $shopDetails['shop_id']);
+        $addresses = (is_array($shopDetails) && isset($shopDetails['shop_id'])) ? $address->getData(Address::TYPE_SHOP_PICKUP, $shopDetails['shop_id']) : '';
 
         $fulfillmentType = empty($addresses) ? Shipping::FULFILMENT_SHIP : Shipping::FULFILMENT_ALL;
 

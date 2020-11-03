@@ -9,13 +9,13 @@ class Address extends MyAppModel
     public const TYPE_SHOP_PICKUP = 2;
     public const TYPE_SHOP_REUTRN = 3;
     public const TYPE_ADMIN_PICKUP = 4;
-    
+
     public const ADDRESS_TYPE_BILLING = 1;
     public const ADDRESS_TYPE_SHIPPING = 2;
-    
+
     private const GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json?';
     private $langId;
-    
+
     /**
      * __contruct
      *
@@ -29,7 +29,7 @@ class Address extends MyAppModel
         parent::__construct(self::DB_TBL, self::DB_TBL_PREFIX . 'id', $addressId);
         $this->objMainTableRecord->setSensitiveFields([self::DB_TBL_PREFIX . 'id']);
     }
-    
+
     /**
      * getTypeArr
      *
@@ -43,7 +43,7 @@ class Address extends MyAppModel
             self::TYPE_SHOP_PICKUP => Labels::getLabel('LBL_SHOP_PICKUP_ADDRESS', $langId)
         ];
     }
-    
+
     /**
      * getDefaultByRecordId
      *
@@ -63,7 +63,7 @@ class Address extends MyAppModel
         $rs = $srch->getResultSet();
         return (array) FatApp::getDb()->fetch($rs);
     }
-    
+
     /**
      * getData
      *
@@ -72,14 +72,14 @@ class Address extends MyAppModel
      * @param  int $isDefault
      * @return array
      */
-    public function getData(int $type, string $recordId, int $isDefault = 0, $joinTimeSlots = false) : array
-    { 
+    public function getData(int $type, string $recordId, int $isDefault = 0, $joinTimeSlots = false): array
+    {
         $srch = new AddressSearch($this->langId);
         $srch->joinCountry();
         $srch->joinState();
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('addr.*', 'state_code', 'country_code','IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
+        $srch->addMultipleFields(array('addr.*', 'state_code', 'country_code', 'IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
         $srch->addCondition('country_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('state_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition(self::tblFld('type'), '=', $type);
@@ -92,8 +92,8 @@ class Address extends MyAppModel
             $srch->addOrder(static::tblFld('id'), 'DESC');
         } else {
             $srch->addOrder(static::tblFld('is_default'), 'DESC');
-        }        
-        if($joinTimeSlots == true){
+        }
+        if ($joinTimeSlots == true) {
             $srch->joinTable(TimeSlot::DB_TBL, 'INNER JOIN', 'ts.tslot_record_id = addr.addr_id', 'ts');
             $srch->addGroupBy(static::tblFld('id'));
         }
@@ -107,7 +107,7 @@ class Address extends MyAppModel
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
     }
-    
+
     /**
      * deleteByRecordId
      *
@@ -125,24 +125,24 @@ class Address extends MyAppModel
         }
         return true;
     }
-    
+
     /**
-    * getGeoData
-    *
-    * @param  string $lat
-    * @param  string $lng
-    * @param  string $countryCode
-    * @param  string $stateCode
-    * @param  string $zipCode
-    * @return array
-    */
+     * getGeoData
+     *
+     * @param  string $lat
+     * @param  string $lng
+     * @param  string $countryCode
+     * @param  string $stateCode
+     * @param  string $zipCode
+     * @return array
+     */
     public function getGeoData(string $lat, string $lng, string $countryCode = '', string $stateCode = '', string $zipCode = '', $address = ''): array
     {
         if ((empty($lat) || empty($lng))) {
             $msg = Labels::getLabel('MSG_MSSING_REQUIRED_PARAMETERS', $this->langId);
             return static::formatOutput(false, $msg);
         }
-        
+
         // google map geocode api url
         $apiKey = FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '');
         if (empty($apiKey)) {
@@ -157,8 +157,8 @@ class Address extends MyAppModel
             $address = str_replace(' ', $seperator, $address);
         }
 
-        $seperator = ',' . $seperator ;
-        
+        $seperator = ',' . $seperator;
+
         if (!empty($countryCode)) {
             $address .= (!empty($address)) ? $seperator : '';
             $address .= $countryCode;
@@ -177,12 +177,12 @@ class Address extends MyAppModel
         if (!empty($address)) {
             $url .= '&address=' . $address;
         }
-        
+
         $url .= '&key=' . $apiKey;
-    
+
         // get the json response
         $resp = file_get_contents($url);
-        
+
         // decode the json
         $resp = json_decode($resp, true);
         // response status will be 'OK', if able to geocode given address
@@ -246,7 +246,7 @@ class Address extends MyAppModel
         if (!FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
             return [];
         }
-       
+
         if (!empty($address)) {
             $address = $address;
         } else {
@@ -258,9 +258,9 @@ class Address extends MyAppModel
                     'ykGeoStateCode' => isset($_COOKIE['_ykGeoStateCode']) ? $_COOKIE['_ykGeoStateCode'] : '',
                     'ykGeoCountryCode' => isset($_COOKIE['_ykGeoCountryCode']) ? $_COOKIE['_ykGeoCountryCode'] : '',
                     'ykGeoAddress' => isset($_COOKIE['_ykGeoAddress']) ? $_COOKIE['_ykGeoAddress'] : '',
-               ];
+                ];
             }
-                       
+
             if (true === MOBILE_APP_API_CALL) {
                 $address = [
                     'ykGeoLat' => isset($_SERVER['HTTP_X_YK_LAT']) ? $_SERVER['HTTP_X_YK_LAT'] : '',
@@ -269,7 +269,7 @@ class Address extends MyAppModel
                     'ykGeoStateCode' => isset($_SERVER['HTTP_X_YK_STATE_CODE']) ? $_SERVER['HTTP_X_YK_STATE_CODE'] : '',
                     'ykGeoCountryCode' => isset($_SERVER['HTTP_X_YK_COUNTRY_CODE']) ? $_SERVER['HTTP_X_YK_COUNTRY_CODE'] : '',
                     'ykGeoAddress' => isset($_SERVER['HTTP_X_YK_ADDRESS']) ? $_SERVER['HTTP_X_YK_ADDRESS'] : '',
-               ];
+                ];
             }
         }
 

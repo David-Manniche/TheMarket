@@ -632,7 +632,7 @@ class Importexport extends ImportexportCommon
         }
 
         $srch = ProductCategory::getSearchObject(false, $langId, false);
-        $srch->addMultipleFields(array('prodcat_id', 'prodcat_identifier', 'prodcat_parent', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'prodcat_description', 'prodcat_featured', 'prodcat_active', 'prodcat_deleted', 'prodcat_display_order'));
+        $srch->addMultipleFields(array('prodcat_id', 'prodcat_identifier', 'prodcat_parent', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'prodcat_description', 'prodcat_featured', 'prodcat_active', 'prodcat_status', 'prodcat_deleted', 'prodcat_display_order'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addOrder('prodcat_id', 'asc');
@@ -653,7 +653,7 @@ class Importexport extends ImportexportCommon
             foreach ($headingsArr as $columnKey => $heading) {
                 $colValue = array_key_exists($columnKey, $row) ? $row[$columnKey] : '';
 
-                if (in_array($columnKey, array('prodcat_featured', 'prodcat_active', 'prodcat_deleted')) && !$this->settings['CONF_USE_O_OR_1']) {
+                if (in_array($columnKey, array('prodcat_featured', 'prodcat_active', 'prodcat_status', 'prodcat_deleted')) && !$this->settings['CONF_USE_O_OR_1']) {
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
@@ -738,7 +738,7 @@ class Importexport extends ImportexportCommon
                     $err = array($rowIndex, ($colIndex + 1), $errMsg);
                     CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
                 } else {
-                    if (in_array($columnKey, array('prodcat_featured', 'prodcat_active', 'prodcat_deleted'))) {
+                    if (in_array($columnKey, array('prodcat_featured', 'prodcat_active', 'prodcat_status', 'prodcat_deleted'))) {
                         if ($this->settings['CONF_USE_O_OR_1']) {
                             $colValue = (FatUtility::int($colValue) == 1) ? applicationConstants::YES : applicationConstants::NO;
                         } else {
@@ -1766,8 +1766,8 @@ class Importexport extends ImportexportCommon
                             $taxCatId = isset($taxCategoryArr[$colValue]) ? $taxCategoryArr[$colValue] : 0;
                             break;
                         case 'product_ship_package_id':
-							$columnKey = 'product_ship_package';
-							break;
+                            $columnKey = 'product_ship_package';
+                            break;
                         case 'product_ship_package_identifier':
                             $columnKey = 'product_ship_package';
                             if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
