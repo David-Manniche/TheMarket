@@ -31341,7 +31341,7 @@ a.ui-button:active,
     margin-left: 15px; }
     .product-profile__thumbnail img, .product-profile__thumbnail .post .post_media iframe, .post .post_media .product-profile__thumbnail iframe, .product-profile__thumbnail .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .product-profile__thumbnail img, .product-profile__thumbnail .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .product-profile__thumbnail img {
       min-width: 30px;
-      max-width: 72px;
+      max-width: 40px;
       border-radius: 4px;
       border: solid 1px #dee2e6; }
       @media (max-width: 767.98px) {
@@ -32322,30 +32322,33 @@ a.ui-button:active,
     padding: 6px 1rem;
     align-items: center;
     flex-direction: initial;
-    /*background-color: $bg-gray;*/ }
-    .list-shippings .shipping-select .shop-name {
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding-left: 1rem;
-      /* flex: 0 0 20%;
-      max-width: 20%;*/ }
-    .list-shippings .shipping-select .shop-address {
-      flex: 1;
-      color: #8798ad; }
-    .list-shippings .shipping-select .shipping-method {
-      max-width: 50%; }
-      .list-shippings .shipping-select .shipping-method_messages {
-        font-size: inherit; }
-      .list-shippings .shipping-select .shipping-method .form-control {
-        font-size: inherit;
-        border: none;
-        border-radius: 0px;
-        padding: 0;
-        padding-right: 10px;
-        padding-left: 2rem;
-        height: auto; }
-  .list-shippings .quantity {
-    margin-top: 0.5rem; }
+    display: flex;
+    justify-content: space-between; }
+  .list-shippings .pickup-select {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: initial; }
+  .list-shippings .shop-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding-left: 1rem;
+    /* flex: 0 0 20%;
+    max-width: 20%;*/ }
+  .list-shippings .shop-address {
+    flex: 1;
+    color: #8798ad; }
+  .list-shippings .shipping-method {
+    max-width: 50%; }
+    .list-shippings .shipping-method_messages {
+      font-size: inherit; }
+    .list-shippings .shipping-method .form-control {
+      font-size: inherit;
+      border: none;
+      border-radius: 0px;
+      padding: 0;
+      padding-right: 10px;
+      padding-left: 2rem;
+      height: auto; }
 
 .wallet-balance {
   border: solid 1px #dee2e6;

@@ -3,7 +3,7 @@ $productUrl = !$isAppUser ? UrlHelper::generateUrl('Products', 'View', array($pr
 $shopUrl = !$isAppUser ? UrlHelper::generateUrl('Shops', 'View', array($product['shop_id'])) : 'javascript:void(0)';
 $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
 ?>
-<ul class="list-group list-cart list-shippings">
+<ul class="list-group list-cart list-cart-page list-shippings">
     <li class="list-group-item shipping-select">
         <div class="shop-name"><?php echo $product['shop_name']; ?></div>
         <div class="shipping-method">
@@ -49,17 +49,20 @@ $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product
                                         echo rtrim($optionStr, '|');
                                     } ?></p>
                 </div>
-                <div class="quantity quantity-2">
+                
+            </div>
+        </div>
+        <div class="wrap-qty-price">
+        <div class="quantity quantity-2">
                     <span class="decrease decrease-js"><i class="fas fa-minus"></i></span>
                     <input class="qty-input no-focus cartQtyTextBox productQty-js" title="<?php echo Labels::getLabel('LBL_Quantity', $siteLangId) ?>" data-page="checkout" type="text" name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" value="<?php echo $product['quantity']; ?>">
                     <span class="increase increase-js"><i class="fas fa-plus"></i></span>
-                </div>
-            </div>
         </div>
         <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice'] * $product['quantity']); ?>
             <?php if ($product['special_price_found']) { ?>
                 <del><?php echo CommonHelper::showProductDiscountedText($product, $siteLangId); ?></del>
             <?php } ?>
+        </div>
         </div>
         <div class="product-action">
             <ul class="list-actions">
