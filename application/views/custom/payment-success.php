@@ -14,6 +14,15 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
         $shippingMethod .= !empty($op['opshipping_label']) ? '<li>' . $op['opshipping_label'] . '</li>' : '';
     }
 }
+
+$fulfillmentType = Shipping::FULFILMENT_SHIP;
+array_walk($orderFulFillmentTypeArr, function ($row) use (&$fulfillmentType) {
+    if (Product::PRODUCT_TYPE_PHYSICAL == $row['op_product_type']) {
+        $fulfillmentType = $row['opshipping_fulfillment_type'];
+        return;
+    }
+});
+
 ?>
 <div id="body" class="body">
     <section class="section">
@@ -97,7 +106,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                 </li>
                                 <?php }
                             if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
-                                if (!empty($orderFulFillmentTypeArr) && Shipping::FULFILMENT_PICKUP == current($orderFulFillmentTypeArr)['opshipping_fulfillment_type']) { ?>
+                                if (!empty($orderFulFillmentTypeArr) && Shipping::FULFILMENT_PICKUP == $fulfillmentType) { ?>
                                     <li>
                                         <h4>
                                             <svg class="svg" width="22px" height="22px">
@@ -182,107 +191,109 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                     <div class="completed-cart">
                                         <div class="row justify-content-between">
                                             <div class="col-md-7">
-                                            <div class="bg-gray rounded p-4"> <h5><?php echo Labels::getLabel('LBL_ORDER_DETAIL', $siteLangId); ?></h5>                                              
-                                                <ul class="list-group list-cart list-cart-checkout">
-                                                    <?php
-                                                    $shippingCharges = $subTotal = 0;
-                                                    if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
-                                                        foreach ($products as $key => $product) {
-                                                            $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['op_selprod_id']));
-                                                            $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['op_shop_id']));
-                                                            $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['selprod_product_id'], "MINI", $product['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-                                                            $productTitle =  ($product['op_selprod_title']) ? $product['op_selprod_title'] : $product['op_product_name'];
-                                                    ?>
-                                                            <li class="list-group-item">
-                                                                <div class="product-profile">
-                                                                    <div class="product-profile__thumbnail">
-                                                                        <a href="<?php echo $productUrl; ?>">
-                                                                            <img class="img-fluid" data-ratio="3:4" src="<?php echo $imageUrl; ?>" alt="<?php echo $product['op_product_name']; ?>" title="<?php echo $product['op_product_name']; ?>">
-                                                                        </a>
-                                                                        <span class="product-qty"><?php echo $product['op_qty']; ?></span>
-                                                                    </div>
-                                                                    <div class="product-profile__data">
-                                                                        <div class="title"><a class="" href="<?php echo $productUrl; ?>"><?php echo $productTitle; ?></a> </div>
-                                                                        <div class="options">
-                                                                            <p class=""> <?php echo $product['op_selprod_options']; ?></p>
+                                                <div class="bg-gray rounded p-4">
+                                                    <h5><?php echo Labels::getLabel('LBL_ORDER_DETAIL', $siteLangId); ?></h5>
+                                                    <ul class="list-group list-cart list-cart-checkout">
+                                                        <?php
+                                                        $shippingCharges = $subTotal = 0;
+                                                        if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
+                                                            foreach ($products as $key => $product) {
+                                                                $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['op_selprod_id']));
+                                                                $shopUrl = UrlHelper::generateUrl('Shops', 'View', array($product['op_shop_id']));
+                                                                $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['selprod_product_id'], "MINI", $product['op_selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+                                                                $productTitle =  ($product['op_selprod_title']) ? $product['op_selprod_title'] : $product['op_product_name'];
+                                                        ?>
+                                                                <li class="list-group-item">
+                                                                    <div class="product-profile">
+                                                                        <div class="product-profile__thumbnail">
+                                                                            <a href="<?php echo $productUrl; ?>">
+                                                                                <img class="img-fluid" data-ratio="3:4" src="<?php echo $imageUrl; ?>" alt="<?php echo $product['op_product_name']; ?>" title="<?php echo $product['op_product_name']; ?>">
+                                                                            </a>
+                                                                            <span class="product-qty"><?php echo $product['op_qty']; ?></span>
+                                                                        </div>
+                                                                        <div class="product-profile__data">
+                                                                            <div class="title"><a class="" href="<?php echo $productUrl; ?>"><?php echo $productTitle; ?></a> </div>
+                                                                            <div class="options">
+                                                                                <p class=""> <?php echo $product['op_selprod_options']; ?></p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="product-price">
-                                                                    <?php
-                                                                    $subTotal += $txnAmount = ($product["op_unit_price"] * $product["op_qty"]);
-                                                                    echo CommonHelper::displayMoneyFormat($txnAmount);
+                                                                    <div class="product-price">
+                                                                        <?php
+                                                                        $subTotal += $txnAmount = ($product["op_unit_price"] * $product["op_qty"]);
+                                                                        echo CommonHelper::displayMoneyFormat($txnAmount);
 
-                                                                    $shippingCharges += $product['op_actual_shipping_charges'];
-                                                                    ?>
-                                                                </div>
-                                                            </li>
+                                                                        $shippingCharges += $product['op_actual_shipping_charges'];
+                                                                        ?>
+                                                                    </div>
+                                                                </li>
+                                                            <?php }
+                                                        } else {
+                                                            foreach ($products as $subscription) { ?>
+                                                                <li class="list-group-item"><?php echo Labels::getLabel("LBL_COMMISION_RATE", $siteLangId); ?> <span><?php echo CommonHelper::displayComissionPercentage($subscription['ossubs_commission']); ?>%</span></li>
+                                                                <li class="list-group-item"><?php echo Labels::getLabel("LBL_ACTIVE_PRODUCTS", $siteLangId); ?> <span><?php echo $subscription['ossubs_products_allowed']; ?></span></li>
+                                                                <li class="list-group-item"><?php echo Labels::getLabel("LBL_PRODUCT_INVENTORY", $siteLangId); ?> <span><?php echo $subscription['ossubs_inventory_allowed']; ?></span></li>
+                                                                <li class="list-group-item"><?php echo Labels::getLabel("LBL_IMAGES_PER_PRODUCT", $siteLangId); ?> <span><?php echo $subscription['ossubs_images_allowed']; ?></span></li>
                                                         <?php }
-                                                    } else {
-                                                        foreach ($products as $subscription) { ?>
-                                                            <li class="list-group-item"><?php echo Labels::getLabel("LBL_COMMISION_RATE", $siteLangId); ?> <span><?php echo CommonHelper::displayComissionPercentage($subscription['ossubs_commission']); ?>%</span></li>
-                                                            <li class="list-group-item"><?php echo Labels::getLabel("LBL_ACTIVE_PRODUCTS", $siteLangId); ?> <span><?php echo $subscription['ossubs_products_allowed']; ?></span></li>
-                                                            <li class="list-group-item"><?php echo Labels::getLabel("LBL_PRODUCT_INVENTORY", $siteLangId); ?> <span><?php echo $subscription['ossubs_inventory_allowed']; ?></span></li>
-                                                            <li class="list-group-item"><?php echo Labels::getLabel("LBL_IMAGES_PER_PRODUCT", $siteLangId); ?> <span><?php echo $subscription['ossubs_images_allowed']; ?></span></li>
-                                                    <?php }
-                                                    } ?>
-                                                </ul>
+                                                        } ?>
+                                                    </ul>
                                                 </div>
                                             </div>
                                             <div class="col-md-5">
-                                            <div class="bg-gray rounded p-4"><h5><?php echo Labels::getLabel('LBL_ORDER_SUMMARY', $siteLangId); ?></h5>
-                                               <div class="cart-total">
-                                                    <ul class="list-group list-group-flush-x list-group-flush-y mt-4">
-                                                        <?php if (0 < $subTotal) { ?>
-                                                            <li class="list-group-item">
-                                                                <span class="label">
-                                                                    <?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?>
-                                                                </span>
-                                                                <span class="ml-auto">
-                                                                    <?php echo CommonHelper::displayMoneyFormat($subTotal); ?>
-                                                                </span>
+                                                <div class="bg-gray rounded p-4">
+                                                    <h5><?php echo Labels::getLabel('LBL_ORDER_SUMMARY', $siteLangId); ?></h5>
+                                                    <div class="cart-total">
+                                                        <ul class="list-group list-group-flush-x list-group-flush-y mt-4">
+                                                            <?php if (0 < $subTotal) { ?>
+                                                                <li class="list-group-item">
+                                                                    <span class="label">
+                                                                        <?php echo Labels::getLabel('LBL_Sub_Total', $siteLangId); ?>
+                                                                    </span>
+                                                                    <span class="ml-auto">
+                                                                        <?php echo CommonHelper::displayMoneyFormat($subTotal); ?>
+                                                                    </span>
+                                                                </li>
+                                                            <?php }
+                                                            if (0 < $orderInfo['order_reward_point_value'] || 0 < $orderInfo['order_discount_total']) {
+                                                                $msg = "LBL_REWARD_POINTS";
+                                                                $totalDiscount = $orderInfo['order_reward_point_value'];
+                                                                if (!empty($orderInfo['order_discount_total']) && 0 < $orderInfo['order_discount_total']) {
+                                                                    $msg .= "_&_DISCOUNT";
+                                                                    $totalDiscount += $orderInfo['order_discount_total'];
+                                                                }
+                                                            ?>
+                                                                <li class="list-group-item ">
+                                                                    <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
+                                                                    <span class="ml-auto">- <?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
+                                                                </li>
+                                                            <?php }
+                                                            if (0 < $orderInfo['order_volume_discount_total']) {
+                                                                $msg = 'LBL_Loyalty/Volume_Discount';
+                                                                $totalDiscount = $orderInfo['order_volume_discount_total'];
+                                                            ?>
+                                                                <li class="list-group-item ">
+                                                                    <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
+                                                                    <span class="ml-auto">- <?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
+                                                                </li>
+                                                            <?php }
+                                                            if (0 < $orderInfo['order_tax_charged']) { ?>
+                                                                <li class="list-group-item ">
+                                                                    <span class="label"><?php echo Labels::getLabel('LBL_TAX', $siteLangId); ?></span>
+                                                                    <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_tax_charged']); ?></span>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (0 < $shippingCharges) { ?>
+                                                                <li class="list-group-item ">
+                                                                    <span class="label"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></span>
+                                                                    <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></span>
+                                                                </li>
+                                                            <?php  } ?>
+                                                            <li class="list-group-item hightlighted">
+                                                                <span class="label"><?php echo Labels::getLabel('LBL_NET_AMOUNT', $siteLangId); ?></span>
+                                                                <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
                                                             </li>
-                                                        <?php }
-                                                        if (0 < $orderInfo['order_reward_point_value'] || 0 < $orderInfo['order_discount_total']) {
-                                                            $msg = "LBL_REWARD_POINTS";
-                                                            $totalDiscount = $orderInfo['order_reward_point_value'];
-                                                            if (!empty($orderInfo['order_discount_total']) && 0 < $orderInfo['order_discount_total']) {
-                                                                $msg .= "_&_DISCOUNT";
-                                                                $totalDiscount += $orderInfo['order_discount_total'];
-                                                            }
-                                                        ?>
-                                                            <li class="list-group-item ">
-                                                                <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
-                                                                <span class="ml-auto">- <?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
-                                                            </li>
-                                                        <?php }
-                                                        if (0 < $orderInfo['order_volume_discount_total']) {
-                                                            $msg = 'LBL_Loyalty/Volume_Discount';
-                                                            $totalDiscount = $orderInfo['order_volume_discount_total'];
-                                                        ?>
-                                                            <li class="list-group-item ">
-                                                                <span class="label"><?php echo Labels::getLabel($msg, $siteLangId); ?></span>
-                                                                <span class="ml-auto">- <?php echo CommonHelper::displayMoneyFormat($totalDiscount); ?></span>
-                                                            </li>
-                                                        <?php }
-                                                        if (0 < $orderInfo['order_tax_charged']) { ?>
-                                                            <li class="list-group-item ">
-                                                                <span class="label"><?php echo Labels::getLabel('LBL_TAX', $siteLangId); ?></span>
-                                                                <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_tax_charged']); ?></span>
-                                                            </li>
-                                                        <?php } ?>
-                                                        <?php if (0 < $shippingCharges) { ?>
-                                                            <li class="list-group-item ">
-                                                                <span class="label"><?php echo Labels::getLabel('LBL_Delivery_Charges', $siteLangId); ?></span>
-                                                                <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></span>
-                                                            </li>
-                                                        <?php  } ?>
-                                                        <li class="list-group-item hightlighted">
-                                                            <span class="label"><?php echo Labels::getLabel('LBL_NET_AMOUNT', $siteLangId); ?></span>
-                                                            <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -295,7 +306,7 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
             </div>
         </div>
     </section>
-    
+
 </div>
 <?php if (true === $print) { ?>
     <script>
