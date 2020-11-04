@@ -20,7 +20,6 @@ if (true == $primaryOrder) {
 }
 
 $orderStatusArr = Orders::getOrderPaymentStatusArr($siteLangId);
-
 if (!$print) { ?>
     <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <?php } ?>
@@ -167,18 +166,17 @@ if (!$print) { ?>
                                     } ?>
                                     <?php
                                     $disc = CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT');
-                                    if (0 < $disc) { ?>
+                                    if (!empty($disc)) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:
                                             </strong>
                                             <?php echo CommonHelper::displayMoneyFormat($disc, true, false, true, false, true); ?>
                                         </p>
-                                    <?php
-                                    }
+                                    <?php }
 
                                     $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
-                                    if (0 < $volumeDiscount) { ?>
+                                    if (!empty($volumeDiscount)) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:
@@ -187,7 +185,7 @@ if (!$print) { ?>
                                         </p>
                                     <?php } ?>
                                     <?php $rewardPointDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'REWARDPOINT');
-                                    if ($rewardPointDiscount != 0) { ?>
+                                    if (!empty($rewardPointDiscount)) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId); ?>:
@@ -477,7 +475,7 @@ if (!$print) { ?>
                                                 <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged'], true, false, true, false, true); ?>
                                             </td>
                                         </tr>
-                                        <?php } else {
+                                    <?php } else {
                                         foreach ($taxOptionsTotal as $key => $val) { ?>
                                             <tr>
                                                 <td colspan="7">
@@ -489,7 +487,8 @@ if (!$print) { ?>
                                             </tr>
                                     <?php }
                                     } ?>
-                                    <?php if (0 < $orderDetail['order_discount_total']) { ?>
+                                    <?php 
+                                    if (0 < $orderDetail['order_discount_total']) { echo 'fdsdf';?>
                                         <tr>
                                             <td colspan="7">
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId) ?>

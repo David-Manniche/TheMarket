@@ -356,6 +356,7 @@ Bugs:
     => 044755 - when we buy one digital and one physical product and choose pickup option then pickup address is not getting display on thankyou screen.
     => 044684 - in search field> string entered and cross button are overlapping
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    => 044758 - discount availed by buyer is not displaying on order detail page
     
 Enhancements:
     => Tax module upgrade
