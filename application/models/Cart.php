@@ -1723,12 +1723,12 @@ class Cart extends FatModel
         $sellerPinCode = $productShopAddress['shop_postalcode'];
         $quantity = $product['quantity'];
         $productWeight = $product['product_weight'] / $quantity;
-        $productWeightClass = ($product['product_dimension_unit']) ? $weightUnitsArr[$product['product_dimension_unit']] : '';
+        $productWeightClass = ($product['product_weight_unit']) ? $lengthUnitsArr[$product['product_weight_unit']] : '';
+
+        $productLengthUnit = ($product['product_dimension_unit']) ? $weightUnitsArr[$product['product_dimension_unit']] : '';
         $productLength = $product['product_length'];
         $productWidth = $product['product_width'];
         $productHeight = $product['product_height'];
-
-        $productLengthUnit = ($product['product_weight_unit']) ? $lengthUnitsArr[$product['product_weight_unit']] : '';
 
         $productWeightInOunce = Shipping::convertWeightInOunce($productWeight, $productWeightClass);
         $productLengthInCenti = Shipping::convertLengthInCenti($productLength, $productLengthUnit);
