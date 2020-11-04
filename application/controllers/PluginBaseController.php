@@ -9,12 +9,6 @@ class PluginBaseController extends MyAppController
     public function __construct($action)
     {
         parent::__construct($action);
-        $class = get_called_class();
-        if (!defined($class . '::KEY_NAME')) {
-            Message::addErrorMessage(Labels::getLabel('MSG_INVALID_PLUGIN', $this->siteLangId));
-            CommonHelper::redirectUserReferer();
-        }
-        $this->keyName = $class::KEY_NAME;
     }
 
     protected function updateUserInfo($detail = [], $redirect = false)
@@ -68,7 +62,9 @@ class PluginBaseController extends MyAppController
 
     protected function redirectBack(string $controller = '', string $action = '')
     {
-        $controller = empty($controller) ? $this->keyName : $controller;
+        if (empty($controller)) {
+            CommonHelper::redirectUserReferer();
+        }
         FatApp::redirectUser(UrlHelper::generateUrl($controller, $action));
     }
 }
