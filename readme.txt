@@ -357,6 +357,7 @@ Bugs:
     => 044684 - in search field> string entered and cross button are overlapping
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
     => 044758 - discount availed by buyer is not displaying on order detail page
+    => 044752 - admin> order status management> color is not distinct able by name
     
 Enhancements:
     => Tax module upgrade
