@@ -478,6 +478,8 @@
 .payment-area {
     .nav-payments {
         display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
         border: solid 1px #888;
         border-radius: $radius4;
         margin: 1rem 0;
@@ -486,6 +488,7 @@
             font-size: 0.85rem;
             text-align: center;
             a {
+                white-space: nowrap;
                 padding: 0.6rem 0.8rem;
                 color: #888;
                 &.active {
@@ -715,36 +718,39 @@
         padding: 6px 1rem;
         align-items: center;
         flex-direction: initial;
-        /*background-color: $bg-gray;*/
-        .shop-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding-#{$end-direction}: 1rem;
-            /* flex: 0 0 20%;
-            max-width: 20%;*/
-        }
-        .shop-address {
-            flex: 1;
-            color: $txt-gray;
-        }
-        .shipping-method {
-            max-width: 50%;
-            &_messages {
-                font-size: inherit;
-            }
-            .form-control {
-                font-size: inherit;
-                border: none;
-                border-radius: 0px;
-                padding: 0;
-                padding-#{$start-direction}: 10px;
-                padding-#{$end-direction}: 2rem;
-                height: auto;
-            }
-        }
+        display: flex;
+        justify-content: space-between;
     }
-    .quantity {
-        margin-top: 0.5rem;
+    .pickup-select {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: initial;
+    }
+    .shop-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding-#{$end-direction}: 1rem;
+        /* flex: 0 0 20%;
+        max-width: 20%;*/
+    }
+    .shop-address {
+        flex: 1;
+        color: $txt-gray;
+    }
+    .shipping-method {
+        max-width: 50%;
+        &_messages {
+            font-size: inherit;
+        }
+        .form-control {
+            font-size: inherit;
+            border: none;
+            border-radius: 0px;
+            padding: 0;
+            padding-#{$start-direction}: 10px;
+            padding-#{$end-direction}: 2rem;
+            height: auto;
+        }
     }
 }
 

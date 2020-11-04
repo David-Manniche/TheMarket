@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('id', 'pickupAddressFrm');
-$frm->setFormTagAttribute('class', 'form form--horizontal');
+$frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'setPickupAddress(this); return(false);');
 
 $addrLabelFld = $frm->getField('addr_title');
@@ -317,10 +317,10 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                                                 <div class="field-wraper">
                                                     <div class="field_cover">
                                                         <?php if ($key != 0) {  ?>
-                                                                <button class="btn btn-outline-brand" type="button" name="btn_remove_row" data-day="<?php echo $i; ?>"><i class="fas fa-minus"></i></button>
+                                                                <button class="btn btn-outline-brand btn-sm" type="button" name="btn_remove_row" data-day="<?php echo $i; ?>"><i class="fas fa-minus"></i></button>
                                                         <?php }                                                        
                                                         if (count($slotData['tslot_from_time'][$i]) - 1 == $key) { ?>
-                                                                <button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick="addTimeSlotRow(<?php echo $i; ?>)" class="btn btn-brand js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
+                                                                <button type="button" name="btn_add_row[<?php echo $i; ?>]" onClick="addTimeSlotRow(<?php echo $i; ?>)" class="btn btn-brand btn-sm js-slot-add-<?php echo $i; ?>"><i class="fas fa-plus"></i></button>
                                                         <?php } ?>                                                        
                                                     </div>
                                                 </div>
@@ -490,9 +490,9 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
                 $('.addRowBtn' + day + '-js').remove();
             }
 
-            var addRowBtnHtml = '<button type="button" name="btn_add_row[' + day + ']" onclick="addTimeSlotRow(' + day + ')" class="btn btn-brand js-slot-add-' + day + ' addRowBtn' + day + '-js d-none"><i class="fas fa-plus"></i></button>';
+            var addRowBtnHtml = '<button type="button" name="btn_add_row[' + day + ']" onclick="addTimeSlotRow(' + day + ')" class="btn btn-brand btn-sm js-slot-add-' + day + ' addRowBtn' + day + '-js d-none"><i class="fas fa-plus"></i></button>';
 
-            var html = "<div class='row row-" + count + " js-added-rows-" + day + "'><div class='col-md-2'></div><div class='col-md-4 js-from_time_" + day + "'>" + fromTimeHtml + "</div><div class='col-md-4 js-to_time_" + day + "'>" + toTimeHtml + "</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover'><button class='btn btn-outline-brand' type='button' name='btn_remove_row' data-day='" + day + "'><i class='fas fa-minus'></i></button>" + addRowBtnHtml + "</div></div></div></div></div>";
+            var html = "<div class='row row-" + count + " js-added-rows-" + day + "'><div class='col-md-2'></div><div class='col-md-4 js-from_time_" + day + "'>" + fromTimeHtml + "</div><div class='col-md-4 js-to_time_" + day + "'>" + toTimeHtml + "</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover btn-group'><button class='btn btn-outline-brand btn-sm' type='button' name='btn_remove_row' data-day='" + day + "'><i class='fas fa-minus'></i></button>" + addRowBtnHtml + "</div></div></div></div></div>";
 
             $(".js-from_time_" + day).last().parent().after(html);
             $(rowElement + " select").val('').attr('data-row', (count));

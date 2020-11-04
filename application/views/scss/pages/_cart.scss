@@ -220,7 +220,7 @@
         margin-#{$end-direction}: 15px;
         img {
             min-width: 30px;
-            max-width: 72px;
+            max-width: 40px;
             border-radius: $radius4;
             border: $border;
             @include media-breakpoint-down(sm) {
@@ -518,9 +518,9 @@
 .save-later {
     margin-top: 0.5rem;
     line-height: 1;
+    font-weight: 500;
+    font-size: 0.75rem;
     a {
-        font-weight: 500;
-        font-size: 0.75rem;
         &:hover {
             color: $brand-color;
         }

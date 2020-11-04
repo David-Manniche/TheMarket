@@ -354,7 +354,9 @@ Bugs:
     => 044384 -  Order summary is not getting display at guest checkout before adding the address
     => 044446 - Content block >> on home page collection of content block should be in the frame 
     => 044755 - when we buy one digital and one physical product and choose pickup option then pickup address is not getting display on thankyou screen.
-
+    => 044684 - in search field> string entered and cross button are overlapping
+    => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
