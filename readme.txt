@@ -361,6 +361,7 @@ Bugs:
 --------------------TV-9.2.2.20201104--------------------------    
     => #044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
     => 044913 - When fetching avalara category getting error
+    => 044665 - Ipad >> on shipping profile >>text is not properly getting display in button
 
 Enhancements:
     => Tax module upgrade
