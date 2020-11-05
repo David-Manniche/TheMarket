@@ -1,7 +1,3 @@
-/*package page**/
-
-.packages-banner {}
-
 .banner-over-txt {
     text-align: center;
     padding: 30px 0;
@@ -25,133 +21,98 @@
     margin: 0px auto;
 }
 
-.packages-box .box {
+.packages-box {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     text-align: center;
-}
-
-.packages-box .box.is--active {}
-
-.packages-box .box .box-inner {
-    background: #282828;
-    border-radius: $radius3;
-    padding: 30px;
-}
-
-.packages-box .box.two .box-inner {
-    background: $brand-color;
-    color: $brand-color-inverse;
-}
-
-.packages-box .box.two .after-box h3 {
-    background: $brand-color;
-    color: $brand-color-inverse;
-}
-
-.packages-box .box.three .box-inner {
-    background: $secondary-color;
-    color: $secondary-color-inverse;
-}
-
-.packages-box .box.three .after-box h3 {
-    background: $secondary-color;
-    color: $secondary-color-inverse;
-}
-
-.packages-box .name {
-    padding: 0 0 20px 0;
-    color: #fff;
-    font-size: 1.5em;
-    line-height: 1.5;
-    font-family: $family-primary;
-}
-
-.packages-box .name span {
-    color: #fff;
-    font-size: 0.8rem;
-    display: block;
-    font-weight: normal;
-    text-transform: none;
-}
-
-.packages-box .valid {
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    font-family: $family-primary;
-}
-
-.packages-box .valid sup {
-    font-size: 3.2rem;
-}
-
-.packages-box .valid span.currency-value {
-    font-size: 3rem;
-    font-weight: 600;
-    line-height: 1;
-}
-
-.packages-box .trial {
-    text-align: center;
-    padding: 20px;
-}
-
-.packages-box .trial ul {}
-
-.packages-box .trial ul li {
-    font-size: 1rem;
-    margin: 5px 0;
-    color: #fff;
-}
-
-.packages-box .trial ul li span {
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.packages-box .after-box {
-    margin-top: 10px;
-    background: #f2f2f2;
-    padding: 0 0px 35px 0px;
-    text-align: center;
-}
-
-.packages-box .after-box h3 {
-    background: #282828;
-    border-radius: $radius2;
-    color: #fff;
-    font-weight: 400;
-    text-align: center;
-    padding: 10px;
-    font-size: 1.1em;
-}
-
-.packages-box .after-box ul {
-    margin: 30px auto;
-    text-align: center;
-    display: block;
-    max-width: 220px;
-}
-
-.packages-box .after-box ul li {
-    border-radius: $radius4;
-    padding: 0 5px;
-    margin: 0.5rem auto;
-    font-size: 0.852em;
-}
-
-.packages-box .after-box .checkbox,
-.packages-box .after-box .radio {
-    vertical-align: top;
-    line-height: 1;
-}
-
-.packages-box a.btn {
-    min-width: 220px;
-}
-
-@media (max-width:1025px) {
-    .packages-box a.btn {
-        min-width: inherit;
+    >li {
+        background: $bg-gray;
+        color: $body-color;
+        border-radius: $radius3;
+        padding: 2rem;
+        .name {
+            padding: 0 0 20px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: $txt-gray;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .valid {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            .currency-value {
+                font-size: 1rem;
+                font-weight: 600;
+                line-height: 1;
+            }
+            span {
+                font-size: 0.75rem;
+                font-weight: 300;
+                display: block;
+                color: $txt-gray;
+            }
+        }
+        .trial {
+            padding: 20px;
+            ul {
+                border-bottom: $border;
+                li {
+                    color: $txt-gray;
+                    font-size: 0.9rem;
+                    margin: 5px 0;
+                    padding: 0.5rem;
+                    border-top: $border;
+                    span {
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+        .after-box {
+            h3 {
+                padding: 10px;
+                font-size: 1rem;
+                margin: 0;
+            }
+            ul {
+                margin: 1.5rem auto;
+                margin-top: 0;
+                display: block;
+                border-radius: $radius4;
+                background-color: $bg-white;
+                padding: 1.5rem;
+                li {
+                    padding: 0 5px;
+                    margin: 0.5rem auto;
+                    font-size: 0.8rem;
+                    color: $body-color;
+                }
+            }
+        }
+        .checkbox,
+        .radio {
+            vertical-align: top;
+            line-height: 1;
+        }
+        &.is-active {
+            background-color: $brand-color;
+            color: $brand-color-inverse;
+            .name {
+                color: currentColor;
+            }
+            .valid span {
+                color: currentColor;
+            }
+            .trial ul li {
+                color: currentColor;
+            }
+            .btn-brand {
+                background: #000;
+                color: #fff;
+            }
+        }
     }
 }
