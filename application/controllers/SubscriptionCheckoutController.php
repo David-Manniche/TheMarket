@@ -446,8 +446,12 @@ class SubscriptionCheckoutController extends LoggedUserController
             FatUtility::dieWithError(Labels::getLabel("MSG_Selected_Payment_method_not_found!", $this->siteLangId));
         }
 
-        $frm = $this->getPaymentTabForm($this->siteLangId, $paymentMethod['plugin_code']);
+        $frm = $this->getPaymentTabForm($this->siteLangId, $paymentMethod['plugin_code']);        
         $controller = $paymentMethod['plugin_code'] . 'Pay';
+        $methodCode = Plugin::getAttributesById($plugin_id, 'plugin_code');        
+        $frm->setFormTagAttribute('data-method', $methodCode);
+        $frm->setFormTagAttribute('data-external', UrlHelper::generateUrl($controller, 'getExternalLibraries'));
+        
         $frm->setFormTagAttribute('action', UrlHelper::generateUrl($controller, 'charge', array($orderInfo['order_id'])));
         $frm->fill(
             array(
@@ -456,7 +460,7 @@ class SubscriptionCheckoutController extends LoggedUserController
             )
         );
 
-
+        
         $this->set('paymentMethod', $paymentMethod);
         $this->set('frm', $frm);
 

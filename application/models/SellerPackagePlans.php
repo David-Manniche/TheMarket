@@ -72,11 +72,25 @@ class SellerPackagePlans extends MyAppModel
     }
     public static function getPlanPeriod($plan)
     {
-        $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
+       /* $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
         $interval = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : 0;
         $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
         $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
-        return ($interval > 1) ? $interval : '' . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . $period;
+        return ($interval > 1) ? $interval : '' . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . $period;*/
+
+        $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());
+        $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
+        if ($frequency == SellerPackagePlans::SUBSCRIPTION_PERIOD_UNLIMITED) {
+            $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
+            return $period;
+        }
+        $type = isset($plan[SellerPackages::DB_TBL_PREFIX . 'type']) ? $plan[SellerPackages::DB_TBL_PREFIX . 'type'] : '';
+        $interval = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'interval'] : 0;
+        $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
+        $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
+
+        $planText = ($type == SellerPackages::PAID_TYPE) ? Labels::getLabel("LBL_Per", CommonHelper::getLangId()) : Labels::getLabel("LBL_For", CommonHelper::getLangId());
+        return $planText . " " . (($interval > 0) ? $interval : '') . "  " . $period;
     }
     public static function getPlanTrialPeriod($plan)
     {
@@ -89,6 +103,7 @@ class SellerPackagePlans extends MyAppModel
         $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
         return (($interval > 0) ? $interval : '') . " " . $period;
     }
+    
     public static function getPlanPriceWithPeriod($plan, $price)
     {
         $subcriptionPeriodArr = self::getSubscriptionPeriods(CommonHelper::getLangId());

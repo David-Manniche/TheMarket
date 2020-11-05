@@ -361,6 +361,13 @@ Bugs:
 --------------------TV-9.2.2.20201104--------------------------    
     => 044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
     => 044886 - while adding shipping rates in profile> it warns to select condition
+    => #044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
+    => 044913 - When fetching avalara category getting error
+    => 044665 - Ipad >> on shipping profile >>text is not properly getting display in button.
+    => 044671 - Ipad >> shipping package >> text in button should get display properly.
+    => 044674 - user profile> paypal payout> save button is not aligned with fields
+-----------------TV-9.2.2.20201105--------------------------    
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
