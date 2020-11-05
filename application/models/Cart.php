@@ -1853,7 +1853,7 @@ class Cart extends FatModel
         $digitalSelProdIdArr = [];
         $productInfo = [];
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
-
+        
         foreach ($cartProducts as $val) {
             if (0 < $val['is_physical_product'] && isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $val['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $val['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
                 continue;
@@ -1866,7 +1866,7 @@ class Cart extends FatModel
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
-       
+      
         if (!empty($physicalSelProdIdArr)) {
             $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
             $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
