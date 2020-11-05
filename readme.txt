@@ -363,6 +363,7 @@ Bugs:
     => 044913 - When fetching avalara category getting error
     => 044665 - Ipad >> on shipping profile >>text is not properly getting display in button.
     => 044671 - Ipad >> shipping package >> text in button should get display properly.
+    => 044674 - user profile> paypal payout> save button is not aligned with fields
 
 Enhancements:
     => Tax module upgrade
