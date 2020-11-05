@@ -53,7 +53,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true; ?>
                     <div class="card">
                         <div class="card-body">
                             <div id="listingDiv"> <?php echo Labels::getLabel('LBL_Loading..', $siteLangId); ?> </div>
-                            <div class="gap"></div>
+                            
                         </div>
                     </div>
                 </div>
