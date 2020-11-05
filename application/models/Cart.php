@@ -260,7 +260,7 @@ class Cart extends FatModel
                     $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
                 }
 
-                if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
+                if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType && $sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL) {
                     unset($this->products[$key]);
                     continue;
                 }
@@ -377,7 +377,7 @@ class Cart extends FatModel
                         $fulfilmentType =  $this->SYSTEM_ARR['shopping_cart']['checkout_type'];
                     }
 
-                    if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType) {
+                    if ($this->valdateCheckoutType && isset($fulfilmentType) && $fulfilmentType > 0 && $sellerProductRow['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $sellerProductRow['selprod_fulfillment_type'] != $fulfilmentType && $sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL) {
                         unset($this->products[$key]);
                         continue;
                     }
@@ -725,18 +725,21 @@ class Cart extends FatModel
 
         $fulfillmentType = $sellerProductRow['selprod_fulfillment_type'];
         if (true == $isProductShippedBySeller) {
-            if ($sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL && $sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
+            if ($sellerProductRow['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
                 $fulfillmentType = $sellerProductRow['shop_fulfillment_type'];
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             }
         } else {
-            $defaultFulfillmentType = $sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL ?  Shipping::FULFILMENT_ALL : Shipping::FULFILMENT_SHIP;
-            $fulfillmentType = isset($sellerProductRow['product_fulfillment_type']) ? $sellerProductRow['product_fulfillment_type'] : $defaultFulfillmentType;
+            $fulfillmentType = isset($sellerProductRow['product_fulfillment_type']) ? $sellerProductRow['product_fulfillment_type'] : Shipping::FULFILMENT_SHIP;
             $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
-            if ($sellerProductRow['product_type'] != Product::PRODUCT_TYPE_DIGITAL && FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
+            if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
                 $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
                 $sellerProductRow['selprod_fulfillment_type'] = $fulfillmentType;
             }
+        }
+
+        if ($sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+            $fulfillmentType = Shipping::FULFILMENT_ALL;
         }
         $sellerProductRow['fulfillment_type'] = $fulfillmentType;
         return $sellerProductRow;
@@ -1720,12 +1723,12 @@ class Cart extends FatModel
         $sellerPinCode = $productShopAddress['shop_postalcode'];
         $quantity = $product['quantity'];
         $productWeight = $product['product_weight'] / $quantity;
-        $productWeightClass = ($product['product_dimension_unit']) ? $weightUnitsArr[$product['product_dimension_unit']] : '';
+        $productWeightClass = ($product['product_weight_unit']) ? $lengthUnitsArr[$product['product_weight_unit']] : '';
+
+        $productLengthUnit = ($product['product_dimension_unit']) ? $weightUnitsArr[$product['product_dimension_unit']] : '';
         $productLength = $product['product_length'];
         $productWidth = $product['product_width'];
         $productHeight = $product['product_height'];
-
-        $productLengthUnit = ($product['product_weight_unit']) ? $lengthUnitsArr[$product['product_weight_unit']] : '';
 
         $productWeightInOunce = Shipping::convertWeightInOunce($productWeight, $productWeightClass);
         $productLengthInCenti = Shipping::convertLengthInCenti($productLength, $productLengthUnit);
@@ -1850,20 +1853,20 @@ class Cart extends FatModel
         $digitalSelProdIdArr = [];
         $productInfo = [];
         $cartProducts = $this->getBasketProducts($this->cart_lang_id);
-
+        
         foreach ($cartProducts as $val) {
-            if (isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $val['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $val['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
+            if (0 < $val['is_physical_product'] && isset($this->SYSTEM_ARR['shopping_cart']['checkout_type']) && $val['selprod_fulfillment_type'] != Shipping::FULFILMENT_ALL && $val['selprod_fulfillment_type'] != $this->SYSTEM_ARR['shopping_cart']['checkout_type']) {
                 continue;
             }
 
             $productInfo[$val['selprod_id']] = $val;
-            if ($val['is_physical_product']) {
+            if (0 < $val['is_physical_product']) {
                 $physicalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             } else {
                 $digitalSelProdIdArr[$val['selprod_id']] = $val['selprod_id'];
             }
         }
-
+      
         if (!empty($physicalSelProdIdArr)) {
             $address = new Address($this->getCartShippingAddress(), $this->cart_lang_id);
             $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);

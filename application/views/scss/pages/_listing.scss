@@ -447,7 +447,7 @@
 }
 
 .listing-products--list {
-    &[data-view="4"] {
+    .product-listing[data-view="4"] {
         grid-template-columns: repeat(2, 1fr);
     }
     .products {

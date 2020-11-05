@@ -30,7 +30,7 @@ if ($currencies && count($currencies) > 1) {
     ?>
 <li>
 	<div class="dropdown dropdown--currency">
-	<a class="dropdown-toggle no-after" data-toggle="dropdown" data-display="static" href="javascript:void(0)">
+	<a class="dropdown-toggle no-after" data-toggle="dropdown" href="javascript:void(0)">
 		<?php echo (CommonHelper::getCurrencySymbolRight()) ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft(); ?> <span> <?php echo $currencies[$siteCurrencyId];?></span> 
 	</a>
   <div class="dropdown-menu dropdown-menu-fit dropdown-menu-anim">

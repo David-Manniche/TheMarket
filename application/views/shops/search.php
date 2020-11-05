@@ -40,7 +40,7 @@ if (!empty($allShops)) {
                                 $displayProductNotAvailableLable = true;
                             }
                             foreach ($shop['products'] as $product) { ?>
-                                <div class="col-3 mb-3 mb-md-0">
+                                <div class="col-6 col-lg-3 mb-3 mb-md-0">
                                     <?php include(CONF_THEME_PATH . '_partial/collection/product-layout-1-list.php'); ?>
                                 </div>
                             <?php } ?>

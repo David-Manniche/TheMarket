@@ -907,11 +907,10 @@ $(document).ready(function() {
         $(frmSiteSearch.keyword).val($(obj).data('txt'));
         $(frmSiteSearch).trigger("submit");
     };
-    searchProductTagsAuto = function(keyword) {
-        /* if (keyword.trim().length < 3){           
-            removeAutoSuggest();
+    searchProductTagsAuto = function(keyword) {      
+        if (parseInt($(window).width()) < 768){                       
             return;
-        }   */
+        }
         var data = 'keyword=' + keyword;
         fcom.updateWithAjax(fcom.makeUrl('Products', 'searchProductTagsAutocomplete'), data, function(t) {      if (t.html.length > 0) {
                 if (!searchSuggestionsJs.find('div').hasClass('search-suggestions')) {

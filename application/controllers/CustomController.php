@@ -540,7 +540,7 @@ class CustomController extends MyAppController
             $srch->doNotLimitRecords();
 
             $srch->addMultipleFields(
-                array('ops.*', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*', 'COALESCE(state_name, state_identifier) as state_name', 'COALESCE(country_name, country_code) as country_name')
+                array('ops.*', 'op_product_type', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*', 'COALESCE(state_name, state_identifier) as state_name', 'COALESCE(country_name, country_code) as country_name')
             );
             $srch->addGroupBy('opshipping_pickup_addr_id');
             $rs = $srch->getResultSet();

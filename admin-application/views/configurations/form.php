@@ -48,12 +48,12 @@ switch ($frmType) {
 
         $lFld = $frm->getField('CONF_LOCATION_LEVEL');
         $lFld->setFieldTagAttribute('class', 'listingFilter');
-        if (FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION') != applicationConstants::BASED_ON_RADIUS) {
+        if (FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0) != applicationConstants::BASED_ON_RADIUS) {
             $rFld = $frm->getField('CONF_RADIUS_DISTANCE_IN_MILES');
             $rFld->setFieldTagAttribute('disabled', 'disabled');
         }
 
-        if (FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION') == applicationConstants::BASED_ON_RADIUS) {
+        if (FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0) == applicationConstants::BASED_ON_RADIUS) {
             $lFld->setFieldTagAttribute('disabled', 'disabled');
         }
         break;

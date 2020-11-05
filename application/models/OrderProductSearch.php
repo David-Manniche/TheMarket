@@ -217,14 +217,14 @@ class OrderProductSearch extends SearchBase
         $this->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.ocrequest_op_id = op.op_id', 'ocr');
     }
 
-    public function joinDigitalDownloads($type = AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)
+    public function joinDigitalDownloads($type = AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD, $join = 'INNER JOIN')
     {
-        $this->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'opa.afile_record_id = op.op_id and afile_type = ' . $type, 'opa');
+        $this->joinTable(AttachedFile::DB_TBL, $join, 'opa.afile_record_id = op.op_id and afile_type = ' . $type, 'opa');
     }
 
-    public function joinDigitalDownloadLinks()
+    public function joinDigitalDownloadLinks($join = 'INNER JOIN')
     {
-        $this->joinTable(OrderProductDigitalLinks::DB_TBL, 'INNER JOIN', 'opd.opddl_op_id = op.op_id', 'opd');
+        $this->joinTable(OrderProductDigitalLinks::DB_TBL, $join, 'opd.opddl_op_id = op.op_id', 'opd');
     }
 
     public function addDigitalDownloadCondition()

@@ -631,8 +631,8 @@ class ConfigurationsController extends AdminBaseController
 
             case Configurations::FORM_SEO:
                 $fld = $frm->addCheckBox(Labels::getLabel('LBL_ENABLE_LANGUAGE_CODE_TO_SITE_URLS_&_LANGUAGE_SPECIFIC_URL_REWRITING', $this->adminLangId), 'CONF_LANG_SPECIFIC_URL', 1, array(), false, 0);
-				$fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_LANGUAGE_CODE_TO_SITE_URLS_EXAMPLES", $this->adminLangId) . '</small>';
-				
+                $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_LANGUAGE_CODE_TO_SITE_URLS_EXAMPLES", $this->adminLangId) . '</small>';
+
                 $fld = $frm->addTextBox(Labels::getLabel('LBL_Twitter_Username', $this->adminLangId), 'CONF_TWITTER_USERNAME');
                 $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_This_is_required_for_Twitter_Card_code_SEO_Update", $this->adminLangId) . '</small>';
 
@@ -730,12 +730,15 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_On_Enabling_This_Feature,_Admin_Need_To_Approve_the_Product_category_requests_(User_Cannot_link_the_requested_category_with_any_product_until_it_gets_approved_by_Admin)", $this->adminLangId) . "</small>";
 
                 $brandFld = $frm->addCheckBox(Labels::getLabel("LBL_Brand_will_be_mandatory_for_products", $this->adminLangId), 'CONF_PRODUCT_BRAND_MANDATORY', 1, array(), false, 0);
-				
-				$fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product_prices_will_be_inclusive_of_tax", $this->adminLangId), 'CONF_PRODUCT_INCLUSIVE_TAX', 1, array(), false, 0);
 
-				$fld = $frm->addCheckBox(Labels::getLabel("LBL_Enable_tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', 1, array(), false, 0);
+                $fld1 = $frm->addCheckBox(Labels::getLabel("LBL_Product_prices_will_be_inclusive_of_tax", $this->adminLangId), 'CONF_PRODUCT_INCLUSIVE_TAX', 1, array(), false, 0);
+
+                $fld = $frm->addCheckBox(Labels::getLabel("LBL_Enable_tax_code_for_categories", $this->adminLangId), 'CONF_TAX_CATEGORIES_CODE', 1, array(), false, 0);
                 $fld->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_This_will_enable_tax_categories_code", $this->adminLangId) . "</small>";
-				
+
+                $filterLayout = FilterHelper::getLayouts($this->adminLangId);
+                $frm->addSelectBox(Labels::getLabel('LBL_Filters_Layout', $this->adminLangId), 'CONF_FILTERS_LAYOUT', $filterLayout, applicationConstants::NO, array(), '');
+
                 $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'CONF_FULFILLMENT_TYPE', $fulFillmentArr, applicationConstants::NO, array(), '');
 
@@ -755,7 +758,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_PRODUCT_LISTING", $this->adminLangId) . "</small>";
 
                 $prodGeoSettingArr = applicationConstants::getProductListingSettings($this->adminLangId);
-               
+
                 $shippingServiceActive = Plugin::isActiveByType(Plugin::TYPE_SHIPPING_SERVICES);
                 if ($shippingServiceActive) {
                     unset($prodGeoSettingArr[applicationConstants::BASED_ON_DELIVERY_LOCATION]);
@@ -1067,7 +1070,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<br><small>Subtract stock when an order is placed.</small>"; */
 
                 break;
-            
+
             case Configurations::FORM_CART_WISHLIST:
                 $fld = $frm->addRadioButtons(Labels::getLabel("LBL_ADD_PRODUCTS_TO_WISHLIST_OR_FAVORITE?", $this->adminLangId), 'CONF_ADD_FAVORITES_TO_WISHLIST', UserWishList::wishlistOrFavtArr($this->adminLangId), applicationConstants::YES, array('class' => 'list-inline'));
 
@@ -1652,7 +1655,7 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addTextarea(Labels::getLabel('LBL_Cookies_Policies_Text', $this->adminLangId), 'CONF_COOKIES_TEXT_' . $langId);
                 break;
             case Configurations::FORM_LOCAL:
-				$frm->addTextarea(Labels::getLabel("LBL_Address", $this->adminLangId), 'CONF_ADDRESS_' . $langId);
+                $frm->addTextarea(Labels::getLabel("LBL_Address", $this->adminLangId), 'CONF_ADDRESS_' . $langId);
                 $frm->addTextBox(Labels::getLabel("LBL_City", $this->adminLangId), 'CONF_CITY_' . $langId);
                 break;
             case Configurations::FORM_EMAIL:
@@ -1662,7 +1665,7 @@ class ConfigurationsController extends AdminBaseController
             case Configurations::FORM_SHARING:
                 $frm->addHtml('', 'ShareAndEarn', '<h3>' . Labels::getLabel('LBL_Share_and_Earn_Settings', $this->adminLangId) . '</h3>');
 
-				$fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_APP_ID", $this->adminLangId), 'CONF_FACEBOOK_APP_ID');
+                $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_APP_ID", $this->adminLangId), 'CONF_FACEBOOK_APP_ID');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_This_is_the_application_ID_used_in_post.", $this->adminLangId) . "</small>";
 
                 $fld = $frm->addTextBox(Labels::getLabel("LBL_Facebook_App_Secret", $this->adminLangId), 'CONF_FACEBOOK_APP_SECRET');

@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="cart-blocks">             
+<div class="cart-blocks">              
     <?php 
     $productsCount = count($products);
     if ($productsCount) { 
@@ -69,10 +69,8 @@
                 </li>
         <?php }?> 
         </ul>
-        <ul class="list-group list-cart">   
-
+        <ul class="list-group list-cart list-cart-page">
         <?php }?>    
-
         <?php foreach ($products as $product) {
 
             if ($product['fulfillment_type'] == Shipping::FULFILMENT_SHIP) {
@@ -132,6 +130,7 @@
                     </p>
                 </div>
             </div>
+            <div class="wrap-qty-price">
             <div class="product-quantity">
                 <div class="quantity quantity-2" data-stock="<?php echo $product['selprod_stock']; ?>">
                     <span class="decrease decrease-js <?php echo ($product['quantity']<=$product['selprod_min_order_qty']) ? 'not-allowed' : '' ;?>"><i class="fas fa-minus"></i></span>
@@ -141,8 +140,8 @@
                     <span class="increase increase-js <?php echo ($product['selprod_stock'] <= $product['quantity']) ? 'not-allowed' : '';?>"><i class="fas fa-plus"></i></span>
                 </div>                       
             </div>
-
             <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></div>
+            </div>
             <div class="product-action">
                 <ul class="list-actions">
                     <li>
@@ -160,7 +159,7 @@
     <?php } ?> 
     <?php if(0 < count($saveForLaterProducts)) { ?>
     <h5 class="cart-title"><?php echo Labels::getLabel('LBL_Save_For_later', $siteLangId); ?> (<?php echo count($saveForLaterProducts); ?>)</h5>                
-    <ul class="list-group list-cart">
+    <ul class="list-group list-cart list-cart-page">
         <?php foreach ($saveForLaterProducts as $product) {
             $productUrl = UrlHelper::generateUrl('Products', 'View', array($product['selprod_id']));
             $imageUrl = UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'product', array($product['product_id'], "THUMB",$product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');               

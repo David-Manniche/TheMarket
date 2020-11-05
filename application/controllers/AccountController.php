@@ -1063,7 +1063,7 @@ class AccountController extends LoggedUserController
         }
 
         /* CommonHelper::printArray($post);  */
-        $user_state_id = FatUtility::int($post['user_state_id']);
+        $user_state_id = FatApp::getPostedData('user_state_id', FatUtility::VAR_INT, 0);
         $post = $frm->getFormDataFromArray($post);
 
         if (false === $post) {
@@ -1128,7 +1128,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieJsonError($message);
         }
 
-        if (false == SmsArchive::canSendSms()) {
+        if (false == SmsArchive::canSendSms() && !empty($countryIso)) {
             $user = clone $userObj;
             if (false === $user->updateUserMeta('user_country_iso', $countryIso)) {
                 LibHelper::dieJsonError($user->getError());

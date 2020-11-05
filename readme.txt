@@ -346,8 +346,20 @@ Bugs:
     => 044624 - shop> reviews> flooded with errors
     => 044591 - when seller requests for catalog then in admin> specification group field is not there
     => 044620 - buyer> share and earn> invite through email> button is not proper
+--------------------------TV-9.2.2.20201029-----------------
     => 044714 - Seller >> shipping profile >> rates > if we save conditions without selecting the radio buttons then some json error is there. 
     => 043774 - when seller try to change order status to "shipped" without checking the "self shipping " checkbox then it takes forever to process
+------------------------TV-9.2.2.20201102-----------------------
+    => 044732 - mark disable the states while creating zones when it's already used for a country
+    => 044384 -  Order summary is not getting display at guest checkout before adding the address
+    => 044446 - Content block >> on home page collection of content block should be in the frame 
+    => 044755 - when we buy one digital and one physical product and choose pickup option then pickup address is not getting display on thankyou screen.
+    => 044684 - in search field> string entered and cross button are overlapping
+    => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    => 044758 - discount availed by buyer is not displaying on order detail page
+    => 044752 - admin> order status management> color is not distinct able by name
+--------------------TV-9.2.2.20201104--------------------------    
+    => #044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
     => 044913 - When fetching avalara category getting error
 
 Enhancements:
