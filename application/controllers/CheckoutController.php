@@ -509,7 +509,7 @@ class CheckoutController extends MyAppController
                 $template = 'checkout/shipping-summary-pickup.php';
                 break;
             case Shipping::FULFILMENT_SHIP:
-                $shippingRates = $this->cartObj->getShippingOptions();                
+                $shippingRates = $this->cartObj->getShippingOptions();
                 if (!empty($_SESSION['order_id'])) {
                     $order = new Orders();
                     $orderShippingData = $order->getOrderShippingData($_SESSION['order_id'], $this->siteLangId);
@@ -1249,9 +1249,13 @@ class CheckoutController extends MyAppController
                         $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
                         $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
 
-                        $langData =  TaxStructure::getAttributesByLangId($lang_id, $taxStroName['taxstr_id'], array(), 1);
-                        $langLabel = (isset($langData['taxstr_name']) && $langData['taxstr_name'] != '') ? $langData['taxstr_name'] : $label;
-
+                        if (isset($taxStroName['taxstr_id']) && $taxStroName['taxstr_id']!= '') {
+                            $langData =  TaxStructure::getAttributesByLangId($lang_id, $taxStroName['taxstr_id'], array(), 1);
+                            $langLabel = (isset($langData['taxstr_name']) && $langData['taxstr_name'] != '') ? $langData['taxstr_name'] : $label;
+                        } else {
+                            $langLabel = $label;
+                        }
+                        
                         $productTaxChargesData[$taxStroId]['langData'][$lang_id] = array(
                             'opchargeloglang_lang_id' => $lang_id,
                             'opchargelog_name' => $langLabel
@@ -1372,7 +1376,7 @@ class CheckoutController extends MyAppController
 
                 );
             }
-        }       
+        }
         $orderData['order_affiliate_user_id'] = $order_affiliate_user_id;
         $orderData['order_affiliate_total_commission'] = $order_affiliate_total_commission;
         /* ] */
