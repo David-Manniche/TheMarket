@@ -102,11 +102,11 @@
 @include media-breakpoint-down(lg) {
     .form--search-popup {
         margin: 0;
-        padding: 10px;
+        padding: 13px;
         position: fixed;
         #{$start-direction}: 0;
         #{$end-direction}: 0;
-        top: 30px;
+        top: 27px;
         z-index: 10;
         -webkit-transition: all 400ms ease-in;
         transition: all 400ms ease-in;

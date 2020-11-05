@@ -12,7 +12,7 @@ $bodyClass = ($controllerName == 'Home') ? 'home' : 'inner' ;
 if ($controllerName == 'Blog') {
     $bodyClass = 'is--blog';
 }
-if ($controllerName == 'Checkout') {
+if ($controllerName == 'Checkout' ||$controllerName == 'SubscriptionCheckout') {
     $bodyClass = 'is-checkout';
 }
 
@@ -20,7 +20,7 @@ if (!array_key_exists('screenWidth', $_COOKIE)) {
     setcookie('screenWidth', 769, 0, CONF_WEBROOT_URL);
 }
 
-if (isset($isUserDashboard) && $isUserDashboard) {
+if (isset($isUserDashboard) && $isUserDashboard && strtolower($controllerName) != 'subscriptioncheckout') {
     $bodyClass = 'is-dashboard my-dashboard';
     $expanded = 'sidebar-is-reduced';
     if (!array_key_exists('openSidebar', $_COOKIE)) {
@@ -32,6 +32,7 @@ if (isset($isUserDashboard) && $isUserDashboard) {
 
     $bodyClass = $bodyClass.' '.$expanded;
 }
+
 
 if (CommonHelper::demoUrl()) {
     $bodyClass.= ' have-fixed-btn';
@@ -65,4 +66,4 @@ if (CommonHelper::demoUrl()) {
             } ?>
         </div>
     </div>
-    <div id="quick-view-section" class="quick-view"></div>    
+    <?php /*?> <div id="quick-view-section" class="quick-view"></div>    <?php */?>
