@@ -431,8 +431,8 @@ class Tax extends MyAppModel
             array_push($shippingItems, $shippingItem);
 
             $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
-
-            $taxRates = $taxApi->getRates($itemsArr, $shippingItems, $extraInfo['buyerId']);
+            $buyerId = FatUtility::int($extraInfo['buyerId']);
+            $taxRates = $taxApi->getRates($itemsArr, $shippingItems, $buyerId);
 
             if (false == $taxRates['status']) {
                 //@todo Log Errors

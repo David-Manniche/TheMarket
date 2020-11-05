@@ -823,6 +823,7 @@ class CartController extends MyAppController
         $cart = new Cart();
         if (0 < $fulfilmentType) {
             $cart->setFulfilmentType($fulfilmentType);
+            $cart->setCartCheckoutType($fulfilmentType);
         }
         $cartSummary = $cart->getCartFinancialSummary($this->siteLangId);
         $this->set('cartSummary', $cartSummary);
