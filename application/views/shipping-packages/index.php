@@ -6,19 +6,16 @@ $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
 $frmSearch->developerTags['fld_default_col'] = 6;
 
 $keywordFld = $frmSearch->getField('keyword');
-$keywordFld->setWrapperAttribute('class', 'col-lg-4');
-$keywordFld->developerTags['col'] = 4;
+$keywordFld->developerTags['col'] = 8;
 $keywordFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $frmSearch->getField('btn_submit');
 $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
-$submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $frmSearch->getField('btn_clear');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
-$cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?>

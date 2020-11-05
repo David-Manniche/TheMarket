@@ -1206,6 +1206,19 @@ class CollectionsController extends AdminBaseController
             FatUtility::dieJsonSuccess(Labels::getLabel('MSG_Order_Updated_Successfully', $this->adminLangId));
         }
     }
+    public function updateCollectionRecordOrder()
+    {
+        $this->objPrivilege->canEditCollections();
+        $post = FatApp::getPostedData();        
+        if (!empty($post)) {
+            $collectionObj = new Collections();
+            if (!$collectionObj->updateCollectionRecordOrder($post['collection_id'], $post['collection-record'])) {
+                Message::addErrorMessage($collectionObj->getError());
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+            FatUtility::dieJsonSuccess(Labels::getLabel('MSG_Order_Updated_Successfully', $this->adminLangId));
+        }
+    }
 
     public function layouts()
     {

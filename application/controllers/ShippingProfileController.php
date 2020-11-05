@@ -216,7 +216,7 @@ class ShippingProfileController extends SellerBaseController
         $frm = new Form('frmSearch');
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->siteLangId), 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $this->siteLangId) ));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->siteLangId));
+        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId));
         return $frm;
     }
     
