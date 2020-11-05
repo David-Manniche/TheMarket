@@ -30,7 +30,7 @@ class AvalaraTax extends TaxBase
      * @param  array $fromAddress
      * @param  array $toAddress
      */
-    public function __construct(int $langId, array $fromAddress, array $toAddress)
+    public function __construct(int $langId, array $fromAddress = [] , array $toAddress = [])
     {
         $this->langId = FatUtility::int($langId);
         if (1 > $this->langId) {
