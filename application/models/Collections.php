@@ -358,6 +358,40 @@ class Collections extends MyAppModel
         }
         return true;
     }
+
+    /**
+     * updateCollectionRecordOrder
+     *
+     * @param  int $collectionId
+     * @param  array $order
+     * @return bool
+     */
+
+    public function updateCollectionRecordOrder(int $collectionId, array $order): bool
+    {
+        if(!$collectionId){
+            return false;
+        }
+        if (is_array($order) && sizeof($order) > 0) {
+            foreach ($order as $i => $id) {
+                if (FatUtility::int($id) < 1) {
+                    continue;
+                }
+                FatApp::getDb()->updateFromArray(
+                    static::DB_TBL_COLLECTION_TO_RECORDS,
+                    array(
+                    static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'display_order' => $i
+                    ),
+                    array(
+                    'smt' => static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id = ? AND '.static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id = ?',
+                    'vals' => array($collectionId, $id)
+                    )
+                );
+            }
+            return true;
+        }
+        return false;
+    }
     
     /**
      * addUpdateData
@@ -445,7 +479,8 @@ class Collections extends MyAppModel
 
         $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
 
-        $srch->addMultipleFields(array('selprod_id as record_id', 'COALESCE(selprod_title,product_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'selprod_id as record_id', 'COALESCE(selprod_title,product_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
         $rs = $srch->getResultSet();
@@ -509,7 +544,8 @@ class Collections extends MyAppModel
         $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT JOIN', 'lang.prodcatlang_prodcat_id = ' . ProductCategory::DB_TBL_PREFIX . 'id AND prodcatlang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
@@ -538,7 +574,8 @@ class Collections extends MyAppModel
         $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT JOIN', 'lang.shoplang_shop_id = ' . Shop::DB_TBL_PREFIX . 'id AND shoplang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('shop_id as record_id', 'IFNULL(shop_name, shop_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'shop_id as record_id', 'IFNULL(shop_name, shop_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
@@ -566,7 +603,8 @@ class Collections extends MyAppModel
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', Brand::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
         $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT JOIN', 'lang.brandlang_brand_id = ' . Brand::DB_TBL_PREFIX . 'id AND brandlang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
@@ -627,7 +665,8 @@ class Collections extends MyAppModel
         );
         $srch->joinTable(FaqCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'faqcat_id = fc.' . FaqCategory::tblFld('id') . ' and fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'fc_l'
         );
-        $srch->addMultipleFields(array('faq_id as record_id', 'CONCAT(IFNULL(faq_title, faq_identifier), " | ", IFNULL (faqcat_name, faqcat_identifier)) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'faq_id as record_id', 'CONCAT(IFNULL(faq_title, faq_identifier), " | ", IFNULL (faqcat_name, faqcat_identifier)) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         return $db->fetchAll($rs);
@@ -655,7 +694,8 @@ class Collections extends MyAppModel
         $srch->joinTable(Testimonial::DB_TBL, 'INNER JOIN', Testimonial::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(Testimonial::DB_TBL_LANG, 'LEFT JOIN', 'lang.testimoniallang_testimonial_id = ' . Testimonial::DB_TBL_PREFIX . 'id AND testimoniallang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('testimonial_id as record_id', 'IFNULL(testimonial_title, testimonial_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'testimonial_id as record_id', 'IFNULL(testimonial_title, testimonial_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         return $db->fetchAll($rs);
