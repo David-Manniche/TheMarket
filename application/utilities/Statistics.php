@@ -14,9 +14,10 @@ class Statistics
         foreach ($dashboardStats as $saleskey => $salesval) {
             $sales_earnings_chart_data[$saleskey] = round($salesval, 2);
         }
-        
-        $dashboardInfo['sales_earnings_chart_data'] = array_reverse($sales_earnings_chart_data);
-        
+        $dashboardInfo['sales_earnings_chart_data'] = $sales_earnings_chart_data;
+        if ('ltr' == mb_strtolower(CommonHelper::getLayoutDirection())) {        
+            $dashboardInfo['sales_earnings_chart_data'] = array_reverse($sales_earnings_chart_data);
+        }
         $template->set('siteLangId', CommonHelper::getLangId());
         $template->set('dashboardInfo', $dashboardInfo);
     }

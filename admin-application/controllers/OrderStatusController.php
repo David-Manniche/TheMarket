@@ -203,9 +203,9 @@ class OrderStatusController extends AdminBaseController
         unset($post['lang_id']);
 
         $data = array(
-        'orderstatuslang_lang_id' => $lang_id,
-        'orderstatuslang_orderstatus_id' => $orderStatusId,
-        'orderstatus_name' => $post['orderstatus_name']
+            'orderstatuslang_lang_id' => $lang_id,
+            'orderstatuslang_orderstatus_id' => $orderStatusId,
+            'orderstatus_name' => $post['orderstatus_name']
         );
 
         $orderstatusObj = new OrderStatus($orderStatusId);
@@ -214,7 +214,7 @@ class OrderStatusController extends AdminBaseController
             Message::addErrorMessage($orderstatusObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $autoUpdateOtherLangsData = FatApp::getPostedData('auto_update_other_langs_data', FatUtility::VAR_INT, 0);
         if (0 < $autoUpdateOtherLangsData) {
             $updateLangDataobj = new TranslateLangData(OrderStatus::DB_TBL_LANG);
@@ -247,11 +247,12 @@ class OrderStatusController extends AdminBaseController
         $frm = new Form('frmorderstatus');
         $frm->addHiddenField('', 'orderstatus_id', $orderStatusId);
         $frm->addRequiredField(Labels::getLabel('LBL_Order_Status_Identifier', $this->adminLangId), 'orderstatus_identifier');
-        /* $frm->addRequiredField(Labels::getLabel('LBL_Order_Status_Color_Code', $this->adminLangId), 'orderstatus_color_class'); */
-		
-		$classArr = applicationConstants::getClassArr();
-		$frm->addSelectBox(Labels::getLabel('LBL_Order_Status_Color_Code', $this->adminLangId), 'orderstatus_color_class', $classArr, '', array(), '');
-		
+        /* $frm->addRequiredField(Labels::getLabel('LBL_ORDER_STATUS_COLOR_CLASS', $this->adminLangId), 'orderstatus_color_class'); */
+
+        /* Please retain actual css class as option text. As that class used in JS to fill color of that option. */
+        $classArr = applicationConstants::getClassArr();
+        $frm->addSelectBox(Labels::getLabel('LBL_ORDER_STATUS_COLOR_CLASS', $this->adminLangId), 'orderstatus_color_class', $classArr, '', array(), '');
+
         $orderStatusTypeArr = OrderStatus::getOrderStatusTypeArr($this->adminLangId);
 
         $frm->addSelectBox(Labels::getLabel('LBL_Order_Status_type', $this->adminLangId), 'orderstatus_type', $orderStatusTypeArr, '', array(), '');
@@ -274,14 +275,14 @@ class OrderStatusController extends AdminBaseController
         $frm->addHiddenField('', 'orderstatus_id', $orderStatusId);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'orderstatuslang_lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_orderstatus_Name', $this->adminLangId), 'orderstatus_name');
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 
         if (!empty($translatorSubscriptionKey) && $lang_id == $siteLangId) {
             $frm->addCheckBox(Labels::getLabel('LBL_UPDATE_OTHER_LANGUAGES_DATA', $this->adminLangId), 'auto_update_other_langs_data', 1, array(), false, 0);
         }
-        
+
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

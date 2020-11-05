@@ -228,7 +228,7 @@ class Shipping
             if (!empty($carriers)) {
                 FatCache::set($cacheKey, serialize($carriers), '.txt');
             }
-        }
+        } 
         //$carriers = $this->shippingApiObj->getCarriers();
         $this->shippingApiObj->setAddress($shippingAddressDetail['addr_name'], $shippingAddressDetail['addr_address1'], $shippingAddressDetail['addr_address2'], $shippingAddressDetail['addr_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['addr_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['addr_phone']);
 
@@ -253,6 +253,7 @@ class Shipping
             $this->shippedByArr[$shippedBy][$shippingLevel]['products'][$rates['selprod_id']] = $product;
 
             if (empty($fromZipCode)) {
+                unset($physicalSelProdIdArr[$rates['selprod_id']]);
                 /*  $user = self::BY_ADMIN == $shippedBy ? Labels::getLabel('MSG_ADMIN', $this->langId) : Labels::getLabel('MSG_SHOP', $this->langId);
                  $error = Labels::getLabel('MSG_UNABLE_TO_LOCATE_{USER}_POSTAL_CODE', $this->langId);
                  $this->error = CommonHelper::replaceStringData($error, ['{USER}' => $user]); */
@@ -285,12 +286,10 @@ class Shipping
                         FatCache::set($cacheKey, serialize($shippingRates), '.txt');
                     }
                 }
-
+                unset($physicalSelProdIdArr[$rates['selprod_id']]);
                 if (false == $shippingRates || empty($shippingRates)) {
                     continue;
                 }
-
-                unset($physicalSelProdIdArr[$rates['selprod_id']]);
 
                 foreach ($shippingRates as $key => $value) {
                     $shippingCost = [
