@@ -250,7 +250,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 }
             </script>
         <?php } else { ?>
-            <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
+            <div class="wallet-balance_info"><?php echo Labels::getLabel('LBL_USE_MY_WALLET_BALANCE_TO_PAY_FOR_MY_ORDER', $siteLangId); ?></div>
         <?php } ?>
     </div>
 <?php } ?>

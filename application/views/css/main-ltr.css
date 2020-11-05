@@ -8812,11 +8812,11 @@ a.text-dark:hover, a.text-dark:focus {
 @media (max-width: 1199.98px) {
   .form--search-popup {
     margin: 0;
-    padding: 10px;
+    padding: 13px;
     position: fixed;
     left: 0;
     right: 0;
-    top: 30px;
+    top: 27px;
     z-index: 10;
     -webkit-transition: all 400ms ease-in;
     transition: all 400ms ease-in;
@@ -31823,7 +31823,7 @@ a.ui-button:active,
       max-width: 100px; } }
   @media (max-width: 1199.98px) {
     .logo-checkout-main {
-      margin: 0 auto;
+      margin: 0.5rem auto;
       max-width: 100px; } }
   .logo-checkout-main img[data-ratio="16:9"], .logo-checkout-main .post .post_media iframe[data-ratio="16:9"], .post .post_media .logo-checkout-main iframe[data-ratio="16:9"], .logo-checkout-main .post .post_media .posted-content .posted-media .post__pic .media-wrapper img[data-ratio="16:9"], .post .post_media .posted-content .posted-media .post__pic .media-wrapper .logo-checkout-main img[data-ratio="16:9"], .logo-checkout-main .posted-content .posted-media .post__pic .media-wrapper .post .post_media img[data-ratio="16:9"], .posted-content .posted-media .post__pic .media-wrapper .post .post_media .logo-checkout-main img[data-ratio="16:9"] {
     max-width: 120px; }
