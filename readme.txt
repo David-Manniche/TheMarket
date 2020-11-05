@@ -364,6 +364,7 @@ Bugs:
     => 044665 - Ipad >> on shipping profile >>text is not properly getting display in button.
     => 044671 - Ipad >> shipping package >> text in button should get display properly.
     => 044674 - user profile> paypal payout> save button is not aligned with fields
+    => 044675 - seller> custom catalog request> under status column> date is wrapping
 
 Enhancements:
     => Tax module upgrade
