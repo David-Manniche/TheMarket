@@ -25,6 +25,9 @@ class CartController extends MyAppController
         $products['single'] = array();
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
         $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $cartObj->excludeTax();
+        }
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $prodGroupIds = array();
 
@@ -195,7 +198,7 @@ class CartController extends MyAppController
         if (0 < $wishlistId) {
             $db = FatApp::getDb();
             $wListObj = new UserWishList();
-            
+
             $srch = UserWishList::getSearchObject(UserAuthentication::getLoggedUserId());
             $srch->addMultipleFields(array('uwlist_id'));
             $srch->doNotCalculateRecords();
@@ -824,6 +827,9 @@ class CartController extends MyAppController
         if (0 < $fulfilmentType) {
             $cart->setFulfilmentType($fulfilmentType);
             $cart->setCartCheckoutType($fulfilmentType);
+        }
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $cart->excludeTax();
         }
         $cartSummary = $cart->getCartFinancialSummary($this->siteLangId);
         $this->set('cartSummary', $cartSummary);

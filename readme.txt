@@ -384,7 +384,7 @@ Bugs:
     => 044677 - seller> shipping packages> clear search button text is not in center
     => 044671 - Ipad >> shipping package >> text in button should get display properly.
     => 044950 - seller > my subscription> search button is not proper
-
+    => 044369 - In Product inclusive tax setting is on then tax should not get deducted before selecting the address
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
