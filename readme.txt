@@ -373,7 +373,9 @@ Bugs:
     => 044944 - admin> seller orders> shipping is displaying as "awaiting shipment" for digital item order
     => 044948 - admin> subscription orders> detail page> fatal is there
     => 044946 - admin> orders> deleted orders> search button is not aligned properly
-
+-----------------TV-9.2.2.20201106-------------------------- 
+    => 044941	when tax is there for specific category still then rest of the world is getting applied
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
