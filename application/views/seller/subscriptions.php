@@ -31,7 +31,7 @@ $priceToFld = $frmOrderSrch->getField('price_to');
 $priceToFld->developerTags['col'] = 2; */
 
 $submitBtnFld = $frmOrderSrch->getField('btn_submit');
-$submitBtnFld->setFieldTagAttribute('class', 'btn-block');
+$submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->setWrapperAttribute('class', 'col-6');
 $submitBtnFld->developerTags['noCaptionTag'] = true;

@@ -35,10 +35,16 @@ $stateFld = $addressFrm->getField('addr_state_id');
 $stateFld->setFieldTagAttribute('id', 'addr_state_id');
 
 $submitFld = $addressFrm->getField('btn_submit');
-$submitFld->addFieldTagAttribute('class', 'btn btn-brand');
+$submitFld->addFieldTagAttribute('class', 'btn btn-brand btn-wide');
+$submitFld->developerTags['colClassBeforeWidth'] = 'col-auto';
+$submitFld->developerTags['colWidthClasses'] = [null, null, null, null];
+$submitFld->developerTags['colWidthValues'] = [null, null, null, null];
 //$submitFld->developerTags['fieldWrapperRowExtraClass'] = 'form-group-btn';
 $cancelFld = $addressFrm->getField('btn_cancel');
-$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-brand');
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-wide');
+$cancelFld->developerTags['colClassBeforeWidth'] = 'col';
+$cancelFld->developerTags['colWidthClasses'] = [null, null, null, null];
+$cancelFld->developerTags['colWidthValues'] = [null, null, null, null];
 $cancelFld->setFieldTagAttribute('onclick', 'resetAddress(' . $addressType . ')');
 //$cancelFld->developerTags['fieldWrapperRowExtraClass'] = 'form-group-btn'; */
 ?>
