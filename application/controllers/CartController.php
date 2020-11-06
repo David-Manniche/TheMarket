@@ -753,6 +753,9 @@ class CartController extends MyAppController
     public function getCartSummary()
     {
         $cartObj = new Cart();
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $cartObj->excludeTax();
+        }
         $cartObj->invalidateCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
