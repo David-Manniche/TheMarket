@@ -782,36 +782,45 @@ class Importexport extends ImportexportCommon
                     }
                 }
 
+                $categoryId = 0;
                 if ($this->settings['CONF_USE_CATEGORY_ID']) {
                     $categoryId = $prodCatDataArr['prodcat_id'];
                     $categoryData = ProductCategory::getAttributesById($categoryId, array('prodcat_id'));
                 } else {
                     $identifier = $prodCatDataArr['prodcat_identifier'];
                     $categoryData = ProductCategory::getAttributesByIdentifier($identifier, array('prodcat_id'));
-                    $categoryId = $categoryData['prodcat_id'];
+                    if (false === $categoryData) {
+                        $columnIndex = array_search('prodcat_identifier', array_keys($coloumArr));
+                        $errMsg = Labels::getLabel('MSG_INVALID_CATEGORY_INDENTIFIER', $langId);
+                        $errInSheet = true;
+                        $err = array($rowIndex, ($columnIndex + 1), $errMsg);
+                        CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
+                    } else {
+                        $categoryId = $categoryData['prodcat_id'];
+                    }
                 }
 
-                if (!$this->isDefaultSheetData($langId)) {
+                if (!$this->isDefaultSheetData($langId) && false === $errInSheet) {
                     unset($prodCatDataArr['prodcat_parent']);
                     unset($prodCatDataArr['prodcat_identifier']);
                     unset($prodCatDataArr['prodcat_display_order']);
-                } else {
+                } elseif (false === $errInSheet) {
                     if ($categoryId == $prodCatDataArr['prodcat_parent']) {
                         $prodCatDataArr['prodcat_parent'] = 0;
                     }
                 }
 
-                if (!empty($categoryData) && $categoryData['prodcat_id']) {
+                if (!empty($categoryData) && $categoryData['prodcat_id'] && false === $errInSheet) {
                     $where = array('smt' => 'prodcat_id = ?', 'vals' => array($categoryId));
                     $this->db->updateFromArray(ProductCategory::DB_TBL, $prodCatDataArr, $where);
-                } else {
+                } elseif (false === $errInSheet) {
                     if ($this->isDefaultSheetData($langId)) {
                         $this->db->insertFromArray(ProductCategory::DB_TBL, $prodCatDataArr);
                         $categoryId = $this->db->getInsertId();
                     }
                 }
 
-                if ($categoryId) {
+                if (0 < $categoryId) {
                     /* Lang Data [*/
                     $langData = array(
                         'prodcatlang_prodcat_id' => $categoryId,
@@ -852,6 +861,7 @@ class Importexport extends ImportexportCommon
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
             $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
+
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
             FatUtility::dieJsonError($success);

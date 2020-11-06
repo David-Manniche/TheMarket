@@ -359,6 +359,8 @@ Bugs:
     => 044758 - discount availed by buyer is not displaying on order detail page
     => 044752 - admin> order status management> color is not distinct able by name
 --------------------TV-9.2.2.20201104--------------------------    
+    => 044909 - issue on importing category from admin
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
