@@ -43,7 +43,7 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'preq_status':
                 $td->appendElement('span', array('class' => 'label label-inline ' . $statusClassArr[$row[$key]]), $statusArr[$row[$key]] . '<br>', true);
-                $td->appendElement('small', array('class' => 'ml-1'), ($row['preq_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['preq_status_updated_on']) : '', true);
+                $td->appendElement('p', array('class' => 'small'), ($row['preq_status_updated_on'] != '0000-00-00 00:00:00') ? FatDate::Format($row['preq_status_updated_on']) : '', true);
                 break;
             case 'preq_added_on':
                 $td->appendElement('plaintext', array(), FatDate::Format($row[$key]), true);
