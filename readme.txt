@@ -379,6 +379,8 @@ Bugs:
     => 044675 - seller> custom catalog request> under status column> date is wrapping
     => 044697 - ipad >> manage address >> text should get display properly in button.
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    => 044677 - seller> shipping packages> clear search button text is not in center
+    => 044671 - Ipad >> shipping package >> text in button should get display properly.
     => 044950 - seller > my subscription> search button is not proper
     => 044896 - Sorting needed for items linked in collections
     => 044753 - seller dashboard> graph is not proper in RTL mode 

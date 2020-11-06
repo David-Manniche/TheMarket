@@ -14,7 +14,7 @@
 }
 
 .vertical-menu {
-    position: absolute;
+    position: fixed;
     width: 100%;
     visibility: hidden;
     opacity: 0;
@@ -38,8 +38,9 @@
         top: 100%;
     }
     .menu {
-        width: 100%;
-        position: relative;
+        @include media-breakpoint-up(xl) {
+         width: 20%;      
+        } 
         padding: 0;
         margin: 0;
         background-color: $bg-white;
@@ -100,8 +101,8 @@
         position: absolute;
         list-style: none;
         top: 0px;
-        #{$start-direction}: 98%;
-        width: 1080px;
+        #{$end-direction}: 0%;
+        width: 80%;
         min-height: 100%;
         padding: 0 1rem;
         z-index: 99;
@@ -124,7 +125,6 @@
     .menu>li:hover .megadrop {
         opacity: 1;
         visibility: visible;
-        left: 100%;
     }
     .menu>li>ul li ul,
     .menu li>ul li,
