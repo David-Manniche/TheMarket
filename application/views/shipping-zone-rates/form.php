@@ -36,6 +36,8 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-wide');
 //$cancelBtnFld->setWrapperAttribute('class', 'col-auto');
 $cancelBtnFld->developerTags['col'] = 6;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
+$cancelBtnFld->setWrapperAttribute('class', 'text-right');
+
 ?>
 <div class="card-header">
 	<h5 class="card-title"><?php echo Labels::getLabel('LBL_Manage_Rates', $siteLangId); ?></h5>

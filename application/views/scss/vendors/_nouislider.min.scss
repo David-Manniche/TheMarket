@@ -96,7 +96,7 @@
 .noUi-horizontal .noUi-handle {
     width: 20px;
     height: 20px;
-    right: -17px;
+    right: -10px;
     top: -6px
 }
 
@@ -112,7 +112,7 @@
 }
 
 .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
-    left: -17px;
+    left: -10px;
     right: auto
 }
 
@@ -303,7 +303,7 @@
 .noUi-horizontal .noUi-tooltip {
     -webkit-transform: translate(-50%, 0);
     transform: translate(-50%, 0);
-    left: 50%;
+    /* left: 50%;*/
     bottom: 120%
 }
 
