@@ -368,6 +368,8 @@ Bugs:
     => 044674 - user profile> paypal payout> save button is not aligned with fields
 -----------------TV-9.2.2.20201105--------------------------    
     => 044915 - getting fatal on front end on enabling taxjar
+    => 044909 - issue on importing category from admin
+-----------------TV-9.2.2.20201106-------------------------- 
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

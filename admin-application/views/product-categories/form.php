@@ -69,6 +69,24 @@ if (null != $fld) {
                         <div class="caption-wraper">
                             <label class="field_label">
                                 <?php
+                                $fld = $prodCatFrm->getField('prodcat_identifier');
+                                echo $fld->getCaption();
+                                ?>
+                                <span class="spn_must_field">*</span></label>
+                        </div>
+                        <div class="field-wraper">
+                            <div class="field_cover">
+                                <?php echo $prodCatFrm->getFieldHtml('prodcat_identifier'); ?>
+                                <?php echo $prodCatFrm->getFieldHtml('prodcat_id'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper">
+                            <label class="field_label">
+                                <?php
                                 $fld = $prodCatFrm->getField('prodcat_name[' . $siteDefaultLangId . ']');
                                 echo $fld->getCaption();
                                 ?>
@@ -81,7 +99,9 @@ if (null != $fld) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
@@ -97,24 +117,24 @@ if (null != $fld) {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6">
-                    <div class="field-set d-flex align-items-center">
-                        <div class="caption-wraper w-auto pr-4">
+                    <div class="field-set">
+                        <div class="caption-wraper">
                             <label class="field_label">
                                 <?php $fld = $prodCatFrm->getField('prodcat_active');
                                 echo $fld->getCaption();
                                 ?></label>
                         </div>
-                        <div class="field-wraper w-auto">
+                        <div class="field-wraper">
                             <div class="field_cover">
                                 <?php echo $prodCatFrm->getFieldHtml('prodcat_active'); ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                <?php if (null != $statusFld) { ?>
+            </div>
+            <?php if (null != $statusFld) { ?>
+                <div class="row">
                     <div class="col-md-6">
                         <div class="field-set d-flex align-items-center">
                             <div class="caption-wraper w-auto pr-4">
@@ -129,8 +149,9 @@ if (null != $fld) {
                             </div>
                         </div>
                     </div>
-                <?php } ?>
-            </div>
+                </div>
+            <?php } ?>
+            
             <?php $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
             if (!empty($translatorSubscriptionKey) && count($otherLangData) > 0) { ?>
                 <div class="row">
