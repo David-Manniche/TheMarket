@@ -128,7 +128,7 @@ class SellerPackagePlans extends MyAppModel
         $frequency = isset($plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency']) ? $plan[SellerPackagePlans::DB_TBL_PREFIX . 'frequency'] : '';
         $period = isset($subcriptionPeriodArr[$frequency]) ? $subcriptionPeriodArr[$frequency] : '';
         
-        return CommonHelper::displayMoneyFormat($price) . " <br/>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($interval > 1) ? $interval : '') . "  " . $period;
+        return CommonHelper::displayMoneyFormat($price) . " <span>" . " " . Labels::getLabel("LBL_Per", CommonHelper::getLangId()) . " " . (($interval > 1) ? $interval : '') . "  " . $period ."</span>";
     }
     public static function getPlanByPackageId($spackageId = 0)
     {

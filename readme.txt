@@ -359,13 +359,18 @@ Bugs:
     => 044758 - discount availed by buyer is not displaying on order detail page
     => 044752 - admin> order status management> color is not distinct able by name
 --------------------TV-9.2.2.20201104--------------------------    
+    => 044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
+    => 044886 - while adding shipping rates in profile> it warns to select condition
     => #044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
     => 044913 - When fetching avalara category getting error
     => 044665 - Ipad >> on shipping profile >>text is not properly getting display in button.
     => 044671 - Ipad >> shipping package >> text in button should get display properly.
     => 044674 - user profile> paypal payout> save button is not aligned with fields
+-----------------TV-9.2.2.20201105--------------------------    
+    => 044915 - getting fatal on front end on enabling taxjar
+    => 044909 - issue on importing category from admin
+-----------------TV-9.2.2.20201106-------------------------- 
     => 044675 - seller> custom catalog request> under status column> date is wrapping
-
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
