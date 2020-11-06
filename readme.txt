@@ -370,9 +370,11 @@ Bugs:
     => 044915 - getting fatal on front end on enabling taxjar
     => 044909 - issue on importing category from admin
 -----------------TV-9.2.2.20201106-------------------------- 
+    => 044941	when tax is there for specific category still then rest of the world is getting applied
     => 044675 - seller> custom catalog request> under status column> date is wrapping
     => 044697 - ipad >> manage address >> text should get display properly in button.
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
