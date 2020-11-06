@@ -195,7 +195,8 @@
         -webkit-box-pack: end;
         -ms-flex-pack: end;
         justify-content: flex-end;
-        text-align: #{$end-direction};
+        text-align: #{$end-direction};     
+        
         @include media-breakpoint-down(lg) {
             & {
                 padding: 0;
