@@ -382,7 +382,11 @@ Bugs:
     => 044677 - seller> shipping packages> clear search button text is not in center
     => 044671 - Ipad >> shipping package >> text in button should get display properly.
     => 044950 - seller > my subscription> search button is not proper
-
+    => 044896 - Sorting needed for items linked in collections
+    => 044753 - seller dashboard> graph is not proper in RTL mode 
+    => 044933 - Add multiple category with same name but different identifier 
+    => 044780 - seller> while adding product> description editor> on clicking full screen from Arabic language- description field get hids from English too and editor option disappears 
+    => 044953 - admin> return requests detail page> download button is coming there while no attachment is there
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
