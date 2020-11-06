@@ -17,7 +17,7 @@ class PatchUpdateController extends AdminBaseController
 
         $taxJarObj = new TaxJarTax($this->adminLangId);
         $codesArr = $taxJarObj->getCodes(null, null, null, array(), false);
-
+       
         $pluginId = Plugin::getAttributesByCode(TaxJarTax::KEY_NAME, 'plugin_id');
         $db = FatApp::getDb();
         $parentArr = [];
@@ -67,7 +67,11 @@ class PatchUpdateController extends AdminBaseController
                 if (array_key_exists($code->parentTaxCode, $parentArr)) {
                     $parentId = $parentArr[$code->parentTaxCode];
                 } else {
-                    $parentId = Tax::getAttributesByCode($code->parentTaxCode, 'taxcat_id', $pluginId);
+                    $taxRow = Tax::getAttributesByCode($code->parentTaxCode, ['taxcat_id'], $pluginId);
+                    if($taxRow){
+                      $parentId = $taxRow['taxcat_id']; 
+                    }
+                     
                     $parentArr[$code->parentTaxCode] = $parentId;
                 }
             }

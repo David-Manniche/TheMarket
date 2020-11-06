@@ -10,37 +10,24 @@
                             <?php echo html_entity_decode($pageData['epage_content']);?>
                         </div>
                     </div>
-                    <div class="packages-box">
-                        <div class="row">
+                    
+                        <ul class="packages-box">
                             <?php
                               $packageArrClass= SellerPackages::getPackageClass();
                               $totalPackages = count($packagesArr);
-                              if ($totalPackages > 0) {
-                                  switch ($totalPackages) {
-                                        case '1':
-                                            $lgCols =  $mdCols = 4;
-                                            break;
-                                        case '2':
-                                            $lgCols =  $mdCols = 6;
-                                            break;
-
-                                        default:
-                                            $lgCols =  $mdCols = 4;
-                                            break;
-                                    }
-
-                          $ColsinRow  = ceil(12/$lgCols);
+                              if ($totalPackages > 0) { 
                           $inc=1;
                           foreach ($packagesArr as $package) {
                               $planIds = array_column($package['plans'], SellerPackagePlans::DB_TBL_PREFIX.'id');
                               $selectedClass ='';
                               if (in_array($currentActivePlanId, $planIds)) {
-                                  $selectedClass ='is--active';
+                                  $selectedClass ='is-active';
                               } ?>
-                            <div class=" col-xl-<?php echo $lgCols; ?> col-lg-<?php echo $mdCols; ?> col-md-6 mb-3 box <?php echo $packageArrClass[$inc]." ".$selectedClass ?>">
+                            <li class="box <?php echo $packageArrClass[$inc]." ".$selectedClass ?>">
                                 <div class="box-inner">
                                     <div class="name"><?php echo $package['spackage_name']; ?> <span><?php echo $package['spackage_text']; ?></span></div>
-                                    <div class="valid"> <?php echo SellerPackagePlans::getCheapPlanPriceWithPeriod($package['cheapPlan'], $package['cheapPlan'][SellerPackagePlans::DB_TBL_PREFIX.'price']); ?></div>
+                                    <div class="valid">
+                                        <?php echo SellerPackagePlans::getCheapPlanPriceWithPeriod($package['cheapPlan'], $package['cheapPlan'][SellerPackagePlans::DB_TBL_PREFIX.'price']); ?></div>
                                     <div class="trial">
                                         <ul>
                                             <li><span><?php echo CommonHelper::displayComissionPercentage($package[SellerPackages::DB_TBL_PREFIX.'commission_rate']); ?>%</span> <?php echo Labels::getLabel('LBL_Commision_rate', $siteLangId); ?></li>
@@ -59,8 +46,7 @@
                                     <a class="btn btn-secondary ripplelink buyFreeSubscription" data-id="<?php echo $package[SellerPackages::DB_TBL_PREFIX.'id'];?>"
                                         href="javascript:void(0)"><?php echo Labels::getLabel('LBL_Free_Trial',$siteLangId);?></a> <?php
                                 } */ ?>
-                                </div>
-                                <div class="after-box">
+                                  <div class="after-box">
                                     <h3><?php echo sprintf(Labels::getLabel('Lbl_Select_Your_%s_Price', $siteLangId), $package['spackage_name']) ; ?></h3>
                                     <ul>
                                         <?php  foreach ($package['plans'] as $plan) {
@@ -82,17 +68,19 @@
                               } else {
                                   $buyPlanText = Labels::getLabel('LBL_Buy_Plan', $siteLangId);
                               } ?>
-                                    <a href="javascript:void(0)	" data-id="<?php echo $package[SellerPackages::DB_TBL_PREFIX.'id']; ?>" class="btn btn-secondary ripplelink buySubscription--js "><?php echo $buyPlanText; ?></a>
+                                    <a href="javascript:void(0)	" data-id="<?php echo $package[SellerPackages::DB_TBL_PREFIX.'id']; ?>" class="btn btn-brand btn-wide buySubscription--js "><?php echo $buyPlanText; ?></a>
                                 </div>
-                            </div>
+                                </div>
+                              
+                            </li>
                             <?php
 
                             $inc++;
                           }
                           //						}
                       }	  ?>
-                        </div>
-                    </div>
+                        </ul>
+                    
                 </div>
             </div>
         </div>

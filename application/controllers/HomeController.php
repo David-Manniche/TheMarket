@@ -564,7 +564,7 @@ class HomeController extends MyAppController
 
         $collectionObj = new CollectionSearch();
         $collectionObj->joinCollectionRecords();
-        $collectionObj->addMultipleFields(array('ctr_record_id'));
+        $collectionObj->addMultipleFields(array('ctr_record_id', 'ctr_display_order'));
         $collectionObj->addCondition('ctr_record_id', '!=', 'NULL');
         $i = 0;
         /* $sponsoredShops = $this->getSponsoredShops($productSrchObj);
@@ -615,39 +615,45 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_PRODUCT:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $rs = $tempObj->getResultSet();
-                    if (!$productIds = $db->fetchAll($rs, 'ctr_record_id')) {
-                        continue 2;
-                    }
-
+                    $tempObj->doNotCalculateRecords();        
+                    $tempObj->doNotLimitRecords(); 
+                    //$rs = $tempObj->getResultSet();
+                    // if (!$productIds = $db->fetchAll($rs, 'ctr_record_id')) {
+                    //     continue 2;
+                    // }
                     /* fetch Products data[ */
-                    $orderBy = 'ASC';
-                    if ($collection['collection_criteria'] == Collections::COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW) {
-                        $orderBy = 'DESC';
-                    }
-
+                    //$orderBy = 'ASC';
+                    // if ($collection['collection_criteria'] == Collections::COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW) {
+                    //     $orderBy = 'DESC';
+                    // }
                     $productSrchTempObj = clone $productSrchObj;
+                    $productSrchTempObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'selprod_id = ctr.ctr_record_id', 'ctr');
                     if (true === MOBILE_APP_API_CALL) {
                         $productSrchTempObj->joinProductRating();
                         $productSrchTempObj->addFld('IFNULL(prod_rating, 0) as prod_rating');
                     }
-                    $productSrchTempObj->addCondition('selprod_id', 'IN', array_keys($productIds));
+                    //$productSrchTempObj->addCondition('selprod_id', 'IN', array_keys($productIds));
                     $productSrchTempObj->addCondition('selprod_deleted', '=', applicationConstants::NO);
-                    $productSrchTempObj->addOrder('theprice', $orderBy);
+                    //$productSrchTempObj->addOrder('theprice', $orderBy);
                     $productSrchTempObj->joinSellers();
                     $productSrchTempObj->joinSellerSubscription($langId);
                     $productSrchTempObj->addGroupBy('selprod_id');
+                    $productSrchTempObj->addOrder('ctr.ctr_display_order', 'ASC');
                     $productSrchTempObj->setPageSize($collection['collection_primary_records']);
                     $rs = $productSrchTempObj->getResultSet();
 
+                    $recordCount = $productSrchTempObj->recordCount();
+                    if (empty($recordCount)) {
+                        continue 2;
+                    }
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                         $collections[$i]['products'] = $db->fetchAll($rs);
-                        $collections[$i]['totProducts'] = $productSrchTempObj->recordCount();
+                        $collections[$i]['totProducts'] = $recordCount;
                     } else {
                         $collections[$collection['collection_id']] = $collection;
                         $collections[$collection['collection_id']]['products'] = $db->fetchAll($rs, 'selprod_id');
-                        $collections[$collection['collection_id']]['totProducts'] = $productSrchTempObj->recordCount();
+                        $collections[$collection['collection_id']]['totProducts'] = $recordCount;
                     }
                     /* ] */
                     unset($tempObj);
@@ -660,18 +666,25 @@ class HomeController extends MyAppController
                     }
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $tempObj->setPageSize($collection['collection_primary_records']);
-
-                    $rs = $tempObj->getResultSet();
-                    if (!$categoryIds = $db->fetchAll($rs, 'ctr_record_id')) {
-                        continue 2;
-                    }
+                    $tempObj->doNotCalculateRecords();        
+                    $tempObj->doNotLimitRecords(); 
+                    // $tempObj->setPageSize($collection['collection_primary_records']);
+                    // $rs = $tempObj->getResultSet();
+                    // if (!$categoryIds = $db->fetchAll($rs, 'ctr_record_id')) {
+                    //     continue 2;
+                    // }
 
                     /* fetch Categories data[ */
                     $productCatSrchTempObj = clone $productCatSrchObj;
-                    $productCatSrchTempObj->addCondition('prodcat_id', 'IN', array_keys($categoryIds));
+                    $productCatSrchTempObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'prodcat_id = ctr.ctr_record_id', 'ctr');
+                    //$productCatSrchTempObj->addCondition('prodcat_id', 'IN', array_keys($categoryIds));
                     $productCatSrchTempObj->addCondition('prodcat_deleted', '=', applicationConstants::NO);
+                    $productCatSrchTempObj->addOrder('ctr.ctr_display_order', 'ASC');
                     $rs = $productCatSrchTempObj->getResultSet();
+                    $recordCount = $productCatSrchTempObj->recordCount();
+                    if (empty($recordCount)) {
+                        continue 2;
+                    } 
                     /* ] */
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
@@ -683,8 +696,11 @@ class HomeController extends MyAppController
                         while ($catData = $db->fetch($rs)) {
                             /* fetch Sub-Categories[ */
                             $subCategorySrch = clone $productCatSrchObj;
+                            $subCategorySrch->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'prodcat_id = ctr.ctr_record_id', 'ctr');
+                            $subCategorySrch->addCondition('prodcat_id', '=', $catData['prodcat_id']);                            
                             $subCategorySrch->addCondition('prodcat_parent', '=', $catData['prodcat_id']);
                             $subCategorySrch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
+                            $subCategorySrch->addOrder('ctr.ctr_record_id', 'ASC');
                             $Catrs = $subCategorySrch->getResultSet();
 
                             if (true === MOBILE_APP_API_CALL) {
@@ -701,8 +717,10 @@ class HomeController extends MyAppController
                         while ($catData = $db->fetch($rs)) {
                             /* fetch Product data[ */
                             $productShopSrchTempObj = clone $productSrchObj;
+                            $productShopSrchTempObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'prodcat_id = ctr.ctr_record_id', 'ctr');
                             $productShopSrchTempObj->addCondition('prodcat_id', '=', $catData['prodcat_id']);
-                            $productShopSrchTempObj->addOrder('in_stock', 'DESC');
+                            $productShopSrchTempObj->addOrder('ctr.ctr_record_id', 'ASC');
+                            //$productShopSrchTempObj->addOrder('in_stock', 'DESC');
                             $productShopSrchTempObj->addGroupBy('selprod_product_id');
                             $productShopSrchTempObj->setPageSize(7);
                             $Prs = $productShopSrchTempObj->getResultSet();
@@ -729,32 +747,39 @@ class HomeController extends MyAppController
                     break;
                 case Collections::COLLECTION_TYPE_SHOP:
                     $tempObj = clone $collectionObj;
-                    $tempObj->addCondition('collection_id', '=', $collection_id);
+                    $tempObj->addCondition('collection_id', '=', $collection_id);  
+                    $tempObj->doNotCalculateRecords();        
+                    $tempObj->doNotLimitRecords();               
                     // $tempObj->setPageSize( $collection['collection_primary_records'] );
-                    $rs = $tempObj->getResultSet();
-
-                    if (!$shopIds = $db->fetchAll($rs, 'ctr_record_id')) {
-                        continue 2;
-                    }
-
+                    // $rs = $tempObj->getResultSet();
+                    // if (!$shopIds = $db->fetchAll($rs, 'ctr_record_id')) {
+                    //     continue 2;
+                    // }
                     $shopObj = new ShopSearch($langId);
                     $shopObj->setDefinedCriteria($langId);
                     $shopObj->joinSellerSubscription();
-                    $shopObj->addCondition('shop_id', 'IN', array_keys($shopIds));
+                    //$shopObj->addCondition('shop_id', 'IN', array_keys($shopIds));
+                    $shopObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'shop_id = ctr.ctr_record_id', 'ctr');
+                    
                     if (false === MOBILE_APP_API_CALL) {
                         $shopObj->setPageSize($collection['collection_primary_records']);
                     }
-                    $shopObj->addMultipleFields(array('shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name', 'IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
+                    $shopObj->addMultipleFields(array('ctr.ctr_display_order','shop_id', 'shop_user_id', 'IFNULL(shop_name, shop_identifier) as shop_name', 'IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
+                    $shopObj->addOrder('ctr.ctr_display_order', 'ASC');
+                    
                     $rs = $shopObj->getResultSet();
-
+                    $recordCount = $shopObj->recordCount();
+                    if (empty($recordCount)) {
+                        continue 2;
+                    } 
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
-                        $collections[$i]['totShops'] = $shopObj->recordCount();
+                        $collections[$i]['totShops'] = $recordCount;
                     } else {
                         $collections[$collection['collection_id']] = $collection;
-                        $collections[$collection['collection_id']]['totShops'] = $shopObj->recordCount();
+                        $collections[$collection['collection_id']]['totShops'] = $recordCount;
                     }
-
+                    //CommonHelper::printArray($shopsData, true);
                     $counter = 0;
                     while ($shopsData = $db->fetch($rs)) {
                         /* fetch Shop data[ */
@@ -790,44 +815,55 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_BRAND:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $rs = $tempObj->getResultSet();
-                    $brandIds = $db->fetchAll($rs, 'ctr_record_id');
+                    $tempObj->doNotCalculateRecords();        
+                    $tempObj->doNotLimitRecords();  
+                    //$tempObj->addOrder('ctr_display_order', 'ASC');
+                    // $rs = $tempObj->getResultSet();
+                    // $brandIds = $db->fetchAll($rs, 'ctr_record_id');
 
-                    if (empty($brandIds)) {
-                        continue 2;
-                    }
+                    // if (empty($brandIds)) {
+                    //     continue 2;
+                    // }
 
                     /* fetch Brand data[ */
                     $brandSearchObj = Brand::getSearchObject($langId, true, true);
                     $brandSearchTempObj = clone $brandSearchObj;
+                    $brandSearchTempObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'brand_id = ctr.ctr_record_id', 'ctr');
                     $brandSearchTempObj->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
-                    $brandSearchTempObj->addCondition('brand_id', 'IN', array_keys($brandIds));
+                    //$brandSearchTempObj->addCondition('brand_id', 'IN', array_keys($brandIds));
+                    $brandSearchTempObj->addOrder('ctr_display_order', 'ASC');
                     if (false === MOBILE_APP_API_CALL) {
                         $brandSearchTempObj->setPageSize($collection['collection_primary_records']);
                     }
                     $rs = $brandSearchTempObj->getResultSet();
+                    $brands = $db->fetchAll($rs);
+                    if (empty($brands)) {
+                        continue 2;
+                    } 
+
                     /* ] */
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
                         $collections[$i]['totBrands'] = $brandSearchTempObj->recordCount();
-                        $collections[$i]['brands'] = $db->fetchAll($rs);
+                        $collections[$i]['brands'] = $brands;
                     } else {
                         $collections[$collection['collection_id']] = $collection;
                         $collections[$collection['collection_id']]['totBrands'] = $brandSearchTempObj->recordCount();
-                        $collections[$collection['collection_id']]['brands'] = $db->fetchAll($rs);
+                        $collections[$collection['collection_id']]['brands'] = $brands;
                     }
-
                     unset($brandSearchTempObj);
                     unset($tempObj);
                     break;
                 case Collections::COLLECTION_TYPE_BLOG:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $rs = $tempObj->getResultSet();
-                    $blogPostIds = $db->fetchAll($rs, 'ctr_record_id');
-                    if (empty($blogPostIds)) {
-                        continue 2;
-                    }
+                    $tempObj->doNotCalculateRecords();        
+                    $tempObj->doNotLimitRecords(); 
+                    // $rs = $tempObj->getResultSet();
+                    // $blogPostIds = $db->fetchAll($rs, 'ctr_record_id');
+                    // if (empty($blogPostIds)) {
+                    //     continue 2;
+                    // }
 
                     /* fetch Blog data[ */
                     $attr = [
@@ -842,13 +878,18 @@ class HomeController extends MyAppController
                     $blogSearchObj = BlogPost::getSearchObject($langId, true, true);
                     $blogSearchTempObj = clone $blogSearchObj;
                     $blogSearchTempObj->addMultipleFields($attr);
-                    $blogSearchTempObj->addCondition('post_id', 'IN', array_keys($blogPostIds));
+                    $blogSearchTempObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'post_id = ctr.ctr_record_id', 'ctr');
+                    //$blogSearchTempObj->addCondition('post_id', 'IN', array_keys($blogPostIds));
+                    $blogSearchTempObj->addOrder('ctr.ctr_display_order', 'ASC');
                     if (false === MOBILE_APP_API_CALL) {
                         $blogSearchTempObj->setPageSize($collection['collection_primary_records']);
                     }
                     $blogSearchTempObj->addGroupBy('post_id');
                     $rs = $blogSearchTempObj->getResultSet();
                     $blogPostsDetail = $db->fetchAll($rs);
+                    if (empty($blogPostsDetail)) {
+                        continue 2;
+                    } 
                     /* ] */
                     if (true === MOBILE_APP_API_CALL) {
                         array_walk($blogPostsDetail, function (&$value, &$key) {
@@ -869,11 +910,14 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_FAQ:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $res = $tempObj->getResultSet();
-                    $faqIds = $db->fetchAll($res, 'ctr_record_id');
-                    if (empty($faqIds)) {
-                        continue 2;
-                    }
+                    $tempObj->doNotCalculateRecords();        
+                    $tempObj->doNotLimitRecords();
+                    //$tempObj->addOrder('ctr_display_order', 'ASC');
+                    // $res = $tempObj->getResultSet();
+                    // $faqIds = $db->fetchAll($res, 'ctr_record_id');
+                    // if (empty($faqIds)) {
+                    //     continue 2;
+                    // }
 
                     /* fetch FAQ data[ */
                     $attr = [
@@ -886,11 +930,16 @@ class HomeController extends MyAppController
                     );
                     $faqSearchTempObj->joinTable(FaqCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'faqcat_id = fc.' . FaqCategory::tblFld('id') . ' and fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'fc_l'
                     );
+                    $faqSearchTempObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'faq_id = ctr.ctr_record_id', 'ctr');
                     $faqSearchTempObj->addMultipleFields($attr);
-                    $faqSearchTempObj->addCondition('faq_id', 'IN', array_keys($faqIds));
+                    $faqSearchTempObj->addOrder('ctr.ctr_display_order', 'ASC');
+                    //$faqSearchTempObj->addCondition('faq_id', 'IN', array_keys($faqIds));
                     $faqSearchTempObj->addGroupBy('faq_id');
                     $res = $faqSearchTempObj->getResultSet();
                     $faqsDetail = $db->fetchAll($res);
+                    if (empty($faqsDetail)) {
+                        continue 2;
+                    } 
                     /* ] */
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
@@ -909,11 +958,13 @@ class HomeController extends MyAppController
                 case Collections::COLLECTION_TYPE_TESTIMONIAL:
                     $tempObj = clone $collectionObj;
                     $tempObj->addCondition('collection_id', '=', $collection_id);
-                    $res = $tempObj->getResultSet();
+                    $tempObj->doNotCalculateRecords();        
+                    $tempObj->doNotLimitRecords();                     
+                   /*  $res = $tempObj->getResultSet();
                     $testimonialIds = $db->fetchAll($res, 'ctr_record_id');
                     if (empty($testimonialIds)) {
                         continue 2;
-                    }
+                    } */
 
                     /* fetch Testimonial data[ */
                     $attr = [
@@ -921,12 +972,17 @@ class HomeController extends MyAppController
                     ];
                     $testimonialSrchObj = Testimonial::getSearchObject($langId, true);
                     $testimonialSrchObj = clone $testimonialSrchObj;
+                    $testimonialSrchObj->joinTable('(' .$tempObj->getQuery() . ')', 'INNER JOIN' , 'testimonial_id = ctr.ctr_record_id', 'ctr');
                     $testimonialSrchObj->addMultipleFields($attr);
-                    $testimonialSrchObj->addCondition('testimonial_id', 'IN', array_keys($testimonialIds));
+                    //$testimonialSrchObj->addCondition('testimonial_id', 'IN', array_keys($testimonialIds));
                     $testimonialSrchObj->addGroupBy('testimonial_id');
+                    $testimonialSrchObj->addOrder('ctr.ctr_display_order', 'ASC');
                     $testimonialSrchObj->setPageSize(Collections::LIMIT_TESTIMONIAL_LAYOUT1);
                     $res = $testimonialSrchObj->getResultSet();
                     $testimonialsDetail = $db->fetchAll($res);
+                    if (empty($testimonialsDetail)) {
+                        continue 2;
+                    } 
                     /* ] */
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;

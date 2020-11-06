@@ -35,7 +35,7 @@ class ShippingZoneRatesController extends SellerBaseController
         $frm = $this->getForm();
         $conditionType = FatApp::getPostedData('shiprate_condition_type', FatUtility::VAR_INT, 0);
         $isCondition = FatApp::getPostedData('is_condition', FatUtility::VAR_INT, 0);
-        if (1 > $conditionType) {
+        if (1 > $conditionType && $isCondition > 0) {
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_CONDITION_TYPE", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
