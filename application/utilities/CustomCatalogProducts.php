@@ -957,8 +957,8 @@ trait CustomCatalogProducts
         $languagesAssocArr = Language::getAllNames();
         $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array(0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId)) + $languagesAssocArr, '', array('class' => 'language'), '');
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s)', $this->siteLangId), 'prod_image', array('id' => 'prod_image'));
-        $fldImg->htmlBeforeField = '<div class="filefield"><span class="filename"></span>';
-        $fldImg->htmlAfterField = '<label class="filelabel">' . Labels::getLabel('LBL_Browse_File', $this->siteLangId) . '</label></div><small>' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->siteLangId) . '</small>';
+        $fldImg->htmlBeforeField = '<div class="filefield">';
+        $fldImg->htmlAfterField = '</div><span class="form-text text-muted">' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->siteLangId) . '</span>';
         $frm->addHiddenField('', 'min_width', 500);
         $frm->addHiddenField('', 'min_height', 500);
         $frm->addHiddenField('', 'preq_id', $preq_id);

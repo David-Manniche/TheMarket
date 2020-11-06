@@ -11,6 +11,7 @@ $langFld = $imagesFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
 $img_fld = $imagesFrm->getField('prod_image');
+$img_fld->addFieldTagAttribute('class', 'btn  btn-sm');
 $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 ?>
 <div class="tabs_data">
