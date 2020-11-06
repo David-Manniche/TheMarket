@@ -482,10 +482,10 @@ class MyAppController extends FatController
         $frm->addHiddenField('', 'addr_id');
         if ($btnOrderFlip) {
             $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
-            $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
+            $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $siteLangId));
             return $frm;
         }
-        $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
+        $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
         //$fldCancel->attachField($fldSubmit);
         return $frm;

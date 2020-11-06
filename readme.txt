@@ -371,6 +371,7 @@ Bugs:
     => 044909 - issue on importing category from admin
 -----------------TV-9.2.2.20201106-------------------------- 
     => 044675 - seller> custom catalog request> under status column> date is wrapping
+    => 044697 - ipad >> manage address >> text should get display properly in button.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
