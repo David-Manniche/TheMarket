@@ -370,6 +370,7 @@ Bugs:
     => 044915 - getting fatal on front end on enabling taxjar
     => 044909 - issue on importing category from admin
     => 044942 - admin> categories> identifier is displaying in list instead of name
+    => 044944 - admin> seller orders> shipping is displaying as "awaiting shipment" for digital item order
 
 Enhancements:
     => Tax module upgrade
