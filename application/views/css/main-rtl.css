@@ -31911,10 +31911,12 @@ a.ui-button:active,
         flex-direction: column; } }
   @media (max-width: 1199.98px) {
     .content .main {
-      padding: 1rem; } }
+      padding: 1rem;
+      flex: 1; } }
   @media (max-width: 1199.98px) {
     .content .sidebar {
       padding: 0 1rem;
+      margin: 1.5rem 0;
       background: #f3f4f5; } }
   @media (min-width: 1200px) {
     .content .sidebar {
