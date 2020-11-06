@@ -30371,7 +30371,7 @@ a.ui-button:active,
 .noUi-horizontal .noUi-handle {
   width: 20px;
   height: 20px;
-  right: -17px;
+  right: -10px;
   top: -6px; }
 
 .noUi-vertical {
@@ -30384,7 +30384,7 @@ a.ui-button:active,
   top: -17px; }
 
 .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
-  left: -17px;
+  left: -10px;
   right: auto; }
 
 .noUi-target {
