@@ -11038,13 +11038,15 @@ span.subheading {
   color: #8798ad;
   margin: 0;
   margin-bottom: 5px;
+  min-height: 15px;
+  /*for alignment issue where no content in form lebal - form button and input alignment */
   display: inline-block;
   min-height: none;
   cursor: default;
   /*opacity: 0.6;*/ }
   .form label:empty,
   .form .field_label:empty {
-    min-height: 18px; }
+    min-height: 15px; }
 .form input, .form input[type="text"], .form input[type="email"], .form input[type="phone"], .form input[type="search"], .form input[type="password"], .form input[type="date"], .form input[type="url"], .form input[type="tel"], .form input[type="number"], .form input[type="file"], .form select, .form .custom-select, .form textarea {
   padding: 0 1rem;
   border: solid 1px #dee2e6;
@@ -11135,9 +11137,11 @@ span.subheading {
   -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s;
   pointer-events: none; }
-.form button:focus :before {
+.form button i:before {
+  opacity: 1 !important; }
+.form button:focus > :before {
   opacity: 0.2; }
-.form button:active :before {
+.form button:active > :before {
   opacity: 0.32; }
 .form button:disabled :before {
   /*opacity: 0;*/ }
