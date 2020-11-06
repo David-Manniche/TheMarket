@@ -218,23 +218,25 @@ class Tax extends MyAppModel
             $srch->joinTable(TaxRuleLocation::DB_TBL, 'LEFT JOIN', 'taxLoc.taxruleloc_taxcat_id = ptt_taxcat_id', 'taxLoc');
             $srch->joinTable(TaxRule::DB_TBL, 'LEFT JOIN', 'taxRule.taxrule_id = taxLoc.taxruleloc_taxrule_id', 'taxRule');
 
-            if ($userCountry > 0) {
+            if ($userCountry > 0 && $userState <= 0) {
                 $cond = $srch->addCondition('taxruleloc_country_id', '=', $userCountry, 'AND');
                 $cond->attachCondition('taxruleloc_country_id', '=', -1, 'OR');
             }
             if ($userState > 0) {
                 $srch->addDirectCondition('(taxruleloc_country_id = -1 or (taxruleloc_country_id = ' . $userCountry . ' and ((taxruleloc_type = ' . TaxRule::TYPE_INCLUDE_STATES . ' AND taxruleloc_state_id = ' . $userState . ') OR (taxruleloc_type = ' . TaxRule::TYPE_ALL_STATES . ' AND taxruleloc_state_id = -1) OR (taxruleloc_type = ' . TaxRule::TYPE_EXCLUDE_STATES . ' AND taxruleloc_state_id != ' . $userState . ' and (select count(*) from ' . TaxRuleLocation::DB_TBL . ' where taxruleloc_type = ' . TaxRule::TYPE_EXCLUDE_STATES . ' and taxruleloc_state_id = ' . $userState . ' and taxruleloc_taxcat_id = ptt.ptt_taxcat_id) = 0))))', 'AND');
             }
-            $srch->addMultipleFields(array('*', 'if(taxruleloc_type = ' . TaxRule::TYPE_ALL_STATES . ', 99,taxruleloc_type) as displayOrder'));
+            $srch->addMultipleFields(array('*', '(CASE WHEN taxruleloc_type = ' . TaxRule::TYPE_ALL_STATES . ' and taxruleloc_country_id = -1 THEN 99 WHEN taxruleloc_type = ' . TaxRule::TYPE_ALL_STATES . ' and taxruleloc_country_id = ' . $userCountry . ' THEN 98 ELSE taxruleloc_type END) AS displayOrder'));
             $srch->addGroupBy('taxrule_id');
             $srch->addOrder('displayOrder', 'ASC');
         }
+        //echo $srch->getQuery();
         $srch->setPageSize(1);
         $res = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($res);
         if (!is_array($row)) {
             return array();
         }
+        //CommonHelper::printArray($row);
         return $row;
     }
 
