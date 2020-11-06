@@ -381,6 +381,10 @@ Bugs:
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
     => 044969	when sub seller having read only permission for shipping profile then he can't see profiles created by seller and details under shipping profile
     => 044966	create button is there for shipping profile to sub seller when read only permission is granted to him
+    => 044677 - seller> shipping packages> clear search button text is not in center
+    => 044671 - Ipad >> shipping package >> text in button should get display properly.
+    => 044950 - seller > my subscription> search button is not proper
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

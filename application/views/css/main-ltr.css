@@ -8047,7 +8047,8 @@ a.text-dark:hover, a.text-dark:focus {
   margin: 0;
   display: flex;
   padding: 0;
-  font-size: 0.85rem; }
+  font-size: 0.85rem;
+  transform: rotate(0deg); }
   @media (max-width: 1199.98px) {
     .navigations {
       margin: 0;
@@ -9136,7 +9137,7 @@ a.text-dark:hover, a.text-dark:focus {
       margin-right: 10px; }
 
 .vertical-menu {
-  position: absolute;
+  position: fixed;
   width: 100%;
   visibility: hidden;
   opacity: 0;
@@ -9160,8 +9161,6 @@ a.text-dark:hover, a.text-dark:focus {
     opacity: 1;
     top: 100%; }
   .vertical-menu .menu {
-    width: 100%;
-    position: relative;
     padding: 0;
     margin: 0;
     background-color: #fff;
@@ -9169,6 +9168,9 @@ a.text-dark:hover, a.text-dark:focus {
     /*border: $border;
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);*/
     box-shadow: -2px 0px 3px rgba(0, 0, 0, 0.1); }
+    @media (min-width: 1200px) {
+      .vertical-menu .menu {
+        width: 20%; } }
   .vertical-menu .menu a:hover {
     text-decoration: none; }
   .vertical-menu .menu > li {
@@ -9207,8 +9209,8 @@ a.text-dark:hover, a.text-dark:focus {
     position: absolute;
     list-style: none;
     top: 0px;
-    left: 98%;
-    width: 1080px;
+    right: 0%;
+    width: 80%;
     min-height: 100%;
     padding: 0 1rem;
     z-index: 99;
@@ -9227,8 +9229,7 @@ a.text-dark:hover, a.text-dark:focus {
         padding: 1rem; }
   .vertical-menu .menu > li:hover .megadrop {
     opacity: 1;
-    visibility: visible;
-    left: 100%; }
+    visibility: visible; }
   .vertical-menu .menu > li > ul li ul,
   .vertical-menu .menu li > ul li,
   .vertical-menu .menu > li > .megadrop,
