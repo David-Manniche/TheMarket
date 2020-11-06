@@ -10,7 +10,7 @@ $innova_settings = array('width' => '730', 'height' => '400', 'arrStyle' => '[["
     ["group1", "", ["Bold", "Italic", "Underline", "FontName", "ForeColor", "TextDialog", "RemoveFormat"]],
     ["group2", "", ["Bullets", "Numbering", "JustifyLeft", "JustifyCenter", "JustifyRight"]],
     ["group3", "", ["LinkDialog", "ImageDialog", "YoutubeDialog", "Table", "TableDialog"]],
-    ["group5", "", ["Undo", "Redo", "FullScreen", "SourceDialog"]]]',
+    ["group5", "", ["Undo", "Redo", "SourceDialog"]]]',
     'fileBrowser' => '"' . CONF_WEBROOT_URL . 'innova/assetmanager/asset.php"');
 
 FatApp::setViewDataProvider('_partial/buyerDashboardNavigation.php', array('Navigation', 'buyerDashboardNavigation'));
