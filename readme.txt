@@ -369,7 +369,13 @@ Bugs:
 -----------------TV-9.2.2.20201105--------------------------    
     => 044915 - getting fatal on front end on enabling taxjar
     => 044909 - issue on importing category from admin
+    => 044896 - Sorting needed for items linked in collections
+    => 044753 - seller dashboard> graph is not proper in RTL mode
 -----------------TV-9.2.2.20201106-------------------------- 
+    => 044933 - Add multiple category with same name but different identifier 
+    => 044780 - seller> while adding product> description editor> on clicking full screen from Arabic language- description field get hids from English too and editor option disappears 
+    => 044953 - admin> return requests detail page> download button is coming there while no attachment is there
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -85,7 +85,7 @@
 								}	 */
 								echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_amount'], true, true);		
 								?> </td>
-							<?php if(isset($attachedFile) && !empty($attachedFile)){ ?>
+							<?php if(isset($attachedFile) && !empty($attachedFile) && isset($attachedFile['afile_physical_path']) && !empty($attachedFile['afile_physical_path'])){ ?>
 							<td><strong><?php echo Labels::getLabel('LBL_Download_Attached_Files',$adminLangId); ?>:</strong><a href="<?php echo UrlHelper::generateUrl('OrderReturnRequests','downloadAttachedFileForReturn' , array($requestRow["orrequest_id"]));  ?>" class="button small green" > <?php echo Labels::getLabel('LBL_Download',$adminLangId); ?></a></td>
 							<?php } ?>
                             </tr>   
