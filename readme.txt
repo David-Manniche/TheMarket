@@ -375,7 +375,8 @@ Bugs:
     => 044946 - admin> orders> deleted orders> search button is not aligned properly
 -----------------TV-9.2.2.20201106-------------------------- 
     => 044941	when tax is there for specific category still then rest of the world is getting applied
-    
+    => 044951 - admin> return requests detail page> replace back button with text
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
