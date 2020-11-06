@@ -30541,7 +30541,7 @@ a.ui-button:active,
 .noUi-horizontal .noUi-tooltip {
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
-  left: 50%;
+  /* left: 50%;*/
   bottom: 120%; }
 
 .noUi-vertical .noUi-tooltip {
