@@ -379,7 +379,8 @@ Bugs:
     => 044675 - seller> custom catalog request> under status column> date is wrapping
     => 044697 - ipad >> manage address >> text should get display properly in button.
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
-
+    => 044969	when sub seller having read only permission for shipping profile then he can't see profiles created by seller and details under shipping profile
+    => 044966	create button is there for shipping profile to sub seller when read only permission is granted to him
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
