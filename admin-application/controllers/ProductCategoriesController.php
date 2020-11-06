@@ -114,6 +114,7 @@ class ProductCategoriesController extends AdminBaseController
         $frm = new Form('frmProdCategory');
         $frm->addHiddenField('', 'prodcat_id', $prodCatId);
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name[' . $siteDefaultLangId . ']');
+        $frm->addRequiredField(Labels::getLabel('LBL_Category_Identifier', $this->adminLangId), 'prodcat_identifier');
 
         $prodCat = new ProductCategory();
         $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
