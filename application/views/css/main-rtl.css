@@ -31916,6 +31916,7 @@ a.ui-button:active,
   @media (max-width: 1199.98px) {
     .content .sidebar {
       padding: 0 1rem;
+      margin: 1.5rem 0;
       background: #f3f4f5; } }
   @media (min-width: 1200px) {
     .content .sidebar {

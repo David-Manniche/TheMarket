@@ -307,7 +307,6 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     </div>
                 </div>
             <?php } else {
-                echo $cartSummary['orderPaymentGatewayCharges']  . ' < ' . count($paymentMethods);
                 echo Labels::getLabel("LBL_PAYMENT_METHOD_IS_NOT_AVAILABLE._PLEASE_CONTACT_YOUR_ADMINISTRATOR.", $siteLangId);
             } ?>
         </div>
