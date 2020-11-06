@@ -44,7 +44,7 @@ class OrderSubscriptionSearch extends SearchBase
         $this->joinTable(Plugin::DB_TBL, 'LEFT OUTER JOIN', 'o.order_pmethod_id = pm.plugin_id', 'pm');
 
         if ($langId) {
-            $this->joinTable(Plugin::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.pluginlang_plugin_id = pm_l.pmethodlang_pmethod_id AND pm_l.pluginlang_lang_id = ' . $langId, 'pm_l');
+            $this->joinTable(Plugin::DB_TBL_LANG, 'LEFT OUTER JOIN', 'pm.plugin_id = pm_l.pluginlang_plugin_id AND pm_l.pluginlang_lang_id = ' . $langId, 'pm_l');
         }
     }
     public function joinOrders()
