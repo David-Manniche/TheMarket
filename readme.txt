@@ -375,11 +375,13 @@ Bugs:
     => 044946 - admin> orders> deleted orders> search button is not aligned properly
 -----------------TV-9.2.2.20201106-------------------------- 
     => 044941	when tax is there for specific category still then rest of the world is getting applied
+    => 044951 - admin> return requests detail page> replace back button with text
     => 044675 - seller> custom catalog request> under status column> date is wrapping
     => 044697 - ipad >> manage address >> text should get display properly in button.
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
     => 044677 - seller> shipping packages> clear search button text is not in center
     => 044671 - Ipad >> shipping package >> text in button should get display properly.
+    => 044950 - seller > my subscription> search button is not proper
 
 Enhancements:
     => Tax module upgrade
