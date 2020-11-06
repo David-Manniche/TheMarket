@@ -369,6 +369,10 @@ Bugs:
 -----------------TV-9.2.2.20201105--------------------------    
     => 044915 - getting fatal on front end on enabling taxjar
     => 044909 - issue on importing category from admin
+    => 044942 - admin> categories> identifier is displaying in list instead of name
+    => 044944 - admin> seller orders> shipping is displaying as "awaiting shipment" for digital item order
+    => 044948 - admin> subscription orders> detail page> fatal is there
+    => 044946 - admin> orders> deleted orders> search button is not aligned properly
 -----------------TV-9.2.2.20201106-------------------------- 
     => 044941	when tax is there for specific category still then rest of the world is getting applied
     => 044675 - seller> custom catalog request> under status column> date is wrapping

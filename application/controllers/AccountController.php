@@ -1494,7 +1494,7 @@ class AccountController extends LoggedUserController
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $action = $this->updateWishList($selprod_id, $wish_list_id, $rowAction);
 
         //UserWishList
@@ -2374,6 +2374,12 @@ class AccountController extends LoggedUserController
             CommonHelper::redirectUserReferer();
         }
 
+        $attr = array(
+            'IFNULL(shop_name, shop_identifier) as shop_name',
+            'shop_id',
+            'shop_updated_on',
+        );
+        $shopDetails = Shop::getAttributesByUserId($userId, $attr, false, $this->siteLangId);
         $srch = new MessageSearch();
 
         $srch->joinThreadMessage();
@@ -2436,6 +2442,7 @@ class AccountController extends LoggedUserController
         $this->set('threadTypeArr', Thread::getThreadTypeArr($this->siteLangId));
         $this->set('loggedUserId', $userId);
         $this->set('loggedUserName', ucfirst(UserAuthentication::getLoggedUserAttribute('user_name')));
+        $this->set('shopDetails', $shopDetails);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }

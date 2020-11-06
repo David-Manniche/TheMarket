@@ -1,4 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
 <div class='page'>
     <div class='container container-fluid'>
@@ -20,67 +20,67 @@
                     </div>
                     <div class="sectionbody space togglewrap" style="display:none;">
                         <?php
-                                $frmSearch->setFormTagAttribute('onsubmit', 'searchOrders(this,1); return(false);');
-                                $frmSearch->setFormTagAttribute('class', 'web_form');
-                                $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
-                                $frmSearch->developerTags['fld_default_col'] = 12;
+                        $frmSearch->setFormTagAttribute('onsubmit', 'searchOrders(this,1); return(false);');
+                        $frmSearch->setFormTagAttribute('class', 'web_form');
+                        $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
+                        $frmSearch->developerTags['fld_default_col'] = 12;
 
-                                $keywordFld = $frmSearch->getField('keyword');
-                                $keywordFld->developerTags['col'] = 4;
-                                $keywordFld->htmlAfterField = '<small>'. Labels::getLabel('LBL_Search_in_Order_Id,_Customer_Name,_Customer_Username_and_Customer_Email_Id', $adminLangId) .'</small>';
+                        $keywordFld = $frmSearch->getField('keyword');
+                        $keywordFld->developerTags['col'] = 4;
+                        $keywordFld->htmlAfterField = '<small>' . Labels::getLabel('LBL_Search_in_Order_Id,_Customer_Name,_Customer_Username_and_Customer_Email_Id', $adminLangId) . '</small>';
 
-                                $buyerFld = $frmSearch->getField('buyer');
-                                $buyerFld->developerTags['col'] = 4;
-                                $buyerFld->htmlAfterField = '<small></small>';
+                        $buyerFld = $frmSearch->getField('buyer');
+                        $buyerFld->developerTags['col'] = 4;
+                        $buyerFld->htmlAfterField = '<small></small>';
 
-                                $statusFld = $frmSearch->getField('order_payment_status');
-                                $statusFld->developerTags['col'] = 4;
+                        $statusFld = $frmSearch->getField('order_payment_status');
+                        $statusFld->developerTags['col'] = 4;
 
-                                $dateFromFld = $frmSearch->getField('date_from');
-                                $dateFromFld->setFieldTagAttribute('class', 'field--calender');
-                                $dateFromFld->developerTags['col'] = 2;
+                        $dateFromFld = $frmSearch->getField('date_from');
+                        $dateFromFld->setFieldTagAttribute('class', 'field--calender');
+                        $dateFromFld->developerTags['col'] = 2;
 
-                                $dateToFld = $frmSearch->getField('date_to');
-                                $dateToFld->setFieldTagAttribute('class', 'field--calender');
-                                $dateToFld->developerTags['col'] = 2;
+                        $dateToFld = $frmSearch->getField('date_to');
+                        $dateToFld->setFieldTagAttribute('class', 'field--calender');
+                        $dateToFld->developerTags['col'] = 2;
 
-                                $priceFromFld = $frmSearch->getField('price_from');
-                                $priceFromFld->developerTags['col'] = 2;
+                        $priceFromFld = $frmSearch->getField('price_from');
+                        $priceFromFld->developerTags['col'] = 2;
 
-                                $priceToFld = $frmSearch->getField('price_to');
-                                $priceToFld->developerTags['col'] = 2;
+                        $priceToFld = $frmSearch->getField('price_to');
+                        $priceToFld->developerTags['col'] = 2;
 
-                                $submitBtnFld = $frmSearch->getField('btn_submit');
-                                $submitBtnFld->setFieldTagAttribute('class', 'btn-block');
-                                $submitBtnFld->developerTags['col'] = 4;
+                        $submitBtnFld = $frmSearch->getField('btn_submit');
+                        $submitBtnFld->setFieldTagAttribute('class', 'btn');
+                        $submitBtnFld->developerTags['col'] = 4;
 
-                                $btn_clear = $frmSearch->getField('btn_clear');
-                                $btn_clear->addFieldTagAttribute('onclick', 'clearOrderSearch()');
-                                echo  $frmSearch->getFormHtml();
-                            ?>
+                        $btn_clear = $frmSearch->getField('btn_clear');
+                        $btn_clear->addFieldTagAttribute('onclick', 'clearOrderSearch()');
+                        echo  $frmSearch->getFormHtml();
+                        ?>
                     </div>
                 </section>
                 <section class="section">
                     <div class="sectionhead">
                         <h4><?php echo Labels::getLabel('LBL_Deleted_Orders_List', $adminLangId); ?> </h4>
                         <?php
-                            $data = [
-                                'adminLangId' => $adminLangId,
-                                'statusButtons' => false,
-                                'deleteButton' => false,
-                                'otherButtons' => [
-                                    [
-                                        'attr' => [
-                                            'href' => 'javascript:void(0)',
-                                            'onclick' => 'backToOrders()',
-                                            'title' => Labels::getLabel('LBL_Back_to_Orders', $adminLangId)
-                                        ],
-                                        'label' => '<i class="fas fa-arrow-left"></i>'
+                        $data = [
+                            'adminLangId' => $adminLangId,
+                            'statusButtons' => false,
+                            'deleteButton' => false,
+                            'otherButtons' => [
+                                [
+                                    'attr' => [
+                                        'href' => 'javascript:void(0)',
+                                        'onclick' => 'backToOrders()',
+                                        'title' => Labels::getLabel('LBL_Back_to_Orders', $adminLangId)
                                     ],
-                                ]
-                            ];
-        
-                            $this->includeTemplate('_partial/action-buttons.php', $data, false);
+                                    'label' => '<i class="fas fa-arrow-left"></i>'
+                                ],
+                            ]
+                        ];
+
+                        $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         ?>
                     </div>
                     <div class="sectionbody">
