@@ -379,6 +379,7 @@ Bugs:
     => 044675 - seller> custom catalog request> under status column> date is wrapping
     => 044697 - ipad >> manage address >> text should get display properly in button.
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    => 044950 - seller > my subscription> search button is not proper
 
 Enhancements:
     => Tax module upgrade
