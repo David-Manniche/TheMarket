@@ -387,6 +387,7 @@ Bugs:
     => 044933 - Add multiple category with same name but different identifier 
     => 044780 - seller> while adding product> description editor> on clicking full screen from Arabic language- description field get hids from English too and editor option disappears 
     => 044953 - admin> return requests detail page> download button is coming there while no attachment is there
+    => 044911 - brands don't have description but in import/export there is description field
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
