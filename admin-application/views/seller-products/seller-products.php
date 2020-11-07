@@ -1,4 +1,9 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+
+if (count($arrListing) == 0) {
+    $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
+}else{
+
 $arr_flds = array(
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
     'listserial' => Labels::getLabel('LBL_#', $adminLangId),
@@ -133,4 +138,6 @@ echo $frm->getFieldHtml('status');
     echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging'));
     $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'callBackJsFunc' => 'goToSearchPage', 'adminLangId' => $adminLangId);
     $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+}
+
 }

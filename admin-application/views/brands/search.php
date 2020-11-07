@@ -1,4 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+if (count($arr_listing) == 0) {
+    $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
+}else{
 $arr_flds = array(
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
     'listserial' => Labels::getLabel('LBL_#', $adminLangId),
@@ -82,9 +85,10 @@ foreach ($arr_listing as $sn => $row) {
     }
     $sr_no--;
 }
-if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
-}
+// if (count($arr_listing) == 0) {
+//     //$tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
+//     $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
+// }
 $frm = new Form('frmBrandListing', array('id' => 'frmBrandListing'));
 $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
 $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(false);');
@@ -101,3 +105,4 @@ echo FatUtility::createHiddenFormFromData($postedData, array(
 ));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+}
