@@ -35,7 +35,7 @@ $canReturnRefund = true;
 
 foreach ($childArr as $index => $childOrder) {
     $rating = isset($childArr[$index]['prod_rating']) ? $childArr[$index]['prod_rating'] : 0;
-    $childArr[$index]['prod_rating'] =  (1 == $defaultOrderStatus || (isset($childArr[$index]['spreview_status']) && $childArr[$index]['spreview_status'] == 1 )) ? $rating : 0;
+    $childArr[$index]['prod_rating'] =  (1 == $defaultOrderStatus || (isset($childArr[$index]['spreview_status']) && $childArr[$index]['spreview_status'] == 1)) ? $rating : 0;
     $childArr[$index]['reviewsAllowed'] =  $reviewAllowed;
     $childArr[$index]['product_image_url'] = UrlHelper::generateFullUrl('image', 'product', array($childOrder['selprod_product_id'], "THUMB", $childOrder['op_selprod_id'], 0, $siteLangId));
 
@@ -50,9 +50,7 @@ foreach ($childArr as $index => $childOrder) {
     $childArr[$index]['canCancelOrder'] = ($canCancelOrder && false === OrderCancelRequest::getCancelRequestById($childOrder['op_id']) ? 1 : 0);
 
     $childArr[$index]['canReturnOrder'] = ($canReturnRefund && $childOrder['return_request'] == 0 && $childOrder['cancel_request'] == 0 ? 1 : 0);
-
-
-
+    
     $canSubmitFeedback = Orders::canSubmitFeedback($childOrder['order_user_id'], $childOrder['order_id'], $childOrder['op_selprod_id']);
     $isValidForReview = in_array($childOrder["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses());
 
@@ -117,7 +115,7 @@ foreach ($childArr as $index => $childOrder) {
         'value' => CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder)),
     );
 
-    $paymentMethodName = $childOrder['plugin_name']?:$childOrder['plugin_identifier'];
+    $paymentMethodName = $childOrder['plugin_name'] ?: $childOrder['plugin_identifier'];
     if (0 < $childOrder['order_pmethod_id'] && 0 < $childOrder['order_is_wallet_selected']) {
         $paymentMethodName .= ' + ';
     }

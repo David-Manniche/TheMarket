@@ -228,7 +228,7 @@ class Shipping
             if (!empty($carriers)) {
                 FatCache::set($cacheKey, serialize($carriers), '.txt');
             }
-        } 
+        }
         //$carriers = $this->shippingApiObj->getCarriers();
         $this->shippingApiObj->setAddress($shippingAddressDetail['addr_name'], $shippingAddressDetail['addr_address1'], $shippingAddressDetail['addr_address2'], $shippingAddressDetail['addr_city'], $shippingAddressDetail['state_name'], $shippingAddressDetail['addr_zip'], $shippingAddressDetail['country_code'], $shippingAddressDetail['addr_phone']);
 
