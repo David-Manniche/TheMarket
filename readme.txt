@@ -379,15 +379,23 @@ Bugs:
     => 044675 - seller> custom catalog request> under status column> date is wrapping
     => 044697 - ipad >> manage address >> text should get display properly in button.
     => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    => 044969	when sub seller having read only permission for shipping profile then he can't see profiles created by seller and details under shipping profile
+    => 044966	create button is there for shipping profile to sub seller when read only permission is granted to him
     => 044677 - seller> shipping packages> clear search button text is not in center
     => 044671 - Ipad >> shipping package >> text in button should get display properly.
     => 044950 - seller > my subscription> search button is not proper
+    => 044369 - In Product inclusive tax setting is on then tax should not get deducted before selecting the address
     => 044896 - Sorting needed for items linked in collections
     => 044753 - seller dashboard> graph is not proper in RTL mode 
     => 044933 - Add multiple category with same name but different identifier 
     => 044780 - seller> while adding product> description editor> on clicking full screen from Arabic language- description field get hids from English too and editor option disappears 
     => 044953 - admin> return requests detail page> download button is coming there while no attachment is there
+    => 044916 - Unable to link tax category with product 
+    => 044932 - admin> requested categories> when there is no data then "No record found template is not proper"
+    => 044345	Commission charges are not right if "Commission Charged Including Tax" setting is disabled and we refund some qty.
+    => 044337	Seller >> credits >> commission charges are not right in case of refund and if "Commission Charged Including Shipping" is disabled.
     => 044911 - brands don't have description but in import/export there is description field
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

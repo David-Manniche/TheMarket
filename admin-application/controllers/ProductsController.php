@@ -1066,8 +1066,12 @@ class ProductsController extends AdminBaseController
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
-
-        if (!$prod->saveProductTax($post['ptt_taxcat_id'])) {
+        
+        $productSellerId = Product::getAttributesById($productId, 'product_seller_id');  
+        if( !$productSellerId ) {
+            $productSellerId = 0;
+        }
+        if (!$prod->saveProductTax($post['ptt_taxcat_id'], $productSellerId)) {
             Message::addErrorMessage($prod->getError());
             FatUtility::dieWithError(Message::getHtml());
         }

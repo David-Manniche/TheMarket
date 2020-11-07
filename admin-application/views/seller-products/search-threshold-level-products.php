@@ -1,5 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php
+
+if (count($arr_listing) == 0) {
+    $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
+}else{
+
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $adminLangId),
     'product_name' => Labels::getLabel('LBL_Product_Name', $adminLangId),
@@ -43,9 +48,6 @@ foreach ($arr_listing as $sn => $row) {
         }
     }
 }
-if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
-}
 echo $tbl->getHtml();
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
@@ -53,3 +55,4 @@ echo FatUtility::createHiddenFormFromData($postedData, array(
 ));
 $pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'pageSize' => $pageSize, 'recordCount' => $recordCount, 'adminLangId' => $adminLangId);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+}
