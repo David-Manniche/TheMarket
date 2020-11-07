@@ -8,6 +8,7 @@ $orderDetail['charges'] = !empty($orderDetail['charges']) ? $orderDetail['charge
 $orderDetail['billingAddress'] = !empty($orderDetail['billingAddress']) ? $orderDetail['billingAddress'] : (object)array();
 $orderDetail['shippingAddress'] = !empty($orderDetail['shippingAddress']) ? $orderDetail['shippingAddress'] : (object)array();
 $orderDetail['order_net_amount'] = !empty($orderDetail['order_net_amount']) ? CommonHelper::displayMoneyFormat($orderDetail['order_net_amount'], false, false, false) : 0;
+$orderDetail['pickupAddress'] =  isset($orderDetail['pickupAddress']) && !empty($orderDetail['pickupAddress']) ? $orderDetail['pickupAddress'] : (object)array();
 
 if (!empty($orderDetail['charges'])) {
     $charges = array();
@@ -50,7 +51,7 @@ foreach ($childArr as $index => $childOrder) {
     $childArr[$index]['canCancelOrder'] = ($canCancelOrder && false === OrderCancelRequest::getCancelRequestById($childOrder['op_id']) ? 1 : 0);
 
     $childArr[$index]['canReturnOrder'] = ($canReturnRefund && $childOrder['return_request'] == 0 && $childOrder['cancel_request'] == 0 ? 1 : 0);
-    
+
     $canSubmitFeedback = Orders::canSubmitFeedback($childOrder['order_user_id'], $childOrder['order_id'], $childOrder['op_selprod_id']);
     $isValidForReview = in_array($childOrder["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses());
 
