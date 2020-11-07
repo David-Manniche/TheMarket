@@ -271,7 +271,7 @@ class ImportexportCommon extends FatModel
         $arr['brand_name'] = Labels::getLabel('LBL_Name', $langId);
 
         if (!$userId) {
-            $arr['brand_short_description'] = Labels::getLabel('LBL_Description', $langId);
+            /*$arr['brand_short_description'] = Labels::getLabel('LBL_Description', $langId);*/
 
             if ($this->isDefaultSheetData($langId)) {
                 $arr['urlrewrite_custom'] = Labels::getLabel('LBL_Seo_friendly_url', $langId);
