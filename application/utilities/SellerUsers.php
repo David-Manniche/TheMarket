@@ -348,7 +348,7 @@ trait SellerUsers
         $frm = new Form('frmAllAccess');
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_Select_permission_for_all_modules', $this->siteLangId), 'permissionForAll', $permissionArr, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
         $fld->requirements()->setRequired();
-        $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Apply_to_All', $this->siteLangId), array('onclick' => 'updatePermission(0);return false;'));
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Apply_to_All', $this->siteLangId), array('onclick' => 'updatePermission(0);return false;'));
         return $frm;
     }
 
