@@ -391,9 +391,9 @@ Bugs:
     => 044780 - seller> while adding product> description editor> on clicking full screen from Arabic language- description field get hids from English too and editor option disappears 
     => 044953 - admin> return requests detail page> download button is coming there while no attachment is there
     => 044916 - Unable to link tax category with product 
------------------TV-9.2.2.20201107-------------------------- 
     => 044932 - admin> requested categories> when there is no data then "No record found template is not proper"
-
+    => 044345	Commission charges are not right if "Commission Charged Including Tax" setting is disabled and we refund some qty.
+    => 044337	Seller >> credits >> commission charges are not right in case of refund and if "Commission Charged Including Shipping" is disabled.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
