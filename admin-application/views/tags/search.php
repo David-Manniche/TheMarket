@@ -1,4 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+if (count($arr_listing) == 0) {
+    $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
+} else {
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $adminLangId),
     'product_identifier' => Labels::getLabel('LBL_Product', $adminLangId),
@@ -104,3 +107,4 @@ $this->includeTemplate('_partial/pagination.php', $pagingArr, false); ?>
         });
     </script>
 <?php }
+}

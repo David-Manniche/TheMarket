@@ -149,6 +149,7 @@
         @include media-breakpoint-down(lg) {
             & {
                 padding: 1rem;
+                flex: 1;
             }
         }
     }
@@ -156,6 +157,7 @@
         @include media-breakpoint-down(lg) {
             & {
                 padding: 0 1rem;
+                margin: 1.5rem 0;
                 background: $bg-gray;
             }
         }

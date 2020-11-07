@@ -94,12 +94,12 @@
 									$unitShipCharges = round(($shipCharges / $requestRow['op_qty']),2);
 									$priceTotalPerItem = $priceTotalPerItem - $unitShipCharges;
 								}	 */
-                                    echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_amount'], true, true);
-                                    ?> </td>
-                                <?php if (isset($attachedFile) && !empty($attachedFile)) { ?>
-                                    <td><strong><?php echo Labels::getLabel('LBL_Download_Attached_Files', $adminLangId); ?>:</strong><a href="<?php echo UrlHelper::generateUrl('OrderReturnRequests', 'downloadAttachedFileForReturn', array($requestRow["orrequest_id"]));  ?>" class="button small green"> <?php echo Labels::getLabel('LBL_Download', $adminLangId); ?></a></td>
-                                <?php } ?>
-                            </tr>
+								echo CommonHelper::displayMoneyFormat($returnDataArr['op_refund_amount'], true, true);		
+								?> </td>
+							<?php if(isset($attachedFile) && !empty($attachedFile) && isset($attachedFile['afile_physical_path']) && !empty($attachedFile['afile_physical_path'])){ ?>
+							<td><strong><?php echo Labels::getLabel('LBL_Download_Attached_Files',$adminLangId); ?>:</strong><a href="<?php echo UrlHelper::generateUrl('OrderReturnRequests','downloadAttachedFileForReturn' , array($requestRow["orrequest_id"]));  ?>" class="button small green" > <?php echo Labels::getLabel('LBL_Download',$adminLangId); ?></a></td>
+							<?php } ?>
+                            </tr>   
                         </table>
                     </div>
                 </section>

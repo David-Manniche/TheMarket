@@ -20,7 +20,9 @@ class Common
         $wislistPSrchObj->addMultipleFields(array('uwlp_uwlist_id'));
         $rs = $wislistPSrchObj->getResultSet();
         $totalWishListItems = $wislistPSrchObj->recordCount();
-
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $cartObj->excludeTax();
+        }
         $productsArr = $cartObj->getProducts($siteLangId);
 
         $cartSummary = $cartObj->getCartFinancialSummary($siteLangId);
