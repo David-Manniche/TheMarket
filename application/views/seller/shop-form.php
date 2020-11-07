@@ -51,7 +51,7 @@ $this->includeTemplate('seller/_partial/shop-navigation.php', $variables, false)
 <script language="javascript">
     /* $(document).ready(function() {
         getCountryStates($("#shop_country_id")
-            .val(), <?php echo $stateId; ?> , '#shop_state');
+            .val(), <?php //echo $stateId; ?> , '#shop_state');
     }); */
 </script>
 <?php if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) { ?>
