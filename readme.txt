@@ -395,6 +395,7 @@ Bugs:
     => 044345	Commission charges are not right if "Commission Charged Including Tax" setting is disabled and we refund some qty.
     => 044337	Seller >> credits >> commission charges are not right in case of refund and if "Commission Charged Including Shipping" is disabled.
     => 044911 - brands don't have description but in import/export there is description field
+    => 044982 - seller> sub seller permissions> apply button is not aligned with drop down
 
 Enhancements:
     => Tax module upgrade
