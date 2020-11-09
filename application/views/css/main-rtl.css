@@ -9135,6 +9135,9 @@ a.text-dark:hover, a.text-dark:focus {
     .categories > a.categories-link .c-hamburger {
       margin: 0;
       margin-left: 10px; }
+      @media (max-width: 1199.98px) {
+        .categories > a.categories-link .c-hamburger {
+          display: none; } }
 
 .vertical-menu {
   position: fixed;

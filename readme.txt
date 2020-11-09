@@ -403,6 +403,7 @@ Bugs:
     => 045001 - when review on digital item is placed then shipping and package option are coming which are not available for digital items
     => 044068 - emails are not there when order is on bank transfer
     => 045044 - home page> faq> on clicking second category > all faq's are opening collectively while the same is not happening with first category
+    => 044715	On Checkout >> if there are rates for shipping address's country then rates of "rest of the world " should not get display there.
     => 045009 - When we use tax jar then "invalid tax category " gets display on purchase of digital products
 
 Enhancements:
