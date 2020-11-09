@@ -864,6 +864,9 @@ class Orders extends MyAppModel
         }
         $srch = static::getSearchObject($langId);
         $srch->joinTable(Plugin::DB_TBL, 'LEFT JOIN', 'order_pmethod_id = plugin_id');
+        if(0 < $langId){
+            $srch->joinTable(Plugin::DB_TBL_LANG, 'LEFT OUTER JOIN', 'plugin_id = pm_l.pluginlang_plugin_id AND pm_l.pluginlang_lang_id = ' . $langId, 'pm_l');
+        }        
         $srch->addCondition('order_id', '=', $order_id);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

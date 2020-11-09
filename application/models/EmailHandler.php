@@ -952,8 +952,8 @@ class EmailHandler extends FatModel
         $langId = FatApp::getConfig('conf_default_site_lang');
         $langId = FatUtility::int($langId);
         $orderObj = new Orders();
-        $orderDetail = $orderObj->getOrderById($orderId);
-
+        $orderDetail = $orderObj->getOrderById($orderId, $langId);
+        
         if (1 > $langId) {
             $langId = $orderDetail['order_language_id'];
         }
@@ -967,7 +967,7 @@ class EmailHandler extends FatModel
             $arrReplacements = array(
                 '{user_full_name}' => trim($userInfo['user_name']),
                 '{invoice_number}' => $orderDetail['order_id'],
-                '{order_payment_method}' => Labels::getLabel('LBL_Cash_on_delivery', $langId),
+                '{order_payment_method}' => !empty($orderDetail['plugin_name']) ? $orderDetail['plugin_name'] : $orderDetail['plugin_identifier'] ,
             );
 
             $this->sendMailToAdminAndAdditionalEmails("primary_order_bank_transfer_payment_status_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
