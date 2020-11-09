@@ -4,6 +4,7 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
+<<<<<<< Updated upstream
         $countryId = '223';
         $stateId = '2998';
         $langId = 1;
@@ -35,6 +36,8 @@ class DummyController extends AdminBaseController
         $obj->addOrder('spz.shipprozone_shipprofile_id'); */
         //$obj->addDirectCondition('sloc.shiploc_shipzone_id is null');
         //echo $obj->getQuery();
+=======
+>>>>>>> Stashed changes
     }
 
     public function test123()

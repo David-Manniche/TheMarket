@@ -888,8 +888,6 @@ SELECT user_id, 'Order Level Shipping', 1, 1 FROM `tbl_users` WHERE user_is_supp
     -- ---- Default Shipping Profile Creation For Sellers ------
 
     -- ---- Bind Admin Catalog With Default Shipping Profile ------
-
-    
 INSERT IGNORE INTO tbl_shipping_profile_products(shippro_shipprofile_id, shippro_product_id, shippro_user_id)
 SELECT sp.shipprofile_id, p.product_id, 0 
 FROM `tbl_products` p
