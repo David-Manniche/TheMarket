@@ -398,6 +398,7 @@ Bugs:
     => 044982 - seller> sub seller permissions> apply button is not aligned with drop down
     => 045008 - marketplace link on seller dashboard is redirecting to different link from the actual link
     => 044912 - Brand is getting added but getting warning along with it
+    => 045000 - seller> product inventory stock status> variant name needs to be there- as distinction is not there in various items
 
 Enhancements:
     => Tax module upgrade

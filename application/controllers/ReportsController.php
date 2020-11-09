@@ -278,6 +278,13 @@ class ReportsController extends SellerBaseController
             $srch->setPageSize($pageSize);
             $rs = $srch->getResultSet();
             $arrListing = FatApp::getDb()->fetchAll($rs);
+            
+            if (count($arrListing)) {
+                foreach ($arrListing as &$arr) {
+                    $arr['options'] = SellerProduct::getSellerProductOptions($arr['selprod_id'], true, $this->siteLangId);
+                }
+            }
+            
             $this->set('page', $page);
             $this->set('pageSize', $pageSize);
             $this->set('pageCount', $srch->pages());
