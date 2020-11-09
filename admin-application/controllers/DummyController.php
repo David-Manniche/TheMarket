@@ -4,7 +4,6 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
-       
     }
 
     public function test123()

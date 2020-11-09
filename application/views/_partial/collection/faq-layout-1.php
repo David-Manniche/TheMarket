@@ -20,9 +20,6 @@
                         </li>
                     <?php $count++;
                     } ?>
-                    <?php if (count($faqCategories) > Collections::LIMIT_FAQ_LAYOUT1) { ?>
-                        <li class=""><a href="<?php echo UrlHelper::generateUrl('custom', 'faq'); ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId); ?></a></li>
-                    <?php } ?>
                 </ul>
             </div>
             <?php foreach ($faqCategories as $faqCatId => $faqCat) { ?>
@@ -46,7 +43,12 @@
                     </ul>
                 </div>
             </div>
-            <?php } ?>
+            <?php }
+			if (count($faqCategories) > Collections::LIMIT_FAQ_LAYOUT1) { ?>
+				<div class="section-foot text-center">
+					<a class="btn btn-outline-primary btn-wide" href="<?php echo UrlHelper::generateUrl('custom', 'faq'); ?>"><?php echo Labels::getLabel('LBL_View_All', $siteLangId); ?></a>
+				</div>
+			<?php } ?>
         </div>
     </section>
 <?php } ?>
