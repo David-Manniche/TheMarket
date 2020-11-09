@@ -41,6 +41,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                                 'title' => $shippingcharge['title'],
                                 'cost' => $shippingcharge['cost'],
                                 'id' => $shippingcharge['id'],
+                                'carrier_code' => $shippingcharge['carrier_code'],
                             ];
                         }
                     }
@@ -81,6 +82,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                                     'title' => $shippingcharge['title'],
                                     'cost' => $shippingcharge['cost'],
                                     'id' => $shippingcharge['id'],
+                                    'carrier_code' => $shippingcharge['carrier_code'],
                                 ];
                             }
                         }
@@ -119,6 +121,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                                     'title' => $shippingcharge['title'],
                                     'cost' => $shippingcharge['cost'],
                                     'id' => $shippingcharge['id'],
+                                    'carrier_code' => $shippingcharge['carrier_code'],
                                 ];
                             }
                         }

@@ -599,6 +599,8 @@ class BuyerController extends BuyerBaseController
         $this->set('classArr', applicationConstants::getClassArr());
 
         if (true === MOBILE_APP_API_CALL) {
+            $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")), 0, 0, false);
+            $this->set('orderStatuses', $orderStatuses);
             $this->_template->render();
         }
         $this->_template->render(false, false);
@@ -1504,6 +1506,7 @@ class BuyerController extends BuyerBaseController
         $userId = UserAuthentication::getLoggedUserId();
 
         $srch = new OrderProductSearch($this->siteLangId, true);
+        $srch->joinShippingCharges();
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $opId);
@@ -1561,7 +1564,7 @@ class BuyerController extends BuyerBaseController
         }
 
 
-        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId);
+        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId, $opDetail['op_product_type'], $opDetail['opshipping_fulfillment_type']);
         $this->set('frm', $frm);
         $this->set('opDetail', $opDetail);
         $this->_template->addJs(array('js/jquery.barrating.min.js'));
@@ -1583,11 +1586,12 @@ class BuyerController extends BuyerBaseController
         $userId = UserAuthentication::getLoggedUserId();
 
         $srch = new OrderProductSearch($this->siteLangId, true);
+        $srch->joinShippingCharges();
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $opId);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code', 'op_order_id', 'op_selprod_id', 'op_is_batch', 'op_batch_selprod_id'));
+        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code', 'op_order_id', 'op_selprod_id', 'op_is_batch', 'op_batch_selprod_id', 'op_product_type', 'opshipping_fulfillment_type'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
 
@@ -1671,7 +1675,7 @@ class BuyerController extends BuyerBaseController
             CommonHelper::redirectUserReferer();
         }
 
-        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId);
+        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId, $opDetail['op_product_type'], $opDetail['opshipping_fulfillment_type']);
         $post = FatApp::getPostedData();
 
         if (false === MOBILE_APP_API_CALL) {
@@ -1710,8 +1714,13 @@ class BuyerController extends BuyerBaseController
             return true;
         }
         $spreviewId = $selProdReview->getMainTableRecordId();
-        $ratingsPosted = FatApp::getPostedData('review_rating');
-        $ratingAspects = SelProdRating::getRatingAspectsArr($this->siteLangId);
+        $ratingsPosted = FatApp::getPostedData('review_rating');        
+        if($opDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL){
+            $ratingAspects = SelProdRating::getDigitalOrderAspectsArr($this->siteLangId);
+        }else{
+            $ratingAspects = SelProdRating::getRatingAspectsArr($this->siteLangId, $opDetail['opshipping_fulfillment_type']);
+        }
+        
         foreach ($ratingsPosted as $ratingAspect => $ratingValue) {
             if (isset($ratingAspects[$ratingAspect])) {
                 $selProdRating = new SelProdRating();
@@ -2555,12 +2564,17 @@ class BuyerController extends BuyerBaseController
         return $frm;
     }
 
-    private function getOrderFeedbackForm($op_id, $langId)
+    private function getOrderFeedbackForm($op_id, $langId, $productType, $fulfillmentType)
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmOrderFeedback');
-
-        $ratingAspects = SelProdRating::getRatingAspectsArr($langId);
+        
+        if($productType == Product::PRODUCT_TYPE_DIGITAL){
+            $ratingAspects = SelProdRating::getDigitalOrderAspectsArr($langId);
+        }else{
+            $ratingAspects = SelProdRating::getRatingAspectsArr($langId, $fulfillmentType);
+        }
+        
         foreach ($ratingAspects as $aspectVal => $aspectLabel) {
             $fld = $frm->addSelectBox($aspectLabel, "review_rating[$aspectVal]", array("1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"), "", array('class' => "star-rating"), Labels::getLabel('L_Rate', $langId));
             $fld->requirements()->setRequired(true);

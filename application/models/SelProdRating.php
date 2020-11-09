@@ -21,7 +21,28 @@ class SelProdRating extends MyAppModel
         return $srch = new SearchBase(static::DB_TBL, 'sprating');
     }
 
-    public static function getRatingAspectsArr($langId)
+    public static function getRatingAspectsArr($langId , $fulfillmentType = Shipping::FULFILMENT_ALL) 
+    {
+        $langId = FatUtility::int($langId);
+        if ($langId < 1) {
+            $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
+        }
+
+        $arr = array(
+            static::TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),
+            static::TYPE_SELLER_SHIPPING_QUALITY => Labels::getLabel('LBL_Rating_Type_Shipping', $langId),
+            static::TYPE_SELLER_STOCK_AVAILABILITY => Labels::getLabel('LBL_Rating_Type_Stock_availabiity', $langId),
+            static::TYPE_SELLER_PACKAGING_QUALITY => Labels::getLabel('LBL_Rating_Type_Package_Quality', $langId),
+        );
+        
+        if($fulfillmentType == Shipping::FULFILMENT_PICKUP){
+            unset($arr[static::TYPE_SELLER_SHIPPING_QUALITY]);
+        }
+        
+        return $arr;
+    }
+    
+    public static function getDigitalOrderAspectsArr($langId)
     {
         $langId = FatUtility::int($langId);
         if ($langId < 1) {
@@ -29,10 +50,8 @@ class SelProdRating extends MyAppModel
         }
 
         return array(
-        static::TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),
-        static::TYPE_SELLER_SHIPPING_QUALITY => Labels::getLabel('LBL_Rating_Type_Shipping', $langId),
-        static::TYPE_SELLER_STOCK_AVAILABILITY => Labels::getLabel('LBL_Rating_Type_Stock_availabiity', $langId),
-        static::TYPE_SELLER_PACKAGING_QUALITY => Labels::getLabel('LBL_Rating_Type_Package_Quality', $langId),
+            static::TYPE_PRODUCT => Labels::getLabel('LBL_Product', $langId),        
+            static::TYPE_SELLER_STOCK_AVAILABILITY => Labels::getLabel('LBL_Rating_Type_Stock_availabiity', $langId)        
         );
     }
 

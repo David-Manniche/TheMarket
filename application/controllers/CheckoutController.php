@@ -514,6 +514,7 @@ class CheckoutController extends MyAppController
                     $order = new Orders();
                     $orderShippingData = $order->getOrderShippingData($_SESSION['order_id'], $this->siteLangId);
                 }
+                break;
         }
 
         if (!$hasPhysicalProd) {
@@ -538,14 +539,6 @@ class CheckoutController extends MyAppController
         }
 
         $this->_template->render(false, false, $template);
-    }
-
-    public function pickupAddresses($shopId)
-    {
-        $address = new Address();
-        if ($shopId == 0) {
-            $addresses = $address->getData($shipType, $shopId);
-        }
     }
 
     public function getCarrierServicesList($product_key, $carrier_id = 0)
@@ -752,66 +745,87 @@ class CheckoutController extends MyAppController
 
     public function reviewCart()
     {
+        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $cartOrderData = Cart::getCartData($loggedUserId);
+        $cartOrderData = !empty($cartOrderData) ? json_decode($cartOrderData, true) : [];
+        $fulfillmentType = 0;
+        if (isset($cartOrderData['shopping_cart']['checkout_type'])) {
+            $fulfillmentType = $cartOrderData['shopping_cart']['checkout_type'];
+        }
+
         $criteria = array('isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true);
-        /* $this->cartObj->setFulfilmentType($fulfilmentType);
-        $this->cartObj->setCartCheckoutType($fulfilmentType); */
         if ($this->cartObj->hasPhysicalProduct()) {
-            $criteria['hasShippingAddress'] = true;
-            $criteria['isProductShippingMethodSet'] = true;
+            if ($fulfillmentType == Shipping::FULFILMENT_SHIP) {
+                $criteria['hasShippingAddress'] = true;
+                $criteria['isProductShippingMethodSet'] = true;
+            } elseif ($fulfillmentType == Shipping::FULFILMENT_PICKUP) {
+                $criteria['isProductPickUpAddrSet'] = true;
+            }
         }
 
         if (!$this->isEligibleForNextStep($criteria)) {
             if (Message::getErrorCount()) {
                 $this->errMessage = Message::getHtml();
             } else {
-                $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
-                Message::addErrorMessage($this->errMessage);
-                $this->errMessage = Message::getHtml();
+                $this->errMessage = Labels::getLabel('MSG_NOT_ALLOWED_TO_PROCEED_FOR_NEXT_STEP', $this->siteLangId);
             }
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            FatUtility::dieWithError($this->errMessage);
+            LibHelper::exitWithError($this->errMessage, true);
         }
-        $cartHasDigitalProduct = $this->cartObj->hasDigitalProduct();
-        $cartHasPhysicalProduct = $this->cartObj->hasPhysicalProduct();
-        $cart_products = $this->cartObj->getProducts($this->siteLangId);
-        // CommonHelper::printArray($this->cartObj, true);
-        if (1 > count($cart_products)) {
-            $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            Message::addErrorMessage($this->errMessage);
-            FatUtility::dieWithError(Message::getHtml());
+        
+        if (0 >= $fulfillmentType) {
+            $msg = Labels::getLabel("MSG_INVALID_FULFILLMENT_TYPE", $this->siteLangId);
+            FatUtility::dieJsonError($msg);
         }
 
-        $this->set('cartHasDigitalProduct', $cartHasDigitalProduct);
-        $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
-        $this->set('products', $cart_products);
+        $this->cartObj->setCartCheckoutType($fulfillmentType);
+
+        $cartProducts = $this->cartObj->getProducts($this->siteLangId);
+        if (count($cartProducts) == 0) {
+            $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
+            FatUtility::dieJsonError($this->errMessage);
+        }
+
+        $hasPhysicalProd = $this->cartObj->hasPhysicalProduct();
+        $cartHasDigitalProduct = $this->cartObj->hasDigitalProduct();
+        if (!$hasPhysicalProd) {
+            $this->cartObj->unSetShippingAddressSameAsBilling();
+            $this->cartObj->unsetCartShippingAddress();
+        }
+
+        $shippingRates = [];
+
+        switch ($fulfillmentType) {
+            case Shipping::FULFILMENT_PICKUP:
+                $shippingRates = $this->cartObj->getPickupOptions($cartProducts);
+                break;
+            case Shipping::FULFILMENT_SHIP:
+                $shippingRates = $this->cartObj->getShippingOptions();
+                break;
+        }
+
+        if (!$hasPhysicalProd) {
+            $selected_shipping_address_id = $this->cartObj->getCartBillingAddress();
+        } else {
+            $selected_shipping_address_id = $this->cartObj->getCartShippingAddress();
+        }
+
+        $address = new Address($selected_shipping_address_id, $this->siteLangId);
+        $addresses = $address->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+        
+        $obj = new Extrapage();
+        $headerData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_HEADER_BLOCK, $this->siteLangId);
 
         $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
-        $this->set('selectedProductShippingMethod', $this->cartObj->getProductShippingMethod());
-        if (true === MOBILE_APP_API_CALL) {
-            $loggedUserId = UserAuthentication::getLoggedUserId();
-            $billingAddressDetail = array();
-            $billingAddressId = $this->cartObj->getCartBillingAddress();
-            if (0 < $billingAddressId) {
-                $address = new Address($billingAddressId, $this->siteLangId);
-                $billingAddressDetail = $address->getData(Address::TYPE_USER, $loggedUserId);
-            }
-            $shippingddressDetail = array();
-            $shippingAddressId = $this->cartObj->getCartShippingAddress();
-            if ($shippingAddressId > 0) {
-                $address = new Address($shippingAddressId, $this->siteLangId);
-                $shippingddressDetail = $address->getData(Address::TYPE_USER, $loggedUserId);
-            }
+        $this->set('fulfillmentType', $fulfillmentType);
+        $this->set('addresses', $addresses);
+        $this->set('products', $cartProducts);
+        $this->set('hasPhysicalProd', $hasPhysicalProd);
+        $this->set('cartHasDigitalProduct', $cartHasDigitalProduct);
+        $this->set('cartOrderData', $cartOrderData);
+        $this->set('shippingRates', $shippingRates);
+        $this->set('headerData', $headerData);
 
-            $this->set('billingAddress', $billingAddressDetail);
-            $this->set('shippingAddress', $shippingddressDetail);
-            $this->_template->render();
-        }
-        $this->_template->render(false, false);
+        $this->_template->render();
     }
 
     private function getCartProductInfo($selprod_id)
@@ -1249,13 +1263,13 @@ class CheckoutController extends MyAppController
                         $op_product_tax_options[$label]['percentageValue'] = $taxStroName['percentageValue'];
                         $op_product_tax_options[$label]['inPercentage'] = $taxStroName['inPercentage'];
 
-                        if (isset($taxStroName['taxstr_id']) && $taxStroName['taxstr_id']!= '') {
+                        if (isset($taxStroName['taxstr_id']) && $taxStroName['taxstr_id'] != '') {
                             $langData =  TaxStructure::getAttributesByLangId($lang_id, $taxStroName['taxstr_id'], array(), 1);
                             $langLabel = (isset($langData['taxstr_name']) && $langData['taxstr_name'] != '') ? $langData['taxstr_name'] : $label;
                         } else {
                             $langLabel = $label;
                         }
-                        
+
                         $productTaxChargesData[$taxStroId]['langData'][$lang_id] = array(
                             'opchargeloglang_lang_id' => $lang_id,
                             'opchargelog_name' => $langLabel

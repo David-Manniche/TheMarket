@@ -789,28 +789,22 @@ class Importexport extends ImportexportCommon
                 } else {
                     $identifier = $prodCatDataArr['prodcat_identifier'];
                     $categoryData = ProductCategory::getAttributesByIdentifier($identifier, array('prodcat_id'));
-                    if (false === $categoryData) {
-                        $columnIndex = array_search('prodcat_identifier', array_keys($coloumArr));
-                        $errMsg = Labels::getLabel('MSG_INVALID_CATEGORY_INDENTIFIER', $langId);
-                        $errInSheet = true;
-                        $err = array($rowIndex, ($columnIndex + 1), $errMsg);
-                        CommonHelper::writeToCSVFile($this->CSVfileObj, $err);
-                    } else {
+                    if($categoryData != false){
                         $categoryId = $categoryData['prodcat_id'];
-                    }
+                    }                    
                 }
 
-                if (!$this->isDefaultSheetData($langId) && false === $errInSheet) {
+                if (!$this->isDefaultSheetData($langId)) {
                     unset($prodCatDataArr['prodcat_parent']);
                     unset($prodCatDataArr['prodcat_identifier']);
                     unset($prodCatDataArr['prodcat_display_order']);
-                } elseif (false === $errInSheet) {
+                } else {
                     if ($categoryId == $prodCatDataArr['prodcat_parent']) {
                         $prodCatDataArr['prodcat_parent'] = 0;
                     }
                 }
 
-                if (!empty($categoryData) && $categoryData['prodcat_id'] && false === $errInSheet) {
+                if (!empty($categoryData) && $categoryData['prodcat_id']) {
                     $where = array('smt' => 'prodcat_id = ?', 'vals' => array($categoryId));
                     $this->db->updateFromArray(ProductCategory::DB_TBL, $prodCatDataArr, $where);
                 } elseif (false === $errInSheet) {
@@ -1108,7 +1102,7 @@ class Importexport extends ImportexportCommon
                     }
                 }
             }
-
+            $brandId = 0;
             if (false === $errorInRow && count($brandDataArr)) {
                 if ($this->settings['CONF_USE_BRAND_ID']) {
                     $brandId = $brandDataArr['brand_id'];
@@ -1116,10 +1110,13 @@ class Importexport extends ImportexportCommon
                 } else {
                     $identifier = $brandDataArr['brand_identifier'];
                     $brandData = Brand::getAttributesByIdentifier($identifier, array('brand_id'));
-                    $brandId = $brandData['brand_id'];
+                    if($brandData !==false){
+                       $brandId = $brandData['brand_id']; 
+                    }
+                    
                 }
 
-                if (!empty($brandData) && $brandData['brand_id']) {
+                if (!empty($brandData) && $brandId > 0) {
                     $where = array('smt' => 'brand_id = ?', 'vals' => array($brandId));
                     $this->db->updateFromArray(Brand::DB_TBL, $brandDataArr, $where);
                 } else {

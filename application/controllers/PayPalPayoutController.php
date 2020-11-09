@@ -18,7 +18,14 @@ class PayPalPayoutController extends PayoutBaseController
 
     public function getRequestForm()
     {
+        $userId = UserAuthentication::getLoggedUserId();
         $frm = $this->getFormObj(static::reqFields());
+
+        $userObj = new User($userId);
+        $data = $userObj->getUserInfo('credential_email as email');
+        if (!empty($data)) {
+            $frm->fill($data);
+        }
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -44,7 +51,7 @@ class PayPalPayoutController extends PayoutBaseController
         $userId = UserAuthentication::getLoggedUserId();
         $frm = $this->getFormObj(static::formFields());
 
-        $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
+        $data = User::getUserMeta($userId);
         if (!empty($data)) {
             $frm->fill($data);
         }
@@ -106,7 +113,9 @@ class PayPalPayoutController extends PayoutBaseController
         $userId = UserAuthentication::getLoggedUserId();
         $userObj = new User($userId);
         $withdrawal_payment_method = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
-
+        if (1 > $withdrawal_payment_method) {
+            $withdrawal_payment_method = Plugin::getAttributesByCode(self::KEY_NAME, 'plugin_id');
+        }
         // $withdrawal_payment_method = ($withdrawal_payment_method > 0 && array_key_exists($withdrawal_payment_method, User::getAffiliatePaymentMethodArr($this->siteLangId))) ? $withdrawal_payment_method  : User::AFFILIATE_PAYMENT_METHOD_BANK;
 
 

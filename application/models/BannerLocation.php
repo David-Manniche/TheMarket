@@ -32,12 +32,18 @@ class BannerLocation extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'bl');
 
+        $srch->joinTable(
+            Collections::DB_TBL,
+            'LEFT OUTER JOIN',
+            'collections.collection_id = blocation_collection_id',
+            'collections'
+        );
+
         if ($langId > 0) {
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'blocationlang_blocation_id = blocation_id
-			AND blocationlang_lang_id = ' . $langId,
+                'blocationlang_blocation_id = blocation_id AND blocationlang_lang_id = ' . $langId,
                 'bl_l'
             );
         }
@@ -45,6 +51,8 @@ class BannerLocation extends MyAppModel
         if ($isActive) {
             $srch->addCondition('blocation_active', '=', applicationConstants::ACTIVE);
         }
+        $srch->addCondition('collections.collection_deleted', 'is', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('collections.collection_deleted', '=', applicationConstants::NO, 'OR');
 
         $deviceType = FatUtility::int($deviceType);
         if (1 > $deviceType) {

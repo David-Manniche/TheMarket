@@ -17,7 +17,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                         <?php if (User::canAddCustomProduct() && $userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
                         <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId);?></a>
                         <?php } ?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]);?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
                         <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId);?></a>
                     <?php } ?>
                 </div>

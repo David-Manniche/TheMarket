@@ -355,7 +355,7 @@ class Plugin extends MyAppModel
         if (1 > $typeId && 1 > $langId) {
             return false;
         }
-        return $pluginsTypeArr = static::getDataByType($typeId, $langId, true);
+        return static::getDataByType($typeId, $langId, true);
     }
 
     /**

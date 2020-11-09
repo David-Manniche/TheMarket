@@ -21,6 +21,7 @@ $data = [
     'addresses' => $addresses,
     'cartSummary' => $cartSummary,
     'productItems' => $productItems,
+    'isShippingPluginActive' => Plugin::isActiveByType(Plugin::TYPE_SHIPPING_SERVICES) ? applicationConstants::YES : applicationConstants::NO,
 ];
 
 require_once(CONF_THEME_PATH . 'cart/price-detail.php');
