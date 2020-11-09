@@ -35808,13 +35808,23 @@ div.faqanswer {
           margin: 0; }
     .page-sort-wrap .page-sort .btn {
       line-height: 1.5; }
+      @media (max-width: 767.98px) {
+        .page-sort-wrap .page-sort .btn {
+          height: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center; } }
+      @media (max-width: 767.98px) {
+        .page-sort-wrap .page-sort .btn .txt {
+          display: none; } }
     .page-sort-wrap .page-sort .custom-select {
       border-radius: 3px;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding-top: 8px;
+      padding-bottom: 8px;
       font-size: 0.8rem;
       height: auto;
-      border: solid 1px #dee2e6; }
+      border: solid 1px #dee2e6;
+      height: 38px; }
     .page-sort-wrap .page-sort .btn-filters {
       border: solid 1px #dee2e6;
       border-radius: 3px;
@@ -36145,7 +36155,7 @@ div.faqanswer {
 /*grid list view*/
 .list-grid-toggle {
   width: 40px;
-  height: 41px;
+  height: 38px;
   padding: 1px 2px;
   border-radius: 3px;
   border: solid 1px #dee2e6;
