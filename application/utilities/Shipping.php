@@ -200,6 +200,7 @@ class Shipping
         $srch->addGroupBy('shiprate_id');
         $srch->addOrder('shiprate_cost');
         //$srch->addOrder('shiprate_condition_type', 'desc');
+        // echo $srch->getQuery();
         $prodSrchRs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($prodSrchRs);
     }
