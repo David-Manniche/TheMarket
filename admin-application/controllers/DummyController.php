@@ -8,16 +8,26 @@ class DummyController extends AdminBaseController
         $stateId = '2998';
         $langId = 1;
 
+        $srch = ShippingProfileZone::getSearchObject();
+        $srch->joinTable(ShippingZone::DB_SHIP_LOC_TBL, 'INNER JOIN', 'spzone.shipprozone_shipzone_id = sloc.shiploc_shipzone_id and sloc.shiploc_country_id = ' . $countryId, 'sloc');
+        // $srch->joinTable(ShippingZone::DB_SHIP_LOC_TBL, 'LEFT JOIN', 'spzone.shipprozone_shipzone_id = sloc.shiploc_shipzone_id and sloc.shiploc_shipzone_id != sloc_temp.shiploc_shipzone_id and sloc_temp.shiploc_country_id = -1', 'sloc_temp');
+        $srch->joinTable(Countries::DB_TBL, 'LEFT OUTER JOIN', 'sc.country_id = sloc.shiploc_country_id', 'sc');
+        //$srch->addDirectCondition("(sloc_temp.shiploc_country_id = '-1' or (sloc.shiploc_country_id = '" . $countryId . "' and (sloc.shiploc_state_id = '-1' or sloc.shiploc_state_id = '" . $stateId . "')) )");
+
+        echo $srch->getQuery();
+        exit;
+
+
         $srch = ShippingZone::getZoneLocationSearchObject($langId);
-        $srch->joinTable(ShippingProfileZone::DB_TBL, 'INNER JOIN', 'spz.shipprozone_shipzone_id = sloc.shiploc_shipzone_id', 'spz');
+        // $srch->joinTable(ShippingProfileZone::DB_TBL, 'INNER JOIN', 'spz.shipprozone_shipzone_id = sloc.shiploc_shipzone_id', 'spz');
         $srch->addDirectCondition("(sloc.shiploc_country_id = '-1' or (sloc.shiploc_country_id = '" . $countryId . "' and (sloc.shiploc_state_id = '-1' or sloc.shiploc_state_id = '" . $stateId . "')) )");
         $srch->addFld('spz.*');
-       // $srch->addFld('CASE WHEN country_id IS NULL THEN 0 ELSE 1 END');
+        // $srch->addFld('CASE WHEN country_id IS NULL THEN 0 ELSE 1 END');
         $srch->addCondition('spz.shipprozone_shipprofile_id', '=', 4);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         //echo $srch->getQuery();
-        
+
         $obj = clone $srch;
         //$obj->joinTable('(' . $srch->getQuery() . ')', 'INNER JOIN', 'tmp.shipprozone_shipprofile_id = spz.shipprozone_shipprofile_id and sc.country_id > 0', 'tmp');
         $obj->joinTable('(' . $srch->getQuery() . ')', 'INNER JOIN', 'tmp.shipprozone_shipprofile_id = spz.shipprozone_shipprofile_id and sc.country_id > 0', 'tmp');
@@ -28,7 +38,7 @@ class DummyController extends AdminBaseController
         $obj->setPageSize(1);
         $obj->addCondition('') */
 
-       /*  $obj = clone $srch;
+        /*  $obj = clone $srch;
         $obj->addMultipleFields(array('tmp.*'));
         $obj->joinTable('(' . $srch->getQuery() . ')', 'LEFT OUTER JOIN', 'tmp.shipprozone_shipprofile_id = spz.shipprozone_shipprofile_id and (sloc.shiploc_country_id = null or (sloc.shiploc_country_id = tmp.shiploc_country_id))', 'tmp');
         $obj->addGroupBy('spz.shipprozone_shipprofile_id');
