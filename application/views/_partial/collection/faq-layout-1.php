@@ -25,7 +25,7 @@
             <?php foreach ($faqCategories as $faqCatId => $faqCat) { ?>
             <div id="tb-<?php echo $faqCatId; ?>" class="tabs-content tabs-content-home--js">
                 <div class="list-faqs" data-contentloaded="0">
-                    <ul id="faqCollapseParent">
+                    <ul id="faqCollapseParent<?php echo $faqCatId; ?>">
                         <?php 
                         $i=0;
                         foreach ($faqCat['faqs'] as $faqId => $faq) { ?>
@@ -33,7 +33,7 @@
                                 <a class="faq_trigger collapsed" href="#faqCollapse<?php echo $faqId; ?>"  data-toggle="collapse" aria-expanded="<?php echo ($i == 0 ? 'true' : 'false'); ?>">
                                     <?php echo $faq['faq_title']; ?>
                                 </a>
-                                <p class="collapse <?php echo ($i == 0 ? 'show' : ''); ?>" id="faqCollapse<?php echo $faqId; ?>" data-parent="#faqCollapseParent">
+                                <p class="collapse <?php echo ($i == 0 ? 'show' : ''); ?>" id="faqCollapse<?php echo $faqId; ?>" data-parent="#faqCollapseParent<?php echo $faqCatId; ?>">
                                     <span class="faq_data">
                                     <?php echo FatUtility::decodeHtmlEntities($faq['faq_content']); ?>
                                     </span>
