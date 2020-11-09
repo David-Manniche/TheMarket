@@ -17,8 +17,13 @@
                             <ul>
                                 <li class="list__item">
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
-                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-brand btn--filters-control saveSearch-js"><i class="icn">
-                                        </i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-brand btn--filters-control saveSearch-js">
+                                         <i class="icn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="14.571" viewBox="0 0 12 14.571">
+                                                <path d="M19.5,9.643H16.071V4.5H10.929V9.643H7.5l6,6Zm-12,7.714v1.714h12V17.357Z" transform="translate(-7.5 -4.5)"></path>
+                                            </svg>
+                                        </i>
+                                        <span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
                                     <?php } ?>
                                 </li>
                                 <li>
