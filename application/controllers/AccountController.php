@@ -397,7 +397,6 @@ class AccountController extends LoggedUserController
         $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
         $accountSummary = $txnObj->getTransactionSummary($userId);
         $payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
-
         $this->set('payouts', $payouts);
         $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('codMinWalletBalance', $codMinWalletBalance);
@@ -405,6 +404,17 @@ class AccountController extends LoggedUserController
         $this->set('accountSummary', $accountSummary);
         $this->set('frmRechargeWallet', $this->getRechargeWalletForm($this->siteLangId));
         $this->set('canAddMoneyToWallet', $canAddMoneyToWallet);
+        $this->_template->render();
+    }
+
+    public function payouts()
+    {
+        $payoutPlugins = Plugin::getDataByType(Plugin::TYPE_PAYOUTS, $this->siteLangId);
+        $data = [
+            'isBankPayoutEnabled' => applicationConstants::YES,
+            'payoutPlugins' => array_values($payoutPlugins)
+        ];
+        $this->set('data', $data);
         $this->_template->render();
     }
 
@@ -1153,7 +1163,7 @@ class AccountController extends LoggedUserController
 
         $userObj = new User($userId);
         $data = $userObj->getUserBankInfo();
-        
+
         if (true === MOBILE_APP_API_CALL) {
             $this->set('data', $data);
             $this->_template->render();
