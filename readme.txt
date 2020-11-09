@@ -398,6 +398,7 @@ Bugs:
     => 044982 - seller> sub seller permissions> apply button is not aligned with drop down
     => 045008 - marketplace link on seller dashboard is redirecting to different link from the actual link
     => 044912 - Brand is getting added but getting warning along with it
+    => 044884 - when banner layouts are not added from admin in collection still then they are populating on advertiser end
 
 Enhancements:
     => Tax module upgrade
