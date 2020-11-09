@@ -623,7 +623,6 @@ class AccountController extends LoggedUserController
 
         $userObj = new User($userId);
         $data = $userObj->getUserBankInfo();
-
         $data['uextra_payment_method'] = User::AFFILIATE_PAYMENT_METHOD_CHEQUE;
 
         if (User::isAffiliate()) {
@@ -1148,14 +1147,19 @@ class AccountController extends LoggedUserController
         $userId = UserAuthentication::getLoggedUserId();
 
         if (User::isAffiliate()) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
+            FatUtility::dieJsonError($message);
         }
-
-        $frm = $this->getBankInfoForm();
 
         $userObj = new User($userId);
         $data = $userObj->getUserBankInfo();
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->set('data', $data);
+            $this->_template->render();
+        }
+
+        $frm = $this->getBankInfoForm();
         if ($data != false) {
             $frm->fill($data);
         }
