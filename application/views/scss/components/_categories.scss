@@ -9,6 +9,9 @@
         .c-hamburger {
             margin: 0;
             margin-#{$end-direction}: 10px;
+            @include media-breakpoint-down(lg) {
+                display: none
+            }
         }
     }
 }
