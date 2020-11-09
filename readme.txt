@@ -401,7 +401,7 @@ Bugs:
     => 044884 - when banner layouts are not added from admin in collection still then they are populating on advertiser end
     => 045000 - seller> product inventory stock status> variant name needs to be there- as distinction is not there in various items
     => 045001 - when review on digital item is placed then shipping and package option are coming which are not available for digital items
-
+    => 045009 - When we use tax jar then "invalid tax category " gets display on purchase of digital products
 
 Enhancements:
     => Tax module upgrade
