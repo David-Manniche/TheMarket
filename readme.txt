@@ -398,8 +398,10 @@ Bugs:
     => 044982 - seller> sub seller permissions> apply button is not aligned with drop down
     => 045008 - marketplace link on seller dashboard is redirecting to different link from the actual link
     => 044912 - Brand is getting added but getting warning along with it
+    => 044884 - when banner layouts are not added from admin in collection still then they are populating on advertiser end
     => 045000 - seller> product inventory stock status> variant name needs to be there- as distinction is not there in various items
     => 045001 - when review on digital item is placed then shipping and package option are coming which are not available for digital items
+
 
 Enhancements:
     => Tax module upgrade

@@ -599,6 +599,8 @@ class BuyerController extends BuyerBaseController
         $this->set('classArr', applicationConstants::getClassArr());
 
         if (true === MOBILE_APP_API_CALL) {
+            $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")), 0, 0, false);
+            $this->set('orderStatuses', $orderStatuses);
             $this->_template->render();
         }
         $this->_template->render(false, false);

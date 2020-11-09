@@ -138,7 +138,7 @@ class Orders extends MyAppModel
         return $row = FatApp::getDb()->fetchAllAssoc($rs);
     }
 
-    public static function getOrderProductStatusArr($langId, $inArray = array(), $current = 0, $isDigital = 0)
+    public static function getOrderProductStatusArr($langId, $inArray = array(), $current = 0, $isDigital = 0, $assoc = true)
     {
         $current = FatUtility::int($current);
         $srch = new SearchBase(Orders::DB_TBL_ORDERS_STATUS, 'ostatus');
@@ -187,7 +187,11 @@ class Orders extends MyAppModel
         if (!$rs) {
             return array();
         }
-        return $row = FatApp::getDb()->fetchAllAssoc($rs);
+
+        if (true === $assoc) {
+            return FatApp::getDb()->fetchAllAssoc($rs);
+        }
+        return FatApp::getDb()->fetchAll($rs);
     }
     public static function getOrderSubscriptionStatusArr($langId, $inArray = array(), $current = 0)
     {
@@ -1203,7 +1207,7 @@ class Orders extends MyAppModel
 
         $currentPlanData = OrderSubscription::getUserCurrentActivePlanDetails($langId, $childOrderInfo['order_user_id'], array(OrderSubscription::DB_TBL_PREFIX . 'id'));
         if (false != $currentPlanData) {
-           $currentActiveSubscrId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id'];
+            $currentActiveSubscrId = $currentPlanData[OrderSubscription::DB_TBL_PREFIX . 'id'];
             if ($currentActiveSubscrId) {
                 $this->cancelCurrentActivePlan($orderId, $currentActiveSubscrId, $childOrderInfo['order_user_id'], $notify);
             }
