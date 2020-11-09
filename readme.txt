@@ -402,6 +402,7 @@ Bugs:
     => 045000 - seller> product inventory stock status> variant name needs to be there- as distinction is not there in various items
     => 045001 - when review on digital item is placed then shipping and package option are coming which are not available for digital items
     => 045009 - When we use tax jar then "invalid tax category " gets display on purchase of digital products
+    => 036640 - while linking product with tax category> some of them having long text and not wrapping
 
 Enhancements:
     => Tax module upgrade

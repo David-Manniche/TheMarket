@@ -25,6 +25,8 @@ foreach ($arr_flds as $key => $val) {
     }
 }
 
+$defaultStringLength = applicationConstants::DEFAULT_STRING_LENGTH;
+
 $sr_no = $page == 1 ? 0 : $pageSize * ($page - 1);
 foreach ($arr_listing as $sn => $row) {
     $sr_no++;
@@ -32,7 +34,8 @@ foreach ($arr_listing as $sn => $row) {
     $tr->setAttribute("id", $row['taxcat_id']);
 
     foreach ($arr_flds as $key => $val) {
-        $td = $tr->appendElement('td');
+        $attr = ('taxcat_identifier' == $key ? ['title' => $row[$key]] : []);
+        $td = $tr->appendElement('td', $attr);
         switch ($key) {
             case 'select_all':
                 $td->appendElement('plaintext', array(), '<label class="checkbox"><input class="selectItem--js" type="checkbox" name="taxcat_ids[]" value=' . $row['taxcat_id'] . '><i class="input-helper"></i></label>', true);
@@ -41,12 +44,20 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'taxcat_identifier':
+                $taxCatIdentifier = substr($row[$key], 0, $defaultStringLength);
+                if ($defaultStringLength < strlen($row[$key])) {
+                    $taxCatIdentifier .= '...';
+                }
                 if ($row['taxcat_name'] != '') {
-                    $td->appendElement('plaintext', array(), $row['taxcat_name'], true);
+                    $taxCatName = substr($row['taxcat_name'], 0, $defaultStringLength);
+                    if ($defaultStringLength < strlen($row['taxcat_name'])) {
+                        $taxCatName .= '...';
+                    }
+                    $td->appendElement('plaintext', array(), $taxCatName, true);
                     $td->appendElement('br', array());
-                    $td->appendElement('plaintext', array(), '(' . $row[$key] . ')', true);
+                    $td->appendElement('plaintext', array(), '(' . $taxCatIdentifier . ')', true);
                 } else {
-                    $td->appendElement('plaintext', array(), $row[$key], true);
+                    $td->appendElement('plaintext', array(), $taxCatIdentifier, true);
                 }
                 break;
             case 'taxcat_active':

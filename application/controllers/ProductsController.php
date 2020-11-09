@@ -1958,10 +1958,16 @@ class ProductsController extends MyAppController
         $db = FatApp::getDb();
         $taxCategories = $db->fetchAll($rs, 'taxcat_id');
         $json = array();
+        $defaultStringLength = applicationConstants::DEFAULT_STRING_LENGTH;;
         foreach ($taxCategories as $key => $taxCategory) {
+            $taxCatName = strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'));
+            $taxCatName1 = substr($taxCatName, 0, $defaultStringLength);
+            if ($defaultStringLength < strlen($taxCatName)) {
+                $taxCatName1 .= '...';
+            }
             $json[] = array(
                 'id' => $key,
-                'name' => strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'))
+                'name' => $taxCatName1
             );
         }
         die(json_encode($json));
