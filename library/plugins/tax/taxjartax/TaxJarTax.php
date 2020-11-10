@@ -19,6 +19,15 @@ class TaxJarTax extends TaxBase
     private const RATE_TYPE_PST = 5;
     private const RATE_TYPE_GST = 6;
     private const RATE_TYPE_SPECIAL = 7;
+
+
+    private const TAX_RATE_STATE = 1;
+    private const TAX_RATE_COUNTY = 2;
+    private const TAX_RATE_CITY = 3;
+    private const TAX_RATE_QST = 4;
+    private const TAX_RATE_PST = 5;
+    private const TAX_RATE_GST = 6;
+    private const TAX_RATE_SPECIAL = 7;
     
     public $requiredKeys = [
         'live_key',
@@ -96,7 +105,7 @@ class TaxJarTax extends TaxBase
                 'msg' => $e->getMessage(),
             ];
         }
-        
+        //  CommonHelper::printArray($taxes, true);
         
         // if (!isset($taxes->breakdown)) {
         //     return [
@@ -104,7 +113,7 @@ class TaxJarTax extends TaxBase
         //         'msg' => Labels::getLabel("LBL_Tax_could_not_be_calculated_from_TaxJar", $this->langId),
         //     ];
         // }
-
+        //CommonHelper::printArray($taxes, true);
         return [
             'status' => true,
             'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
@@ -123,15 +132,21 @@ class TaxJarTax extends TaxBase
         $formatedTax = [];
         $types = $this->getRateTypesNames();
         $rateTypes = $this->getRateTypesKeys();
-       
+        $taxRates = $this->getTaxRatesKeys();       
         if (isset($taxes->breakdown->line_items)) {
             foreach ($taxes->breakdown->line_items as $item) {
-                $taxDetails = [];
-            
+                $taxDetails = [];                
                 foreach ($rateTypes as $key=> $name) {
+                    
                     if (isset($item->$name)) {
                         $taxDetails[$types[$key]]['name'] = $types[$key];
+                        $taxDetails[$types[$key]]['tax_rate'] = $types[$key];
                         $taxDetails[$types[$key]]['value'] = $item->$name;
+                    }
+                }
+                foreach ($taxRates as $key=> $name) {
+                    if (isset($item->$name)) {
+                        $taxDetails[$types[$key]]['tax_rate'] = $item->$name;
                     }
                 }
                 $formatedTax[$item->id] = array(
@@ -148,7 +163,6 @@ class TaxJarTax extends TaxBase
                 'taxDetails' => $taxDetails,
             );
         }
-
         if (isset($taxes->breakdown->shipping)) {
             $itemId = $taxes->breakdown->line_items[0]->id;
             foreach ($rateTypes as $key=> $name) {
@@ -162,7 +176,6 @@ class TaxJarTax extends TaxBase
                 }
             }
         }
-                 
         return $formatedTax;
     }
 
@@ -402,6 +415,19 @@ class TaxJarTax extends TaxBase
             static::RATE_TYPE_PST => 'pst',
             static::RATE_TYPE_GST => 'gst',
             static::RATE_TYPE_SPECIAL => 'special_district_amount',
+        );
+    }
+
+    private function getTaxRatesKeys()
+    {
+        return array(
+            static::TAX_RATE_STATE => 'state_sales_tax_rate',
+            static::TAX_RATE_COUNTY => 'county_tax_rate',
+            static::TAX_RATE_CITY => 'city_tax_rate',
+            static::TAX_RATE_QST => 'qst',
+            static::TAX_RATE_PST => 'pst',
+            static::TAX_RATE_GST => 'gst',
+            static::TAX_RATE_SPECIAL => 'special_tax_rate',
         );
     }
 }
