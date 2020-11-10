@@ -92,7 +92,6 @@ class ImportexportCommon extends FatModel
     public function isValidColumns($headingsArr, $coloumArr)
     {
         $arr = array_diff($headingsArr, $coloumArr);
-
         if (count($arr) || count($headingsArr) != count($coloumArr)) {
             return false;
         }
@@ -122,7 +121,9 @@ class ImportexportCommon extends FatModel
                     $errMsg = (0 > FatUtility::float($columnValue)) ? Labels::getLabel("MSG_{column-name}_should_be_greater_than_0.", $langId) : false;
                     break;
             }
-            return (false !== $errMsg) ? str_replace('{column-name}', $columnTitle, $errMsg) : $errMsg;
+            
+            $errMsg = (false !== $errMsg) ? mb_strtolower($errMsg)  : $errMsg;
+            return (false !== $errMsg) ? mb_convert_case(str_replace('{column-name}', $columnTitle, $errMsg), MB_CASE_TITLE, "UTF-8") : $errMsg;
         }
         return $errMsg;
     }
@@ -330,7 +331,7 @@ class ImportexportCommon extends FatModel
             }
         }
 
-        $arr['product_name'] = Labels::getLabel('LBL_Name', $langId);
+        $arr['product_name'] = Labels::getLabel('LBL_PRODUCT_NAME', $langId);
         /* $arr['product_short_description'] = Labels::getLabel('LBL_Short_Description', $langId); */
         $arr['product_description'] = Labels::getLabel('LBL_Description', $langId);
         $arr['product_youtube_video'] = Labels::getLabel('LBL_Youtube_Video', $langId);
@@ -407,6 +408,10 @@ class ImportexportCommon extends FatModel
                 } else {
                     $arr['country_code'] = Labels::getLabel('LBL_Shipping_Country_Code', $langId);
                 }
+            }
+
+            if (0 == $userId) {
+                $arr['product_fulfillment_type'] = Labels::getLabel('LBL_FULFILLMENT_TYPE', $langId);
             }
 
             if ((0 == $userId && $shippedBy) || !$shippedBy) {
@@ -607,6 +612,7 @@ class ImportexportCommon extends FatModel
             $arr['selprod_available_from'] = Labels::getLabel('LBL_Available_from', $langId);
             $arr['selprod_active'] = Labels::getLabel('LBL_Active', $langId);
             $arr['selprod_cod_enabled'] = Labels::getLabel('LBL_COD_Available', $langId);
+            $arr['selprod_fulfillment_type'] = Labels::getLabel('LBL_FULFILLMENT_TYPE', $langId);
             $arr['selprod_deleted'] = Labels::getLabel('LBL_Deleted', $langId);
             if (!$userId) {
                 $arr['selprod_sold_count'] = Labels::getLabel('LBL_Sold_Count', $langId);

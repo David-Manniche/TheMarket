@@ -1912,4 +1912,18 @@ END,   special_price_found ) as special_price_found'
         $productId = FatUtility::int($this->mainTableRecordId);
         FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?', 'vals' => array($productId)));
     }
+
+        
+    /**
+     * setProductFulfillmentType - Need to enhance later.
+     *
+     * @param  int $productId
+     * @param  int $loggedUserId
+     * @param  int $fulfillmentType
+     * @return int
+     */
+    public static function setProductFulfillmentType(int $productId, int $loggedUserId, int $fulfillmentType): int
+    {
+        return $fulfillmentType;
+    }
 }
