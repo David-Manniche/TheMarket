@@ -408,7 +408,7 @@ Bugs:
     => 036640 - while linking product with tax category> some of them having long text and not wrapping
     => 045126 - Some items not available for pickup layout and functionality
     => 036637 - when combined tax (GST) is used then in email and order detail page> getting tax(0)
-
+    => 044750 - hide the cancel button from customer orders in admin as it's creating confusion on front end
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
