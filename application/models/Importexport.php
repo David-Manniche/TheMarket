@@ -4390,6 +4390,16 @@ class Importexport extends ImportexportCommon
                         if (!$selProdId) {
                             $invalid = true;
                         }
+                    }elseif('related_recommend_sellerproduct_id' == $columnKey){                        
+                        $relSelProdId = $colValue;
+                        if (0 < $userId) {
+                            $relSelProdId = $colValue = $this->getCheckAndSetSelProdIdByTempId($relSelProdId, $userId);
+                        }
+
+                        if (1 > $relSelProdId) {
+                            $invalid = true;
+                        }
+                        
                     }
 
                     if (true === $invalid) {
