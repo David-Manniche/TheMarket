@@ -406,7 +406,7 @@ Bugs:
     => 044715	On Checkout >> if there are rates for shipping address's country then rates of "rest of the world " should not get display there.
     => 045009 - When we use tax jar then "invalid tax category " gets display on purchase of digital products
     => 036640 - while linking product with tax category> some of them having long text and not wrapping
-
+    => 045126 - Some items not available for pickup layout and functionality
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
