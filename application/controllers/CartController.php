@@ -28,6 +28,8 @@ class CartController extends MyAppController
         if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
             $cartObj->excludeTax();
         }
+        $cartObj->unsetCartCheckoutType();
+        $cartObj->invalidateCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $prodGroupIds = array();
 
