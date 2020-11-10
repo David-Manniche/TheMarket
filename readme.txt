@@ -407,6 +407,8 @@ Bugs:
     => 045009 - When we use tax jar then "invalid tax category " gets display on purchase of digital products
     => 036640 - while linking product with tax category> some of them having long text and not wrapping
     => 045126 - Some items not available for pickup layout and functionality
+    => 036637 - when combined tax (GST) is used then in email and order detail page> getting tax(0)
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

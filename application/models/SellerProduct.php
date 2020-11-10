@@ -1202,4 +1202,15 @@ class SellerProduct extends MyAppModel
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
+
+    /**
+     * setSellerProdFulfillmentType - Need to enhance later.
+     *
+     * @param  int $fulfillmentType
+     * @return int
+     */
+    public static function setSellerProdFulfillmentType(int $fulfillmentType): int
+    {
+        return $fulfillmentType;
+    }
 }

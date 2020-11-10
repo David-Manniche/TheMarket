@@ -789,9 +789,9 @@ class Importexport extends ImportexportCommon
                 } else {
                     $identifier = $prodCatDataArr['prodcat_identifier'];
                     $categoryData = ProductCategory::getAttributesByIdentifier($identifier, array('prodcat_id'));
-                    if($categoryData != false){
+                    if ($categoryData != false) {
                         $categoryId = $categoryData['prodcat_id'];
-                    }                    
+                    }
                 }
 
                 if (!$this->isDefaultSheetData($langId)) {
@@ -1110,10 +1110,9 @@ class Importexport extends ImportexportCommon
                 } else {
                     $identifier = $brandDataArr['brand_identifier'];
                     $brandData = Brand::getAttributesByIdentifier($identifier, array('brand_id'));
-                    if($brandData !==false){
-                       $brandId = $brandData['brand_id']; 
+                    if ($brandData !== false) {
+                        $brandId = $brandData['brand_id'];
                     }
-                    
                 }
 
                 if (!empty($brandData) && $brandId > 0) {
@@ -1481,6 +1480,23 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
+                if ('product_fulfillment_type' == $columnKey) {
+                    switch ($colValue) {
+                        case Shipping::FULFILMENT_SHIP:
+                            $colValue = Labels::getLabel('LBL_SHIPPED_ONLY', $langId);
+                            break;
+                        case Shipping::FULFILMENT_PICKUP:
+                            $colValue = Labels::getLabel('LBL_PICKUP_ONLY', $langId);
+                            break;
+                        case Shipping::FULFILMENT_ALL:
+                            $colValue = Labels::getLabel('LBL_SHIPPED_AND_PICKUP', $langId);
+                            break;
+                        default:
+                            $colValue = Labels::getLabel('LBL_SHIPPED_ONLY', $langId);
+                            break;
+                    }
+                }
+
                 if (in_array($columnKey, array('category_Id', 'category_indentifier'))) {
                     if ('category_Id' == $columnKey) {
                         $productCategories = $this->getProductCategoriesByProductId($row['product_id'], false);
@@ -1573,14 +1589,13 @@ class Importexport extends ImportexportCommon
         $adminDefaultShipProfileId =  array_key_first($shippingProfileArr);
         $coloumArr = $this->getProductsCatalogColoumArr($langId, $sellerId, $this->actionType);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
-
         $errInSheet = false;
         $prodType = PRODUCT::PRODUCT_TYPE_PHYSICAL;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
             $rowIndex++;
             $prodDataArr = $prodlangDataArr = $categoryIds = $prodShippingArr = array();
             $errorInRow = $taxCatId = false;
-
+            $productId = 0;
             $breakForeach = false;
             foreach ($coloumArr as $columnKey => $columnTitle) {
                 $colIndex = $this->headingIndexArr[$columnTitle];
@@ -1634,7 +1649,6 @@ class Importexport extends ImportexportCommon
                             $colValue = $userId;
                         }
                     }
-
                     if (0 < $sellerId && ($sellerId != $userId || 1 > $userId)) {
                         $colIndex = $colInd;
                         $errMsg = Labels::getLabel("MSG_Sorry_you_are_not_authorized_to_update_this_product.", $langId);
@@ -1670,7 +1684,7 @@ class Importexport extends ImportexportCommon
                                     }
                                 }
 
-                                $prodDataArr['product_id'] = $colValue;
+                                $productId = $prodDataArr['product_id'] = $colValue;
 
                                 $prodData = Product::getAttributesById($colValue, array('product_id', 'product_seller_id', 'product_featured', 'product_approved'));
                             }
@@ -1680,6 +1694,7 @@ class Importexport extends ImportexportCommon
                             if ($sellerId && !empty($prodData) && $prodData['product_seller_id'] != $sellerId) {
                                 $invalid = true;
                             }
+                            $productId = $prodData['product_id'];
                             break;
                         case 'product_seller_id':
                             $colValue = 0;
@@ -1851,6 +1866,24 @@ class Importexport extends ImportexportCommon
                             if (0 > $colValue) {
                                 $invalid = true;
                             }
+                            break;
+                        case 'product_fulfillment_type':
+                            $colValue = str_replace(' ', '_', mb_strtolower($colValue));
+                            switch ($colValue) {
+                                case 'shipped_only':
+                                    $colValue = Shipping::FULFILMENT_SHIP;
+                                    break;
+                                case 'pickup_only':
+                                    $colValue = Shipping::FULFILMENT_PICKUP;
+                                    break;
+                                case 'shipped_and_pickup':
+                                    $colValue = Shipping::FULFILMENT_ALL;
+                                    break;
+                                default:
+                                    $colValue = Shipping::FULFILMENT_SHIP;
+                                    break;
+                            }
+                            $colValue = Product::setProductFulfillmentType($productId, $sellerId, $colValue);
                             break;
                     }
 
@@ -3241,6 +3274,23 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
+                if ('selprod_fulfillment_type' == $columnKey) {
+                    switch ($colValue) {
+                        case Shipping::FULFILMENT_SHIP:
+                            $colValue = Labels::getLabel('LBL_SHIPPED_ONLY', $langId);
+                            break;
+                        case Shipping::FULFILMENT_PICKUP:
+                            $colValue = Labels::getLabel('LBL_PICKUP_ONLY', $langId);
+                            break;
+                        case Shipping::FULFILMENT_ALL:
+                            $colValue = Labels::getLabel('LBL_SHIPPED_AND_PICKUP', $langId);
+                            break;
+                        default:
+                            $colValue = Labels::getLabel('LBL_SHIPPED_ONLY', $langId);
+                            break;
+                    }
+                }
+
                 $sheetData[] = $this->parseContentForExport($colValue);
             }
             CommonHelper::writeExportDataToCSV($this->CSVfileObj, $sheetData);
@@ -3366,6 +3416,24 @@ class Importexport extends ImportexportCommon
                             if (0 > $colValue) {
                                 $invalid = true;
                             }
+                            break;
+                        case 'selprod_fulfillment_type':
+                            $colValue = str_replace(' ', '_', mb_strtolower($colValue));
+                            switch ($colValue) {
+                                case 'shipped_only':
+                                    $colValue = Shipping::FULFILMENT_SHIP;
+                                    break;
+                                case 'pickup_only':
+                                    $colValue = Shipping::FULFILMENT_PICKUP;
+                                    break;
+                                case 'shipped_and_pickup':
+                                    $colValue = Shipping::FULFILMENT_ALL;
+                                    break;
+                                default:
+                                    $colValue = Shipping::FULFILMENT_SHIP;
+                                    break;
+                            }
+                            $colValue = SellerProduct::setSellerProdFulfillmentType($colValue);
                             break;
                     }
                     /* Check if inventory already added for the product without option [ */

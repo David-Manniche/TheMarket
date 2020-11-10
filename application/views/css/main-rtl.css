@@ -16394,7 +16394,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
 
 .table {
   background-color: #fff;
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  text-align: right; }
   .table-justified thead th:last-child {
     text-align: left; }
   .table-justified tr td:last-child {
