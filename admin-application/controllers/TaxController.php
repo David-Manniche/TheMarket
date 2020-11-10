@@ -544,6 +544,12 @@ class TaxController extends AdminBaseController
                 Message::addErrorMessage(Labels::getLabel('LBL_All_States_And_Include_can\'t_be_used_together_or_All_state_can\'t_be_used_more_then_once_in_a_group_for_same_country', $this->adminLangId));
                 FatUtility::dieJsonError(Message::getHtml());
             }
+            
+            if (!$this->checkForValidCombinationStates($rulesData)) {
+                Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Combination_of_Country,_Type,_State', $this->adminLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }            
+            
         }
 
         $taxCatId = $data['taxcat_id'];
@@ -628,6 +634,25 @@ class TaxController extends AdminBaseController
                         unset($rulesData[$key]);
                     }
                 }
+            }
+        }
+        return true;
+    }
+    
+    private function checkForValidCombinationStates($rulesData = [])
+    {   
+        $combinations = [];
+        if (!empty($rulesData)) {
+                foreach ($rulesData as $key => $rule) {
+                    $countryId = $rule['country_id'];
+                    $type = $rule['type'];
+                    foreach ($rule['states'] as $state) {
+                        $combinationKey = [$countryId ."-".$type."-".$state];
+                        if(in_array($combinationKey ,$combinations)){
+                            return false;
+                        }
+                        $combinations[] = $combinationKey;
+                    }
             }
         }
         return true;

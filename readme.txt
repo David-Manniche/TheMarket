@@ -409,6 +409,7 @@ Bugs:
     => 045126 - Some items not available for pickup layout and functionality
     => 036637 - when combined tax (GST) is used then in email and order detail page> getting tax(0)
     => 035347 - if related products (seller 2) are added through import/export by seller 1 then they are getting listed on front end
+    => 043778 - if we add same state in two different rules then some error should get display at admin end
 
 Enhancements:
     => Tax module upgrade
