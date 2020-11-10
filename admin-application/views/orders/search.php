@@ -97,10 +97,10 @@ foreach ($ordersList as $sn => $row) {
                     $innerLi->appendElement('a', array('href' => UrlHelper::generateUrl('SellerOrders', 'index', array($row['order_id'])), 'class' => 'button small green redirect--js', 'title' => Labels::getLabel('LBL_View_seller_Order', $adminLangId), 'target' => '_new'), Labels::getLabel('LBL_View_seller_Order', $adminLangId), true);
                 }
                 if (!$row['order_deleted'] && $canEdit) {
-                    if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PAID) {
+                    /* if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PAID) {
                         $innerLi = $innerUl->appendElement('li');
                         $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'onclick' => "cancelOrder('" . $row['order_id'] . "')", 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Cancel_Order', $adminLangId), 'target' => '_new'), Labels::getLabel('LBL_Cancel_Order', $adminLangId), true);
-                    }
+                    } */
                     $twoDaysAfter = date('Y-m-d H:i:s', strtotime($row['order_date_added'] . ' + 2 days'));
                     if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PENDING && $twoDaysAfter < date('Y-m-d')) {
                         $innerLi = $innerUl->appendElement('li');

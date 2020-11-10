@@ -7,7 +7,7 @@
             return  $b['fulfillment_type'] - $a['fulfillment_type'];
         });
     ?>
-        <ul class="list-group list-cart list-cart-page">
+        <ul class="list-group list-cart">
             <?php
             //if (count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) > 0 && count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) != $productsCount) { 
             if (count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) != $productsCount) {
