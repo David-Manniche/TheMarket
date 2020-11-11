@@ -106,13 +106,13 @@ if (null != $fld) {
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
-                                <?php $fld = $prodCatFrm->getField('prodcat_parent');
+                                <?php $fld = $prodCatFrm->getField('parent_category_name');
                                 echo $fld->getCaption();
                                 ?></label>
                         </div>
                         <div class="field-wraper">
                             <div class="field_cover">
-                                <?php echo $prodCatFrm->getFieldHtml('prodcat_parent'); ?>
+                                <?php echo $prodCatFrm->getFieldHtml('parent_category_name'); ?>
                             </div>
                         </div>
                     </div>
@@ -297,9 +297,19 @@ if (null != $fld) {
 echo $prodCatFrm->getFieldHtml('banner_min_height');
 echo $prodCatFrm->getFieldHtml('logo_min_width');
 echo $prodCatFrm->getFieldHtml('logo_min_height');
+echo $prodCatFrm->getFieldHtml('prodcat_parent');
 ?>
 </form>
-<?php echo $prodCatFrm->getExternalJS(); ?>
+<?php echo $prodCatFrm->getExternalJS(); 
+
+$catAutocompleteArr = [];
+foreach ($categories as $catId => $catName) {
+    $catAutocompleteArr[] = array(
+        'id' => $catId,
+        'label' => strip_tags(html_entity_decode($catName, ENT_QUOTES, 'UTF-8'))
+    );
+}
+?>
 
 <script>
     $('input[name=banner_min_width]').val(2000);
@@ -328,4 +338,30 @@ echo $prodCatFrm->getFieldHtml('logo_min_height');
             aspectRatio = 16 / 9;
         }
     });
+       
+    
+    $(document).ready(function(){
+        var catAutocompleteArr = JSON.parse('<?php echo json_encode($catAutocompleteArr);  ?>');    
+        $('input[name=\'parent_category_name\']').autocomplete({
+            minLength: 0,
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            source: catAutocompleteArr,
+            select: function(event, ui) {
+                    $('input[name=\'prodcat_parent\']').val(ui.item.id);
+            }
+            }).focus(function(){            
+                $(this).autocomplete('search', $(this).val())
+            });	
+
+        $('input[name=\'parent_category_name\']').change(function() {
+            if ($(this).val() == '') {
+                $("input[name='prodcat_parent']").val(0);
+            }
+        });
+    
+    });
+    
+    
 </script>

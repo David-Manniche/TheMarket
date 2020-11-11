@@ -378,6 +378,7 @@ $(document).ready(function(){
     });
 
 	$('input[name=\'category_name\']').autocomplete({
+        minLength: 0,
         'classes': {
             "ui-autocomplete": "custom-ui-autocomplete"
         },
@@ -397,7 +398,9 @@ $(document).ready(function(){
 		select: function(event, ui) {
 			$('input[name=\'ptc_prodcat_id\']').val(ui.item.id);
 		}
-	});	
+	}).focus(function(){            
+            $(this).autocomplete('search', $(this).val())
+        });	
     
     $('input[name=\'category_name\']').change(function() {
         if ($(this).val() == '') {
