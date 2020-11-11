@@ -576,7 +576,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                         href="#specifications"><?php echo Labels::getLabel('LBL_Specifications', $siteLangId); ?></a>
                 </li>
                 <?php } ?>
-                <?php if ($product['product_description'] != '') { ?>
+                <?php if (trim($product['product_description']) != '') { ?>
                 <li class=""><a class="nav-scroll-js"
                         href="#description"><?php echo Labels::getLabel('LBL_Description', $siteLangId); ?> </a></li>
                 <?php } ?>
@@ -625,7 +625,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                         </table>
                     </div>
                     <?php } ?>
-                    <?php if ($product['product_description'] != '') { ?>
+                    <?php if (trim($product['product_description']) != '') { ?>
                     <div class="section-head">
                         <div class="section__heading" id="description">
                             <h2><?php echo Labels::getLabel('LBL_Description', $siteLangId); ?></h2>
