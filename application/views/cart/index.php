@@ -11,7 +11,7 @@
                             <div class="shiporpickup" id="js-shiporpickup">
                                 <ul>
                                     <li onclick="listCartProducts(<?php echo Shipping::FULFILMENT_SHIP;?>)">
-                                        <input class="control-input" type="radio" id="shipping" name="fulfillment_type" value="<?php echo Shipping::FULFILMENT_SHIP;?>">
+                                        <input class="control-input" type="radio" id="shipping" name="fulfillment_type" value="<?php echo Shipping::FULFILMENT_SHIP;?>" <?php if($pickUpProductsCount == 0) { echo "checked='true'";}?>>
                                         <label class="control-label">
                                             <svg class="svg">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#shipping" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#shipping">
@@ -21,7 +21,7 @@
 
                                     </li>
                                     <li onclick="listCartProducts(<?php echo Shipping::FULFILMENT_PICKUP;?>)">
-                                        <input class="control-input" type="radio" id="pickup" name="fulfillment_type" value="<?php echo Shipping::FULFILMENT_PICKUP;?>" >
+                                        <input class="control-input" type="radio" id="pickup" name="fulfillment_type" value="<?php echo Shipping::FULFILMENT_PICKUP;?>" <?php if($shipProductsCount == 0) { echo "checked='true'";}?>>
                                         <label class="control-label">
                                             <svg class="svg">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#pickup" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#pickup">

@@ -14,6 +14,28 @@ class CartController extends MyAppController
         $cartObj->invalidateCheckoutType();
         $cartObj->removeProductShippingMethod();
         $cartObj->removeProductPickUpAddresses();
+        $productsArr = $cartObj->getProducts($this->siteLangId);
+        $fulfillmentProdArr = [
+            Shipping::FULFILMENT_SHIP => [],
+            Shipping::FULFILMENT_PICKUP => [],
+        ];
+        foreach ($productsArr as $product) {
+            switch ($product['fulfillment_type']) {
+                case Shipping::FULFILMENT_SHIP:
+                    $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                    break;
+                case Shipping::FULFILMENT_PICKUP:
+                    $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                    break;
+                default:
+                    $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                    $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                    break;
+            }
+        }
+
+        $this->set('shipProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]));
+        $this->set('pickUpProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]));
         $this->set('total', $cartObj->countProducts());
         $this->set('hasPhysicalProduct', $cartObj->hasPhysicalProduct());
         $this->_template->render();
