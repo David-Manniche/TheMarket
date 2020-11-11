@@ -54,6 +54,7 @@ class Plugin extends MyAppModel
     public const ATTRS = [
         self::DB_TBL_PREFIX . 'id',
         self::DB_TBL_PREFIX . 'code',
+        self::DB_TBL_PREFIX . 'type',
         self::DB_TBL_PREFIX . 'description',
         'COALESCE(plg_l.' . self::DB_TBL_PREFIX . 'name, plg.' . self::DB_TBL_PREFIX . 'identifier) as plugin_name',
         self::DB_TBL_PREFIX . 'active',
