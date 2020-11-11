@@ -865,7 +865,7 @@ class AccountController extends LoggedUserController
             if (!empty($row) && 0 < count($row)) {
                 $hasDigitalProducts = 1;
             }
-
+            $splitPaymentMethods = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_METHOD, $this->siteLangId);
             $bankInfo = $this->bankInfo();
             $personalInfo = $this->personalInfo();
             $personalInfo['userImage'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'user', array($userId, 'SMALL', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
@@ -873,6 +873,7 @@ class AccountController extends LoggedUserController
             $this->set('bankInfo', empty($bankInfo) ? (object)array() : $bankInfo);
             $this->set('privacyPolicyLink', FatApp::getConfig('CONF_PRIVACY_POLICY_PAGE', FatUtility::VAR_STRING, ''));
             $this->set('hasDigitalProducts', $hasDigitalProducts);
+            $this->set('splitPaymentMethods', $splitPaymentMethods);
             $this->_template->render();
         }
 
@@ -880,9 +881,6 @@ class AccountController extends LoggedUserController
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
         $this->includeDateTimeFiles();
-
-        /* $langs = Language::getAllNames();
-        CommonHelper::printArray($langs); die(); */
 
         $userId = UserAuthentication::getLoggedUserId();
 
