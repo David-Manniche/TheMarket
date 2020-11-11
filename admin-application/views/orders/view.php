@@ -58,7 +58,7 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>:</strong>
                                     <?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_payment_status']];
-                                    if ('' != $order['plugin_name'] && 'CashOnDelivery' == $order['plugin_code']) {
+                                    if (in_array(strtolower($order['plugin_code']), ['cashondelivery', 'payatstore'])) {
                                         echo ' (' . $order['plugin_name'] . ' )';
                                     }
                                     ?>

@@ -61,11 +61,11 @@ foreach ($vendorOrdersList as $sn => $row) {
                     $labelClass = 'label-danger';
                 } else {
                     $status = $row['orderstatus_name'];
-                    
-                    if (strtolower($row['plugin_code']) == 'cashondelivery' && $row['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP && $row['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) {
-                        $status = Labels::getLabel('LBL_PAY_ON_PICKUP', $adminLangId);
-                    }
-                    $labelClass = $classArr[$row['orderstatus_color_class']];
+
+                    /* if (in_array(strtolower($row['plugin_code']), ['cashondelivery', 'payatstore']) && $row['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) {
+                        $status = $row['plugin_name'];
+                    } */
+                    $labelClass = isset($classArr[$row['orderstatus_color_class']]) ? $classArr[$row['orderstatus_color_class']] : 'label-info';
                 }
                 $td->appendElement('span', array('class' => 'label label-inline ' . $labelClass), $status, true);
                 break;

@@ -4,6 +4,11 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
+
+        $orderObj = new Orders();
+        $orderDetail = $orderObj->getOrderById('O1605086396', 1);
+        CommonHelper::printArray($orderDetail, true); exit;
+
         $countryId = '223';
         $stateId = '2998';
         $langId = 1;

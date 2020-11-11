@@ -117,9 +117,9 @@ if (!$print) { ?>
                                         $paymentMethodName .= Labels::getLabel("LBL_Wallet", $siteLangId);
                                     }
 
-                                    if (strtolower($childOrderDetail['plugin_code']) == 'cashondelivery' && $childOrderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                                    /* if (strtolower($childOrderDetail['plugin_code']) == 'cashondelivery' && $childOrderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
                                         $paymentMethodName = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
-                                    } ?>
+                                    } */ ?>
                                     <p>
                                         <strong>
                                             <?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId); ?>:

@@ -39,7 +39,7 @@ class OrderStatusController extends AdminBaseController
     {
         $this->objPrivilege->canViewOrderStatus();
 
-        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
+        $pagesize = 50;
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];

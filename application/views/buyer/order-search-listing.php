@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="js-scrollable table-wrap">
-    <?php 
+    <?php
     $arr_flds = array(
         'order_id'    =>    Labels::getLabel('LBL_Order_ID_Date', $siteLangId),
         'product'    =>    Labels::getLabel('LBL_Details', $siteLangId),
@@ -27,11 +27,11 @@
         $orderDetailUrl = UrlHelper::generateUrl('Buyer', 'viewOrder', array($order['order_id'], $order['op_id']));
 
         if ($order['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-            $canCancelOrder = (in_array($order["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses(true)));
-            $canReturnRefund = (in_array($order["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses(true)));
+            $canCancelOrder = (in_array($order["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses(true)));
+            $canReturnRefund = (in_array($order["op_status_id"], (array) Orders::getBuyerAllowedOrderReturnStatuses(true)));
         } else {
-            $canCancelOrder = (in_array($order["op_status_id"], (array)Orders::getBuyerAllowedOrderCancellationStatuses()));
-            $canReturnRefund = (in_array($order["op_status_id"], (array)Orders::getBuyerAllowedOrderReturnStatuses()));
+            $canCancelOrder = (in_array($order["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses()));
+            $canReturnRefund = (in_array($order["op_status_id"], (array) Orders::getBuyerAllowedOrderReturnStatuses()));
         }
         $isValidForReview = false;
         if (in_array($order["op_status_id"], SelProdReview::getBuyerAllowedOrderReviewStatuses())) {
@@ -86,6 +86,7 @@
                     $td->appendElement('plaintext', array(), $txt, true);
                     break;
                 case 'status':
+                    $orderStatus = ucwords($order['orderstatus_name']);
                     if (Orders::ORDER_PAYMENT_CANCELLED == $order["order_payment_status"]) {
                         $orderStatus = Labels::getLabel('LBL_CANCELLED', $siteLangId);
                         $labelClass = 'label-danger';
@@ -93,14 +94,18 @@
                         $pMethod = '';
                         $paymentMethodCode = Plugin::getAttributesById($order['order_pmethod_id'], 'plugin_code');
 
-                        $orderStatus = "";
-                        if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP && $order['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) {
+                        /* if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP && $order['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) {
                             $orderStatus = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                         } else if (strtolower($paymentMethodCode) == 'cashondelivery' && $order['order_status'] == FatApp::getConfig('CONF_DEFAULT_ORDER_STATUS')) {
                             $pMethod = " - " . $order['plugin_name'];
+                        } */
+                        if (in_array(strtolower($paymentMethodCode), ['cashondelivery', 'payatstore'])) {
+                            if ($orderStatus != $order['plugin_name']) {
+                                $orderStatus .= " - " . $order['plugin_name'];
+                            }
                         }
-                        $orderStatus = !empty($orderStatus) ? $orderStatus : ucwords($order['orderstatus_name'] . $pMethod);
-                        $labelClass = $classArr[$order['orderstatus_color_class']];
+
+                        $labelClass = isset($classArr[$order['orderstatus_color_class']]) ? $classArr[$order['orderstatus_color_class']] : 'label-info';
                     }
 
                     $td->appendElement('span', array('class' => 'label label-inline ' . $labelClass), $orderStatus . '<br>', true);

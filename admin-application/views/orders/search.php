@@ -70,12 +70,8 @@ foreach ($ordersList as $sn => $row) {
                     $value = Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]];
                 }
 
-                if ('' != $row['plugin_name'] && 'CashOnDelivery' == $row['plugin_code']) {
-                    if ($checkoutType == Shipping::FULFILMENT_PICKUP) {
-                        $value .= ' (' . Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId) . ')';
-                    } else {
-                        $value .= ' (' . $row['plugin_name'] . ' )';
-                    }
+                if (in_array(strtolower($row['plugin_code']), ['cashondelivery', 'payatstore'])) {
+                    $value .= ' (' . $row['plugin_name'] . ' )';
                 }
 
                 $td->appendElement('span', array('class' => 'label ' . $cls), $value);

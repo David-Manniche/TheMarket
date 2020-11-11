@@ -31,8 +31,7 @@ class CartController extends MyAppController
         $cartObj->unsetCartCheckoutType();
         $cartObj->invalidateCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
-        $prodGroupIds = array();
-
+        $prodGroupIds = array();       
         $fulfillmentProdArr = [
             Shipping::FULFILMENT_SHIP => [],
             Shipping::FULFILMENT_PICKUP => [],
