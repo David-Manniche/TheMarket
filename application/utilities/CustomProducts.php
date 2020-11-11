@@ -282,7 +282,7 @@ trait CustomProducts
         }
         $prodObj = new Product($product_id);
         if (!$prodObj->addUpdateProductOption($option_id)) {
-            FatUtility::dieJsonError(Labels::getLabel($prodObj->getError(), FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 1)));
+            FatUtility::dieJsonError($prodObj->getError());
         }
         Product::updateMinPrices($product_id);
         $this->set('msg', Labels::getLabel('LBL_Option_Updated_Successfully', $this->siteLangId));

@@ -895,7 +895,7 @@ class CheckoutController extends MyAppController
         }
 
         if (!$this->isEligibleForNextStep($criteria)) {
-            $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
+            $this->errMessage = !empty($this->errMessage) ? $this->errMessage : Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($this->errMessage);
             }

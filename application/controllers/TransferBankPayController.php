@@ -73,9 +73,18 @@ class TransferBankPayController extends PaymentController
                 $orderPaymentObj->addOrderPaymentComments($comment, true);
             }
 
+            if (true === MOBILE_APP_API_CALL) {
+                $this->set('msg', Labels::getLabel('MSG_ORDER_PLACED_SUCCESSFULLY', $this->siteLangId));
+                $this->_template->render();
+            }
+
             $json['redirect'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
         } else {
-            $json['error'] = 'Invalid Request.';
+            $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError($msg);
+            }
+            $json['error'] = $msg;
         }
         echo json_encode($json);
     }
