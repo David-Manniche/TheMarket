@@ -410,6 +410,7 @@ Bugs:
     => 036637 - when combined tax (GST) is used then in email and order detail page> getting tax(0)
     => 044750 - hide the cancel button from customer orders in admin as it's creating confusion on front end
     => 035347 - if related products (seller 2) are added through import/export by seller 1 then they are getting listed on front end
+    => 045166 - on shop details >> when we save search then some json error is there.
 
 Enhancements:
     => Tax module upgrade
