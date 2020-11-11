@@ -412,7 +412,7 @@ Bugs:
     => 035347 - if related products (seller 2) are added through import/export by seller 1 then they are getting listed on front end
     => 043778 - if we add same state in two different rules then some error should get display at admin end
     => 045179 - While attaching category in catalog category coming after typing the test
-
+-------------------TV-9.2.2.20201111----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -924,4 +924,4 @@ AND `product_seller_id` = 0;
     -- ---- Set Default Product Fulfillment Type Ship If Product Added By Admin ------ 
 
 -- --- Bind and creation of default shipping profile 'Order Level Shipping' ----
-
+-- -----------------TV-9.2.2.20201111-------------------
