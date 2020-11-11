@@ -925,5 +925,5 @@ AND `product_seller_id` = 0;
 
 -- --- Bind and creation of default shipping profile 'Order Level Shipping' ----
 -- -----------------TV-9.2.2.20201111-------------------
-INSERT INTO `tbl_orders_status` (`orderstatus_id`, `orderstatus_identifier`, `orderstatus_color_class`, `orderstatus_type`, `orderstatus_priority`, `orderstatus_is_active`, `orderstatus_is_digital`) VALUES (NULL, 'Pay At Store', NULL, '1', '1', '1', '0');
+INSERT INTO `tbl_orders_status` (`orderstatus_id`, `orderstatus_identifier`, `orderstatus_color_class`, `orderstatus_type`, `orderstatus_priority`, `orderstatus_is_active`, `orderstatus_is_digital`) VALUES (NULL, 'Pay At Store', NULL, '1', '2', '1', '0');
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Pay At Store', '13', 'CashOnDelivery', '0', '1');
