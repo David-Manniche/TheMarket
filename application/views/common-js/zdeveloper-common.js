@@ -1,8 +1,10 @@
 $(document).ready(function() {
     setTimeout(function() {
         $('body').addClass('loaded');
-        let scrollElement = document.getElementById('scrollElement-js').SimpleBar.getScrollElement();
-        scrollElement.scrollTop = ($('.menu__item.is-active').position().top - (($(window).height() / 2) - 100));
+		if (0 < $('#scrollElement-js').length) {
+			let scrollElement = document.getElementById('scrollElement-js').SimpleBar.getScrollElement();
+			scrollElement.scrollTop = ($('.menu__item.is-active').position().top - (($(window).height() / 2) - 100));
+		}
     }, 1000);
 
     $(document).on("click", ".selectItem--js", function() {
