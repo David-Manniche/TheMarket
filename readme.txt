@@ -418,7 +418,8 @@ Bugs:
 -------------------TV-9.2.2.20201111----------------------
     => 045228 - cart Qty update on cart listing page 
     => 045236 - admin> seller orders> price filters are not working properly
-    
+    => 045240 - admin> subscription orders> filters> user name > on clicking user name from suggestion there is error
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
