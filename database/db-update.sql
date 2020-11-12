@@ -876,54 +876,6 @@ INNER JOIN tbl_extra_pages_lang epl ON epl.epagelang_epage_id=ep.epage_id
 WHERE epage_type = 13 OR epage_type = 14;
 -- ------------------TV-9.2.2.20201102--------------
 
--- --- Bind and creation of default shipping profile 'Order Level Shipping' ----
-    -- ---- Default Shipping Profile Creation For Admin ------
-INSERT IGNORE INTO tbl_shipping_profile
-SET shipprofile_user_id = 0, shipprofile_name = 'Order Level Shipping', shipprofile_active = 1, shipprofile_default = 1;
-    -- ---- Default Shipping Profile Creation For Admin ------
-
-    -- ---- Default Shipping Profile Creation For Sellers ------
-INSERT IGNORE INTO tbl_shipping_profile(shipprofile_user_id, shipprofile_name, shipprofile_active, shipprofile_default)
-SELECT user_id, 'Order Level Shipping', 1, 1 FROM `tbl_users` WHERE user_is_supplier = 1;
-    -- ---- Default Shipping Profile Creation For Sellers ------
-
-    -- ---- Bind Admin Catalog With Default Shipping Profile ------
-INSERT IGNORE INTO tbl_shipping_profile_products(shippro_shipprofile_id, shippro_product_id, shippro_user_id)
-SELECT sp.shipprofile_id, p.product_id, 0 
-FROM `tbl_products` p
-INNER JOIN tbl_shipping_profile sp ON sp.shipprofile_user_id = 0 
-AND sp.shipprofile_default = 1 
-AND p.product_added_by_admin_id = 1 
-AND p.product_seller_id = 0 ;
-    -- ---- Bind Admin Catalog With Default Shipping Profile ------ 
-
-    -- ---- Bind Seller Catalog With Default Shipping Profile ------ 
-INSERT IGNORE INTO tbl_shipping_profile_products(shippro_shipprofile_id, shippro_product_id, shippro_user_id)
-SELECT sp.shipprofile_id, p.product_id, p.product_seller_id 
-FROM `tbl_products` p
-INNER JOIN tbl_shipping_profile sp ON sp.shipprofile_user_id = p.product_seller_id AND sp.shipprofile_default = 1 
-WHERE p.product_added_by_admin_id = 0 
-AND p.product_seller_id > 0;
-    -- ---- Bind Seller Catalog With Default Shipping Profile ------ 
-
-    -- ---- Bind Admin Catalog But Shipped By Seller With Default Shipping Profile ------ 
-INSERT IGNORE INTO tbl_shipping_profile_products(shippro_shipprofile_id, shippro_product_id, shippro_user_id)
-SELECT sp.shipprofile_id, p.product_id, sbs.psbs_user_id
-FROM `tbl_products` p
-INNER JOIN tbl_products_shipped_by_seller sbs ON sbs.psbs_product_id = p.product_id
-INNER JOIN tbl_shipping_profile sp ON sp.shipprofile_user_id = sbs.psbs_user_id AND sp.shipprofile_default = 1
-WHERE p.product_added_by_admin_id = 1 
-AND p.product_seller_id = 0;
-    -- ---- Bind Admin Catalog But Shipped By Seller With Default Shipping Profile ------ 
-    
-    -- ---- Set Default Product Fulfillment Type Ship If Product Added By Admin ------
-UPDATE `tbl_products` 
-SET `product_fulfillment_type` = 2
-WHERE `product_added_by_admin_id` = 1 
-AND `product_seller_id` = 0;
-    -- ---- Set Default Product Fulfillment Type Ship If Product Added By Admin ------ 
-
--- --- Bind and creation of default shipping profile 'Order Level Shipping' ----
 -- -----------------TV-9.2.2.20201111-------------------
 INSERT INTO `tbl_orders_status` (`orderstatus_id`, `orderstatus_identifier`, `orderstatus_color_class`, `orderstatus_type`, `orderstatus_priority`, `orderstatus_is_active`, `orderstatus_is_digital`) VALUES (NULL, 'Pay At Store', NULL, '1', '2', '1', '0');
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Pay At Store', '13', 'PayAtStore', '0', '1');
@@ -1191,14 +1143,3 @@ INSERT INTO `tbl_zones_lang`(`zonelang_zone_id`, `zonelang_lang_id`, `zone_name`
 (9, 1, 'The Caribbean'),
 (10, 1, 'Antarctica')
 ON DUPLICATE KEY UPDATE zone_name = VALUES(zone_name);
-
-
-   -- ---- Bind Catalog Added By Admin Updated To Seller With Default Shipping Profile ------
-INSERT IGNORE INTO tbl_shipping_profile_products(shippro_shipprofile_id, shippro_product_id, shippro_user_id)
-SELECT sp.shipprofile_id, p.product_id, p.product_seller_id
-FROM `tbl_products` p
-INNER JOIN tbl_shipping_profile sp ON sp.shipprofile_user_id = p.product_seller_id 
-AND sp.shipprofile_default = 1 
-AND p.product_added_by_admin_id = 1 
-AND p.product_seller_id > 0;
-    -- ---- Bind Catalog Added By Admin Updated To Seller With Default Shipping Profile ------ 
