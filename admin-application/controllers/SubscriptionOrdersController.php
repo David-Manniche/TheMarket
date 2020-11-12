@@ -234,7 +234,7 @@ class SubscriptionOrdersController extends AdminBaseController
         $frm = new Form('frmSubscriptionOrderSearch');
         $keyword = $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('id' => 'keyword', 'autocomplete' => 'off'));
         
-        $frm->addTextBox(Labels::getLabel('LBL_Buyer', $this->adminLangId), 'buyer', '');
+        $frm->addTextBox(Labels::getLabel('LBL_SELLER', $this->adminLangId), 'seller', '');
         
         $frm->addSelectBox(Labels::getLabel('LBL_Payment_Status', $this->adminLangId), 'order_payment_status', Orders::getOrderPaymentStatusArr($langId), '', array(), 'Select Payment Status');
         
