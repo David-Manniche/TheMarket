@@ -28,7 +28,7 @@ CREATE TABLE `tbl_zones` (
   `zone_active` tinyint(4) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `tbl_zones` (`zone_id`, `zone_identifier`, `zone_active`) VALUES
+INSERT IGNORE INTO `tbl_zones` (`zone_id`, `zone_identifier`, `zone_active`) VALUES
 (1, 'Africa', 1),
 (2, 'Asia', 1),
 (3, 'Central America', 1),
@@ -37,7 +37,9 @@ INSERT INTO `tbl_zones` (`zone_id`, `zone_identifier`, `zone_active`) VALUES
 (6, 'North America', 1),
 (7, 'Oceania', 1),
 (8, 'South America', 1),
-(9, 'The Caribbean', 1);
+(9, 'The Caribbean', 1),
+(10, 'Antarctica', 1);
+
 
 ALTER TABLE `tbl_zones`
 ADD PRIMARY KEY (`zone_id`),
@@ -926,3 +928,277 @@ AND `product_seller_id` = 0;
 INSERT INTO `tbl_orders_status` (`orderstatus_id`, `orderstatus_identifier`, `orderstatus_color_class`, `orderstatus_type`, `orderstatus_priority`, `orderstatus_is_active`, `orderstatus_is_digital`) VALUES (NULL, 'Pay At Store', NULL, '1', '2', '1', '0');
 INSERT INTO `tbl_plugins` (`plugin_id`, `plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES (NULL, 'Pay At Store', '13', 'PayAtStore', '0', '1');
 -- ------------------TV-9.2.3.20201111-------------------------------
+
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =1;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =2;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =3;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =4;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =5;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =6;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =7;
+UPDATE `tbl_countries` SET `country_zone_id`= 10, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =8;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =9;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =10;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =11;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =12;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =13;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =14;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =15;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =16;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =17;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =18;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =19;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =20;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =21;
+UPDATE `tbl_countries` SET `country_zone_id`=3, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =22;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =23;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =24;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =25;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =26;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =27;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =28;
+UPDATE `tbl_countries` SET `country_zone_id`= 10, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =29;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =30;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =31;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =32;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =33;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =34;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =35;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =36;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =37;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =38;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =39;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =40;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =41;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =42;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =43;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =44;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =45;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =46;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =47;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =48;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =49;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =50;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =51;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =52;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =53;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =54;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =55;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =56;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =57;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =58;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =59;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =60;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =61;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =62;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =63;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =64;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =65;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =66;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =67;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =68;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =69;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =70;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =71;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =72;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =74;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =75;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =76;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =77;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =78;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =79;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =80;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =81;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =82;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =83;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =84;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =85;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =86;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =87;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =88;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =89;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =90;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =91;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =92;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =93;
+UPDATE `tbl_countries` SET `country_zone_id`= 10, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =94;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =95;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =96;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =97;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =98;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =99;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =100;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =101;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =102;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =103;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =104;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =105;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =106;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =107;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =108;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =109;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =110;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =111;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =112;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =113;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =114;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =115;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =116;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =117;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =118;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =119;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =120;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =121;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =122;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =123;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =124;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =125;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =126;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =127;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =128;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =129;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =130;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =131;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =132;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =133;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =134;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =135;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =136;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =137;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =138;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =139;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =140;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =141;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =142;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =143;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =144;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =145;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =146;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =147;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =148;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =149;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =150;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =151;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =152;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =153;
+UPDATE `tbl_countries` SET `country_zone_id`=3, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =154;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =155;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =156;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =157;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =158;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =159;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =160;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =161;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =162;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =163;
+UPDATE `tbl_countries` SET `country_zone_id`=3, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =164;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =165;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =166;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =167;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =168;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =169;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =170;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =171;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =172;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =173;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =174;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =175;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =176;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =177;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =178;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =179;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =180;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =181;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =182;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =183;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =184;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =185;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =186;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =187;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =188;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =189;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =190;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =191;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =192;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =193;
+UPDATE `tbl_countries` SET `country_zone_id`= 10, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =194;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =195;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =196;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =197;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =198;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =199;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =200;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =201;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =202;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =203;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =204;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =205;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =206;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =207;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =208;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =209;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =210;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =211;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =212;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =213;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =214;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =215;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =216;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =217;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =218;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =219;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =220;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =221;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =222;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =223;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =224;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =225;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =226;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =227;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =228;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =229;
+UPDATE `tbl_countries` SET `country_zone_id`=2, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =230;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =231;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =232;
+UPDATE `tbl_countries` SET `country_zone_id`=7, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =233;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =234;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =235;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =237;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =238;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =239;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =240;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =241;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =242;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =243;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =244;
+UPDATE `tbl_countries` SET `country_zone_id`=9, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =245;
+UPDATE `tbl_countries` SET `country_zone_id`=8, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =246;
+UPDATE `tbl_countries` SET `country_zone_id`=5, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =247;
+UPDATE `tbl_countries` SET `country_zone_id`=1, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =248;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =249;
+UPDATE `tbl_countries` SET `country_zone_id`=6, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =250;
+UPDATE `tbl_countries` SET `country_zone_id`=4, `country_updated_on`='2020-11-12 00:00:00' WHERE country_id =251;
+
+INSERT INTO `tbl_zones_lang`(`zonelang_zone_id`, `zonelang_lang_id`, `zone_name`) VALUES 
+(1, 1, 'Africa'),
+(2, 1, 'Asia'),
+(3, 1, 'Central America'),
+(4, 1, 'Europe'),
+(5, 1, 'Middle East'),
+(6, 1, 'North America'),
+(7, 1, 'Oceania'),
+(8, 1, 'South America'),
+(9, 1, 'The Caribbean'),
+(10, 1, 'Antarctica')
+ON DUPLICATE KEY UPDATE zone_name = VALUES(zone_name);
+
+
+   -- ---- Bind Catalog Added By Admin Updated To Seller With Default Shipping Profile ------
+INSERT IGNORE INTO tbl_shipping_profile_products(shippro_shipprofile_id, shippro_product_id, shippro_user_id)
+SELECT sp.shipprofile_id, p.product_id, p.product_seller_id
+FROM `tbl_products` p
+INNER JOIN tbl_shipping_profile sp ON sp.shipprofile_user_id = p.product_seller_id 
+AND sp.shipprofile_default = 1 
+AND p.product_added_by_admin_id = 1 
+AND p.product_seller_id > 0;
+    -- ---- Bind Catalog Added By Admin Updated To Seller With Default Shipping Profile ------ 
