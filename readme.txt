@@ -420,7 +420,8 @@ Bugs:
     => 045236 - admin> seller orders> price filters are not working properly
     => 045240 - admin> subscription orders> filters> user name > on clicking user name from suggestion there is error
     => 045239 - when subscription coupon is created then on seller end it's listing - min order 0.00 which is not required as there is no such field while creating coupon
-
+    => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
