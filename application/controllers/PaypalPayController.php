@@ -5,7 +5,7 @@ class PaypalPayController extends PaymentController
     public const KEY_NAME = "Paypal";
     private $externalLibUrl = '';
     private $userId = 0;
-    
+
     /**
      * __construct
      *
@@ -17,7 +17,7 @@ class PaypalPayController extends PaymentController
         parent::__construct($action);
         $this->init();
     }
-    
+
     /**
      * allowedCurrenciesArr
      *
@@ -29,7 +29,7 @@ class PaypalPayController extends PaymentController
             "AUD", "BRL", "CAD", "CZK", "DKK", "EUR", "HKD", "HUF", "INR", "ILS", "JPY", "MYR", "MXN", "TWD", "NZD", "NOK", "PHP", "PLN", "GBP", "RUB", "SGD", "SEK", "CHF", "THB", "USD"
         ];
     }
-    
+
     /**
      * init
      *
@@ -45,7 +45,7 @@ class PaypalPayController extends PaymentController
         $this->clientId = 0 < $this->settings['env'] ? $this->settings['live_client_id'] : $this->settings['client_id'];
         $this->externalLibUrl = 'https://www.paypal.com/sdk/js?client-id=' . $this->clientId . '&currency=' . $this->systemCurrencyCode;
     }
-    
+
     /**
      * charge
      *
@@ -76,7 +76,7 @@ class PaypalPayController extends PaymentController
         }
         $this->_template->render(true, false);
     }
-    
+
     /**
      * createOrder
      *
@@ -94,7 +94,7 @@ class PaypalPayController extends PaymentController
         $order = $this->plugin->getResponse();
         echo json_encode($order->result, JSON_PRETTY_PRINT);
     }
-    
+
     /**
      * captureOrder
      *
@@ -112,7 +112,7 @@ class PaypalPayController extends PaymentController
         $order = $this->plugin->getResponse();
         echo json_encode($order->result, JSON_PRETTY_PRINT);
     }
-    
+
     /**
      * callback
      *
@@ -126,8 +126,9 @@ class PaypalPayController extends PaymentController
 
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-        
+
         $capturePayment = isset($purchaseUnit['payments']['captures']) ? current($purchaseUnit['payments']['captures']) : [];
+
         $paidAmountCurrency = isset($capturePayment['amount']['currency_code']) ? $capturePayment['amount']['currency_code'] : '';
         $paidAmount = isset($capturePayment['amount']['value']) ? $capturePayment['amount']['value'] : [];
 
@@ -135,28 +136,29 @@ class PaypalPayController extends PaymentController
             $msg = Labels::getLabel("MSG_INVALID_PAYMENT", $this->siteLangId);
             $this->setErrorAndRedirect($msg, true);
         }
-        
-        if ('COMPLETED' != $capturePayment['status']) {
+
+        if ('COMPLETED' != $post['status']) {
             $msg = Labels::getLabel("MSG_PAYMENT_FAILED_:_{STATUS}", $this->siteLangId);
-            $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $capturePayment['status']]);
+            $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $post['status']]);
             $orderPaymentObj->addOrderPaymentComments($msg);
-            if (false === MOBILE_APP_API_CALL) {
-                $this->setErrorAndRedirect($msg, true);
-            }
+            $this->setErrorAndRedirect($msg, true);
         }
 
-        $message = 'Paypal Order Id: ' . (string) $post['id'] . "&";
-        $message .= 'Paypal Order Payment Capture Id: ' . (string) $capturePayment['id'] . "&";
-        $message .= 'Amount: ' . (string) $paidAmount . "&";
-        $message .= 'Currency: ' . (string) $paidAmountCurrency . "&";
-        $message .= 'Status: ' . (string) $capturePayment['status'] . "&";
+        if (strtolower($purchaseUnit['payee']) != strtolower($this->settings['payee_email'])) {
+            $msg = Labels::getLabel("MSG_PAYMENT_FAILED_:_{STATUS}", $this->siteLangId);
+            $statusMsg = Labels::getLabel("MSG_INVALID_PAYEE(MERCHANT_EMAIL)", $this->siteLangId);
+            $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $statusMsg]);
+            $orderPaymentObj->addOrderPaymentComments($msg);
+            $this->setErrorAndRedirect($msg, true);
+        }
+
         /* Recording Payment in DB */
-        $orderPaymentObj->addOrderPayment(self::KEY_NAME, $post['id'], $paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $message);
+        $orderPaymentObj->addOrderPayment(self::KEY_NAME, $post['id'], $paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), json_encode($post));
         /* End Recording Payment in DB */
         $json['redirecUrl'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
         FatUtility::dieJsonSuccess($json);
     }
-    
+
     /**
      * getExternalLibraries
      *
