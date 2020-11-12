@@ -1,14 +1,14 @@
 $(document).ready(function(){
 	searchSubscriptionOrders(document.frmSubscriptionOrderSearch);
 	
-	$('input[name=\'buyer\']').autocomplete({
+	$('input[name=\'seller\']').autocomplete({
         'classes': {
             "ui-autocomplete": "custom-ui-autocomplete"
         },
 		'source': function(request, response) {
 			$.ajax({
 				url: fcom.makeUrl('Users', 'autoCompleteJson'),
-				data: {keyword: request['term'], user_is_buyer: 1, fIsAjax:1},
+				data: {keyword: request['term'], user_is_supplier: 1, fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
 				success: function(json) {
@@ -19,11 +19,11 @@ $(document).ready(function(){
 			});
 		},
 		'select': function(event, ui) {
-			$("input[name='user_id']").val( item.ui.id );
+			$("input[name='user_id']").val( ui.item.id );
 		}
 	});
 	
-	$('input[name=\'buyer\']').keyup(function(){
+	$('input[name=\'seller\']').keyup(function(){
 		if( $(this).val() == "" ){
 			$("input[name='user_id']").val( "" );
 		}
