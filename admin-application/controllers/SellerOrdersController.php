@@ -203,7 +203,7 @@ class SellerOrdersController extends AdminBaseController
 
         $rs = $srch->getResultSet();
         $vendorOrdersList = FatApp::getDb()->fetchAll($rs);
-
+        // CommonHelper::printArray($vendorOrdersList, true);
         $oObj = new Orders();
         foreach ($vendorOrdersList as &$order) {
             $charges = $oObj->getOrderProductChargesArr($order['op_id']);
@@ -1011,8 +1011,8 @@ class SellerOrdersController extends AdminBaseController
 
         $frm->addDateField('', 'date_from', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $this->adminLangId), 'readonly' => 'readonly'));
         $frm->addDateField('', 'date_to', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $this->adminLangId), 'readonly' => 'readonly'));
-        $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Order_From', $this->adminLangId) . ' [' . $currencySymbol . ']'));
-        $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Order_to', $this->adminLangId) . ' [' . $currencySymbol . ']'));
+        // $frm->addTextBox('', 'price_from', '', array('placeholder' => Labels::getLabel('LBL_Order_From', $this->adminLangId) . ' [' . $currencySymbol . ']'));
+        // $frm->addTextBox('', 'price_to', '', array('placeholder' => Labels::getLabel('LBL_Order_to', $this->adminLangId) . ' [' . $currencySymbol . ']'));
 
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'user_id');

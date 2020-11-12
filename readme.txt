@@ -417,6 +417,7 @@ Bugs:
     => 045179 - While attaching category in catalog category coming after typing the test
 -------------------TV-9.2.2.20201111----------------------
     => 045228 - cart Qty update on cart listing page 
+    => 045236 - admin> seller orders> price filters are not working properly
     
 Enhancements:
     => Tax module upgrade
