@@ -410,10 +410,14 @@ Bugs:
     => 036637 - when combined tax (GST) is used then in email and order detail page> getting tax(0)
     => 044750 - hide the cancel button from customer orders in admin as it's creating confusion on front end
     => 035347 - if related products (seller 2) are added through import/export by seller 1 then they are getting listed on front end
+    => 045166 - on shop details >> when we save search then some json error is there.
+    => 045169 - Product details page >> if there is no description then blank description box should not be there.
+    => 045194 - getting error on product detail page below ratings
     => 043778 - if we add same state in two different rules then some error should get display at admin end
     => 045179 - While attaching category in catalog category coming after typing the test
 -------------------TV-9.2.2.20201111----------------------
     => 045228 - cart Qty update on cart listing page 
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -1,4 +1,6 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage');
+$frm->setFormTagAttribute('id', 'twocheckout');
+?>
 <div class="payment-page">
     <div class="cc-payment">
         <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
@@ -16,7 +18,7 @@
 
             <div class="payment-from container">
                 <?php if (!isset($error)) : ?>
-                    <p><?php echo Labels::getLabel('LBL_We_are_redirecting_payment_page', $siteLangId) ?>:</p>
+                    <p><?php echo Labels::getLabel('LBL_WE_ARE_REDIRECTING_TO_PAYMENT_PAGE', $siteLangId) ?>:</p>
                     <?php echo  $frm->getFormHtml(); ?>
                 <?php else : ?>
                     <div class="alert alert--danger"><?php echo $error; ?></div>
@@ -25,8 +27,8 @@
             <script type="text/javascript">
                 $(function() {
                     setTimeout(function() {
-                        $('form[name="twocheckout"]').submit()
-                    }, 5000);
+                        $('form#twocheckout').submit();
+                    }, 2000);
                 });
             </script>
 
@@ -35,7 +37,6 @@
             <div class="payment-from container">
                 <?php if (!isset($error)) :
                     // $frm->setFormTagAttribute('onsubmit', 'sendPayment(this);return false;');
-                    $frm->setFormTagAttribute('id', 'twocheckout');
                     $frm->getField('ccNo')->setFieldTagAttribute('class', 'p-cards');
                     $frm->getField('ccNo')->setFieldTagAttribute('id', 'ccNo');
 

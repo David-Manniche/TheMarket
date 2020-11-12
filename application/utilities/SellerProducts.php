@@ -79,7 +79,7 @@ trait SellerProducts
             $srch->setPageNumber($page);
             $srch->setPageSize($pageSize);
         }
-
+		$srch->addOrder('selprod_id', 'DESC');
         $db = FatApp::getDb();
 
         $rs = $srch->getResultSet();

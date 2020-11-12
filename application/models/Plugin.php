@@ -331,7 +331,7 @@ class Plugin extends MyAppModel
                 ]
             );
         }
-
+        $srch->addOrder('plugin_display_order', 'ASC');
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
