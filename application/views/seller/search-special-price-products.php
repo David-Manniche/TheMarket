@@ -26,7 +26,7 @@ foreach ($arr_flds as $column => $lblTitle) {
     } else {
         $th->appendElement('th', array(), $lblTitle);
     }
-}
+} 
 
 foreach ($arrListing as $sn => $row) {
     $tr = $tbl->appendElement('tr', array());
@@ -42,8 +42,11 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'product_name':
                 // last Param of getProductDisplayTitle function used to get title in html form.
+                $txt = '<div class="item__description">';
                 $productName = SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true);
-                $td->appendElement('plaintext', array(), $productName, true);
+                $txt .= '<div class="item__title">' . $productName . '</div>';
+                $txt .= '</div>';
+                $td->appendElement('plaintext', array(), $txt, true);
                 break;
             case 'selprod_price':
                 $price = CommonHelper::displayMoneyFormat($row[$column], true, true);

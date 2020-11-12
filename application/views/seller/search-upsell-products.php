@@ -34,8 +34,11 @@
                     break;
                 case 'product_name':
                     // last Param of getProductDisplayTitle function used to get title in html form.
-                    $productName = "<span class='js-prod-name'>" . SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true) . "</span>";
-                    $td->appendElement('plaintext', array(), $productName, true);
+                    $txt = '<div class="item__description">';
+                    //$productName = "<span class='js-prod-name'>" . SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true) . "</span>";
+                    $txt .= '<div class="item__title">' . SellerProduct::getProductDisplayTitle($selProdId, $siteLangId, true) . '</div>';
+                    $txt .= '</div>';
+                    $td->appendElement('plaintext', array(), $txt, true);
                     break;
                 case 'upsell_products':
                     $div = $td->appendElement('div', array("class" => "list-tag-wrapper", "data-scroll-height" => "150", "data-simplebar" => ""));
