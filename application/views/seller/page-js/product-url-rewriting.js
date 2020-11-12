@@ -48,7 +48,8 @@ $(document).ready(function(){
 
 	editUrlForm = function(selprod_id){
 		fcom.ajax(fcom.makeUrl('seller', 'productUrlForm', [selprod_id]), '', function(t) {
-			$("#dvForm").html(t);			
+			$("#dvForm").html(t);	
+                        $("#dvAlert").hide();
 		});
 
 	};

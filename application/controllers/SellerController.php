@@ -511,24 +511,33 @@ class SellerController extends SellerBaseController
             $codOrder = true;
         }
 
+        $pickupOrder = false;
+        if (strtolower($orderDetail['plugin_code']) == 'payatstore') {
+            $pickupOrder = true;
+        }
+
         if ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(true, $codOrder);
+            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(true, $codOrder, $pickupOrder);
         } elseif ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder);
+            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder, $pickupOrder);
         } else {
-            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder);
+            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder, $pickupOrder);
         }
 
         /* [ if shipping not handled by seller then seller can not update status to ship and delived */
         if (!CommonHelper::canAvailShippingChargesBySeller($orderDetail['op_selprod_user_id'], $orderDetail['opshipping_by_seller_user_id'])) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-            $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+            if ($pickupOrder) {
+                $processingStatuses = [];
+            } else {
+                $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+            }
         }
         /* ] */
 
-        if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
+        /* if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-        }
+        } */
 
         $charges = $orderObj->getOrderProductChargesArr($op_id);
         $orderDetail['charges'] = $charges;
@@ -805,12 +814,17 @@ class SellerController extends SellerBaseController
             $codOrder = true;
         }
 
+        $pickupOrder = false;
+        if (strtolower($orderDetail['plugin_code']) == 'payatstore') {
+            $pickupOrder = true;
+        }
+
         if ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(true, $codOrder);
+            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(true, $codOrder, $pickupOrder);
         } elseif ($orderDetail['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
-            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder);
+            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder, $pickupOrder);
         } else {
-            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder);
+            $processingStatuses = $orderObj->getVendorAllowedUpdateOrderStatuses(false, $codOrder, $pickupOrder);
         }
 
 
@@ -818,7 +832,11 @@ class SellerController extends SellerBaseController
         $opshipping_by_seller_user_id = isset($orderDetail['opshipping_by_seller_user_id']) ? $orderDetail['opshipping_by_seller_user_id'] : 0;
         if (!CommonHelper::canAvailShippingChargesBySeller($orderDetail['op_selprod_user_id'], $opshipping_by_seller_user_id)) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-            $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+            if ($pickupOrder) {
+                $processingStatuses = [];
+            } else {
+                $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+            }
         }
         /* ] */
 
@@ -859,7 +877,7 @@ class SellerController extends SellerBaseController
         }
 
 
-        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_PAYMENT_PAID != $orderDetail['order_payment_status']) {
+        if (in_array(strtolower($orderDetail['plugin_code']), ['cashondelivery', 'payatshop']) && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_PAYMENT_PAID != $orderDetail['order_payment_status']) {
             $orderProducts = new OrderProductSearch($this->siteLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);

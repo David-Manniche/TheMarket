@@ -87,8 +87,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                     $selected_method .= ($selected_method != '') ? ' + ' . Labels::getLabel("LBL_Rewards", $siteLangId) : Labels::getLabel("LBL_Rewards", $siteLangId);
                                 }
 
-                                if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && $orderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
-                                    $selected_method = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
+                                if (in_array(strtolower($orderDetail['plugin_code']), ['cashondelivery', 'payatstore'])) {
+                                    $selected_method = (empty($orderDetail['plugin_name'])) ? $orderDetail['plugin_identifier'] : $orderDetail['plugin_name'];
                                 }
                                 ?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId); ?>: </strong><?php echo $selected_method; ?></p>
@@ -107,7 +107,7 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                 <?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
                                     <?php if (empty($orderDetail['taxOptions'])) { ?>
                                         <p>
-                                            <strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong> 
+                                            <strong><?php echo Labels::getLabel('LBL_Tax', $siteLangId); ?>:</strong>
                                             <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true); ?>
                                         </p>
                                         <?php } else {

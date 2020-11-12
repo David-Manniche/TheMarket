@@ -919,7 +919,7 @@ class EmailHandler extends FatModel
         $langId = FatApp::getConfig('conf_default_site_lang');
         $langId = FatUtility::int($langId);
         $orderObj = new Orders();
-        $orderDetail = $orderObj->getOrderById($orderId);
+        $orderDetail = $orderObj->getOrderById($orderId, $langId);
 
         if (1 > $langId) {
             $langId = $orderDetail['order_language_id'];
@@ -927,14 +927,13 @@ class EmailHandler extends FatModel
 
         $userObj = new User($orderDetail["order_user_id"]);
         $userInfo = $userObj->getUserInfo(array('user_name', 'credential_email', 'user_dial_code', 'user_phone'));
-
-        $payementStatusArr = Orders::getOrderPaymentStatusArr($langId);
+        // $payementStatusArr = Orders::getOrderPaymentStatusArr($langId);
 
         if ($orderDetail) {
             $arrReplacements = array(
                 '{user_full_name}' => trim($userInfo['user_name']),
                 '{invoice_number}' => $orderDetail['order_id'],
-                '{order_payment_method}' => Labels::getLabel('LBL_Cash_on_delivery', $langId),
+                '{order_payment_method}' => (isset($orderDetail['plugin_name']) && !empty($orderDetail['plugin_name'])) ? $orderDetail['plugin_name'] : $orderDetail['plugin_identifier'],
             );
 
             $this->sendMailToAdminAndAdditionalEmails("primary_order_payment_status_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
@@ -953,7 +952,7 @@ class EmailHandler extends FatModel
         $langId = FatUtility::int($langId);
         $orderObj = new Orders();
         $orderDetail = $orderObj->getOrderById($orderId, $langId);
-        
+
         if (1 > $langId) {
             $langId = $orderDetail['order_language_id'];
         }
@@ -967,7 +966,7 @@ class EmailHandler extends FatModel
             $arrReplacements = array(
                 '{user_full_name}' => trim($userInfo['user_name']),
                 '{invoice_number}' => $orderDetail['order_id'],
-                '{order_payment_method}' => !empty($orderDetail['plugin_name']) ? $orderDetail['plugin_name'] : $orderDetail['plugin_identifier'] ,
+                '{order_payment_method}' => !empty($orderDetail['plugin_name']) ? $orderDetail['plugin_name'] : $orderDetail['plugin_identifier'],
             );
 
             $this->sendMailToAdminAndAdditionalEmails("primary_order_bank_transfer_payment_status_admin", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
@@ -1088,7 +1087,7 @@ class EmailHandler extends FatModel
                     '{order_id}' => $orderId,
                 );
 
-                if (!empty($paymentType) && strtolower($paymentType) == 'cashondelivery') {
+                if (!empty($paymentType) && in_array(strtolower($paymentType), ['cashondelivery', 'payatstore'])) {
                     $tpl = "vendor_cod_order_email";
                 } else if (!empty($paymentType) && strtolower($paymentType) == 'transferbank') {
                     $tpl = "vendor_bank_transfer_order_email";
@@ -1104,7 +1103,7 @@ class EmailHandler extends FatModel
                 $bccEmails = $receipentsInfo['email'];
                 self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements, '', 0, array(), $bccEmails);
 
-                if (!in_array(strtolower($paymentType), ['cashondelivery', 'transferbank'])) {
+                if (!in_array(strtolower($paymentType), ['cashondelivery', 'payatstore', 'transferbank'])) {
                     $phoneNumbers = $receipentsInfo['phone'];
                     $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
                     $phoneNumbers[] = $userPhone;

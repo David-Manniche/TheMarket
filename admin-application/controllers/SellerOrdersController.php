@@ -308,6 +308,8 @@ class SellerOrdersController extends AdminBaseController
 
         if ($opRow['plugin_code'] == 'CashOnDelivery') {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(true);
+        } else if ($opRow['plugin_code'] == 'PayAtStore') {
+            $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, false, true);
         } else {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $opRow['op_product_type']);
         }
@@ -332,7 +334,7 @@ class SellerOrdersController extends AdminBaseController
         $allowedShippingUserStatuses = $orderObj->getAdminAllowedUpdateShippingUser();
         $displayShippingUserForm = false;
 
-        if (((strtolower($opRow['plugin_code']) == 'cashondelivery') || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_payment_status'] != Orders::ORDER_PAYMENT_CANCELLED)) {
+        if (((in_array(strtolower($opRow['plugin_code']), ['cashondelivery', 'payatstore'])) || (in_array($opRow['op_status_id'], $allowedShippingUserStatuses))) && $this->canEdit && !$shippingHanldedBySeller && ($opRow['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL && $opRow['order_payment_status'] != Orders::ORDER_PAYMENT_CANCELLED)) {
             $displayShippingUserForm = true;
             if ($opRow["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
                 $displayShippingUserForm = false;
@@ -425,7 +427,7 @@ class SellerOrdersController extends AdminBaseController
             }
             $orderDetail['thirdPartyorderInfo'] = (null != $this->shippingService ? $this->shippingService->getResponse() : []);
         }
-      
+
         $address = $orderObj->getOrderAddresses($orderDetail['op_order_id']);
         $orderDetail['billingAddress'] = (isset($address[Orders::BILLING_ADDRESS_TYPE])) ? $address[Orders::BILLING_ADDRESS_TYPE] : array();
         $orderDetail['shippingAddress'] = (isset($address[Orders::SHIPPING_ADDRESS_TYPE])) ? $address[Orders::SHIPPING_ADDRESS_TYPE] : array();
@@ -453,12 +455,12 @@ class SellerOrdersController extends AdminBaseController
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->adminLangId));
         $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->adminLangId));
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->SetHeaderMargin(0);
-        $pdf->SetHeaderData('', 0, '', '', array(255,255,255), array(255,255,255));
-        $pdf->setFooterData(array(0,0,0), array(200,200,200));
+        $pdf->SetHeaderData('', 0, '', '', array(255, 255, 255), array(255, 255, 255));
+        $pdf->setFooterData(array(0, 0, 0), array(200, 200, 200));
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
         $pdf->SetMargins(10, 10, 10);
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->AddPage();
@@ -469,7 +471,7 @@ class SellerOrdersController extends AdminBaseController
         $html = $template->render(false, false, $templatePath, true, true);
         $pdf->writeHTML($html, true, false, true, false, '');
         $pdf->lastPage();
-        
+
         ob_end_clean();
         // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
         //$pdf->Output($saveFile, 'F');
@@ -645,6 +647,8 @@ class SellerOrdersController extends AdminBaseController
 
         if ($orderDetail['plugin_code'] == 'CashOnDelivery') {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(true);
+        } else if ($orderDetail['plugin_code'] == 'PayAtStore') {
+            $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, false, true);
         } else {
             $processingStatuses = $orderObj->getAdminAllowedUpdateOrderStatuses(false, $orderDetail['op_product_type']);
         }
@@ -696,7 +700,7 @@ class SellerOrdersController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        if (strtolower($orderDetail['plugin_code']) == 'cashondelivery' && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_PAYMENT_PAID != $orderDetail['order_payment_status']) {
+        if (in_array(strtolower($orderDetail['plugin_code']), ['cashondelivery', 'payatstore']) && (OrderStatus::ORDER_DELIVERED == $post["op_status_id"] || OrderStatus::ORDER_COMPLETED == $post["op_status_id"]) && Orders::ORDER_PAYMENT_PAID != $orderDetail['order_payment_status']) {
             $orderProducts = new OrderProductSearch($this->adminLangId, true, true);
             $orderProducts->joinPaymentMethod();
             $orderProducts->addMultipleFields(['op_status_id']);

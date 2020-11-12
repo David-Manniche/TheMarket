@@ -24,6 +24,7 @@ class Report extends MyAppModel
 
         $cnd = $srch->addCondition('o.order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
+        $cnd->attachCondition('plugin_code', '=', 'payatstore');
         $srch->addStatusCondition(unserialize(FatApp::getConfig('CONF_COMPLETED_ORDER_STATUS')));
 
         if (empty($attr)) {

@@ -175,12 +175,13 @@ $this->includeTemplate('_partial/buyerDashboardNavigation.php'); ?>
                                                         <br>
                                                         <span class="label label-inline <?php echo $classArr[$row['orderstatus_color_class']]; ?>">
                                                             <?php 
-                                                                $paymentMethodCode = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
+                                                            echo $row['orderstatus_name'];
+                                                                /* $paymentMethodCode = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
                                                                 if (strtolower($paymentMethodCode) == 'cashondelivery' && $row['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
                                                                     echo Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                                                                 } else {
                                                                     echo $row['orderstatus_name'];
-                                                                }
+                                                                } */
                                                             ?>
                                                         </span>
                                                     </div>

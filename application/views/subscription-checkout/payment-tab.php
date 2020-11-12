@@ -12,28 +12,28 @@ $submitFld = $frm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', "btn btn-brand");
 ?>
 <!--<div class="">
-    <p><strong><?php echo sprintf(Labels::getLabel('LBL_Pay_using_Payment_Method', $siteLangId), $paymentMethod["plugin_name"])?>:</strong></p><br />
-    <p><?php echo $paymentMethod["plugin_description"]?></p><br />
+    <p><strong><?php echo sprintf(Labels::getLabel('LBL_Pay_using_Payment_Method', $siteLangId), $paymentMethod["plugin_name"]) ?>:</strong></p><br />
+    <p><?php echo $paymentMethod["plugin_description"] ?></p><br />
     <?php if (!isset($error)) {
         echo $frm->getFormHtml();
     } ?>
 </div>-->
-<div class="text-center paymentForm-js d-none">     
-        <?php if (!isset($error)) {
-            echo $frm->getFormHtml();
-        }
-        ?>
+<div class="text-center paymentForm-js d-none">
+    <?php if (!isset($error)) {
+        echo $frm->getFormHtml();
+    }
+    ?>
 </div>
 <script type="text/javascript">
     $("document").ready(function() {
         <?php if (isset($error)) { ?>
-        $.systemMessage(<?php echo $error; ?>);
+            $.systemMessage(<?php echo $error; ?>);
         <?php } ?>
     });
-    
-    
+
+
     function confirmOrder(frm) {
-        
+
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action')
         var getExternalLibraryUrl = $(frm).data('external');
@@ -61,7 +61,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-brand");
             }
         });
     }
-    
+
     function loadChargeForm(action) {
         fcom.ajax(action, '', function(t) {
             $.mbsmessage.close();
@@ -83,7 +83,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-brand");
             }
         });
     }
-    
+
     /*
     function confirmOrder(frm) {
         var data = fcom.frmData(frm);
@@ -95,10 +95,10 @@ $submitFld->setFieldTagAttribute('class', "btn btn-brand");
  * 
      */
 </script>
-<?php 
+<?php
 $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
 $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
-if (!empty($siteKey) && !empty($secretKey) && 'cashondelivery' == strtolower($paymentMethod['plugin_code'])) {?>
+if (!empty($siteKey) && !empty($secretKey) && in_array(strtolower($paymentMethod['plugin_code']), ['cashondelivery', 'payatstore'])) { ?>
     <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
     <script>
         googleCaptcha();

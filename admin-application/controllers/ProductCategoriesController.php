@@ -82,6 +82,9 @@ class ProductCategoriesController extends AdminBaseController
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $prodCatId = FatUtility::int($prodCatId);
         $prodCatFrm = $this->getCategoryForm($prodCatId, $productReq);
+        $prodCat = new ProductCategory();
+        $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
+        $categories =  $prodCat->makeAssociativeArray($categoriesArr);
         if (0 < $prodCatId) {
             $data = ProductCategory::getAttributesById($prodCatId);
             if ($data === false) {
@@ -91,7 +94,9 @@ class ProductCategoriesController extends AdminBaseController
             $catNameArr = array();
             foreach ($langData as $value) {
                 $catNameArr[ProductCategory::DB_TBL_PREFIX . 'name'][$value[ProductCategory::DB_TBL_LANG_PREFIX . 'lang_id']] = $value[ProductCategory::DB_TBL_PREFIX . 'name'];
-            }
+            }            
+            $data['parent_category_name'] = $categories[$data['prodcat_parent']] ?? '';
+            
             $data = array_merge($data, $catNameArr);
             $prodCatFrm->fill($data);
         }
@@ -104,6 +109,7 @@ class ProductCategoriesController extends AdminBaseController
         $this->set('mediaLanguages', $mediaLanguages);
         $this->set('screenArr', $screenArr);
         $this->set('otherLangData', $langData);
+        $this->set('categories', $categories);
         $this->_template->render(false, false);
     }
 
@@ -115,11 +121,16 @@ class ProductCategoriesController extends AdminBaseController
         $frm->addHiddenField('', 'prodcat_id', $prodCatId);
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Name', $this->adminLangId), 'prodcat_name[' . $siteDefaultLangId . ']');
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Identifier', $this->adminLangId), 'prodcat_identifier');
-
+        /*
         $prodCat = new ProductCategory();
         $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
         $categories = array(0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId)) + $prodCat->makeAssociativeArray($categoriesArr);
         $frm->addSelectBox(Labels::getLabel('LBL_Parent_Category', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
+         * 
+         */
+        
+        $frm->addRequiredField(Labels::getLabel('LBL_Parent_Category', $this->adminLangId), 'parent_category_name');        
+        $frm->addHiddenField('', 'prodcat_parent', $prodCatId);        
 
         $yesNoArr = applicationConstants::getYesNoArr($this->adminLangId);
         $frm->addRadioButtons(Labels::getLabel('LBL_Publish', $this->adminLangId), 'prodcat_active', $yesNoArr, '1', array());

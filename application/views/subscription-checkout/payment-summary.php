@@ -119,10 +119,10 @@
                                 }
                                 $pmethodCode = $val['plugin_code'];
                                 $pmethodId = $val['plugin_id'];
-                                $pmethodName = $val['plugin_name'];
-                                if(strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP){
+                                $pmethodName = (isset($val['plugin_name']) && !empty($val['plugin_name'])) ? $val['plugin_name'] : $val['plugin_identifier'];
+                                /* if(strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP){
                                     $pmethodName = Labels::getLabel('LBL_Pay_on_pickup', $siteLangId);
-                                }
+                                } */
 
                                 if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
                                     continue;
