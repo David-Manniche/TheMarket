@@ -442,3 +442,8 @@ Notes:
         i) Add Webhook url under "Endpoints receiving events from your account" 
             1) "Webhook Detail" > Url as "{domain-name}/stripe-connect-pay/payment-status" bind events "payment_intent.payment_failed", "payment_intent.succeeded".
    ==============]==========================
+
+   ==========Installation Notes [:=========
+   Default Shipping profile setup:
+       To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles
+   ==========Installation Notes [:=========

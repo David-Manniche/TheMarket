@@ -8,6 +8,33 @@ class PatchUpdateController extends AdminBaseController
         ini_set('memory_limit', '100M');
         set_time_limit(0);
     }
+    
+    /**
+     * updateShippingProfiles
+     * @Description : For V9.3 to update default shipping profile for all seller and admin if not created and products are not bound.
+     * @return void
+     */
+    public function updateShippingProfiles()
+    {
+        /* For Admin */
+        ShippingProfile::getDefaultProfileId(0);
+        /* For Admin */
+
+        /* For All Sellers */
+        $userObj = new User();
+        $srch = $userObj->getUserSearchObj(['u.user_id', 'u.user_id as uid'], true, true);
+        $srch->addCondition('u.' . User::DB_TBL_PREFIX . 'is_supplier', '=', applicationConstants::YES);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $rs = $srch->getResultSet();
+        $db = FatApp::getDb();
+        $users = $db->fetchAllAssoc($rs);
+        foreach ($users as $userId) {
+            ShippingProfile::getDefaultProfileId($userId);
+        }
+        /* For All Sellers */
+        echo 'Done!';
+    }
 
     public function updateTaxJarCat()
     {
@@ -17,7 +44,7 @@ class PatchUpdateController extends AdminBaseController
 
         $taxJarObj = new TaxJarTax($this->adminLangId);
         $codesArr = $taxJarObj->getCodes(null, null, null, array(), false);
-       
+    
         $pluginId = Plugin::getAttributesByCode(TaxJarTax::KEY_NAME, 'plugin_id');
         $db = FatApp::getDb();
         $parentArr = [];
