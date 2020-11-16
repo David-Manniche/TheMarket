@@ -1143,3 +1143,37 @@ INSERT INTO `tbl_zones_lang`(`zonelang_zone_id`, `zonelang_lang_id`, `zone_name`
 (9, 1, 'The Caribbean'),
 (10, 1, 'Antarctica')
 ON DUPLICATE KEY UPDATE zone_name = VALUES(zone_name);
+
+
+--
+-- Table structure for table `tbl_transactions_failure_log`
+--
+
+CREATE TABLE `tbl_transactions_failure_log` (
+  `txnlog_id` bigint(20) NOT NULL,
+  `txnlog_type` int(11) NOT NULL COMMENT 'Defined In Transaction Failure Log Model',
+  `txnlog_record_id` varchar(150) NOT NULL,
+  `txnlog_response` text NOT NULL,
+  `txnlog_updated_on` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `txnlog_added_on` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_transactions_failure_log`
+--
+ALTER TABLE `tbl_transactions_failure_log`
+  ADD PRIMARY KEY (`txnlog_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_transactions_failure_log`
+--
+ALTER TABLE `tbl_transactions_failure_log`
+  MODIFY `txnlog_id` bigint(20) NOT NULL AUTO_INCREMENT;
