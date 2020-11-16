@@ -32,7 +32,7 @@ if (User::isSeller()) {
     $locationFld->setFieldTagAttribute('id', 'banner_blocation_id');
     $locationFldId = $locationFld->getFieldTagAttribute('id');
     $locationFld->setWrapperAttribute('class', 'location_fld');
-    $locationFld->htmlAfterField= '<a href="javascript:void(0)" onClick="viewWrieFrame($(\'#'.$locationFldId.'\').val())">'.Labels::getLabel('LBL_View_WireFrame', $siteLangId).'</a>';
+    // $locationFld->htmlAfterField= '<a href="javascript:void(0)" onClick="viewWrieFrame($(\'#'.$locationFldId.'\').val())">'.Labels::getLabel('LBL_View_WireFrame', $siteLangId).'</a>';
 
     $slideUrlFld = $frm->getField('slide_url');
     $slideUrlFld->setWrapperAttribute('class', 'slide_url_fld');

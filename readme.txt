@@ -423,6 +423,7 @@ Bugs:
     => 045269 - Paypal: transaction issue - capture pending in case of new seller registration on payapl.
     => 045316 - Subscription checkout page - discount coupon is not visible
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
+    => 045188 - when banners are added in collection the location is not required on advertiser end
     
 Enhancements:
     => Tax module upgrade
