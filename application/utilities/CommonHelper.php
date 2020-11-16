@@ -865,8 +865,13 @@ class CommonHelper extends FatUtility
     {
         $_SESSION['app_user'] = true;
     }
-
-    public static function isAppUser()
+    
+    /**
+     * isAppUser - Used in case of web view.
+     *
+     * @return bool
+     */
+    public static function isAppUser(): bool
     {
         if (isset($_SESSION['app_user'])) {
             return true;
