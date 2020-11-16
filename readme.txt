@@ -424,6 +424,7 @@ Bugs:
     => 045316 - Subscription checkout page - discount coupon is not visible
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
     => 045188 - when banners are added in collection the location is not required on advertiser end
+    => 045312 - when seller having enough money then while adding promotion there is error for budget
     
 Enhancements:
     => Tax module upgrade
