@@ -425,6 +425,7 @@ Bugs:
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
     => 045188 - when banners are added in collection the location is not required on advertiser end
     => 045312 - when seller having enough money then while adding promotion there is error for budget
+    => 045307 - as free shipping is not there on catalog but lies in import/export
     
 Enhancements:
     => Tax module upgrade

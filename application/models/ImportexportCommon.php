@@ -415,7 +415,7 @@ class ImportexportCommon extends FatModel
             }
 
             if ((0 == $userId && $shippedBy) || !$shippedBy) {
-                $arr['ps_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
+                // $arr['ps_free'] = Labels::getLabel('LBL_Free_Shipping', $langId);
                 $arr['product_cod_enabled'] = Labels::getLabel('LBL_COD_available', $langId);
             }
 
