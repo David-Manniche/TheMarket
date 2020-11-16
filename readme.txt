@@ -421,6 +421,7 @@ Bugs:
     => 045240 - admin> subscription orders> filters> user name > on clicking user name from suggestion there is error
     => 045239 - when subscription coupon is created then on seller end it's listing - min order 0.00 which is not required as there is no such field while creating coupon
     => 045269 - Paypal: transaction issue - capture pending in case of new seller registration on payapl.
+    => 045316 - Subscription checkout page - discount coupon is not visible
 
 Enhancements:
     => Tax module upgrade
