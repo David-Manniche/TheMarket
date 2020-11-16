@@ -78,7 +78,7 @@
             data.append(this.name, $(this).val());
         });
         $.each($('#import_file')[0].files, function(i, file) {
-            fcom.displayProcessing(langLbl.processing, ' ', true);
+            fcom.displayProcessing(langLbl.processing, ' ', false);
             $('#fileupload_div').html(fcom.getLoader());
             data.append('import_file', file);
             $.ajax({

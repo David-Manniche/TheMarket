@@ -183,9 +183,10 @@ class Importexport extends ImportexportCommon
         $headingRow = $this->getFileRow($csvFilePointer);
         array_walk(
             $headingRow,
-            function (&$string) {
-                // 7 bit ASCII
-                $string = str_replace('"', '', preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $string));
+            function (&$string, $key) {
+                if (0 == $key) {
+                    $string = str_replace('"', '', preg_replace('/[^\x{0600}-\x{06FF}A-Za-z !@#$%^&*()]/u', '', $string));
+                }
             }
         );
         if (!$this->isValidColumns($headingRow, $coloumArr)) {
@@ -1691,10 +1692,10 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'product_identifier':
                             $prodData = Product::getAttributesByIdentifier($colValue, array('product_id', 'product_seller_id', 'product_featured', 'product_approved'));
-                            if ($sellerId && !empty($prodData) && $prodData['product_seller_id'] != $sellerId) {
+                            if ($sellerId && is_array($prodData) && !empty($prodData) && $prodData['product_seller_id'] != $sellerId) {
                                 $invalid = true;
                             }
-                            $productId = $prodData['product_id'];
+                            $productId = false == $prodData ? 0 : $prodData['product_id'];
                             break;
                         case 'product_seller_id':
                             $colValue = 0;
@@ -1833,10 +1834,10 @@ class Importexport extends ImportexportCommon
 
                             break;
                         case 'product_weight_unit_identifier':
+                            $columnKey = 'product_weight_unit';
                             if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
                                 $colValue = '';
                             } else {
-                                $columnKey = 'product_weight_unit';
                                 if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
                                     if (!array_key_exists($colValue, $weightUnitsArr)) {
                                         $invalid = true;
