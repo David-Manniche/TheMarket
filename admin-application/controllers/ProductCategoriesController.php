@@ -84,7 +84,7 @@ class ProductCategoriesController extends AdminBaseController
         $prodCatFrm = $this->getCategoryForm($prodCatId, $productReq);
         $prodCat = new ProductCategory();
         $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
-        $categories =  $prodCat->makeAssociativeArray($categoriesArr);
+        $categories =  array(0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId)) + $prodCat->makeAssociativeArray($categoriesArr);
         if (0 < $prodCatId) {
             $data = ProductCategory::getAttributesById($prodCatId);
             if ($data === false) {
