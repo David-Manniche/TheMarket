@@ -43,10 +43,18 @@ array_walk($orderFulFillmentTypeArr, function ($row) use (&$fulfillmentType) {
                                 <?php
                                 if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                     $msg = Labels::getLabel('LBL_YOUR_ORDER_#{ORDER-ID}_HAS_BEEN_PLACED!', $siteLangId);
+                                    $orderDetailUrl = UrlHelper::generateUrl('Buyer', 'viewOrder', array($orderInfo['order_id']));
+                                    $orderDetailLinkHtml = '<a href="' . $orderDetailUrl . '">'. $orderInfo['order_id'] . '</a>';
                                 } else {
                                     $msg = Labels::getLabel('LBL_ORDER_#{ORDER-ID}_TRANSACTION_COMPLETED!', $siteLangId);
+                                    $orderProducts = current($orderInfo['orderProducts']);
+                                    $orderDetailUrl = UrlHelper::generateUrl('Seller', 'viewSubscriptionOrder', array($orderProducts['ossubs_id']));
+                                    $orderDetailLinkHtml = $orderInfo['order_id'];
+                                    if ( isset($orderProducts['ossubs_id']) ) {
+                                        $orderDetailLinkHtml = '<a href="' . $orderDetailUrl . '">'. $orderInfo['order_id'] . '</a>';
+                                    }
                                 }
-                                $msg = CommonHelper::replaceStringData($msg, ['{ORDER-ID}' => $orderInfo['order_id']]);
+                                $msg = CommonHelper::replaceStringData($msg, ['{ORDER-ID}' => $orderDetailLinkHtml]);
                                 echo $msg;
                                 ?>
                             </h3>

@@ -37,6 +37,19 @@ foreach ($arrListing as $sn => $listing) {
                 if ($listing['brand_name'] != '') {
                     $name .= '<div class="item__brand">' . Labels::getLabel('LBL_Brand', $siteLangId) . ": </strong>" . $listing['brand_name'] . '</div>';
                 }
+                if (is_array($listing['options']) && count($listing['options'])) {
+                    $name .= '<div class="item__specification">';
+                    $count = count($listing['options']);
+                    foreach ($listing['options'] as $op) {
+                        $name .= '' . wordwrap($op['optionvalue_name'], 150, "<br>\n");
+                        if ($count != 1) {
+                            $variantStr .= ' | ';
+                        }
+                        $count--;
+                    }
+                    $name .= '</div>';
+                }
+                
                 $td->setAttribute('width', '40%');
                 $td->appendElement('plaintext', array(), $name, true);
                 break;
