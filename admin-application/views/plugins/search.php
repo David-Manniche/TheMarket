@@ -65,6 +65,10 @@ foreach ($arr_listing as $sn => $row) {
                 if (!empty($defaultCurrConvAPI) && $row['plugin_id'] == $defaultCurrConvAPI) {
                     $htm = ' <span class="badge badge--unified-brand badge--inline badge--pill">'  . Labels::getLabel('LBL_DEFAULT', $adminLangId) . '</span>';
                 }
+
+                if (in_array($row['plugin_code'], Plugin::PAY_LATER)) {
+                    $htm .= ' <span class="badge badge--unified-warning badge--inline badge--pill">'  . Labels::getLabel('LBL_PAY_LATER', $adminLangId) . '</span>';
+                }
                 if ($row['plugin_name'] != '') {
                     $td->appendElement('plaintext', array(), $row['plugin_name'] . $htm, true);
                     $td->appendElement('br', array());
