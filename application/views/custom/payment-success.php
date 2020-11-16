@@ -14,15 +14,6 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
         $shippingMethod .= !empty($op['opshipping_label']) ? '<li>' . $op['opshipping_label'] . '</li>' : '';
     }
 }
-
-$fulfillmentType = Shipping::FULFILMENT_SHIP;
-array_walk($orderFulFillmentTypeArr, function ($row) use (&$fulfillmentType) {
-    if (Product::PRODUCT_TYPE_PHYSICAL == $row['op_product_type']) {
-        $fulfillmentType = $row['opshipping_fulfillment_type'];
-        return;
-    }
-});
-
 ?>
 <div id="body" class="body">
     <section class="section">
