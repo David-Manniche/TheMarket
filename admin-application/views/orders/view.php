@@ -499,7 +499,9 @@ if ($order['order_reward_point_used'] > 0) {
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div class="break-me"><?php echo nl2br($row['opayment_gateway_response']); ?>
+                                                    <div class="break-me">
+                                                        <a href="javascript:void(0);" onclick="viewPaymemntGatewayResponse('<?php echo $row['opayment_gateway_response'];?>')">View</a>
+                                                        <?php //echo nl2br($row['opayment_gateway_response']); ?>
                                                     </div>
                                                 </td>
                                                 <td>

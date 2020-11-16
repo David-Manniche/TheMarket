@@ -110,12 +110,12 @@ class PayFortPayController extends PaymentController
             }
 
             $gateWayCharges = ($paymentGatewayCharge / 100);
-            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $_REQUEST['fort_id'], $gateWayCharges, 'Received Payment', implode('&', $message));
-
+            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $_REQUEST['fort_id'], $gateWayCharges, 'Received Payment', json_encode($_REQUEST));
             FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
         } else {
             $orderPaymentObj->addOrderPaymentComments('#' . $_REQUEST['response_code'] . ': ' . $_REQUEST['response_message']);
         }
+        TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($_REQUEST));
         if (substr($_REQUEST['response_code'], 2) == '072') {
             FatApp::redirectUser(CommonHelper::getPaymentCancelPageUrl());
         } else {

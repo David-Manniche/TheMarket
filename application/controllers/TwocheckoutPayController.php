@@ -102,21 +102,15 @@ class TwocheckoutPayController extends PaymentController
         }
         $StringToHash = strtoupper(md5($hashSecretWord . $hashSid . $hashOrder . $request['total']));
 
-        $message = '';
         if ($StringToHash == $request['key'] && (float)$request['total'] == (float)$orderPaymentAmount) {
-            if ($request['credit_card_processed'] == 'Y') {
-                $message .= '2Checkout Order Number: ' . $request['order_number'] . "\n";
-                $message .= '2Checkout Invoice Id: ' . $request['invoice_id'] . "\n";
-                $message .= 'Merchant Order Id: ' . $request['merchant_order_id'] . "\n";
-                $message .= 'Pay Method: ' . $request['pay_method'] . "\n";
-                $message .= 'Description: ' . $request['li_0_name'] . "\n";
-                $message .= 'Hash Match: ' . 'Keys matched' . "\n";
+            if ($request['credit_card_processed'] == 'Y') {               
                 /* Recording Payment in DB */
-                $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $request['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $message);
+                $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $request['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode($request));
                 /* End Recording Payment in DB */
                 FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             }
         }
+        TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($request));
         Message::addErrorMessage(Labels::getLabel('MSG_ERROR_INVALID_ACCESS', $this->siteLangId));
         FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
     }

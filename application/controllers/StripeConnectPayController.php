@@ -435,30 +435,7 @@ class StripeConnectPayController extends PaymentController
         }
 
         $chargeId = $chargeResponse['id'];
-
-        $message = 'Id: ' . $chargeResponse['id'] . "&";
-        $message .= 'Object: ' . $chargeResponse['object'] . "&";
-        $message .= 'Amount: ' . $chargeResponse['amount'] . "&";
-        $message .= 'Amount Refunded: ' . $chargeResponse['amount_refunded'] . "&";
-        $message .= 'Application Fee: ' . $chargeResponse['application_fee'] . "&";
-        $message .= 'Balance Transaction: ' . $chargeResponse['balance_transaction'] . "&";
-        $message .= 'Captured: ' . $chargeResponse['captured'] . "&";
-        $message .= 'Created: ' . $chargeResponse['created'] . "&";
-        $message .= 'Currency: ' . $chargeResponse['currency'] . "&";
-        $message .= 'Customer: ' . $chargeResponse['customer'] . "&";
-        $message .= 'Description: ' . $chargeResponse['description'] . "&";
-        $message .= 'Destination: ' . $chargeResponse['destination'] . "&";
-        $message .= 'Dispute: ' . $chargeResponse['dispute'] . "&";
-        $message .= 'Failure Code: ' . $chargeResponse['failure_code'] . "&";
-        $message .= 'Failure Message: ' . $chargeResponse['failure_message'] . "&";
-        $message .= 'Invoice: ' . $chargeResponse['invoice'] . "&";
-        $message .= 'Livemode: ' . $chargeResponse['livemode'] . "&";
-        $message .= 'Paid: ' . $chargeResponse['paid'] . "&";
-        $message .= 'Receipt Email: ' . $chargeResponse['receipt_email'] . "&";
-        $message .= 'Receipt Number: ' . $chargeResponse['receipt_number'] . "&";
-        $message .= 'Refunded: ' . $chargeResponse['refunded'] . "&";
-        $message .= 'Statement Descriptor: ' . $chargeResponse['statement_descriptor'] . "&";
-        $message .= 'Status: ' . $chargeResponse['status'] . "";
+        $message = $chargeResponse['status'];
 
         /* Recording Payment in DB */
         $orderPaymentObj = new OrderPayment($this->orderId, $this->siteLangId);
@@ -466,7 +443,7 @@ class StripeConnectPayController extends PaymentController
         $this->paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
 
-        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $payloadStr, false, 0, Orders::ORDER_PAYMENT_PAID)) {
+        if (false === $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $chargeId, $this->paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), json_encode($chargeResponse), false, 0, Orders::ORDER_PAYMENT_PAID)) {
             $orderPaymentObj->addOrderPaymentComments($message);
         }
 

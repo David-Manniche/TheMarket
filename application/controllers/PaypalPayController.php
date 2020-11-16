@@ -139,19 +139,14 @@ class PaypalPayController extends PaymentController
         if ('COMPLETED' != $capturePayment['status']) {
             $msg = Labels::getLabel("MSG_PAYMENT_FAILED_:_{STATUS}", $this->siteLangId);
             $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $capturePayment['status']]);
+            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($post));
             $orderPaymentObj->addOrderPaymentComments($msg);
             if (false === MOBILE_APP_API_CALL) {
                 $this->setErrorAndRedirect($msg, true);
             }
         }
-
-        $message = 'Paypal Order Id: ' . (string) $post['id'] . "&";
-        $message .= 'Paypal Order Payment Capture Id: ' . (string) $capturePayment['id'] . "&";
-        $message .= 'Amount: ' . (string) $paidAmount . "&";
-        $message .= 'Currency: ' . (string) $paidAmountCurrency . "&";
-        $message .= 'Status: ' . (string) $capturePayment['status'] . "&";
         /* Recording Payment in DB */
-        $orderPaymentObj->addOrderPayment(self::KEY_NAME, $post['id'], $paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), $message);
+        $orderPaymentObj->addOrderPayment(self::KEY_NAME, $post['id'], $paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), json_encode($post));
         /* End Recording Payment in DB */
         $json['redirecUrl'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
         FatUtility::dieJsonSuccess($json);

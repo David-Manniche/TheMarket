@@ -119,16 +119,18 @@ class KhipuPayController extends PaymentController
                         if (strtolower($response->getStatus()) == 'done') {
                             if ($response->getAmount() == $order_actual_paid) {
                                 // Make payment as complete and deliver the good or service
-                                if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response->getTransactionId(), $response->getAmount(), Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $response->__toString())) {
+                                if (!$orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response->getTransactionId(), $response->getAmount(), Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode($response) ) ) {
                                 }
                             } else {
+                                TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($response));
                                 $request = $response->__toString() . "\n\n KHIPU :: TOTAL PAID MISMATCH! " . $response->getAmount() . "\n\n";
-                                $orderPaymentObj->addOrderPaymentComments($request);
+                                $orderPaymentObj->addOrderPaymentComments($request);                                
                             }
                         }
                     } else {
+                        TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($response));
                         $request = $response->__toString() . "\n\n KHIPU :: RECEIVER MISMATCH! " . $response->getReceiverId() . "\n\n";
-                        $orderPaymentObj->addOrderPaymentComments($request);
+                        $orderPaymentObj->addOrderPaymentComments($request);                        
                     }
                 } else {
                     $json['error'] = Labels::getLabel('MSG_Invalid_Request', $this->siteLangId);

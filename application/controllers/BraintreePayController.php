@@ -147,23 +147,20 @@ class BraintreePayController extends PaymentController
                     if (!empty($charge) && 0 < count($charge)) {
                         $orderPaymentObj = new OrderPayment($orderInfo['id']);
                         if (isset($charge['success']) && 0 < $charge['success'] || (isset($charge['transaction']) && !is_null($charge['transaction']))) {
-                            $message = 'Id: ' . (string) $charge['transaction']->id . "&";
-                            $message .= 'Object: ' . (string) $charge['transaction'] . "&";
-                            $message .= 'Amount: ' . (string) $charge['transaction']->amount . "&";
-
-                            $message .= 'Status: ' . (string) $charge['transaction']->status . "&";
+                            
                             /* Recording Payment in DB */
-
-                            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['transaction']->id, ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+                            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['transaction']->id, ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), json_encode($charge));
                             /* End Recording Payment in DB */
                             $checkPayment = true;
 
                             FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderInfo['id'])));
                         } else {
+                            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderInfo['id'], json_encode($charge));
                             $orderPaymentObj->addOrderPaymentComments($message);
                             FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentFailed'));
                         }
                     } else {
+                        TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderInfo['id'], json_encode($charge));
                         $orderPaymentObj->addOrderPaymentComments($message);
                         FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentFailed'));
                     }
