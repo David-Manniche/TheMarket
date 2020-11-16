@@ -124,15 +124,26 @@ $frm->addHiddenField('', 'plugin_type', $pluginType);?>
     <div class="sectionhead">
         <h4><?php echo CommonHelper::replaceStringData(Labels::getLabel('LBL_{PLUGINNAME}_PLUGINS', $adminLangId), ['{PLUGINNAME}' =>  $pluginTypes[$type]]); ?> </h4>
         <?php
+        $data = ['adminLangId' => $adminLangId];
         if ($canEdit && !in_array($pluginType, Plugin::HAVING_KINGPIN)) {
             $data = [
-                'adminLangId' => $adminLangId,
                 'deleteButton' => false,
                 'msg' => $msg
             ];
 
-            $this->includeTemplate('_partial/action-buttons.php', $data, false);
+        } else if (in_array($pluginType, Plugin::HAVING_KINGPIN) && $pluginType == Plugin::TYPE_TAX_SERVICES && true === $activeTaxPluginFound){
+            $data['otherButtons'] = [
+                  [
+                      'attr' => [
+                          'href' => 'javascript:void(0)',
+                          'onclick' => 'syncCategories()',
+                          'title' => Labels::getLabel('LBL_SYNC_CATEGORIES', $adminLangId)
+                      ],
+                      'label' => '<i class="fas fa-sync-alt"></i>'
+                  ],
+              ];  
         }
+        $this->includeTemplate('_partial/action-buttons.php', $data, false);
         ?>
     </div>
     <div class="sectionbody">

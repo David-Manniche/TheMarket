@@ -2,7 +2,7 @@
 
 class AvalaraTax extends TaxBase
 {
-    public const KEY_NAME = 'AvalaraTax';
+    public const KEY_NAME = __CLASS__;
 
     public $langId = 0;
     private $client;
