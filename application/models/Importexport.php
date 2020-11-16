@@ -181,14 +181,17 @@ class Importexport extends ImportexportCommon
     private function validateCSVHeaders($csvFilePointer, $coloumArr, $langId)
     {
         $headingRow = $this->getFileRow($csvFilePointer);
+        $i = 0;
         array_walk(
             $headingRow,
-            function (&$string, $key) {
-                if (0 == $key) {
+            function (&$string) use (&$i) {
+                if (0 == $i) {
                     $string = str_replace('"', '', preg_replace('/[^\x{0600}-\x{06FF}A-Za-z !@#$%^&*()]/u', '', $string));
                 }
+                $i++;
             }
         );
+        
         if (!$this->isValidColumns($headingRow, $coloumArr)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Coloum_CSV_File", $langId));
             FatUtility::dieJsonError(Message::getHtml());
