@@ -421,6 +421,7 @@ Bugs:
     => 045240 - admin> subscription orders> filters> user name > on clicking user name from suggestion there is error
     => 045239 - when subscription coupon is created then on seller end it's listing - min order 0.00 which is not required as there is no such field while creating coupon
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
+    => 045315 - Shipping tax code is wrong in case of avalara tax plugin
     
 Enhancements:
     => Tax module upgrade
@@ -443,6 +444,10 @@ Notes:
         i) Add Webhook url under "Endpoints receiving events from your account" 
             1) "Webhook Detail" > Url as "{domain-name}/stripe-connect-pay/payment-status" bind events "payment_intent.payment_failed", "payment_intent.succeeded".
    ==============]==========================
+
+Known Issues :
+    => In case of avalara shipping we are sending default Tax code as FR000000 in all cases.
+
 
    ==========Installation Notes [:=========
    Default Shipping profile setup:
