@@ -967,10 +967,14 @@ class GuestUserController extends MyAppController
             Message::addErrorMessage(Labels::getLabel('MSG_PLEASE_LOGIN_TO_CONFIGURE_EMAIL/_PHONE', $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
         }
-
-        $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
-        $canSendSms = (empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
+        $userId = UserAuthentication::getLoggedUserId();
+        $userObj = new User($userId);
+        $userInfo = $userObj->getUserInfo(array(), true, false);
+        $phoneNumber = isset($userInfo['user_phone']) ? $userInfo['user_phone'] : '';
+        $canSendSms = (!empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
+        $this->set('userInfo', $userInfo);
         $this->set('canSendSms', $canSendSms);
+        $this->set('verificationPending', isset($userInfo['credential_verified']) && applicationConstants::NO == $userInfo['credential_verified']);
         $this->_template->render();
     }
 
