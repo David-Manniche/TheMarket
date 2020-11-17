@@ -428,7 +428,9 @@ class Tax extends MyAppModel
                 'amount' => $extraInfo['shippingCost'],
                 'quantity' => 1,
                 'itemCode' => 'S-' . $productId,
-                'taxCode' => $taxCategoryRow['taxcat_code'],
+                /*'taxCode' => $taxCategoryRow['taxcat_code'],*/
+                'taxCode' => '',
+                 
             ];
             array_push($shippingItems, $shippingItem);
 

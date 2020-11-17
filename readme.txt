@@ -427,6 +427,8 @@ Bugs:
     => 045312 - when seller having enough money then while adding promotion there is error for budget
     => 045307 - as free shipping is not there on catalog but lies in import/export
     => 045317 - seller end> messages> name of shop is listing twice in front of text box
+
+=> 045315 - Shipping tax code is wrong in case of avalara tax plugin
     
 Enhancements:
     => Tax module upgrade
@@ -449,6 +451,10 @@ Notes:
         i) Add Webhook url under "Endpoints receiving events from your account" 
             1) "Webhook Detail" > Url as "{domain-name}/stripe-connect-pay/payment-status" bind events "payment_intent.payment_failed", "payment_intent.succeeded".
    ==============]==========================
+
+Known Issues :
+    => In case of avalara shipping we are sending default Tax code as FR000000 in all cases.
+
 
    ==========Installation Notes [:=========
    Default Shipping profile setup:

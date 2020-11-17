@@ -124,6 +124,10 @@ $(document).ready(function () {
             reloadList();
         });
     };
+    syncCategories = function(){        
+        fcom.updateWithAjax(fcom.makeUrl('PatchUpdate', 'updateTaxCategories'), '', function (t) {
+        },{},false);
+    }
 })();
 
 $(document).on('click', '.uploadFile-Js', function () {

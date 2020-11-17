@@ -32,6 +32,16 @@ class PluginsController extends AdminBaseController
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs);
 
+        $activeTaxPluginFound = false;
+        if (Plugin::TYPE_TAX_SERVICES == $type) {
+            array_walk($records, function($val) use(&$activeTaxPluginFound) {
+                if (Plugin::ACTIVE == $val[Plugin::DB_TBL_PREFIX . 'active']) {
+                    $activeTaxPluginFound = true;
+                    return;
+                }
+            });
+        }
+        
         $this->canEdit = $this->objPrivilege->canEditPlugins($this->admin_id, true);
         $pluginTypes = Plugin::getTypeArr($this->adminLangId);
         
@@ -55,6 +65,7 @@ class PluginsController extends AdminBaseController
         }
 
         $this->set("canEdit", $this->canEdit);
+        $this->set("activeTaxPluginFound", $activeTaxPluginFound);
         $this->set("type", $type);
         $this->set("pluginTypes", $pluginTypes);
         $this->set("otherPluginTypes", $otherPluginTypes);
