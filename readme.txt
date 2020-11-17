@@ -431,6 +431,8 @@ Bugs:
     => 045315 - Shipping tax code is wrong in case of avalara tax plugin
 --------------------TV-9.2.3.20201117------------------------   
     => 045217 - Price inclusive tax handling for Tax api's.
+    => 045358 - while purchasing subscription plan on applying coupon> button is not proper
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
