@@ -424,12 +424,12 @@ Bugs:
     => 045316 - Subscription checkout page - discount coupon is not visible
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
     => 045188 - when banners are added in collection the location is not required on advertiser end
+------------------TV-9.2.3.20201116----------------------------    
     => 045312 - when seller having enough money then while adding promotion there is error for budget
     => 045307 - as free shipping is not there on catalog but lies in import/export
     => 045317 - seller end> messages> name of shop is listing twice in front of text box
-
-=> 045315 - Shipping tax code is wrong in case of avalara tax plugin
-    
+    => 045315 - Shipping tax code is wrong in case of avalara tax plugin
+--------------------TV-9.2.3.20201117------------------------    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -441,22 +441,21 @@ Enhancements:
     => Category Listing Page UI 
     => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------     
+    
 Notes:
-   ==========Stripe Connect Installation Notes[:=========
-   Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.
+    
+    Composer :
 
-   a) Run command at root of the project to update composer to fetch all required libraries from the root of the project using terminal: composer update
-   b) Required to configure callback url as "{domain-name}/public/index.php?url=stripe-connect/callback" inside stripe's web master's account under https://dashboard.stripe.com/settings/applications under "Integration" -> "Redirects"
-   c) Setup webhook Stripe Connect  https://dashboard.stripe.com/test/webhooks . 
-        i) Add Webhook url under "Endpoints receiving events from your account" 
-            1) "Webhook Detail" > Url as "{domain-name}/stripe-connect-pay/payment-status" bind events "payment_intent.payment_failed", "payment_intent.succeeded".
-   ==============]==========================
+        => Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.
+        => Run command "composer update" at root of the project to update composer and fetch all dependennt libraries: 
 
-Known Issues :
-    => In case of avalara shipping we are sending default Tax code as FR000000 in all cases.
+    Stripe Connect Installation :
 
-
-   ==========Installation Notes [:=========
-   Default Shipping profile setup:
+        => Required to configure callback url as "{domain-name}/public/index.php?url=stripe-connect/callback" inside stripe's web master's account under https://dashboard.stripe.com/settings/applications under "Integration" -> "Redirects"
+        =>  Setup webhook Stripe Connect  https://dashboard.stripe.com/test/webhooks . 
+                i) Add Webhook url under "Endpoints receiving events from your account" 
+                    1) "Webhook Detail" > Url as "{domain-name}/stripe-connect-pay/payment-status" bind events "payment_intent.payment_failed", "payment_intent.succeeded".
+   
+    Default Shipping profile setup:
+       
        To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles
-   ==========Installation Notes [:=========

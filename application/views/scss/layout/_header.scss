@@ -195,8 +195,7 @@
         -webkit-box-pack: end;
         -ms-flex-pack: end;
         justify-content: flex-end;
-        text-align: #{$end-direction};     
-        
+        text-align: #{$end-direction};
         @include media-breakpoint-down(lg) {
             & {
                 padding: 0;
@@ -291,6 +290,8 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+    border: none;
+    background: none;
     &:hover {
         -webkit-transform: rotate(-90deg);
         transform: rotate(-90deg);

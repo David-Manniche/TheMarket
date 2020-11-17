@@ -7971,7 +7971,9 @@ a.text-dark:hover, a.text-dark:focus {
   display: flex;
   -webkit-box-align: center;
   -ms-flex-align: center;
-  align-items: center; }
+  align-items: center;
+  border: none;
+  background: none; }
   .close-layer:hover {
     -webkit-transform: rotate(-90deg);
     transform: rotate(-90deg);
@@ -31428,21 +31430,6 @@ a.ui-button:active,
       padding: 0; }
     .cart-total .coupons .svg {
       margin-left: 5px; }
-  .cart-total .coupons-applied {
-    border: dashed 1px #1dc9b7;
-    padding: 1.5rem;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem; }
-    .cart-total .coupons-applied h6 {
-      font-weight: 500;
-      margin: 0;
-      padding: 0; }
-    .cart-total .coupons-applied p {
-      font-size: 0.8rem;
-      color: #1dc9b7; }
   .cart-total .hightlighted {
     font-weight: 600;
     padding: 1.5rem 0;
@@ -31454,9 +31441,37 @@ a.ui-button:active,
     padding: 1rem 0;
     color: #8798ad; }
 
+.coupons-applied {
+  border: dashed 1px #1dc9b7;
+  padding: 1rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  position: relative; }
+  .coupons-applied h6 {
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+    align-items: center; }
+    .coupons-applied h6:before {
+      content: "";
+      background: url(images/retina/tick.svg) no-repeat center;
+      background-size: 0.8rem;
+      width: 1rem;
+      height: 1rem;
+      margin-left: 8px;
+      display: inline-block; }
+  .coupons-applied p {
+    font-size: 0.8rem;
+    color: #1dc9b7; }
+
 .sticky-summary {
   position: sticky;
-  top: 100px; }
+  top: 175px; }
 
 .buttons-group {
   display: flex;
