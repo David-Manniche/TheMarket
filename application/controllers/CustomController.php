@@ -497,7 +497,11 @@ class CustomController extends MyAppController
         $user = [];
         if ($orderInfo['order_user_id'] > 0) {
             if (0 < UserAuthentication::getLoggedUserId(true) && $orderInfo['order_user_id'] != UserAuthentication::getLoggedUserId(true)) {
-                Message::addErrorMessage(Labels::getLabel("LBL_INVALID_ORDER", $this->siteLangId));
+                $message = Labels::getLabel("LBL_INVALID_ORDER", $this->siteLangId);
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError(current($message));
+                }
+                Message::addErrorMessage($message);
                 FatApp::redirectUser(UrlHelper::generateUrl());
             }
 
@@ -511,6 +515,9 @@ class CustomController extends MyAppController
             $srch = $userObj->getUserSearchObj(['credential_email']);
             $rs = $srch->getResultSet();
             if (!$rs) {
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError($srch->getError());
+                }
                 FatUtility::exitWithErrorCode(404);
             }
             $user = FatApp::getDb()->fetch($rs);
@@ -561,6 +568,10 @@ class CustomController extends MyAppController
             $textMessage = Labels::getLabel('MSG_wallet_success_order_{account}_{credits}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
         } else {
+            $message = Labels::getLabel('MSG_INVALID_ORDER_TYPE', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
             FatUtility::exitWithErrorCode(404);
         }
 
@@ -587,7 +598,7 @@ class CustomController extends MyAppController
         $this->set('print', $print);
 
         $this->set('orderFulFillmentTypeArr', $orderFulFillmentTypeArr);
-        if (CommonHelper::isAppUser()) {
+        if (CommonHelper::isAppUser() && false ===  MOBILE_APP_API_CALL) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);
         } else {

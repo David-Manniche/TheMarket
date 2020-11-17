@@ -187,12 +187,14 @@
                                         class="mleft-auto"><?php echo CommonHelper::displayMoneyFormat($cartSummary['cartAdjustableAmount'], true, false, true, false, true); ?></span>
                                 </li>
                                 <?php }?>
-                                <?php if ($cartSummary['cartDiscounts'] > 0) { ?>
+                                <?php  
+                                $cartDiscounts = isset($cartSummary['cartDiscounts']["coupon_discount_total"]) ? $cartSummary['cartDiscounts']["coupon_discount_total"] : 0;
+                                if ($cartDiscounts > 0) { ?>
                                 <li class="list-group-item ">
                                     <span
                                         class="label"><?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?></span>
                                     <span class="mleft-auto">
-                                        <?php echo CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts'], true, false, true, false, true); ?></span>
+                                        <?php echo CommonHelper::displayMoneyFormat($cartDiscounts, true, false, true, false, true); ?></span>
                                 </li>
                                 <?php }?>
                                 <li class="list-group-item hightlighted">

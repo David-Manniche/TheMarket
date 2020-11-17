@@ -53,16 +53,17 @@ class UserAuthentication extends FatModel
         $db->deleteRecords(
             'tbl_failed_login_attempts',
             array(
-            'smt' => 'attempt_time < ?',
-            'vals' => array(date('Y-m-d H:i:s', strtotime("-7 Day")) ) )
+                'smt' => 'attempt_time < ?',
+                'vals' => array(date('Y-m-d H:i:s', strtotime("-7 Day")))
+            )
         );
 
         $db->insertFromArray(
             'tbl_failed_login_attempts',
             [
-            'attempt_username' => $username,
-            'attempt_ip' => $ip,
-            'attempt_time' => date('Y-m-d H:i:s')
+                'attempt_username' => $username,
+                'attempt_ip' => $ip,
+                'attempt_time' => date('Y-m-d H:i:s')
             ]
         );
 
@@ -76,8 +77,9 @@ class UserAuthentication extends FatModel
         return $db->deleteRecords(
             'tbl_failed_login_attempts',
             array(
-            'smt' => 'attempt_username = ? and attempt_ip = ?',
-            'vals' => array($username, $ip) )
+                'smt' => 'attempt_username = ? and attempt_ip = ?',
+                'vals' => array($username, $ip)
+            )
         );
     }
 
@@ -209,12 +211,12 @@ class UserAuthentication extends FatModel
         $db->startTransaction();
 
         $data = array(
-        'user_name' => $name,
-        'user_username' => $useremail,
-        'user_email' => $useremail,
-        'user_is_buyer' => 1,
-        'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD,
-        'user_registered_initially_for' => User::USER_TYPE_BUYER,
+            'user_name' => $name,
+            'user_username' => $useremail,
+            'user_email' => $useremail,
+            'user_is_buyer' => 1,
+            'user_preferred_dashboard' => User::USER_BUYER_DASHBOARD,
+            'user_registered_initially_for' => User::USER_TYPE_BUYER,
         );
         $userObj->assignValues($data);
 
@@ -389,22 +391,22 @@ class UserAuthentication extends FatModel
             }
 
             $rowUser = User::getAttributesById($row['credential_user_id']);
-            if (0 < $rowUser['user_parent']){ 
+            if (0 < $rowUser['user_parent']) {
                 $parentUser = new User($rowUser['user_parent']);
                 $parentSrch = $parentUser->getUserSearchObj();
                 $parentSrch->addCondition('credential_active', '=', applicationConstants::ACTIVE);
                 $rs = $parentSrch->getResultSet();
-                $parentData = FatApp::getDb()->fetch($rs);                
+                $parentData = FatApp::getDb()->fetch($rs);
                 if (false == $parentData || null == $parentData) {
                     $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED_OR_NOT_ACTIVE', $this->commonLangId);
                     return false;
                 }
             }
         } else {
-            $rowUser = User::getAttributesById($row['credential_user_id']);            
+            $rowUser = User::getAttributesById($row['credential_user_id']);
         }
 
-        
+
 
         $rowUser['user_ip'] = $ip;
         $rowUser['user_email'] = $row['credential_email'];
@@ -427,11 +429,11 @@ class UserAuthentication extends FatModel
     {
         session_regenerate_id();
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME] = array(
-        'user_id' => $data['user_id'],
-        'user_name' => $data['user_name'],
-        'user_ip' => $data['user_ip'],
-        'user_email' => $data['user_email'],
-        'user_is_guest' => isset($data['user_is_guest']) ? $data['user_is_guest'] : false,
+            'user_id' => $data['user_id'],
+            'user_name' => $data['user_name'],
+            'user_ip' => $data['user_ip'],
+            'user_email' => $data['user_email'],
+            'user_is_guest' => isset($data['user_is_guest']) ? $data['user_is_guest'] : false,
         );
         return true;
     }
@@ -506,8 +508,8 @@ class UserAuthentication extends FatModel
             $db->deleteRecords(
                 static::DB_TBL_USER_AUTH,
                 array(
-                'smt' => static::DB_TBL_UAUTH_PREFIX . 'token = ?',
-                'vals' => array($_COOKIE[static::YOKARTUSER_COOKIE_NAME])
+                    'smt' => static::DB_TBL_UAUTH_PREFIX . 'token = ?',
+                    'vals' => array($_COOKIE[static::YOKARTUSER_COOKIE_NAME])
                 )
             );
         }
@@ -522,11 +524,12 @@ class UserAuthentication extends FatModel
             $ip = CommonHelper::getClientIp();
         }
 
-        if (isset($_SESSION [static::SESSION_ELEMENT_NAME])
+        if (
+            isset($_SESSION[static::SESSION_ELEMENT_NAME])
             /*&& $_SESSION [static::SESSION_ELEMENT_NAME] ['user_ip'] == $ip*/
-            && $_SESSION [static::SESSION_ELEMENT_NAME] ['user_is_guest'] == true
-            && is_numeric($_SESSION [static::SESSION_ELEMENT_NAME] ['user_id'])
-            && 0 < $_SESSION [static::SESSION_ELEMENT_NAME] ['user_id']
+            && $_SESSION[static::SESSION_ELEMENT_NAME]['user_is_guest'] == true
+            && is_numeric($_SESSION[static::SESSION_ELEMENT_NAME]['user_id'])
+            && 0 < $_SESSION[static::SESSION_ELEMENT_NAME]['user_id']
         ) {
             return true;
         }
@@ -542,8 +545,8 @@ class UserAuthentication extends FatModel
         include_once CONF_INSTALLATION_PATH . 'library/facebook/facebook.php';
         $facebook = new Facebook(
             array(
-            'appId' => FatApp::getConfig("CONF_FACEBOOK_APP_ID"),
-            'secret' => FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"),
+                'appId' => FatApp::getConfig("CONF_FACEBOOK_APP_ID"),
+                'secret' => FatApp::getConfig("CONF_FACEBOOK_APP_SECRET"),
             )
         );
 
@@ -578,11 +581,12 @@ class UserAuthentication extends FatModel
             return true;
         }
 
-        if (isset($_SESSION [static::SESSION_ELEMENT_NAME])
+        if (
+            isset($_SESSION[static::SESSION_ELEMENT_NAME])
             /*&& $_SESSION [static::SESSION_ELEMENT_NAME] ['user_ip'] == $ip*/
-            && $_SESSION [static::SESSION_ELEMENT_NAME] ['user_is_guest'] == false
-            && is_numeric($_SESSION [static::SESSION_ELEMENT_NAME] ['user_id'])
-            && 0 < $_SESSION [static::SESSION_ELEMENT_NAME] ['user_id']
+            && $_SESSION[static::SESSION_ELEMENT_NAME]['user_is_guest'] == false
+            && is_numeric($_SESSION[static::SESSION_ELEMENT_NAME]['user_id'])
+            && 0 < $_SESSION[static::SESSION_ELEMENT_NAME]['user_id']
         ) {
             return true;
         }
@@ -609,8 +613,8 @@ class UserAuthentication extends FatModel
         }
 
 
-        if (array_key_exists($attr, $_SESSION [static::SESSION_ELEMENT_NAME])) {
-            return $_SESSION [static::SESSION_ELEMENT_NAME][$attr];
+        if (array_key_exists($attr, $_SESSION[static::SESSION_ELEMENT_NAME])) {
+            return $_SESSION[static::SESSION_ELEMENT_NAME][$attr];
         }
 
         return User::getAttributesById($_SESSION[static::SESSION_ELEMENT_NAME]['user_id'], $attr);
@@ -642,16 +646,16 @@ class UserAuthentication extends FatModel
         if ($attr == null) {
             $srch->addMultipleFields(
                 array(
-                User::tblFld('id'),
-                User::tblFld('name'),
-                User::DB_TBL_CRED_PREFIX . 'email',
-                User::DB_TBL_CRED_PREFIX . 'password'
+                    User::tblFld('id'),
+                    User::tblFld('name'),
+                    User::DB_TBL_CRED_PREFIX . 'email',
+                    User::DB_TBL_CRED_PREFIX . 'password'
                 )
             );
         } else {
             $srch->addMultipleFields($attr);
         }
-        
+
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
@@ -686,12 +690,12 @@ class UserAuthentication extends FatModel
 
         $srch->addMultipleFields(
             array(
-            User::tblFld('id'),
-            User::tblFld('name'),
-            User::tblFld('is_shipping_company'),
-            User::tblFld('deleted'),
-            User::DB_TBL_CRED_PREFIX . 'email',
-            User::DB_TBL_CRED_PREFIX . 'password'
+                User::tblFld('id'),
+                User::tblFld('name'),
+                User::tblFld('is_shipping_company'),
+                User::tblFld('deleted'),
+                User::DB_TBL_CRED_PREFIX . 'email',
+                User::DB_TBL_CRED_PREFIX . 'password'
             )
         );
 
@@ -782,16 +786,16 @@ class UserAuthentication extends FatModel
         if ($db->insertFromArray(
             static::DB_TBL_USER_PRR,
             array(
-            static::DB_TBL_UPR_PREFIX . 'user_id' => intval($data['user_id']),
-            static::DB_TBL_UPR_PREFIX . 'token' => $data['token'],
-            static::DB_TBL_UPR_PREFIX . 'expiry' => date('Y-m-d H:i:s', strtotime("+1 DAY"))
+                static::DB_TBL_UPR_PREFIX . 'user_id' => intval($data['user_id']),
+                static::DB_TBL_UPR_PREFIX . 'token' => $data['token'],
+                static::DB_TBL_UPR_PREFIX . 'expiry' => date('Y-m-d H:i:s', strtotime("+1 DAY"))
             )
         )) {
             $db->deleteRecords(
                 static::DB_TBL_USER_AUTH,
                 array(
-                'smt' => static::DB_TBL_UAUTH_PREFIX . 'user_id = ?',
-                'vals' => array($data['user_id'])
+                    'smt' => static::DB_TBL_UAUTH_PREFIX . 'user_id = ?',
+                    'vals' => array($data['user_id'])
                 )
             );
             return true;
@@ -836,14 +840,14 @@ class UserAuthentication extends FatModel
             $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
             return false;
         }
-        
+
         if (!ValidateElement::password($pwd)) {
             $this->error = Labels::getLabel('MSG_PASSWORD_MUST_BE_EIGHT_CHARACTERS_LONG_AND_ALPHANUMERIC', $this->commonLangId);
             return false;
         }
-        
+
         $pwd = UserAuthentication::encryptPassword($pwd);
-        
+
         if (!empty($pwd)) {
             $user = new User($userId);
             if (!$user->resetPassword($pwd)) {

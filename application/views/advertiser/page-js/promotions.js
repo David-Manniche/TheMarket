@@ -17,20 +17,25 @@ $(document).on('change','.banner-screen-js',function(){;
 });
 $(document).on('blur',"input[name='promotion_budget']",function(){;
 // $(document).delegate("input[name='promotion_budget']",'blur',function(){
-	var frm = document.frmPromotion;
-	var data = fcom.frmData(frm);
-	fcom.ajax(fcom.makeUrl('Advertiser', 'checkValidPromotionBudget'), data, function(t) {
-		var ans = $.parseJSON(t);
-		if( ans.status == 0 ){
-			$.mbsmessage( ans.msg,false,'alert--danger');
-			return;
-		}
-		$.mbsmessage.close();
-	});
+	if ('' != $(this).val()) {
+		var frm = document.frmPromotion;
+		var data = fcom.frmData(frm);
+		fcom.ajax(fcom.makeUrl('Advertiser', 'checkValidPromotionBudget'), data, function(t) {
+			var ans = $.parseJSON(t);
+			if( ans.status == 0 ){
+				$("select[name='banner_blocation_id']").val('');
+				$.mbsmessage( ans.msg,false,'alert--danger');
+				return;
+			}
+			$.mbsmessage.close();
+		});
+	}
 });
 $(document).on('change',"select[name='banner_blocation_id']",function(){
 // $(document).delegate("select[name='banner_blocation_id']",'change',function(){
-	$("input[name='promotion_budget']").trigger('blur');
+	if ('' != $("input[name='promotion_budget']").val()) {
+		$("input[name='promotion_budget']").trigger('blur');
+	}
 });
 (function() {
 	//var dv = '#promotionForm';

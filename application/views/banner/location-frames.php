@@ -1,4 +1,4 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php
 switch ($frameId) {
     case BannerLocation::HOME_PAGE_BANNER_LAYOUT_1:
@@ -12,4 +12,4 @@ switch ($frameId) {
         break;
 }
 ?>
-<img src="<?php echo CONF_WEBROOT_URL.$image;?>">
+<img src="<?php echo CONF_WEBROOT_URL . $image; ?>">

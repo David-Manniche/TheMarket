@@ -420,8 +420,15 @@ Bugs:
     => 045236 - admin> seller orders> price filters are not working properly
     => 045240 - admin> subscription orders> filters> user name > on clicking user name from suggestion there is error
     => 045239 - when subscription coupon is created then on seller end it's listing - min order 0.00 which is not required as there is no such field while creating coupon
+    => 045269 - Paypal: transaction issue - capture pending in case of new seller registration on payapl.
+    => 045316 - Subscription checkout page - discount coupon is not visible
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
-    => 045315 - Shipping tax code is wrong in case of avalara tax plugin
+    => 045188 - when banners are added in collection the location is not required on advertiser end
+    => 045312 - when seller having enough money then while adding promotion there is error for budget
+    => 045307 - as free shipping is not there on catalog but lies in import/export
+    => 045317 - seller end> messages> name of shop is listing twice in front of text box
+
+=> 045315 - Shipping tax code is wrong in case of avalara tax plugin
     
 Enhancements:
     => Tax module upgrade

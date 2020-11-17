@@ -25,8 +25,9 @@ if ($primaryOrder) {
 } else {
     $childArr = $childOrderDetail;
 }
-$cartTotal = 0;
-$shippingCharges = 0;
+$cartTotal = $shippingCharges = $totalVolumeDiscount = $totalRewardPointDiscount = $totalOrderDiscountTotal = $totalTax = 0;
+
+$taxOptionsTotal = array();
 
 $defaultOrderStatus = FatApp::getConfig('CONF_DEFAULT_REVIEW_STATUS', FatUtility::VAR_INT, 0);
 $reviewAllowed = FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 0);
@@ -59,9 +60,15 @@ foreach ($childArr as $index => $childOrder) {
 
     $cartTotal = $cartTotal + CommonHelper::orderProductAmount($childOrder, 'cart_total');
     $shippingCharges = $shippingCharges + CommonHelper::orderProductAmount($childOrder, 'shipping');
+
     $volumeDiscount = CommonHelper::orderProductAmount($childOrder, 'VOLUME_DISCOUNT');
+    $totalVolumeDiscount += $volumeDiscount;
+
     $rewardPointDiscount = CommonHelper::orderProductAmount($childOrder, 'REWARDPOINT');
+    $totalRewardPointDiscount += $rewardPointDiscount;
+
     $orderDiscountTotal = CommonHelper::orderProductAmount($childOrder, 'DISCOUNT');
+    $totalOrderDiscountTotal += $orderDiscountTotal;
 
     $childArr[$index]['priceDetail'] = array(
         array(
@@ -84,9 +91,10 @@ foreach ($childArr as $index => $childOrder) {
 
     $taxCharges = [];
     if (empty($childOrder['taxOptions'])) {
+        $totalTax = CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'tax'));
         $childArr[$index]['priceDetail'][] = array(
             'key' => Labels::getLabel('LBL_Tax_Charges', $siteLangId),
-            'value' => CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'tax')),
+            'value' => $totalTax,
         );
     } else {
         foreach ($childOrder['taxOptions'] as $key => $val) {
@@ -94,6 +102,13 @@ foreach ($childArr as $index => $childOrder) {
                 'key' => CommonHelper::displayTaxPercantage($val, true),
                 'value' => CommonHelper::displayMoneyFormat($val['value']),
             ];
+
+            $taxOptionsTotal[$key]['key'] = CommonHelper::displayTaxPercantage($val);
+            
+            if (!isset($taxOptionsTotal[$key]['value'])) {
+                $taxOptionsTotal[$key]['value'] = 0;
+            }
+            $taxOptionsTotal[$key]['value'] += $val['value'];
         }
         $childArr[$index]['priceDetail'] = array_merge($childArr[$index]['priceDetail'], $taxCharges);
     }
@@ -143,6 +158,64 @@ $data = array(
     'languages' => !empty($languages) ? $languages : (object)array(),
     'yesNoArr' => $yesNoArr,
 );
+
+if (!$primaryOrder) {
+    $data['orderSummary'] = [
+        [
+            'key' => Labels::getLabel('LBL_CART_TOTAL', $siteLangId),
+            'value' => $cartTotal,
+        ]
+    ];
+
+    if (0 < $shippingCharges) {
+        $data['orderSummary'][] = [
+            'key' => Labels::getLabel('LBL_Shipping_Charges', $siteLangId),
+            'value' => $shippingCharges,
+        ];
+    }
+
+    if (!empty($taxOptionsTotal)) {
+        $data['orderSummary'] = array_merge($data['orderSummary'], $taxOptionsTotal);
+    } else {
+        $data['orderSummary'][] = [
+            'key' => Labels::getLabel('LBL_TAX_CHARGES', $siteLangId),
+            'value' => $totalTax,
+        ];
+    }
+
+    if (0 < $totalOrderDiscountTotal) {
+        $data['orderSummary'][] = [
+            'key' => Labels::getLabel('LBL_Discount', $siteLangId),
+            'value' => $totalOrderDiscountTotal,
+        ];
+    }
+
+    if (0 < $totalVolumeDiscount) {
+        $data['orderSummary'][] = [
+            'key' => Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId),
+            'value' => $totalVolumeDiscount,
+        ];
+    }
+
+    if (0 < $totalRewardPointDiscount) {
+        $data['orderSummary'][] = [
+            'key' => Labels::getLabel('LBL_REWARD_POINTS', $siteLangId),
+            'value' => $totalRewardPointDiscount,
+        ];
+    }
+
+    if (0 < $orderDetail['order_net_amount']) {
+        $data['orderSummary'][] = [
+            'key' => Labels::getLabel('LBL_Total', $siteLangId),
+            'value' => $orderDetail['order_net_amount'],
+        ];
+    }
+    $data['orderSummary'] = !empty($data['orderSummary']) ? array_values($data['orderSummary']) : [];
+    array_walk($data['orderSummary'], function (&$val) {
+        $val['value'] = CommonHelper::displayMoneyFormat($val['value'], true, false, true, false, true);
+    });
+}
+
 if (empty($orderDetail)) {
     $status = applicationConstants::OFF;
 }
