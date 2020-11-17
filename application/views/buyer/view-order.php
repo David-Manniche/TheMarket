@@ -457,14 +457,16 @@ if (!$print) { ?>
                                             <?php echo CommonHelper::displayMoneyFormat($cartTotal, true, false, true, false, true); ?>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="7">
-                                            <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId) ?>
-                                        </td>
-                                        <td>
-                                            <?php echo CommonHelper::displayMoneyFormat($shippingCharges, true, false, true, false, true); ?>
-                                        </td>
-                                    </tr>
+                                    <?php if (0 < $shippingCharges) { ?>
+                                        <tr>
+                                            <td colspan="7">
+                                                <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId) ?>
+                                            </td>
+                                            <td>
+                                                <?php echo CommonHelper::displayMoneyFormat($shippingCharges, true, false, true, false, true); ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
                                     <?php
                                     if (empty($taxOptionsTotal)) { ?>
                                         <tr>
@@ -488,7 +490,7 @@ if (!$print) { ?>
                                     <?php }
                                     } ?>
                                     <?php 
-                                    if (0 < $orderDetail['order_discount_total']) { echo 'fdsdf';?>
+                                    if (0 < $orderDetail['order_discount_total']) { ?>
                                         <tr>
                                             <td colspan="7">
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId) ?>

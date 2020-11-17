@@ -424,7 +424,16 @@ Bugs:
     => 045316 - Subscription checkout page - discount coupon is not visible
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
     => 045188 - when banners are added in collection the location is not required on advertiser end
+<<<<<<< HEAD
 ------------------TV-9.2.3.20201116----------------------------    
+=======
+    => 045312 - when seller having enough money then while adding promotion there is error for budget
+    => 045307 - as free shipping is not there on catalog but lies in import/export
+    => 045317 - seller end> messages> name of shop is listing twice in front of text box
+
+=> 045315 - Shipping tax code is wrong in case of avalara tax plugin
+    
+>>>>>>> 0ccbcb1254cfbf574e20ac82089ff83692b4fca7
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

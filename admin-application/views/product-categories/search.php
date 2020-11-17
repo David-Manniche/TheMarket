@@ -1,6 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');  ?>
 <div class="sectionhead">
-    <div class="section__toolbar">
+    <h4></h4>
+    <div class="section__toolbar">        
         <?php if ($canEdit) { ?>
             <a href="javascript:void(0);" onClick="categoryForm(0);" title="<?php echo  Labels::getLabel('LBL_Add_Category', $adminLangId); ?>" class="btn-clean btn-sm btn-icon btn-secondary"><i class="fas fa-plus"></i></a>
         <?php } ?>

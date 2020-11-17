@@ -15,7 +15,7 @@ trait ShipStationFunctions
         }
         return (true === $decodeJson ? json_decode($this->resp, true) : $this->resp);
     }
-    
+
     /**
      * formatError
      *
@@ -26,7 +26,7 @@ trait ShipStationFunctions
         $exceptionMsg = isset($this->error['ExceptionMessage']) ? ' ' . $this->error['ExceptionMessage'] : '';
         return (isset($this->error['Message']) ? $this->error['Message'] : $this->error) . $exceptionMsg;
     }
-    
+
     /**
      * call - Call ShipStation
      *
@@ -58,7 +58,7 @@ trait ShipStationFunctions
         }
 
         curl_setopt_array($ch, $request);
-        
+
         $this->resp = curl_exec($ch);
         if (false === $this->resp) {
             throw new Exception(curl_error($ch));
@@ -67,7 +67,7 @@ trait ShipStationFunctions
         curl_close($ch);
         return true;
     }
-        
+
     /**
      * get - To hit get request
      *
@@ -98,7 +98,7 @@ trait ShipStationFunctions
         $this->endpoint = 'carriers';
         return $this->get();
     }
-        
+
     /**
      * shippingRates
      *
@@ -110,7 +110,7 @@ trait ShipStationFunctions
         $this->endpoint = 'shipments/getrates';
         return $this->post($requestParam);
     }
-        
+
     /**
      * createOrder
      *
@@ -135,7 +135,7 @@ trait ShipStationFunctions
         $requestParam['testLabel'] = isset($this->settings['environment']) && 0 < $this->settings['environment'] ? false : true;
         return $this->post($requestParam);
     }
-    
+
     /**
      * fulfillments
      *
@@ -147,7 +147,7 @@ trait ShipStationFunctions
         $this->endpoint = 'fulfillments?' . http_build_query($requestParam);
         return $this->get();
     }
-    
+
     /**
      * getOrder
      *

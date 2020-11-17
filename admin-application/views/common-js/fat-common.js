@@ -121,9 +121,9 @@ var fcom = {
 			}
 		},
 
-		updateWithAjax: function(url, data, fn, options) {
+		updateWithAjax: function(url, data, fn, options,autoClose = true) {
 			/*this.addTrailingSlash();*/
-			$.systemMessage(langLbl.processing,'alert--process');
+			$.systemMessage(langLbl.processing,'alert--process',autoClose);
 			var o = $.extend(true, {fOutMode:'json'}, options);
 			this.ajax(url, data, function(ans) {
 				if (ans.status != 1) {
