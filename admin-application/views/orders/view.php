@@ -58,7 +58,7 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Payment_Status', $adminLangId); ?>:</strong>
                                     <?php echo Orders::getOrderPaymentStatusArr($adminLangId)[$order['order_payment_status']];
-                                    if ('' != $order['plugin_name'] && 'CashOnDelivery' == $order['plugin_code']) {
+                                    if (in_array(strtolower($order['plugin_code']), ['cashondelivery', 'payatstore'])) {
                                         echo ' (' . $order['plugin_name'] . ' )';
                                     }
                                     ?>
@@ -120,7 +120,9 @@ if ($order['order_reward_point_used'] > 0) {
                                 <?php  } ?>
                                 <th><?php echo Labels::getLabel('LBL_Unit_Price', $adminLangId); ?></th>
                                 <th><?php echo Labels::getLabel('LBL_Qty', $adminLangId); ?></th>
-                                <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
+                                <?php if (!empty($order['products']) && Shipping::FULFILMENT_PICKUP != current($order['products'])['opshipping_fulfillment_type']) { ?>
+                                    <th class="text-right"><?php echo Labels::getLabel('LBL_Shipping', $adminLangId); ?></th>
+                                <?php } ?>
                                 <th><?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $adminLangId); ?></th>
                                 <th class="text-right"><?php echo Labels::getLabel('LBL_Total', $adminLangId); ?></th>
                             </tr>
@@ -233,9 +235,11 @@ if ($order['order_reward_point_used'] > 0) {
                                     <td>
                                         <?php echo $op['op_qty']; ?>
                                     </td>
-                                    <td class="text-right">
-                                        <?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
-                                    </td>
+                                    <?php if (Shipping::FULFILMENT_PICKUP != current($order['products'])['opshipping_fulfillment_type']) { ?>
+                                        <td class="text-right">
+                                            <?php echo CommonHelper::displayMoneyFormat($shippingCost, true, true); ?>
+                                        </td>
+                                    <?php } ?>
                                     <td>
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
                                     </td>
@@ -261,12 +265,14 @@ if ($order['order_reward_point_used'] > 0) {
                                 <td class="text-right" colspan="2"><?php echo CommonHelper::displayMoneyFormat($cartTotal, true, true); ?>
                                     </th>
                             </tr>
-                            <tr>
-                                <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?>
-                                </td>
-                                <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?>
-                                </td>
-                            </tr>
+                            <?php if (0 < $shippingTotal) { ?>
+                                <tr>
+                                    <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Delivery/Shipping', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2">+<?php echo CommonHelper::displayMoneyFormat($shippingTotal, true, true); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                             <?php if (empty($taxOptionsTotal)) { ?>
                                 <tr>
                                     <td colspan="8" class="text-right"><?php echo Labels::getLabel('LBL_Tax', $adminLangId); ?>
@@ -510,7 +516,9 @@ if ($order['order_reward_point_used'] > 0) {
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div class="break-me"><?php echo nl2br($row['opayment_gateway_response']); ?>
+                                                    <div class="break-me">
+                                                        <a href="javascript:void(0);" onclick="viewPaymemntGatewayResponse('<?php echo $row['opayment_gateway_response'];?>')">View</a>
+                                                        <?php //echo nl2br($row['opayment_gateway_response']); ?>
                                                     </div>
                                                 </td>
                                                 <td>

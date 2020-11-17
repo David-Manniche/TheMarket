@@ -352,13 +352,13 @@ class BuyerController extends BuyerBaseController
         $rs = $srch->getResultSet();
 
         $childOrderDetail = FatApp::getDb()->fetchAll($rs, 'op_id');
-		
-		if (count($childOrderDetail)) {
+
+        if (count($childOrderDetail)) {
             foreach ($childOrderDetail as &$arr) {
                 $arr['options'] = SellerProduct::getSellerProductOptions($arr['op_selprod_id'], true, $this->siteLangId);
             }
         }
-		
+
         foreach ($childOrderDetail as $op_id => $val) {
             $childOrderDetail[$op_id]['charges'] = $orderDetail['charges'][$op_id];
 
@@ -399,12 +399,12 @@ class BuyerController extends BuyerBaseController
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
         $pdf->SetKeywords(FatApp::getConfig("CONF_WEBSITE_NAME_" . $this->siteLangId));
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->SetHeaderMargin(0);
-        $pdf->SetHeaderData('', 0, '', '', array(255,255,255), array(255,255,255));
-        $pdf->setFooterData(array(0,0,0), array(200,200,200));
+        $pdf->SetHeaderData('', 0, '', '', array(255, 255, 255), array(255, 255, 255));
+        $pdf->setFooterData(array(0, 0, 0), array(200, 200, 200));
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
         $pdf->SetMargins(10, 10, 10);
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->AddPage();
@@ -415,7 +415,7 @@ class BuyerController extends BuyerBaseController
         $html = $template->render(false, false, $templatePath, true, true);
         $pdf->writeHTML($html, true, false, true, false, '');
         $pdf->lastPage();
-        
+
         ob_end_clean();
         // $saveFile = CONF_UPLOADS_PATH . 'demo-pdf.pdf';
         //$pdf->Output($saveFile, 'F');
@@ -542,14 +542,16 @@ class BuyerController extends BuyerBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
-            'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
-            'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type', 
-            'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class', 
-            'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request', 
-            'IFNULL(ocrequest_id, 0) as cancel_request', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age', 
-            'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status', 
-            'order_deleted', 'plugin_code', 'opshipping_fulfillment_type', 'op_rounding_off')
+            array(
+                'order_id', 'order_user_id', 'order_date_added', 'order_net_amount', 'op_invoice_number',
+                'totCombinedOrders as totOrders', 'op_selprod_id', 'op_selprod_title', 'op_product_name', 'op_id', 'op_other_charges', 'op_unit_price',
+                'op_qty', 'op_selprod_options', 'op_brand_name', 'op_shop_name', 'op_status_id', 'op_product_type',
+                'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'orderstatus_color_class',
+                'order_pmethod_id', 'order_status', 'plugin_name', 'IFNULL(orrequest_id, 0) as return_request',
+                'IFNULL(ocrequest_id, 0) as cancel_request', 'COALESCE(sps.selprod_return_age, ss.shop_return_age) as return_age',
+                'COALESCE(sps.selprod_cancellation_age, ss.shop_cancellation_age) as cancellation_age', 'order_payment_status',
+                'order_deleted', 'plugin_code', 'opshipping_fulfillment_type', 'op_rounding_off'
+            )
         );
 
         $keyword = FatApp::getPostedData('keyword', null, '');
@@ -560,9 +562,9 @@ class BuyerController extends BuyerBaseController
 
         $op_status_id = FatApp::getPostedData('status', null, '0');
         if (in_array($op_status_id, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")))) {
-            $srch->addStatusCondition($op_status_id);
+            $srch->addStatusCondition($op_status_id, ($op_status_id == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")));
         } else {
-            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
+            $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")), ($op_status_id == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")));
         }
 
         $dateFrom = FatApp::getPostedData('date_from', null, '');
@@ -602,6 +604,8 @@ class BuyerController extends BuyerBaseController
         $this->set('classArr', applicationConstants::getClassArr());
 
         if (true === MOBILE_APP_API_CALL) {
+            $orderStatuses = Orders::getOrderProductStatusArr($this->siteLangId, unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")), 0, 0, false);
+            $this->set('orderStatuses', $orderStatuses);
             $this->_template->render();
         }
         $this->_template->render(false, false);
@@ -610,6 +614,56 @@ class BuyerController extends BuyerBaseController
     public function MyDownloads()
     {
         $this->_template->render(true, true);
+    }
+
+
+    /**
+     * downloads - Used For APPs.
+     *
+     * downloadSearch and downloadLinksSearch merged
+     */
+    public function downloads()
+    {
+        $frm = $this->getOrderProductDownloadSearchForm($this->siteLangId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false === $post) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+
+        $page = (empty($post['page']) || $post['page'] <= 0) ? 1 : FatUtility::int($post['page']);
+        $pagesize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        $user_id = UserAuthentication::getLoggedUserId();
+
+        $srch = new OrderProductSearch($this->siteLangId, true);
+        $srch->joinOrderUser();
+        $srch->joinDigitalDownloads(AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD, 'LEFT JOIN');
+        $srch->joinDigitalDownloadLinks('LEFT JOIN');
+        $srch->addDigitalDownloadCondition();
+        $srch->joinSellerProducts();
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
+        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'product_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*', 'opa.*', 'IFNULL(op_selprod_title, op_product_name) as selprod_title'));
+        $srch->setPageNumber($page);
+        $srch->addCondition('order_user_id', '=', $user_id);
+        $srch->addOrder('order_date_added', 'desc');
+        $srch->setPageSize($pagesize);
+        $keyword = FatApp::getPostedData('keyword', null, '');
+        if (!empty($keyword)) {
+            $srch->addKeywordSearch($keyword);
+            $frm->fill(array('keyword' => $keyword));
+        }
+
+        $rs = $srch->getResultSet();
+        $downloads = FatApp::getDb()->fetchAll($rs);
+
+        $downloads = Orders::digitalDownloadFormat($downloads);
+        $downloads = Orders::digitalDownloadLinksFormat($downloads);
+        $this->set('downloads', $downloads);
+        $this->set('page', $page);
+        $this->set('pageCount', $srch->pages());
+        $this->set('recordCount', $srch->recordCount());
+        $this->set('postedData', $post);
+        $this->set('languages', Language::getAllNames());
+        $this->_template->render();
     }
 
     public function downloadSearch()
@@ -676,7 +730,7 @@ class BuyerController extends BuyerBaseController
         $srch->addDigitalDownloadCondition();
         $srch->joinSellerProducts();
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
-        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'op_selprod_id', 'product_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*'));
+        $srch->addMultipleFields(array('op_id', 'op_invoice_number', 'order_user_id', 'op_product_type', 'order_date_added', 'op_qty', 'op_status_id', 'op_selprod_max_download_times', 'op_selprod_id', 'product_updated_on', 'selprod_product_id', 'op_selprod_download_validity_in_days', 'opd.*'));
         $srch->setPageNumber($page);
         $srch->addCondition('order_user_id', '=', $user_id);
         $srch->addOrder('order_date_added', 'desc');
@@ -1457,6 +1511,7 @@ class BuyerController extends BuyerBaseController
         $userId = UserAuthentication::getLoggedUserId();
 
         $srch = new OrderProductSearch($this->siteLangId, true);
+        $srch->joinShippingCharges();
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $opId);
@@ -1514,7 +1569,7 @@ class BuyerController extends BuyerBaseController
         }
 
 
-        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId);
+        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId, $opDetail['op_product_type'], $opDetail['opshipping_fulfillment_type']);
         $this->set('frm', $frm);
         $this->set('opDetail', $opDetail);
         $this->_template->addJs(array('js/jquery.barrating.min.js'));
@@ -1536,11 +1591,12 @@ class BuyerController extends BuyerBaseController
         $userId = UserAuthentication::getLoggedUserId();
 
         $srch = new OrderProductSearch($this->siteLangId, true);
+        $srch->joinShippingCharges();
         $srch->addStatusCondition(unserialize(FatApp::getConfig("CONF_BUYER_ORDER_STATUS")));
         $srch->addCondition('order_user_id', '=', $userId);
         $srch->addCondition('op_id', '=', $opId);
         $srch->addOrder("op_id", "DESC");
-        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code', 'op_order_id', 'op_selprod_id', 'op_is_batch', 'op_batch_selprod_id'));
+        $srch->addMultipleFields(array('op_status_id', 'op_selprod_user_id', 'op_selprod_code', 'op_order_id', 'op_selprod_id', 'op_is_batch', 'op_batch_selprod_id', 'op_product_type', 'opshipping_fulfillment_type'));
         $rs = $srch->getResultSet();
         $opDetail = FatApp::getDb()->fetch($rs);
 
@@ -1624,7 +1680,7 @@ class BuyerController extends BuyerBaseController
             CommonHelper::redirectUserReferer();
         }
 
-        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId);
+        $frm = $this->getOrderFeedbackForm($opId, $this->siteLangId, $opDetail['op_product_type'], $opDetail['opshipping_fulfillment_type']);
         $post = FatApp::getPostedData();
 
         if (false === MOBILE_APP_API_CALL) {
@@ -1664,7 +1720,12 @@ class BuyerController extends BuyerBaseController
         }
         $spreviewId = $selProdReview->getMainTableRecordId();
         $ratingsPosted = FatApp::getPostedData('review_rating');
-        $ratingAspects = SelProdRating::getRatingAspectsArr($this->siteLangId);
+        if ($opDetail['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+            $ratingAspects = SelProdRating::getDigitalOrderAspectsArr($this->siteLangId);
+        } else {
+            $ratingAspects = SelProdRating::getRatingAspectsArr($this->siteLangId, $opDetail['opshipping_fulfillment_type']);
+        }
+
         foreach ($ratingsPosted as $ratingAspect => $ratingValue) {
             if (isset($ratingAspects[$ratingAspect])) {
                 $selProdRating = new SelProdRating();
@@ -2508,12 +2569,17 @@ class BuyerController extends BuyerBaseController
         return $frm;
     }
 
-    private function getOrderFeedbackForm($op_id, $langId)
+    private function getOrderFeedbackForm($op_id, $langId, $productType, $fulfillmentType)
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmOrderFeedback');
 
-        $ratingAspects = SelProdRating::getRatingAspectsArr($langId);
+        if ($productType == Product::PRODUCT_TYPE_DIGITAL) {
+            $ratingAspects = SelProdRating::getDigitalOrderAspectsArr($langId);
+        } else {
+            $ratingAspects = SelProdRating::getRatingAspectsArr($langId, $fulfillmentType);
+        }
+
         foreach ($ratingAspects as $aspectVal => $aspectLabel) {
             $fld = $frm->addSelectBox($aspectLabel, "review_rating[$aspectVal]", array("1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"), "", array('class' => "star-rating"), Labels::getLabel('L_Rate', $langId));
             $fld->requirements()->setRequired(true);

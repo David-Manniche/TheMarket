@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $imagesFrm->setFormTagAttribute('id', 'frmCustomCatalogProductImage');
-$imagesFrm->setFormTagAttribute('class', 'form form-horizontal');
+$imagesFrm->setFormTagAttribute('class', 'form');
 $imagesFrm->developerTags['colClassPrefix'] = 'col-md-';
 $imagesFrm->developerTags['fld_default_col'] = 6;
 
@@ -11,6 +11,7 @@ $langFld = $imagesFrm->getField('lang_id');
 $langFld->addFieldTagAttribute('class', 'language-js');
 
 $img_fld = $imagesFrm->getField('prod_image');
+$img_fld->addFieldTagAttribute('class', 'btn  btn-sm');
 $img_fld->addFieldTagAttribute('onChange', 'popupImage(this)');
 ?>
 <div class="tabs_data">

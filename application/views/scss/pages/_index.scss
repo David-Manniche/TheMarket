@@ -278,7 +278,7 @@
 }
 
 .list-faqs {
-    max-width: 80%;
+    max-width: 60%;
     margin: 0 auto;
     margin-top: 2rem;
     @include media-breakpoint-down(lg) {
@@ -289,24 +289,12 @@
     ul {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        @include media-breakpoint-down(md) {
-            & {
-                flex-direction: column;
-            }
-        }
+        flex-direction: column;
         li {
-            flex: 0 0 42%;
-            max-width: 42%;
             padding: 1rem;
             margin-bottom: 1rem;
-            @include media-breakpoint-down(md) {
-                & {
-                    flex: 1;
-                    max-width: none;
-                    padding: 0;
-                }
-            }
+            border-radius: $radius4;
+            border: $border;
             h5 {
                 font-size: 1.1rem;
                 margin: 0;
@@ -315,8 +303,37 @@
                 line-height: 1.7;
                 font-size: 0.9rem;
                 color: $txt-gray;
-                margin: 1.2rem 0;
+                margin-top: 1rem;
             }
         }
+    }
+    .faq_trigger {
+        position: relative;
+        display: block;
+        font-weight: 500;
+        padding-#{$end-direction}: 2rem;
+        &:after,
+        &:before {
+            background: $body-color;
+            content: '';
+            height: 2px;
+            position: absolute;
+            right: 0;
+            top: calc(50% - 1px);
+            width: 12px;
+        }
+        &:before {
+            -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+            -webkit-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+        &[aria-expanded='true']:before {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+    }
+    .faq_data {
+        margin-top: 2rem;
     }
 }

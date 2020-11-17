@@ -55,8 +55,8 @@ class MyAppController extends FatController
         $controllerName = ucfirst(FatUtility::dashed2Camel($urlController));
 
         /* to keep track of temporary hold the product stock, update time in each row of tbl_product_stock_hold against current user[ */
-        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
-        $cartProducts = $cartObj->getProducts($this->siteLangId);
+        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);        
+        $cartProducts = $cartObj->getBasketProducts($this->siteLangId);
         if ($cartProducts) {
             foreach ($cartProducts as $product) {
                 $cartObj->updateTempStockHold($product['selprod_id'], $product['quantity']);
@@ -482,10 +482,10 @@ class MyAppController extends FatController
         $frm->addHiddenField('', 'addr_id');
         if ($btnOrderFlip) {
             $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
-            $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
+            $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $siteLangId));
             return $frm;
         }
-        $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $siteLangId));
+        $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $siteLangId));
         $fldCancel = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $siteLangId));
         //$fldCancel->attachField($fldSubmit);
         return $frm;

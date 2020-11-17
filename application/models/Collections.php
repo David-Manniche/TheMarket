@@ -7,7 +7,7 @@ class Collections extends MyAppModel
 
     public const DB_TBL_LANG = 'tbl_collections_lang';
     public const DB_TBL_LANG_PREFIX = 'collectionlang_';
-    
+
     public const DB_TBL_COLLECTION_TO_RECORDS = 'tbl_collection_to_records';
     public const DB_TBL_COLLECTION_TO_RECORDS_PREFIX = 'ctr_';
 
@@ -23,6 +23,7 @@ class Collections extends MyAppModel
     public const COLLECTION_TYPE_FAQ = 9;
     public const COLLECTION_TYPE_TESTIMONIAL = 10;
     public const COLLECTION_TYPE_CONTENT_BLOCK = 11;
+    public const COLLECTION_TYPE_REVIEWS = 12;
 
     //public const SUBTYPE_PRODUCT_LAYOUT1 = 1;
     public const TYPE_PRODUCT_LAYOUT1 = 1;
@@ -41,6 +42,7 @@ class Collections extends MyAppModel
     public const TYPE_FAQ_LAYOUT1 = 14;
     public const TYPE_TESTIMONIAL_LAYOUT1 = 15;
     public const TYPE_CONTENT_BLOCK_LAYOUT1 = 16;
+    public const TYPE_PENDING_REVIEWS1 = 17; // Applicable For Apps only.
 
     public const LIMIT_PRODUCT_LAYOUT1 = 12;
     public const LIMIT_PRODUCT_LAYOUT2 = 6;
@@ -67,15 +69,22 @@ class Collections extends MyAppModel
         self::COLLECTION_TYPE_FAQ,
         self::COLLECTION_TYPE_TESTIMONIAL,
         self::COLLECTION_TYPE_CONTENT_BLOCK,
+        self::COLLECTION_TYPE_REVIEWS,
     ];
-    
+
     public const COLLECTION_WITHOUT_RECORDS = [
         self::COLLECTION_TYPE_SPONSORED_PRODUCTS,
         self::COLLECTION_TYPE_SPONSORED_SHOPS,
         self::COLLECTION_TYPE_BANNER,
-        self::COLLECTION_TYPE_CONTENT_BLOCK
+        self::COLLECTION_TYPE_CONTENT_BLOCK,
+        self::COLLECTION_TYPE_REVIEWS,
     ];
-    
+
+    public const APP_COLLECTIONS_ONLY = [
+        self::TYPE_BANNER_LAYOUT3,
+        self::TYPE_PENDING_REVIEWS1
+    ];
+
     /**
      * __construct
      *
@@ -84,9 +93,9 @@ class Collections extends MyAppModel
      */
     public function __construct(int $id = 0)
     {
-        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);        
+        parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $id);
     }
-    
+
     /**
      * getSearchObject
      *
@@ -113,9 +122,11 @@ class Collections extends MyAppModel
             );
         }
 
+        $srch->addCondition('collection_type', '!=', self::COLLECTION_TYPE_CONTENT_BLOCK);
+
         return $srch;
     }
-    
+
     /**
      * getTypeArr
      *
@@ -139,9 +150,10 @@ class Collections extends MyAppModel
             self::COLLECTION_TYPE_FAQ => Labels::getLabel('LBL_FAQ', $langId),
             self::COLLECTION_TYPE_TESTIMONIAL => Labels::getLabel('LBL_Testimonial', $langId),
             self::COLLECTION_TYPE_CONTENT_BLOCK => Labels::getLabel('LBL_Content_Blocks', $langId),
+            self::COLLECTION_TYPE_REVIEWS => Labels::getLabel('LBL_REVIEWS', $langId),
         ];
     }
-    
+
     /**
      * getLayoutTypeArr
      *
@@ -171,9 +183,10 @@ class Collections extends MyAppModel
             self::TYPE_FAQ_LAYOUT1 => Labels::getLabel('LBL_Faq_Layout1', $langId),
             self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial_Layout1', $langId),
             self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_block_Layout1', $langId),
+            self::TYPE_PENDING_REVIEWS1 => Labels::getLabel('LBL_PENDING_REVIEWS1', $langId),
         ];
     }
-    
+
     /**
      * getTypeSpecificLayouts
      *
@@ -218,13 +231,16 @@ class Collections extends MyAppModel
             self::COLLECTION_TYPE_TESTIMONIAL => [
                 self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial', $langId),
             ],
-            self::COLLECTION_TYPE_CONTENT_BLOCK => [
+            self::COLLECTION_TYPE_REVIEWS => [
+                self::TYPE_PENDING_REVIEWS1 => Labels::getLabel('LBL_PENDING_REVIEWS1', $langId),
+            ],
+            /* self::COLLECTION_TYPE_CONTENT_BLOCK => [
                 self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_Block', $langId),
-            ]
+            ] */
         ];
     }
-	
-	/**
+
+    /**
      * getBannersCount
      *
      * @return array
@@ -237,8 +253,8 @@ class Collections extends MyAppModel
             self::TYPE_BANNER_LAYOUT3 => 1
         ];
     }
-	
-	/**
+
+    /**
      * getBannersDimensions
      *
      * @return array
@@ -247,50 +263,50 @@ class Collections extends MyAppModel
     {
         return [
             self::TYPE_BANNER_LAYOUT1 => [
-				applicationConstants::SCREEN_DESKTOP => [
-					'width' => 1350,
-					'height' => 405
-				],
-				applicationConstants::SCREEN_IPAD => [
-					'width' => 1024,
-					'height' => 307
-				],
-				applicationConstants::SCREEN_MOBILE => [
-					'width' => 640,
-					'height' => 360
-				],
-			],
-			self::TYPE_BANNER_LAYOUT2 => [
-				applicationConstants::SCREEN_DESKTOP => [
-					'width' => 660,
-					'height' => 198
-				],
-				applicationConstants::SCREEN_IPAD => [
-					'width' => 660,
-					'height' => 198
-				],
-				applicationConstants::SCREEN_MOBILE => [
-					'width' => 640,
-					'height' => 360
-				],
-			],
-			self::TYPE_BANNER_LAYOUT3 => [
-				applicationConstants::SCREEN_DESKTOP => [
-					'width' => 600,
-					'height' => 338
-				],
-				applicationConstants::SCREEN_IPAD => [
-					'width' => 660,
-					'height' => 198
-				],
-				applicationConstants::SCREEN_MOBILE => [
-					'width' => 640,
-					'height' => 360
-				],
-			]
+                applicationConstants::SCREEN_DESKTOP => [
+                    'width' => 1350,
+                    'height' => 405
+                ],
+                applicationConstants::SCREEN_IPAD => [
+                    'width' => 1024,
+                    'height' => 307
+                ],
+                applicationConstants::SCREEN_MOBILE => [
+                    'width' => 640,
+                    'height' => 360
+                ],
+            ],
+            self::TYPE_BANNER_LAYOUT2 => [
+                applicationConstants::SCREEN_DESKTOP => [
+                    'width' => 660,
+                    'height' => 198
+                ],
+                applicationConstants::SCREEN_IPAD => [
+                    'width' => 660,
+                    'height' => 198
+                ],
+                applicationConstants::SCREEN_MOBILE => [
+                    'width' => 640,
+                    'height' => 360
+                ],
+            ],
+            self::TYPE_BANNER_LAYOUT3 => [
+                applicationConstants::SCREEN_DESKTOP => [
+                    'width' => 600,
+                    'height' => 338
+                ],
+                applicationConstants::SCREEN_IPAD => [
+                    'width' => 660,
+                    'height' => 198
+                ],
+                applicationConstants::SCREEN_MOBILE => [
+                    'width' => 640,
+                    'height' => 360
+                ],
+            ]
         ];
     }
-    
+
     /**
      * getLayoutImagesArr
      *
@@ -315,9 +331,10 @@ class Collections extends MyAppModel
             self::TYPE_FAQ_LAYOUT1 => 'Faq-Layout-1.png',
             self::TYPE_TESTIMONIAL_LAYOUT1 => 'Testimonial-layout-1.png',
             self::TYPE_CONTENT_BLOCK_LAYOUT1 => 'Content-Block-layout-1.png',
+            self::TYPE_PENDING_REVIEWS1 => 'Pending-Reviews-1.png',
         ];
     }
-    
+
     /**
      * getCriteria
      *
@@ -330,7 +347,7 @@ class Collections extends MyAppModel
             static::COLLECTION_CRITERIA_PRICE_HIGH_TO_LOW => "Price High to Low",
         ];
     }
-    
+
     /**
      * addUpdateCollectionRecord
      *
@@ -344,7 +361,7 @@ class Collections extends MyAppModel
             $this->error = Labels::getLabel('MSG_Invalid_Request', $this->commonLangId);
             return false;
         }
-        
+
         $record = new TableRecord(static::DB_TBL_COLLECTION_TO_RECORDS);
         $dataToSave = array();
         $dataToSave[static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id'] = $collectionId;
@@ -356,7 +373,41 @@ class Collections extends MyAppModel
         }
         return true;
     }
-    
+
+    /**
+     * updateCollectionRecordOrder
+     *
+     * @param  int $collectionId
+     * @param  array $order
+     * @return bool
+     */
+
+    public function updateCollectionRecordOrder(int $collectionId, array $order): bool
+    {
+        if (!$collectionId) {
+            return false;
+        }
+        if (is_array($order) && sizeof($order) > 0) {
+            foreach ($order as $i => $id) {
+                if (FatUtility::int($id) < 1) {
+                    continue;
+                }
+                FatApp::getDb()->updateFromArray(
+                    static::DB_TBL_COLLECTION_TO_RECORDS,
+                    array(
+                        static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'display_order' => $i
+                    ),
+                    array(
+                        'smt' => static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id = ? AND ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id = ?',
+                        'vals' => array($collectionId, $id)
+                    )
+                );
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
      * addUpdateData
      *
@@ -371,7 +422,7 @@ class Collections extends MyAppModel
         if ($this->mainTableRecordId > 0) {
             $assignValues['collection_id'] = $this->mainTableRecordId;
         }
-        
+
         $this->assignValues($assignValues);
         if (!$this->save()) {
             $this->error = $this->getError();
@@ -380,7 +431,7 @@ class Collections extends MyAppModel
 
         return true;
     }
-    
+
     /**
      * removeCollectionRecord
      *
@@ -401,7 +452,7 @@ class Collections extends MyAppModel
         }
         return true;
     }
-    
+
     /**
      * canRecordMarkDelete
      *
@@ -421,7 +472,7 @@ class Collections extends MyAppModel
         }
         return false;
     }
-    
+
     /**
      * getSellProds
      *
@@ -443,7 +494,8 @@ class Collections extends MyAppModel
 
         $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
 
-        $srch->addMultipleFields(array('selprod_id as record_id', 'COALESCE(selprod_title,product_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'selprod_id as record_id', 'COALESCE(selprod_title,product_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
         $rs = $srch->getResultSet();
@@ -454,8 +506,8 @@ class Collections extends MyAppModel
         }
         return $data;
     }
-    
-        
+
+
     /**
      * getBanners
      *
@@ -484,7 +536,7 @@ class Collections extends MyAppModel
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetchAll($rs);
     }
-    
+
     /**
      * getCategories
      *
@@ -507,13 +559,14 @@ class Collections extends MyAppModel
         $srch->joinTable(ProductCategory::DB_TBL, 'INNER JOIN', ProductCategory::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(ProductCategory::DB_TBL_LANG, 'LEFT JOIN', 'lang.prodcatlang_prodcat_id = ' . ProductCategory::DB_TBL_PREFIX . 'id AND prodcatlang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'prodcat_id as record_id', 'IFNULL(prodcat_name, prodcat_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
         return $data;
     }
-    
+
     /**
      * getShops
      *
@@ -536,14 +589,15 @@ class Collections extends MyAppModel
         $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', Shop::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT JOIN', 'lang.shoplang_shop_id = ' . Shop::DB_TBL_PREFIX . 'id AND shoplang_lang_id = ' . $lang_id, 'lang');
-        $srch->addMultipleFields(array('shop_id as record_id', 'IFNULL(shop_name, shop_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'shop_id as record_id', 'IFNULL(shop_name, shop_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
         $data = $db->fetchAll($rs);
         return $data;
     }
-    
+
     /**
      * getBrands
      *
@@ -564,13 +618,14 @@ class Collections extends MyAppModel
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
         $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', Brand::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
         $srch->joinTable(Brand::DB_TBL_LANG, 'LEFT JOIN', 'lang.brandlang_brand_id = ' . Brand::DB_TBL_PREFIX . 'id AND brandlang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'brand_id as record_id', 'IFNULL(brand_name, brand_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
-       return $db->fetchAll($rs);
+        return $db->fetchAll($rs);
     }
-    
+
     /**
      * getBlogs
      *
@@ -621,11 +676,14 @@ class Collections extends MyAppModel
         $srch->joinTable(Faq::DB_TBL, 'INNER JOIN', Faq::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
         $srch->joinTable(Faq::DB_TBL_LANG, 'LEFT JOIN', 'lang.faqlang_faq_id = ' . Faq::DB_TBL_PREFIX . 'id AND faqlang_lang_id = ' . $langId, 'lang');
         $srch->joinTable(
-            FaqCategory::DB_TBL, 'INNER JOIN', 'faq_faqcat_id = faqcat_id', 'fc'
+            FaqCategory::DB_TBL,
+            'INNER JOIN',
+            'faq_faqcat_id = faqcat_id',
+            'fc'
         );
-        $srch->joinTable(FaqCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'faqcat_id = fc.' . FaqCategory::tblFld('id') . ' and fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'fc_l'
-        );
-        $srch->addMultipleFields(array('faq_id as record_id', 'CONCAT(IFNULL(faq_title, faq_identifier), " | ", IFNULL (faqcat_name, faqcat_identifier)) as record_title'));
+        $srch->joinTable(FaqCategory::DB_TBL_LANG, 'LEFT OUTER JOIN', 'fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'faqcat_id = fc.' . FaqCategory::tblFld('id') . ' and fc_l.' . FaqCategory::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId, 'fc_l');
+        $srch->addMultipleFields(array('ctr_display_order', 'faq_id as record_id', 'CONCAT(IFNULL(faq_title, faq_identifier), " | ", IFNULL (faqcat_name, faqcat_identifier)) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         return $db->fetchAll($rs);
@@ -653,12 +711,13 @@ class Collections extends MyAppModel
         $srch->joinTable(Testimonial::DB_TBL, 'INNER JOIN', Testimonial::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
 
         $srch->joinTable(Testimonial::DB_TBL_LANG, 'LEFT JOIN', 'lang.testimoniallang_testimonial_id = ' . Testimonial::DB_TBL_PREFIX . 'id AND testimoniallang_lang_id = ' . $langId, 'lang');
-        $srch->addMultipleFields(array('testimonial_id as record_id', 'IFNULL(testimonial_title, testimonial_identifier) as record_title'));
+        $srch->addMultipleFields(array('ctr_display_order', 'testimonial_id as record_id', 'IFNULL(testimonial_title, testimonial_identifier) as record_title'));
+        $srch->addOrder('ctr_display_order', 'ASC');
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         return $db->fetchAll($rs);
     }
-       
+
     /**
      * saveLangData
      *
@@ -686,7 +745,7 @@ class Collections extends MyAppModel
         }
         return true;
     }
-    
+
     /**
      * saveTranslatedLangData
      *

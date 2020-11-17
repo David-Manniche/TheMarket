@@ -21,7 +21,8 @@ foreach ($arr_flds as $val) {
 $sr_no = ($page > 1) ? $recordCount - (($page - 1) * $pageSize) : $recordCount;
 foreach ($ordersList as $sn => $row) {
     $tr = $tbl->appendElement('tr');
-
+    $cartData = !empty($row['order_cart_data']) ? json_decode(trim($row['order_cart_data']), true) : [];
+    $checkoutType = !empty($cartData) ? $cartData['shopping_cart']['checkout_type'] : Shipping::FULFILMENT_SHIP;
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
         switch ($key) {
@@ -63,9 +64,13 @@ foreach ($ordersList as $sn => $row) {
                         $cls = 'label-danger';
                         break;
                 }
+                if (Orders::ORDER_PAYMENT_CANCELLED == $row["order_payment_status"]) {
+                    $value = Labels::getLabel('LBL_CANCELLED', $adminLangId);
+                } else {
+                    $value = Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]];
+                }
 
-                $value = Orders::getOrderPaymentStatusArr($adminLangId)[$row[$key]];
-                if ('' != $row['plugin_name'] && 'CashOnDelivery' == $row['plugin_code']) {
+                if (in_array(strtolower($row['plugin_code']), ['cashondelivery', 'payatstore'])) {
                     $value .= ' (' . $row['plugin_name'] . ' )';
                 }
 
@@ -88,10 +93,10 @@ foreach ($ordersList as $sn => $row) {
                     $innerLi->appendElement('a', array('href' => UrlHelper::generateUrl('SellerOrders', 'index', array($row['order_id'])), 'class' => 'button small green redirect--js', 'title' => Labels::getLabel('LBL_View_seller_Order', $adminLangId), 'target' => '_new'), Labels::getLabel('LBL_View_seller_Order', $adminLangId), true);
                 }
                 if (!$row['order_deleted'] && $canEdit) {
-                    if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PAID) {
+                    /* if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PAID) {
                         $innerLi = $innerUl->appendElement('li');
                         $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'onclick' => "cancelOrder('" . $row['order_id'] . "')", 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Cancel_Order', $adminLangId), 'target' => '_new'), Labels::getLabel('LBL_Cancel_Order', $adminLangId), true);
-                    }
+                    } */
                     $twoDaysAfter = date('Y-m-d H:i:s', strtotime($row['order_date_added'] . ' + 2 days'));
                     if ($row['order_payment_status'] == Orders::ORDER_PAYMENT_PENDING && $twoDaysAfter < date('Y-m-d')) {
                         $innerLi = $innerUl->appendElement('li');

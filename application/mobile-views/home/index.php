@@ -73,7 +73,7 @@ foreach ($collections as $collectionIndex => $collectionData) {
 $data = array(
     'isWishlistEnable' => $isWishlistEnable,
     'slides' => $slides,
-    'collections' => $collections,
+    'collections' => array_values($collections),
 );
 
 /* foreach ($banners as $location => $bannerLocationDetail) {
@@ -117,9 +117,8 @@ $data = array(
         }
     }
 } 
-$data = array_merge($data, $banners, $orderProducts); */
+$data = array_merge($data, $banners); */
 
-$data = array_merge($data, $orderProducts);
 
 if (empty($sponsoredProds) && empty($sponsoredShops) && empty($slides) && empty($collections) && empty($banners)) {
     $status = applicationConstants::OFF;

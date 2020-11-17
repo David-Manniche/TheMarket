@@ -17,8 +17,13 @@
                             <ul>
                                 <li class="list__item">
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
-                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-brand btn--filters-control saveSearch-js"><i class="icn">
-                                        </i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-brand btn--filters-control saveSearch-js">
+                                         <i class="icn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="14.571" viewBox="0 0 12 14.571">
+                                                <path d="M19.5,9.643H16.071V4.5H10.929V9.643H7.5l6,6Zm-12,7.714v1.714h12V17.357Z" transform="translate(-7.5 -4.5)"></path>
+                                            </svg>
+                                        </i>
+                                        <span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
                                     <?php } ?>
                                 </li>
                                 <li>
@@ -142,7 +147,7 @@
                             <?php } ?>
                         </div>
                         <?php if ($socialPlatforms) { ?>
-                        <div class="social-profiles mt-3">
+                        <div class="social-profiles">
                             <p><strong><?php echo Labels::getLabel('LBL_Follow_Us', $siteLangId); ?></strong> </p>
                             <ul class="social-icons">
                                 <?php foreach ($socialPlatforms as $row) { ?>
@@ -157,7 +162,7 @@
                         <?php } ?>
                     </div>
                 </div>
-                <div class="gap"></div>
+                
                 <?php } ?>
                 <?php if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     ?> <div class="shop-information">
@@ -169,7 +174,7 @@
                         <img <?php if ($fileData['afile_aspect_ratio'] > 0) { ?> data-ratio= "<?php echo $aspectRatioArr[$fileData['afile_aspect_ratio']]; ?>" <?php } ?> src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('image', 'brand', array($postedData['brand_id'] , $siteLangId, 'COLLECTION_PAGE')), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo (!empty($fileData['afile_attribute_alt'])) ? $fileData['afile_attribute_alt'] : $pageTitle;?>" title="<?php echo (!empty($fileData['afile_attribute_alt'])) ? $fileData['afile_attribute_alt'] : $pageTitle;?>">
                     </div>
                 </div>
-                <div class="gap"></div>
+                
                  <?php } ?>
                 <div class="filters">
                     <div class="filters__ele productFilters-js"></div>
@@ -183,17 +188,18 @@
                                         </i></button>
               
                 <div class="listing-products -listing-products ">
-                    <div id="productsList" role="main-listing" class="product-listing product-items">
-                        <?php $productsData = array(
-                                        'products' => $products,
-                                        'page' => $page,
-                                        'pageCount' => $pageCount,
-                                        'postedData' => $postedData,
-                                        'recordCount' => $recordCount,
-                                        'siteLangId' => $siteLangId,
-                                    );
-                            $this->includeTemplate('products/products-list.php', $productsData, false); ?> 
-                    </div>
+                    <?php 
+                    $productsData = array(
+                        'products' => $products,
+                        'page' => $page,
+                        'pageCount' => $pageCount,
+                        'postedData' => $postedData,
+                        'recordCount' => $recordCount,
+                        'siteLangId' => $siteLangId,
+                        'colMdVal' => 5
+                    );
+                    $this->includeTemplate('products/products-list.php', $productsData, false);
+                    ?> 
                 </div>
             </main>
         </div>

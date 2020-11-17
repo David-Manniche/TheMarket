@@ -105,7 +105,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
         <div class="row">
             <sidebar class="col flex-grow-0 collection-sidebar" id="collection-sidebar" data-close-on-click-outside="collection-sidebar">
                 <?php if (isset($shop)) { ?>
-                <div class="bg-gray rounded shop-information p-4">
+                <div class="shop-information">
                     <div class="shop-logo"><img data-ratio="1:1 (150x150)" src="<?php echo UrlHelper::generateUrl('image', 'shopLogo', array($shop['shop_id'], $siteLangId, 'SMALL')); ?>" alt="<?php echo $shop['shop_name']; ?>"></div>
                     <div class="shop-info">
                         <div class="shop-name">
@@ -193,7 +193,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                             <?php } ?>
                         </div>
                         <?php if ($socialPlatforms) { ?>
-                        <div class="social-profiles mt-3">
+                        <div class="social-profiles">
                             <p><strong><?php echo Labels::getLabel('LBL_Follow_Us', $siteLangId); ?></strong> </p>
                             <ul class="social-icons">
                                 <?php foreach ($socialPlatforms as $row) { ?>
@@ -205,7 +205,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                         <?php } ?>
                     </div>
                 </div>
-                <div class="gap"></div>
+                
                 <?php } ?>
                 <?php if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     ?> <div class="brands-block-wrapper">
@@ -260,7 +260,7 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                     </div>
                 </div>
                 <div class="listing-products -listing-products ">
-                    <div id="productsList" role="main-listing" class="product-listing product-items"> 
+                    <div id="productsList" role="main-listing" class="product-listing" data-view="4"> 
                         <?php
                         $productsData = array(
                                         'products'=> $products,

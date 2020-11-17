@@ -12,17 +12,20 @@
             <div class="slide-item">
                 <div class="slide-item__text">
                     <p>
-						<span class="lessText">
+                        <?php echo CommonHelper::truncateCharacters($testimonial['testimonial_text'], 250, '', '', true); ?>
+                        <?php if (strlen($testimonial['testimonial_text']) > 150) { echo '...'; }?> 
+						<?php /* <span class="lessText">
 							<?php echo CommonHelper::truncateCharacters($testimonial['testimonial_text'], 150, '', '', true); ?>
 						</span> 
 						<?php if (strlen($testimonial['testimonial_text']) > 150) { ?> 
 							<span class="moreText hidden">
 								<?php echo FatUtility::decodeHtmlEntities($testimonial['testimonial_text']); ?>
-							</span> 
+                            </span> 
+                            <br>
 							<a class="readMore link--arrow btn-link" href="javascript:void(0);">
 								<?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?>
 							</a>
-						<?php } ?>
+                        <?php }  */?>
 					</p>
                 </div>
                 <div class="slide-item__from">
@@ -39,7 +42,7 @@
         </div>
         <!-- /Slider -->
         <div class="section-foot text-center">
-            <a class="btn btn-outline-white btn-wide btn-wide" href="<?php echo UrlHelper::generateUrl('Testimonials');?>"><?php echo Labels::getLabel('LBL_View_all', $siteLangId); ?></a>
+            <a class="btn btn-outline-white btn-wide" href="<?php echo UrlHelper::generateUrl('Testimonials');?>"><?php echo Labels::getLabel('LBL_View_all', $siteLangId); ?></a>
         </div>
     </div>
 </section>

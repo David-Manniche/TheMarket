@@ -11,6 +11,8 @@ $fileFld->htmlBeforeField='<div class="filefield"><span class="filename"></span>
 $preferredDimensionsStr = '<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $siteLangId).'</label></div><small class="form-text text-muted">'.Labels::getLabel('MSG_Allowed_Extensions', $siteLangId).'</small>';
 $fileFld->htmlAfterField = $preferredDimensionsStr;
 
+$btnSubmitFld = $frm->getField('btn_submit');
+$btnSubmitFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
 $isUserLogged = UserAuthentication::isUserLogged();
 if ($isUserLogged) {
     $nameFld = $frm->getField(BlogContribution::DB_TBL_PREFIX.'author_first_name');
@@ -24,7 +26,7 @@ if ($isUserLogged) {
           <div class="col">
                <div class="section-head section--white--head mb-0">
 						<div class="section__heading">
-                		<h2 class="mb-0"><?php echo Labels::getLabel('Lbl_Blog_Contribution', $siteLangId); ?></h2>
+                		<h1 class="mb-0"><?php echo Labels::getLabel('Lbl_Blog_Contribution', $siteLangId); ?></h1>
                         </div>
                      </div>
           </div>

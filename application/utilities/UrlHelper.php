@@ -27,10 +27,10 @@ class UrlHelper extends FatUtility
         if (CommonHelper::isThemePreview()) {
             array_push($queryData, '?theme-preview');
         }
-       
+
         $useRootUrl = $use_root_url;
         if (true == $useLangCode && FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0) && count(LANG_CODES_ARR) > 1 && $langId  != FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
-            $use_root_url = rtrim($use_root_url, '/') . '/' . strtolower(LANG_CODES_ARR[$langId ]) . '/'  ;
+            $use_root_url = rtrim($use_root_url, '/') . '/' . strtolower(LANG_CODES_ARR[$langId]) . '/';
         }
         $url = FatUtility::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting);
 
@@ -45,7 +45,7 @@ class UrlHelper extends FatUtility
         if ($getOriginalUrl) {
             return $url;
         }
-        
+
         $urlForString = FatUtility::generateUrl($controller, $action, $queryData, $useRootUrl, $url_rewriting);
         $urlString = trim(ltrim($urlForString, CONF_WEBROOT_FRONTEND), '/');
         $srch = UrlRewrite::getSearchObject();
@@ -55,13 +55,13 @@ class UrlHelper extends FatUtility
             $srch->addMultipleFields(array('if(urlrewrite_lang_id = ' . $langId  . ', 99 , 1) as priority'));
             $srch->addOrder('priority', 'desc');
         }
-        
+
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addCondition(UrlRewrite::DB_TBL_PREFIX . 'original', 'LIKE', $urlString);
         $rs = $srch->getResultSet();
         if ($row = FatApp::getDb()->fetch($rs)) {
-            $url = $use_root_url ;
+            $url = $use_root_url;
             if ($encodeUrl) {
                 $url .=  urlencode($row['urlrewrite_custom']);
             } else {
@@ -92,7 +92,7 @@ class UrlHelper extends FatUtility
     public static function getCachedUrl(string $key, int $expiry = null, string $extension = '')
     {
         $url = FatCache::getCachedUrl($key, $expiry, $extension);
-        
+
         if (CDN_DOMAIN_URL != '') {
             if (strpos($url, CDN_DOMAIN_URL) !== false) {
                 return $url;
@@ -111,7 +111,7 @@ class UrlHelper extends FatUtility
     public static function generateFileUrl($controller = '', $action = '', $queryData = array(), $use_root_url = '', $url_rewriting = null, $encodeUrl = false, $getOriginalUrl = false)
     {
         $url = UrlHelper::generateUrl($controller, $action, $queryData, $use_root_url, $url_rewriting, $encodeUrl, $getOriginalUrl, false);
-        
+
         if (CDN_DOMAIN_URL != '') {
             return rtrim(CDN_DOMAIN_URL, '/') . '/' . ltrim($url, '/');
         }
@@ -125,7 +125,7 @@ class UrlHelper extends FatUtility
         if ($encodeUrl) {
             $url = urlencode($url);
         }
-        
+
         if (CDN_DOMAIN_URL != '') {
             return rtrim(CDN_DOMAIN_URL, '/') . '/' . ltrim($url, '/');
         }
@@ -153,7 +153,7 @@ class UrlHelper extends FatUtility
 
         preg_match($pattern, $url, $matches);
 
-        
+
         // preg_match("/(?:[\/]|v=)([a-zA-Z0-9-_]{11})/", $url, $matches);
 
         return (isset($matches[1])) ? $matches[1] : false;
@@ -161,7 +161,7 @@ class UrlHelper extends FatUtility
 
     public static function staticContentProvider($controller, $action)
     {
-        if (in_array($controller, array('js-css','image','fonts','images', 'js', 'img', 'innovas','assetmanager'))) {
+        if (in_array($controller, array('js-css', 'image', 'fonts', 'images', 'js', 'img', 'innovas', 'assetmanager'))) {
             return true;
         }
 

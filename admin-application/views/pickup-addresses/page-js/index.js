@@ -78,8 +78,9 @@ $(document).ready(function () {
             $('.addRowBtn' + day + '-js').remove();
         }
 
-        var addRowBtnHtml = '<input class="mt-4 addRowBtn' + day + '-js js-slot-add-' + day + '" onclick="addTimeSlotRow(' + day + ')" type="button" name="btn_add_row[' + day + ']" value="+">';
-        var html = "<div class='row row-" + count + " js-added-rows-" + day + "'><div class='col-md-2'></div><div class='col-md-4 js-from_time_" + day + "'>" + fromTimeHtml + "</div><div class='col-md-4 js-to_time_" + day + "'>" + toTimeHtml + "</div><div class='col-md-2'><input class='mt-4' type='button' data-day='" + day + "' name='btn_remove_row' value='x'>" + addRowBtnHtml + "</div></div>";
+        var addRowBtnHtml = '<input class="addRowBtn' + day + '-js js-slot-add-' + day + ' d-none" onclick="addTimeSlotRow(' + day + ')" type="button" name="btn_add_row[' + day + ']" value="+">';
+        //var html = "<div class='row row-" + count + " js-added-rows-" + day + "'><div class='col-md-2'></div><div class='col-md-4 js-from_time_" + day + "'>" + fromTimeHtml + "</div><div class='col-md-4 js-to_time_" + day + "'>" + toTimeHtml + "</div><div class='col-md-2'><input class='mt-4' type='button' data-day='" + day + "' name='btn_remove_row' value='x'>" + addRowBtnHtml + "</div></div>";
+        var html = "<div class='row row-" + count + " js-added-rows-" + day + "'><div class='col-md-2'></div><div class='col-md-4 js-from_time_" + day + "'>" + fromTimeHtml + "</div><div class='col-md-4 js-to_time_" + day + "'>" + toTimeHtml + "</div><div class='col-md-2'><div class='field-set'><div class='caption-wraper'><label class='field_label'></label></div><div class='field-wraper'><div class='field_cover'><input class='' type='button' data-day='" + day + "' name='btn_remove_row' value='x'>" + addRowBtnHtml + "</div></div></div></div></div>";
         $(".js-from_time_" + day).last().parent().after(html);
         $(rowElement + " select").val('').attr('data-row', (count));
         var frmElement = rowElement + " .js-slot-from-" + day;
@@ -165,8 +166,10 @@ $(document).ready(function () {
                 $(this).addClass('d-none');
             }
         });
+        
+        var toTimeLastOpt = $(toElement + " option:last").val();
 
-        if (fromTime != '' && toTime != '') {
+        if (fromTime != '' && toTime != '' && toTime <  toTimeLastOpt) {
             $(rowElement + " .js-slot-add-" + day).removeClass('d-none');
         } else {
             $(rowElement + " .js-slot-add-" + day).addClass('d-none');
@@ -206,17 +209,19 @@ $(document).ready(function () {
 
 })();
 
-$(document).on("click", "[name='btn_remove_row']", function () {
-    var day = $(this).data('day');
-    var addRowBtnHtml = '<input class="mt-4 addRowBtn' + day + '-js js-slot-add-' + day + '" onclick="addTimeSlotRow(' + day + ')" type="button" name="btn_add_row[' + day + ']" value="+">';
+$(document).on("click", "[name='btn_remove_row']", function () {   
+    var day = $(this).data('day');    
     
-    $(this).parent().parent('.row').remove();
+    //$(this).parent().parent('.row').remove();
+    $(this).parentsUntil('.row').parent().remove();
 
     if (0 < $('.js-added-rows-' + day + ':last [name="btn_remove_row"]').length) {
+        var addRowBtnHtml = '<input class="addRowBtn' + day + '-js js-slot-add-' + day + '" onclick="addTimeSlotRow(' + day + ')" type="button" name="btn_add_row[' + day + ']" value="+">';
         if (1 > $('.js-added-rows-' + day + ':last .addRowBtn' + day + '-js').length) {
             $('.js-added-rows-' + day + ':last [name="btn_remove_row"]').after(addRowBtnHtml);
         }
     } else if (0 < $('.addRowBtnBlock' + day + '-js').length) {
+        var addRowBtnHtml = '<input class="addRowBtn' + day + '-js js-slot-add-' + day + ' mt-4" onclick="addTimeSlotRow(' + day + ')" type="button" name="btn_add_row[' + day + ']" value="+">';
         $('.addRowBtnBlock' + day + '-js').html(addRowBtnHtml);
     }
 })

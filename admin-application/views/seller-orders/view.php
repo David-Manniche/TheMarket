@@ -382,6 +382,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 </td>
                                 <?php if (Shipping::FULFILMENT_PICKUP != $order['opshipping_fulfillment_type']) { ?>
                                     <td>
+                                        <?php if ($order['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>
                                         <strong>
                                             <?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?> :
                                         </strong>
@@ -396,6 +397,9 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                             <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
                                         </strong>
                                         <?php echo ucwords($orderStatusLbl); ?>
+                                        <?php } else {
+                                            echo Labels::getLabel('LBL_N/A', $adminLangId);
+                                        } ?>
                                     </td>
                                 <?php } ?>
                                 <td><?php echo CommonHelper::displayMoneyFormat($order["op_unit_price"], true, true); ?></td>

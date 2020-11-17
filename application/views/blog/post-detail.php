@@ -116,6 +116,10 @@
                         $emailFld->developerTags['col'] =6;
                         $commentFld = $postCommentFrm->getField('bpcomment_content');
                         $commentFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Message', $siteLangId));
+                        
+                        $btnSubmitFld = $postCommentFrm->getField('btn_submit');
+                        $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
+
                         echo $postCommentFrm->getFormHtml(); ?>
                     </div>
 

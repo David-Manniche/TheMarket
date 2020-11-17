@@ -3,9 +3,9 @@
 class Twocheckout extends PaymentMethodBase
 {
     public const KEY_NAME = __CLASS__;
+    public const PRODUCTION_URL = 'https://www.2checkout.com';
 
     public $requiredKeys = [
-        'payment_type',
         'sellerId',
         'publishableKey',
         'privateKey',

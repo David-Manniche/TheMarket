@@ -20,7 +20,6 @@ if (true == $primaryOrder) {
 }
 
 $orderStatusArr = Orders::getOrderPaymentStatusArr($siteLangId);
-
 if (!$print) { ?>
     <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <?php } ?>
@@ -75,7 +74,7 @@ if (!$print) { ?>
                     <h5 class="card-title">
                         <?php echo Labels::getLabel('LBL_Order_Details', $siteLangId); ?>
                     </h5>
-                    <?php if ($print) { ?>
+                    <?php if (!$print) { ?>
                         <div>
                             <div class="">
                                 <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrder', $urlParts) . '/print'; ?>" name="frame" class="printFrame-js" style="display:none" width="1" height="1"></iframe>
@@ -118,9 +117,9 @@ if (!$print) { ?>
                                         $paymentMethodName .= Labels::getLabel("LBL_Wallet", $siteLangId);
                                     }
 
-                                    if (strtolower($childOrderDetail['plugin_code']) == 'cashondelivery' && $childOrderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
+                                    /* if (strtolower($childOrderDetail['plugin_code']) == 'cashondelivery' && $childOrderDetail['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
                                         $paymentMethodName = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
-                                    } ?>
+                                    } */ ?>
                                     <p>
                                         <strong>
                                             <?php echo Labels::getLabel('LBL_Payment_Method', $siteLangId); ?>:
@@ -165,20 +164,19 @@ if (!$print) { ?>
                                             </p>
                                     <?php }
                                     } ?>
-                                    <?php 
+                                    <?php
                                     $disc = CommonHelper::orderProductAmount($childOrderDetail, 'DISCOUNT');
-                                    if (0 < $disc) { ?>
+                                    if (!empty($disc)) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId); ?>:
                                             </strong>
                                             <?php echo CommonHelper::displayMoneyFormat($disc, true, false, true, false, true); ?>
                                         </p>
-                                    <?php 
-                                    }
+                                    <?php }
 
                                     $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
-                                    if (0 < $volumeDiscount) { ?>
+                                    if (!empty($volumeDiscount)) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:
@@ -187,7 +185,7 @@ if (!$print) { ?>
                                         </p>
                                     <?php } ?>
                                     <?php $rewardPointDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'REWARDPOINT');
-                                    if ($rewardPointDiscount != 0) { ?>
+                                    if (!empty($rewardPointDiscount)) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId); ?>:
@@ -473,14 +471,16 @@ if (!$print) { ?>
                                             <?php echo CommonHelper::displayMoneyFormat($cartTotal, true, false, true, false, true); ?>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="8">
-                                            <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId) ?>
-                                        </td>
-                                        <td>
-                                            <?php echo CommonHelper::displayMoneyFormat($shippingCharges, true, false, true, false, true); ?>
-                                        </td>
-                                    </tr>
+                                    <?php if (0 < $shippingCharges) { ?>
+                                        <tr>
+                                            <td colspan="7">
+                                                <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId) ?>
+                                            </td>
+                                            <td>
+                                                <?php echo CommonHelper::displayMoneyFormat($shippingCharges, true, false, true, false, true); ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
                                     <?php
                                     if (empty($taxOptionsTotal)) { ?>
                                         <tr>
@@ -491,7 +491,7 @@ if (!$print) { ?>
                                                 <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged'], true, false, true, false, true); ?>
                                             </td>
                                         </tr>
-                                        <?php } else {
+                                    <?php } else {
                                         foreach ($taxOptionsTotal as $key => $val) { ?>
                                             <tr>
                                                 <td colspan="8">
@@ -503,7 +503,8 @@ if (!$print) { ?>
                                             </tr>
                                     <?php }
                                     } ?>
-                                    <?php if (0 < $orderDetail['order_discount_total']) { ?>
+                                    <?php 
+                                    if (0 < $orderDetail['order_discount_total']) { ?>
                                         <tr>
                                             <td colspan="8">
                                                 <?php echo Labels::getLabel('LBL_Discount', $siteLangId) ?>
@@ -556,82 +557,195 @@ if (!$print) { ?>
                         </table>
                     </div>
                     <div class="row mt-4">
-                        <div class="col-lg-6 col-md-6 mb-4">
-                            <h6>
-                                <?php echo Labels::getLabel('LBL_Billing_Details', $siteLangId); ?>
-                            </h6>
-                            <?php $billingAddress = $orderDetail['billingAddress']['oua_name'] . '<br>';
-                            if ($orderDetail['billingAddress']['oua_address1'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_address1'] . '<br>';
-                            }
+                        <?php 
+                            $transferBank = (isset($orderDetail['plugin_code']) && 'TransferBank' == $orderDetail['plugin_code']);
+                            $class = $transferBank ? "col-lg-3 mb-4" : "col-lg-6 mb-4";
+                        ?>
+                        <div class="<?php echo $class; ?>">
+                            <div class="bg-gray p-3 rounded">
+                                <h6>
+                                    <?php echo Labels::getLabel('LBL_Billing_Details', $siteLangId); ?>
+                                </h6>
+                                <?php $billingAddress = $orderDetail['billingAddress']['oua_name'] . '<br>';
+                                if ($orderDetail['billingAddress']['oua_address1'] != '') {
+                                    $billingAddress .= $orderDetail['billingAddress']['oua_address1'] . '<br>';
+                                }
 
-                            if ($orderDetail['billingAddress']['oua_address2'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_address2'] . '<br>';
-                            }
+                                if ($orderDetail['billingAddress']['oua_address2'] != '') {
+                                    $billingAddress .= $orderDetail['billingAddress']['oua_address2'] . '<br>';
+                                }
 
-                            if ($orderDetail['billingAddress']['oua_city'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_city'] . ', ';
-                            }
+                                if ($orderDetail['billingAddress']['oua_city'] != '') {
+                                    $billingAddress .= $orderDetail['billingAddress']['oua_city'] . ', ';
+                                }
 
-                            if ($orderDetail['billingAddress']['oua_state'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_state'] . ', ';
-                            }
+                                if ($orderDetail['billingAddress']['oua_state'] != '') {
+                                    $billingAddress .= $orderDetail['billingAddress']['oua_state'] . ', ';
+                                }
 
-                            if ($orderDetail['billingAddress']['oua_country'] != '') {
-                                $billingAddress .= $orderDetail['billingAddress']['oua_country'];
-                            }
+                                if ($orderDetail['billingAddress']['oua_country'] != '') {
+                                    $billingAddress .= $orderDetail['billingAddress']['oua_country'];
+                                }
 
-                            if ($orderDetail['billingAddress']['oua_zip'] != '') {
-                                $billingAddress  .= '-' . $orderDetail['billingAddress']['oua_zip'];
-                            }
+                                if ($orderDetail['billingAddress']['oua_zip'] != '') {
+                                    $billingAddress  .= '-' . $orderDetail['billingAddress']['oua_zip'];
+                                }
 
-                            if ($orderDetail['billingAddress']['oua_phone'] != '') {
-                                $billingAddress  .= '<br>' . $orderDetail['billingAddress']['oua_phone'];
-                            }
-                            ?>
-                            <div class="info--order">
-                                <p>
-                                    <?php echo $billingAddress; ?>
-                                </p>
+                                if ($orderDetail['billingAddress']['oua_phone'] != '') {
+                                    $billingAddress  .= '<br>' . $orderDetail['billingAddress']['oua_phone'];
+                                }
+                                ?>
+                                <div class="info--order">
+                                    <p>
+                                        <?php echo $billingAddress; ?>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <?php if (!empty($orderDetail['shippingAddress']) && $productType != Product::PRODUCT_TYPE_DIGITAL) { ?>
-                            <div class="col-lg-6 col-md-6 mb-4">
-                                <h6>
-                                    <?php echo Labels::getLabel('LBL_Shipping_Details', $siteLangId); ?>
-                                </h6>
-                                <?php $shippingAddress = $orderDetail['shippingAddress']['oua_name'] . '<br>';
-                                if ($orderDetail['shippingAddress']['oua_address1'] != '') {
-                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_address1'] . '<br>';
-                                }
+                            <div class="<?php echo $class; ?>">
+                                <div class="bg-gray p-3 rounded">
+                                    <h6>
+                                        <?php echo Labels::getLabel('LBL_Shipping_Details', $siteLangId); ?>
+                                    </h6>
+                                    <?php $shippingAddress = $orderDetail['shippingAddress']['oua_name'] . '<br>';
+                                    if ($orderDetail['shippingAddress']['oua_address1'] != '') {
+                                        $shippingAddress .= $orderDetail['shippingAddress']['oua_address1'] . '<br>';
+                                    }
 
-                                if ($orderDetail['shippingAddress']['oua_address2'] != '') {
-                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_address2'] . '<br>';
-                                }
+                                    if ($orderDetail['shippingAddress']['oua_address2'] != '') {
+                                        $shippingAddress .= $orderDetail['shippingAddress']['oua_address2'] . '<br>';
+                                    }
 
-                                if ($orderDetail['shippingAddress']['oua_city'] != '') {
-                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_city'] . ',';
-                                }
+                                    if ($orderDetail['shippingAddress']['oua_city'] != '') {
+                                        $shippingAddress .= $orderDetail['shippingAddress']['oua_city'] . ',';
+                                    }
 
-                                if ($orderDetail['shippingAddress']['oua_state'] != '') {
-                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_state'] . ', ';
-                                }
+                                    if ($orderDetail['shippingAddress']['oua_state'] != '') {
+                                        $shippingAddress .= $orderDetail['shippingAddress']['oua_state'] . ', ';
+                                    }
 
-                                if ($orderDetail['shippingAddress']['oua_country'] != '') {
-                                    $shippingAddress .= $orderDetail['shippingAddress']['oua_country'];
-                                }
+                                    if ($orderDetail['shippingAddress']['oua_country'] != '') {
+                                        $shippingAddress .= $orderDetail['shippingAddress']['oua_country'];
+                                    }
 
-                                if ($orderDetail['shippingAddress']['oua_zip'] != '') {
-                                    $shippingAddress .= '-' . $orderDetail['shippingAddress']['oua_zip'];
-                                }
+                                    if ($orderDetail['shippingAddress']['oua_zip'] != '') {
+                                        $shippingAddress .= '-' . $orderDetail['shippingAddress']['oua_zip'];
+                                    }
 
-                                if ($orderDetail['shippingAddress']['oua_phone'] != '') {
-                                    $shippingAddress .= '<br>' . $orderDetail['shippingAddress']['oua_phone'];
-                                } ?>
-                                <div class="info--order">
-                                    <p>
-                                        <?php echo $shippingAddress; ?>
-                                    </p>
+                                    if ($orderDetail['shippingAddress']['oua_phone'] != '') {
+                                        $shippingAddress .= '<br>' . $orderDetail['shippingAddress']['oua_phone'];
+                                    } ?>
+                                    <div class="info--order">
+                                        <p>
+                                            <?php echo $shippingAddress; ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+                        <?php
+                        if (true == $transferBank) {
+                            $pluginSettingsObj = new PluginSetting(0, 'TransferBank');
+                            $settings = $pluginSettingsObj->get($siteLangId);
+                        ?>
+                            <div class="col-lg-6 mb-4">
+                                <div class="bg-gray p-3 rounded">
+                                    <h6>
+                                        <?php echo Labels::getLabel('LBL_BANK_DETAIL', $siteLangId); ?>
+                                    </h6>
+                                    <div class="info--order">
+                                        <ul class="transfer-payment-detail">
+                                            <li>
+                                                <i class="icn">
+                                                    <svg class="svg">
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bussiness-name" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bussiness-name"></use>
+                                                    </svg>
+                                                </i>
+                                                <div class="lable">
+                                                    <h6><?php echo Labels::getLabel('LBL_BUSSINESS_NAME', $siteLangId); ?></h6>
+                                                    <?php echo $settings['business_name']; ?>
+                                                </div>
+
+                                            </li>
+                                            <li>
+                                                <i class="icn">
+                                                    <svg class="svg">
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-name" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-name"></use>
+                                                    </svg>
+                                                </i>
+                                                <div class="lable">
+                                                    <h6><?php echo Labels::getLabel('LBL_BANK_NAME', $siteLangId); ?></h6>
+                                                    <?php echo $settings['bank_name']; ?>
+                                                </div>
+
+                                            </li>
+                                            <li>
+                                                <i class="icn">
+                                                    <svg class="svg">
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-branch" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-branch"></use>
+                                                    </svg>
+                                                </i>
+                                                <div class="lable">
+                                                    <h6><?php echo Labels::getLabel('LBL_BANK_BRANCH', $siteLangId); ?></h6>
+                                                    <?php echo $settings['bank_branch']; ?>
+                                                </div>
+
+                                            </li>
+                                            <li>
+                                                <i class="icn">
+                                                    <svg class="svg">
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#account" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#account"></use>
+                                                    </svg>
+                                                </i>
+                                                <div class="lable">
+                                                    <h6><?php echo Labels::getLabel('LBL_ACCOUNT_#', $siteLangId); ?></h6>
+                                                    <?php echo $settings['account_number']; ?>
+                                                </div>
+
+                                            </li>
+                                            <li>
+                                                <i class="icn">
+                                                    <svg class="svg">
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#ifsc" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#ifsc"></use>
+                                                    </svg>
+                                                </i>
+                                                <div class="lable">
+                                                    <h6><?php echo Labels::getLabel('LBL_IFSC_/_MICR', $siteLangId); ?></h6>
+                                                    <?php echo $settings['ifsc']; ?>
+                                                </div>
+
+                                            </li>
+                                            <?php if (!empty($settings['routing'])) { ?>
+                                                <li>
+                                                    <i class="icn">
+                                                        <svg class="svg">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#routing" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#routing"></use>
+                                                        </svg>
+                                                    </i>
+                                                    <div class="lable">
+                                                        <h6><?php echo Labels::getLabel('LBL_ROUTING_#', $siteLangId); ?></h6>
+                                                        <?php echo $settings['routing']; ?>
+                                                    </div>
+
+                                                </li>
+                                            <?php } ?>
+                                            <?php if (!empty($settings['bank_notes'])) { ?>
+                                                <li class="notes">
+                                                    <i class="icn">
+                                                        <svg class="svg">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-notes" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/bank.svg#bank-notes"></use>
+                                                        </svg>
+                                                    </i>
+                                                    <div class="lable">
+                                                        <h6><?php echo Labels::getLabel('LBL_OTHER_NOTES', $siteLangId); ?></h6>
+                                                        <?php echo $settings['bank_notes']; ?>
+                                                    </div>
+                                                </li>
+                                            <?php } ?>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         <?php } ?>

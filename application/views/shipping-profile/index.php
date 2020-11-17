@@ -1,24 +1,21 @@
-<?php  defined('SYSTEM_INIT') or die('Invalid Usage.');
-$this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); 
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+$this->includeTemplate('_partial/seller/sellerDashboardNavigation.php');
 $searchFrm->setFormTagAttribute('onSubmit', 'searchProfile(this); return false;');
 $searchFrm->setFormTagAttribute('class', 'form ');
 $searchFrm->developerTags['colClassPrefix'] = 'col-md-';
 $searchFrm->developerTags['fld_default_col'] = 6;
 
 $keywordFld = $searchFrm->getField('keyword');
-$keywordFld->setWrapperAttribute('class', 'col-lg-4');
-$keywordFld->developerTags['col'] = 4;
+$keywordFld->developerTags['col'] = 8;
 $keywordFld->developerTags['noCaptionTag'] = true;
 
 $submitBtnFld = $searchFrm->getField('btn_submit');
 $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
-$submitBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $submitBtnFld->developerTags['col'] = 2;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
 
 $cancelBtnFld = $searchFrm->getField('btn_clear');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
-$cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
 ?>
@@ -26,15 +23,16 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
     <div class="content-wrapper content-space">
         <div class="content-header row ">
             <div class="col">
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Shipping_Profiles', $siteLangId);?>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Shipping_Profiles', $siteLangId); ?>
                 </h2>
             </div>
-            <div class="col-auto">
-                <div class="content-header-right">
-                    <a href="<?php echo UrlHelper::generateUrl('shippingProfile', 'form',[0]);?>"
-                        class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId);?></a>
+            <?php if ($canEdit) { ?>
+                <div class="col-auto">
+                    <div class="content-header-right">
+                        <a href="<?php echo UrlHelper::generateUrl('shippingProfile', 'form', [0]); ?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Create_Profile', $siteLangId); ?></a>
+                    </div>
                 </div>
-            </div>
+            <?php } ?>
         </div>
         <div class="content-body">
             <div class="row mb-4">
@@ -45,7 +43,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                 <?php
                                 $submitFld = $searchFrm->getField('btn_submit');
 
-                                $fldClear= $searchFrm->getField('btn_clear');
+                                $fldClear = $searchFrm->getField('btn_clear');
                                 $fldClear->setFieldTagAttribute('onclick', 'clearSearch()');
                                 echo $searchFrm->getFormHtml();
                                 ?>
@@ -60,7 +58,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                     <div class="card">
                         <div class="card-body">
                             <div id="profilesListing">
-                              
+
                             </div>
                         </div>
                     </div>

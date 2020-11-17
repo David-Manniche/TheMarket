@@ -31,15 +31,7 @@
     .more {
         cursor: pointer;
         z-index: 1;
-        @include media-breakpoint-down(lg) {
-            & {
-                width: auto;
-                padding: 15px 10px;
-                height: auto;
-            }
-        }
         span {
-            display: none;
             @include media-breakpoint-down(lg) {
                 & {
                     display: block;
@@ -71,6 +63,7 @@
     display: flex;
     padding: 0;
     font-size: 0.85rem;
+    transform: rotate(0deg);
     @include media-breakpoint-down(lg) {
         & {
             margin: 0;
@@ -263,10 +256,14 @@
     top: 0;
     visibility: visible;
     width: 40px;
+    height: 40px;
     z-index: 1;
     @include media-breakpoint-down(lg) {
         & {
             display: block;
+            &.active~.vertical-menu {
+                display: block;
+            }
         }
     }
     &:before {

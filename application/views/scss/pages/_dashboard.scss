@@ -187,7 +187,7 @@
 
 .my-dashboard {
     &.is-dashboard {
-        height: auto;
+        // height: auto;
         background: $gray-light;
         padding: 50px;
         @include media-breakpoint-down(lg) {
@@ -205,6 +205,7 @@
             position: relative;
             z-index: 1;
             max-width: 1530px;
+            min-height: 100%;
             margin: 0 auto;
             border-radius: 10px;
             overflow: hidden;
@@ -820,7 +821,7 @@
 .content-wrapper {
     &.content-space {
         padding: 3.125rem;
-        min-height: 700px;
+        //min-height: 700px;
         @include media-breakpoint-down(lg) {
             & {
                 padding: 2rem;
@@ -1323,14 +1324,13 @@
 .box--offer {
     margin: 10px 0 10px;
     border: 1px dashed rgba(0, 0, 0, 0.2);
-    padding: 20px;
+    padding: 1rem;
     border-radius: $radius4;
     height: 100%;
     -webkit-transition: all 0.2s linear;
     transition: all 0.2s linear;
     &:hover {
-        -webkit-box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.1);
-        box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
     }
     .offer {
         height: 100%;
@@ -1347,6 +1347,15 @@
         -webkit-box-pack: center;
         -ms-flex-pack: center;
         justify-content: center;
+        .offer__logo {
+            width: 80px;
+            margin: 0 auto;
+            display: block;
+            img {
+                width: 100%;
+                margin: auto;
+            }
+        }
     }
     .offer__box {
         background: #f5f5f5;
@@ -1363,31 +1372,28 @@
             font-weight: normal;
         }
     }
-    .offer__logo {
-        width: 80px;
-        margin: 0 auto;
-        display: block;
-        img {
-            width: 100%;
-            margin: auto;
-        }
+    h6 {
+        font-size: 0.8rem;
+        margin: 0;
     }
     p {
         opacity: 0.6;
-        font-size: 0.9em;
+        font-size: 0.78rem;
         margin-bottom: 10px;
     }
     .offer__footer {
-        border-top: 1px solid #ededed;
-        padding: 6px 0 0;
-        width: 100%;
-        display: inline-block;
+        border-top: $border;
+        padding: 10px 0 0 0;
+        display: block;
         .coupon-code {
             margin-top: 10px;
+            display: inline-block;
+            font-weight: 600;
+            color: $brand-color;
         }
         p {
             margin: 0;
-            font-size: 0.9em;
+            font-size: 0.78rem;
         }
     }
 }
@@ -1958,5 +1964,98 @@ input.sp-input {
         color: $body-color;
         min-width: 65px;
         display: inline-block;
+    }
+}
+
+.my-addresses {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    >li {
+        border: $border;
+        border-radius: $radius4;
+        display: flex;
+        flex-direction: column;
+        &.add-new {
+            display: grid;
+            place-items: center;
+            padding: 3rem 0;
+        }
+    }
+    &__body {
+        flex: 1;
+        padding: 1rem;
+        padding-bottom: 0;
+        position: relative;
+        .radio {
+            position: absolute;
+            top: 1rem;
+            #{$end-direction}: 1rem;
+        }
+    }
+    .actions {
+        border-top: $border;
+        display: flex;
+        align-items: center;
+        a {
+            flex: 1;
+            color: $body-color;
+            text-align: center;
+            padding: 0.6rem 1rem;
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            position: relative;
+            &:after {
+                content: "";
+                border-#{$end-direction}: $border;
+                position: absolute;
+                #{$end-direction}: 0;
+                top: 0;
+                bottom: 0;
+            }
+            &:last-child {
+                &:after {
+                    content: normal;
+                }
+            }
+            &:hover {
+                color: $brand-color;
+            }
+        }
+    }
+}
+
+.delivery-address {
+    font-size: 0.85rem;
+    color: $txt-gray;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    h5 {
+        margin-bottom: 10px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: $body-color;
+    }
+    .tag {
+        margin: 0 5px;
+        border: solid 1px $success-color;
+        border-radius: 40px;
+        color: $success-color;
+        padding: 2px 0.6rem;
+        line-height: 1;
+        font-size: 0.75rem;
+        font-weight: 400;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+    .phone-txt {
+        font-weight: 500;
+        margin-top: 8px;
     }
 }

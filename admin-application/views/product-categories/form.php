@@ -69,6 +69,24 @@ if (null != $fld) {
                         <div class="caption-wraper">
                             <label class="field_label">
                                 <?php
+                                $fld = $prodCatFrm->getField('prodcat_identifier');
+                                echo $fld->getCaption();
+                                ?>
+                                <span class="spn_must_field">*</span></label>
+                        </div>
+                        <div class="field-wraper">
+                            <div class="field_cover">
+                                <?php echo $prodCatFrm->getFieldHtml('prodcat_identifier'); ?>
+                                <?php echo $prodCatFrm->getFieldHtml('prodcat_id'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="field-set">
+                        <div class="caption-wraper">
+                            <label class="field_label">
+                                <?php
                                 $fld = $prodCatFrm->getField('prodcat_name[' . $siteDefaultLangId . ']');
                                 echo $fld->getCaption();
                                 ?>
@@ -81,40 +99,42 @@ if (null != $fld) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
-                                <?php $fld = $prodCatFrm->getField('prodcat_parent');
+                                <?php $fld = $prodCatFrm->getField('parent_category_name');
                                 echo $fld->getCaption();
                                 ?></label>
                         </div>
                         <div class="field-wraper">
                             <div class="field_cover">
-                                <?php echo $prodCatFrm->getFieldHtml('prodcat_parent'); ?>
+                                <?php echo $prodCatFrm->getFieldHtml('parent_category_name'); ?>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6">
-                    <div class="field-set d-flex align-items-center">
-                        <div class="caption-wraper w-auto pr-4">
+                    <div class="field-set">
+                        <div class="caption-wraper">
                             <label class="field_label">
                                 <?php $fld = $prodCatFrm->getField('prodcat_active');
                                 echo $fld->getCaption();
                                 ?></label>
                         </div>
-                        <div class="field-wraper w-auto">
+                        <div class="field-wraper">
                             <div class="field_cover">
                                 <?php echo $prodCatFrm->getFieldHtml('prodcat_active'); ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                <?php if (null != $statusFld) { ?>
+            </div>
+            <?php if (null != $statusFld) { ?>
+                <div class="row">
                     <div class="col-md-6">
                         <div class="field-set d-flex align-items-center">
                             <div class="caption-wraper w-auto pr-4">
@@ -129,8 +149,9 @@ if (null != $fld) {
                             </div>
                         </div>
                     </div>
-                <?php } ?>
-            </div>
+                </div>
+            <?php } ?>
+            
             <?php $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
             if (!empty($translatorSubscriptionKey) && count($otherLangData) > 0) { ?>
                 <div class="row">
@@ -276,9 +297,19 @@ if (null != $fld) {
 echo $prodCatFrm->getFieldHtml('banner_min_height');
 echo $prodCatFrm->getFieldHtml('logo_min_width');
 echo $prodCatFrm->getFieldHtml('logo_min_height');
+echo $prodCatFrm->getFieldHtml('prodcat_parent');
 ?>
 </form>
-<?php echo $prodCatFrm->getExternalJS(); ?>
+<?php echo $prodCatFrm->getExternalJS(); 
+
+$catAutocompleteArr = [];
+foreach ($categories as $catId => $catName) {
+    $catAutocompleteArr[] = array(
+        'id' => $catId,
+        'label' => strip_tags(html_entity_decode($catName, ENT_QUOTES, 'UTF-8'))
+    );
+}
+?>
 
 <script>
     $('input[name=banner_min_width]').val(2000);
@@ -307,4 +338,30 @@ echo $prodCatFrm->getFieldHtml('logo_min_height');
             aspectRatio = 16 / 9;
         }
     });
+       
+    
+    $(document).ready(function(){
+        var catAutocompleteArr = JSON.parse('<?php echo json_encode($catAutocompleteArr);  ?>');    
+        $('input[name=\'parent_category_name\']').autocomplete({
+            minLength: 0,
+            'classes': {
+                "ui-autocomplete": "custom-ui-autocomplete"
+            },
+            source: catAutocompleteArr,
+            select: function(event, ui) {
+                    $('input[name=\'prodcat_parent\']').val(ui.item.id);
+            }
+            }).focus(function(){            
+                $(this).autocomplete('search', $(this).val())
+            });	
+
+        $('input[name=\'parent_category_name\']').change(function() {
+            if ($(this).val() == '') {
+                $("input[name='prodcat_parent']").val(0);
+            }
+        });
+    
+    });
+    
+    
 </script>

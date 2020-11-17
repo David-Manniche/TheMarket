@@ -7,17 +7,19 @@
          background: #f5f5f5;
          border-radius: $radius4;
      }
+     label,
      .field_label {
          font-size: 0.8rem;
          color: $txt-gray;
          margin: 0;
          margin-bottom: 5px;
+         min-height: 15px; /*for alignment issue where no content in form lebal - form button and input alignment */
          display: inline-block;
          min-height: none;
          cursor: default;
          /*opacity: 0.6;*/
          &:empty {
-             min-height: 18px;
+             min-height: 15px;
          }
      }
      input {
@@ -66,6 +68,8 @@
          }
          &[type="file"] {
              @extend input;
+             width: auto;
+             overflow: hidden;
          }
          &[type="file"] {
              height: auto;
@@ -166,13 +170,16 @@
              transition: opacity 0.2s;
              pointer-events: none;
          }
+         i{
+             &:before{opacity: 1 !important;}
+         }
          &:focus {
-              :before {
+              > :before {
                  opacity: 0.2;
              }
          }
          &:active {
-              :before {
+              > :before {
                  opacity: 0.32;
              }
          }

@@ -2,14 +2,13 @@
     position: fixed;
     max-width: 450px;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     #{$end-direction}: 0;
     top: 0;
     background: #fff;
     color: $body-color;
     z-index: 10;
     overflow: hidden;
-    padding-top: 50px;
     display: flex;
     flex-direction: column;
     transform: translateX(100% * $transform-direction);
@@ -21,49 +20,18 @@
             & {
                 width: 100%;
             }
-        }
+        }           
     }
     .cartdetail__body {
-        /*max-height: 400px;
-        max-height: calc(100vh - 300px);*/
-        background: #fff;
+        //max-height: 400px;
+        //max-height: calc(100vh - 215px);
+        padding-top: 50px;
+        height: 100%;
+        width: 100%;
+        background: $bg-white;
         flex: 1;
-    }
-    .cartdetail__footer {}
-}
-
-.cart-summary {
-    width: 100%;
-    tr {
         border-bottom: $border;
-    }
-    th {
-        background: #ededed;
-        color: #000;
-        font-weight: 300;
-    }
-    th,
-    td {
-        vertical-align: top;
-        padding: 10px;
-        font-size: 0.8rem;
-    }
-    .products__img {
-        max-width: 100px;
-    }
-    .products {
-        .products-head-title {
-            font-size: 0.8em;
-        }
-        .products-head-specification {
-            font-size: 0.8em;
-        }
-        .products__price {
-            font-size: 1em;
-        }
-        .products-head {
-            height: auto;
-        }
+        overflow-y: auto;
     }
 }
 
@@ -74,21 +42,19 @@
 }
 
 .cartdetail__footer {
-    padding: 0;
-    table {
-        width: 100%;
-        td {
-            padding: 10px;
-            font-size: 0.9em;
-            &.hightlighted {
-                font-weight: 500;
-                font-size: 0.85rem;
-                border-top: $border;
-                border-bottom: $border;
-            }
-            &:last-child {
-                text-align: #{$end-direction};
-            }
-        }
+    .buttons-group {
+        flex: 1;
+    }
+}
+.side-cart--on{
+    .cart > a:after{
+        content: "";
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1;
     }
 }

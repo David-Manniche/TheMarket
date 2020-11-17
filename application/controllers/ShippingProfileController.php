@@ -4,20 +4,25 @@ class ShippingProfileController extends SellerBaseController
     public function __construct($action)
     {
         parent::__construct($action);
+        if (!FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT', FatUtility::VAR_INT, 0)) {
+            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
+            CommonHelper::redirectUserReferer();
+        }
         $this->userPrivilege->canViewShippingProfiles(UserAuthentication::getLoggedUserId());
     }
 
     public function index()
     {
         /* Add Default Shipping If Not Created */
-        ShippingProfile::getDefaultProfileId(UserAuthentication::getLoggedUserId());
+        ShippingProfile::getDefaultProfileId($this->userParentId);
         /* Add Default Shipping If Not Created */
-        
+
         $searchFrm = $this->getSearchForm();
+        $this->set('canEdit', $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId(), true));
         $this->set("searchFrm", $searchFrm);
         $this->_template->render();
     }
-    
+
     public function search()
     {
         $userId = UserAuthentication::getLoggedUserId();
@@ -26,7 +31,7 @@ class ShippingProfileController extends SellerBaseController
         $data = FatApp::getPostedData();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         $post = $searchForm->getFormDataFromArray($data);
-        
+
         $prodCountSrch = ShippingProfileProduct::getSearchObject($this->siteLangId);
         $prodCountSrch->addCondition('shippro_user_id', '=', $this->userParentId);
         $prodCountSrch->doNotCalculateRecords();
@@ -34,20 +39,20 @@ class ShippingProfileController extends SellerBaseController
         $prodCountSrch->addGroupBy('shippro_shipprofile_id');
         $prodCountSrch->addMultipleFields(array("COUNT(*) as totalProducts, shippro_shipprofile_id"));
         $prodCountQuery = $prodCountSrch->getQuery();
-        
+
         $srch = ShippingProfile::getSearchObject();
-        $srch->addCondition('sprofile.shipprofile_user_id', '=', $userId);
+        $srch->addCondition('sprofile.shipprofile_user_id', '=', $this->userParentId);
         $srch->joinTable('(' . $prodCountQuery . ')', 'LEFT OUTER JOIN', 'sproduct.shippro_shipprofile_id = sprofile.shipprofile_id', 'sproduct');
-        
+
         $srch->addMultipleFields(array('sprofile.*', 'if(sproduct.totalProducts is null, 0, sproduct.totalProducts) as totalProducts'));
-        
+
         $srch->addOrder('shipprofile_default', 'DESC');
         $srch->addOrder('shipprofile_id', 'ASC');
-        
+
         if (!empty($post['keyword'])) {
             $srch->addCondition('sprofile.shipprofile_name', 'like', '%' . $post['keyword'] . '%');
         }
-        
+
         $srch->setPageNumber($page);
         $srch->setPageSize($pageSize);
         $rs = $srch->getResultSet();
@@ -58,7 +63,7 @@ class ShippingProfileController extends SellerBaseController
             $profileIds = array_map('intval', $profileIds);
             $zones = $this->getZones($profileIds);
         }
-        
+
         $this->set('arr_listing', $records);
         $this->set('zones', $zones);
         $this->set('pageCount', $srch->pages());
@@ -69,10 +74,10 @@ class ShippingProfileController extends SellerBaseController
         $this->set('canEdit', $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId(), true));
         $this->_template->render(false, false);
     }
-    
+
     public function form($profileId = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $profileId = FatUtility::int($profileId);
         $frm = $this->getForm($profileId);
         $data = [];
@@ -88,14 +93,14 @@ class ShippingProfileController extends SellerBaseController
             }
             $frm->fill($data);
         }
-        
+
         $this->set('profile_id', $profileId);
         $this->set('frm', $frm);
         $this->set('profileData', $data);
         $this->set('canEdit', $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId(), true));
         $this->_template->render();
     }
-    
+
     public function setup()
     {
         $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId());
@@ -116,7 +121,7 @@ class ShippingProfileController extends SellerBaseController
             Message::addErrorMessage($spObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $profileId = $spObj->getMainTableRecordId();
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->siteLangId));
         $this->set('profileId', $profileId);
@@ -126,7 +131,7 @@ class ShippingProfileController extends SellerBaseController
     public function deleteRecord()
     {
         $this->userPrivilege->canEditShippingProfiles(UserAuthentication::getLoggedUserId());
-       
+
         $shipprofileId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         if ($shipprofileId < 1) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request_id', $this->siteLangId));
@@ -150,7 +155,7 @@ class ShippingProfileController extends SellerBaseController
             $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->siteLangId));
             $this->_template->render(false, false, 'json-success.php');
         }
-        
+
         $shipprozoneId = $shippingProfData['shipprozone_id'];
 
         $shippingProfileZone = new ShippingProfileZone($shipprozoneId);
@@ -174,7 +179,7 @@ class ShippingProfileController extends SellerBaseController
             Message::addErrorMessage($shippingProfileZone->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
+
         $defaultShipProfileId = ShippingProfile::getDefaultProfileId($this->userParentId);
         if (0 < $defaultShipProfileId) {
             $data = [
@@ -187,7 +192,7 @@ class ShippingProfileController extends SellerBaseController
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     private function getZones($profileIds)
     {
         if (empty($profileIds)) {
@@ -206,19 +211,19 @@ class ShippingProfileController extends SellerBaseController
         }
         return $zones;
     }
-    
+
     private function getSearchForm()
     {
         $frm = new Form('frmSearch');
-        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->siteLangId), 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $this->siteLangId) ));
+        $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->siteLangId), 'keyword', '', array('placeholder' => Labels::getLabel('LBL_Keyword', $this->siteLangId)));
         $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->siteLangId));
-        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->siteLangId));
+        $fldCancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear', $this->siteLangId));
         return $frm;
     }
-    
+
     private function getForm($profileId = 0)
     {
-        $userId = UserAuthentication::getLoggedUserId();
+        $userId = $this->userParentId;
         $profileId = FatUtility::int($profileId);
         $frm = new Form('frmShippingProfile');
         $frm->addHiddenField('', 'shipprofile_id', $profileId);

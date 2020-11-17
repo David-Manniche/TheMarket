@@ -2,7 +2,7 @@
 $frm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
 $frm->setFormTagAttribute('onsubmit', 'setupCollection(); return(false);');
 
-if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) {
+if (!in_array($collection_layout_type, Collections::APP_COLLECTIONS_ONLY)) {
     $fld = $frm->getField('collection_for_web');
     $fld->setOptionListTagAttribute('class', 'list-inline-checkboxes');
     $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
@@ -13,7 +13,7 @@ $fld = $frm->getField('collection_for_app');
 $fld->setOptionListTagAttribute('class', 'list-inline-checkboxes');
 $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
 $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
-if ($collection_layout_type == Collections::TYPE_BANNER_LAYOUT3) {
+if (in_array($collection_layout_type, Collections::APP_COLLECTIONS_ONLY)) {
     $fld->setFieldTagAttribute('disabled', 'disabled');
 }
 
@@ -29,29 +29,31 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
         <div class="row">
             <div class="col-sm-12">
                 <div class="tabs_nav_container responsive flat">
-                    <ul class="tabs_nav">
-                        <li><a class="active" href="javascript:void(0)" onclick="collectionForm(<?php echo $collection_type ?>, <?php echo $collection_layout_type ?>, <?php echo $collection_id ?>, 0);">
-                                <?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
-                        </li>
-                        <?php $inactive = ($collection_id == 0) ? 'fat-inactive' : ''; ?>
-                        <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_RECORDS)) { ?>
-                            <li><a class="<?php echo $inactive; ?>" href="javascript:void(0)" <?php if ($collection_id > 0) { ?> onclick="recordForm(<?php echo $collection_id ?>, <?php echo $collection_type ?>);" <?php } ?>>
-                                    <?php echo Labels::getLabel('LBL_Link_Records', $adminLangId); ?></a>
+                    <?php if ($collection_layout_type != Collections::TYPE_PENDING_REVIEWS1) { ?>
+                        <ul class="tabs_nav">
+                            <li><a class="active" href="javascript:void(0)" onclick="collectionForm(<?php echo $collection_type ?>, <?php echo $collection_layout_type ?>, <?php echo $collection_id ?>, 0);">
+                                    <?php echo Labels::getLabel('LBL_General', $adminLangId); ?></a>
                             </li>
-                        <?php } ?>
-                        <?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
-                            <li><a class="<?php echo $inactive; ?>" href="javascript:void(0)" <?php if ($collection_id > 0) { ?> onclick="banners(<?php echo $collection_id ?>);" <?php } ?>>
-                                    <?php echo Labels::getLabel('LBL_Banners', $adminLangId); ?></a>
-                            </li>
-                        <?php } ?>
-                        <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_MEDIA)) { ?>
-                            <li>
-                                <a class="<?php echo $inactive; ?>" href="javascript:void(0)" <?php if ($collection_id > 0) { ?> onclick="collectionMediaForm(<?php echo $collection_id ?>);" <?php } ?>>
-                                    <?php echo Labels::getLabel('LBL_Media', $adminLangId); ?>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    </ul>
+                            <?php $inactive = ($collection_id == 0) ? 'fat-inactive' : ''; ?>
+                            <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_RECORDS)) { ?>
+                                <li><a class="<?php echo $inactive; ?>" href="javascript:void(0)" <?php if ($collection_id > 0) { ?> onclick="recordForm(<?php echo $collection_id ?>, <?php echo $collection_type ?>);" <?php } ?>>
+                                        <?php echo Labels::getLabel('LBL_Link_Records', $adminLangId); ?></a>
+                                </li>
+                            <?php } ?>
+                            <?php if ($collection_type == Collections::COLLECTION_TYPE_BANNER) { ?>
+                                <li><a class="<?php echo $inactive; ?>" href="javascript:void(0)" <?php if ($collection_id > 0) { ?> onclick="banners(<?php echo $collection_id ?>);" <?php } ?>>
+                                        <?php echo Labels::getLabel('LBL_Banners', $adminLangId); ?></a>
+                                </li>
+                            <?php } ?>
+                            <?php if (!in_array($collection_type, Collections::COLLECTION_WITHOUT_MEDIA)) { ?>
+                                <li>
+                                    <a class="<?php echo $inactive; ?>" href="javascript:void(0)" <?php if ($collection_id > 0) { ?> onclick="collectionMediaForm(<?php echo $collection_id ?>);" <?php } ?>>
+                                        <?php echo Labels::getLabel('LBL_Media', $adminLangId); ?>
+                                    </a>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                    <?php } ?>
                     <div class="tabs_panel_wrap">
                         <div class="tabs_panel" id="tabs_form">
                             <?php /* echo $frm->getFormHtml(); */
@@ -115,7 +117,7 @@ $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR
                                 <?php } ?>
                             </div>
                             <div class="row">
-                                <?php if ($collection_layout_type != Collections::TYPE_BANNER_LAYOUT3) { ?>
+                                <?php if (!in_array($collection_layout_type, Collections::APP_COLLECTIONS_ONLY)) { ?>
                                     <div class="col-md-4">
                                         <div class="field-set d-flex align-items-center">
                                             <div class="field-wraper w-auto">

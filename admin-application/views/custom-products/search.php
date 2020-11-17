@@ -1,5 +1,6 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
+
 $arr_flds = array(
     'listserial' => Labels::getLabel('LBL_#', $adminLangId),
     'product_identifier' => Labels::getLabel('LBL_Product', $adminLangId),
@@ -78,10 +79,10 @@ foreach ($arr_listing as $sn => $row) {
     }
     $sr_no--;
 }
-if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_products_found', $adminLangId));
-}
 echo $tbl->getHtml();
+if (count($arr_listing) == 0) {
+    $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
+}
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCustomProdReqSrchPaging'));
 

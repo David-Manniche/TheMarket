@@ -304,9 +304,133 @@ Bugs:
     => 044477 - when mini cart having only item remains after deletion then getting scroll with product
     => 044468 - Seller >> inventory setup of digital products >> there is some warnings on download page . 
     => 044497 - extra categories are listing on page which are not even added
-------------Known Bug----------------
-    => Known Bug - Added rounding off if order amount fraction with order
-
+    => 044506 - If admin cancel any order from "orders" page then "cancelled " should be the status instead of "order payment status cancelled
+    => 044503 - When we add product in cart which has some addons then those addons should get added with the product.
+    => 044473 - when order having only digital item then on checkout step 2 it's displaying shipping
+    => 044470 - when order is of pickup then in admin> customer orders> delivery field is listing which is not required
+    => 044322 - Bank details are not there after order is placed and user opts payment from order detail page
+    => 044562 - after clearing search> suggestion list is not disappearing
+    => 043142 - "Buy together" products under promotions, items do not appear on the list after creating them if no brand
+-------------------------TV-9.2.2.20201026---------------------------
+    => 044542 - In case of Stripe connect>>if cancellation or refund request generated then "transfer to wallet " option should not be there at admin end 
+    => 044505 - If admin disable " Linking Shipping Packages To Products" then weight fields should not get disappear from shipping tab .
+    => 044499 - when we add only digital product in cart then it shows "empty cart " on checkout page .
+    => 044500 - When we add one digital and one physical product in cart then it shows "no shipping available " for digital product and user is unable to proceed with order
+    => 044351 - Seller >> orders >> cancel order >> Total amount should get display at seller end and discount should not be deducted from that amou
+    => 044368 - Seller >> pickup address >> edit slots >> when we add multiple slots and save the changes then it shows only last slot on edit settings.
+    => 044567 - hide the print option on return request on buyer end
+    => 044576 - when full text search is enabled then shop is flooded with errors
+    => 035803 - when sub seller have read only permission to buy together and related items then on hover there is anchor tag and tooltip displaying click to edit
+    => 044475 - Checkout >> home page >> Delete products>> cart gets empty and it shows "Your shopping cart is empty!" with "0" amount and if we proceed with that then some products are still there.
+    => 044474 - When we come back on home page from checkout then it shows "invalid products " on deleting for those products which were not on checkout
+-------------------TV-9.2.2.20201027---------------------
+    => 044605	Auto create default shipping profile and linked products
+    => 044367 - seller >> pickup address >> "+" icon next to slots is not getting display in first time
+    => 044371 - add money to wallet> stripe form screen> cancel button is not working
+    => 044467 - pickup and payment cancel orders are coming under canceled orders on seller end
+    => 044383 - if ship station is on and we try to buy admin's product then some error is there on checkout. 
+    => 044373 - add money to wallet> using paypal> there is error
+    => 044623 - during withdrawal restrict the numeric values only as it's getting placed with random values and on accepting from admin getting json
+    => 044619 - when add product setting is disabled from admin for seller then some settings on front end are not in use
+    => 043526 - when tax is combined then values field shouldn't be left blank
+    => 044645 - when conversation detail page is opened then message tab is not highlighting on left side
+------------------TV-9.2.2.20201028-------------------
+    => 044621 - product listing> pagination button are not aligned properly
+    => 044339 - admin >> cancellation request >> total reward points gets display there instead of reward points for that particular child order.
+    => 044634 - on order print> default fav icon is coming
+    => 042447 - Admin >> Add zone >> language data section is according to old versions .
+    => 044022 - Create a label for this button on forget password page 
+    => 044370 - on order invoice> product option is not displaying
+    => 044686 - seller end> order invoice> invoice date don't have any data 
+    => 042577 - if seller didn't add pickup address then "pickup " option for his products should not be enabled and "shipped only" should be the fulfillment method.
+    => 044624 - shop> reviews> flooded with errors
+    => 044591 - when seller requests for catalog then in admin> specification group field is not there
+    => 044620 - buyer> share and earn> invite through email> button is not proper
+--------------------------TV-9.2.2.20201029-----------------
+    => 044714 - Seller >> shipping profile >> rates > if we save conditions without selecting the radio buttons then some json error is there. 
+    => 043774 - when seller try to change order status to "shipped" without checking the "self shipping " checkbox then it takes forever to process
+------------------------TV-9.2.2.20201102-----------------------
+    => 044732 - mark disable the states while creating zones when it's already used for a country
+    => 044384 -  Order summary is not getting display at guest checkout before adding the address
+    => 044446 - Content block >> on home page collection of content block should be in the frame 
+    => 044755 - when we buy one digital and one physical product and choose pickup option then pickup address is not getting display on thankyou screen.
+    => 044684 - in search field> string entered and cross button are overlapping
+    => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    => 044758 - discount availed by buyer is not displaying on order detail page
+    => 044752 - admin> order status management> color is not distinct able by name
+--------------------TV-9.2.2.20201104--------------------------    
+    => 044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
+    => 044886 - while adding shipping rates in profile> it warns to select condition
+    => #044607 - If ship station is enabled and we add admin's product in cart then those products gets display 2 times.
+    => 044913 - When fetching avalara category getting error
+    => 044665 - Ipad >> on shipping profile >>text is not properly getting display in button.
+    => 044671 - Ipad >> shipping package >> text in button should get display properly.
+    => 044674 - user profile> paypal payout> save button is not aligned with fields
+-----------------TV-9.2.2.20201105--------------------------    
+    => 044915 - getting fatal on front end on enabling taxjar
+    => 044909 - issue on importing category from admin
+    => 044942 - admin> categories> identifier is displaying in list instead of name
+    => 044944 - admin> seller orders> shipping is displaying as "awaiting shipment" for digital item order
+    => 044948 - admin> subscription orders> detail page> fatal is there
+    => 044946 - admin> orders> deleted orders> search button is not aligned properly
+-----------------TV-9.2.2.20201106-------------------------- 
+    => 044941	when tax is there for specific category still then rest of the world is getting applied
+    => 044951 - admin> return requests detail page> replace back button with text
+    => 044675 - seller> custom catalog request> under status column> date is wrapping
+    => 044697 - ipad >> manage address >> text should get display properly in button.
+    => 044702 - Mobile devices >> on manage address >> "save changes " button should be next to "cancel " button
+    => 044969	when sub seller having read only permission for shipping profile then he can't see profiles created by seller and details under shipping profile
+    => 044966	create button is there for shipping profile to sub seller when read only permission is granted to him
+    => 044677 - seller> shipping packages> clear search button text is not in center
+    => 044671 - Ipad >> shipping package >> text in button should get display properly.
+    => 044950 - seller > my subscription> search button is not proper
+    => 044369 - In Product inclusive tax setting is on then tax should not get deducted before selecting the address
+    => 044896 - Sorting needed for items linked in collections
+    => 044753 - seller dashboard> graph is not proper in RTL mode 
+    => 044933 - Add multiple category with same name but different identifier 
+    => 044780 - seller> while adding product> description editor> on clicking full screen from Arabic language- description field get hids from English too and editor option disappears 
+    => 044953 - admin> return requests detail page> download button is coming there while no attachment is there
+    => 044916 - Unable to link tax category with product 
+    => 044932 - admin> requested categories> when there is no data then "No record found template is not proper"
+    => 044345	Commission charges are not right if "Commission Charged Including Tax" setting is disabled and we refund some qty.
+    => 044337	Seller >> credits >> commission charges are not right in case of refund and if "Commission Charged Including Shipping" is disabled.
+    => 044911 - brands don't have description but in import/export there is description field
+    => 044982 - seller> sub seller permissions> apply button is not aligned with drop down
+    => 045008 - marketplace link on seller dashboard is redirecting to different link from the actual link
+    => 044912 - Brand is getting added but getting warning along with it
+    => 044884 - when banner layouts are not added from admin in collection still then they are populating on advertiser end
+    => 045000 - seller> product inventory stock status> variant name needs to be there- as distinction is not there in various items
+    => 045001 - when review on digital item is placed then shipping and package option are coming which are not available for digital items
+    => 044068 - emails are not there when order is on bank transfer
+    => 045044 - home page> faq> on clicking second category > all faq's are opening collectively while the same is not happening with first category
+    => 044715	On Checkout >> if there are rates for shipping address's country then rates of "rest of the world " should not get display there.
+    => 045009 - When we use tax jar then "invalid tax category " gets display on purchase of digital products
+    => 036640 - while linking product with tax category> some of them having long text and not wrapping
+    => 045126 - Some items not available for pickup layout and functionality
+    => 036637 - when combined tax (GST) is used then in email and order detail page> getting tax(0)
+    => 044750 - hide the cancel button from customer orders in admin as it's creating confusion on front end
+    => 035347 - if related products (seller 2) are added through import/export by seller 1 then they are getting listed on front end
+    => 045166 - on shop details >> when we save search then some json error is there.
+    => 045169 - Product details page >> if there is no description then blank description box should not be there.
+    => 045194 - getting error on product detail page below ratings
+    => 043778 - if we add same state in two different rules then some error should get display at admin end
+    => 045179 - While attaching category in catalog category coming after typing the test
+-------------------TV-9.2.2.20201111----------------------
+    => 045228 - cart Qty update on cart listing page 
+    => 045236 - admin> seller orders> price filters are not working properly
+    => 045240 - admin> subscription orders> filters> user name > on clicking user name from suggestion there is error
+    => 045239 - when subscription coupon is created then on seller end it's listing - min order 0.00 which is not required as there is no such field while creating coupon
+    => 045269 - Paypal: transaction issue - capture pending in case of new seller registration on payapl.
+    => 045316 - Subscription checkout page - discount coupon is not visible
+    => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
+    => 045188 - when banners are added in collection the location is not required on advertiser end
+------------------TV-9.2.3.20201116----------------------------    
+    => 045312 - when seller having enough money then while adding promotion there is error for budget
+    => 045307 - as free shipping is not there on catalog but lies in import/export
+    => 045317 - seller end> messages> name of shop is listing twice in front of text box
+    => 045315 - Shipping tax code is wrong in case of avalara tax plugin
+--------------------TV-9.2.3.20201117------------------------   
+    => 045217 - Price inclusive tax handling for Tax api's.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -315,15 +439,24 @@ Enhancements:
     => Displayed "product not available " on home page collections based on location. 
     => Performance updates.
     => Advanced search UI and Auto Suggestions.
-    => Category Listing Page UI  
+    => Category Listing Page UI 
+    => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------     
+    
 Notes:
-   ==========Stripe Connect Installation Notes[:=========
-   Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.
+    
+    Composer :
 
-   a) Run command at root of the project to update composer to fetch all required libraries from the root of the project using terminal: composer update
-   b) Required to configure callback url as "{domain-name}/public/index.php?url=stripe-connect/callback" inside stripe's web master's account under https://dashboard.stripe.com/settings/applications under "Integration" -> "Redirects"
-   c) Setup webhook Stripe Connect  https://dashboard.stripe.com/test/webhooks . 
-        i) Add Webhook url under "Endpoints receiving events from your account" 
-            1) "Webhook Detail" > Url as "{domain-name}/stripe-connect-pay/payment-status" bind events "payment_intent.payment_failed", "payment_intent.succeeded".
-   ==============]==========================
+        => Composer should be installed on server to run the stripe connect module: composer.json on root of the project has details to download the required libraries in root's vendor folder.
+        => Run command "composer update" at root of the project to update composer and fetch all dependennt libraries: 
+
+    Stripe Connect Installation :
+
+        => Required to configure callback url as "{domain-name}/public/index.php?url=stripe-connect/callback" inside stripe's web master's account under https://dashboard.stripe.com/settings/applications under "Integration" -> "Redirects"
+        =>  Setup webhook Stripe Connect  https://dashboard.stripe.com/test/webhooks . 
+                i) Add Webhook url under "Endpoints receiving events from your account" 
+                    1) "Webhook Detail" > Url as "{domain-name}/stripe-connect-pay/payment-status" bind events "payment_intent.payment_failed", "payment_intent.succeeded".
+   
+    Default Shipping profile setup:
+       
+       To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles

@@ -1,11 +1,10 @@
 .share-icon {
-    fill: $primary-color;
-
+    color: $brand-color;
     .svg {
         width: 16px;
         height: 16px;
         display: block;
-        fill: inherit;
+        fill: currentColor;
     }
 }
 
@@ -14,7 +13,6 @@
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-
     li {
         font-size: 0.8rem;
         display: block;
@@ -23,10 +21,8 @@
         transition: all .3s ease;
         flex: 0 0 50%;
         max-width: 50%;
-
         a {
             display: block;
-
             .icn {
                 height: inherit;
                 width: inherit;
@@ -39,31 +35,24 @@
                 -webkit-box-pack: center;
                 -ms-flex-pack: center;
                 justify-content: center;
-
                 svg {
                     fill: #fff;
                     width: 15px;
                     height: 15px;
                 }
             }
-
         }
-
         &.social-facebook {
             background: #3b5998;
         }
-
         &.social-twitter {
             background: #6cdfea;
         }
-
         &.social-pintrest {
             background: #c8232c;
         }
-
         &.social-email {
             background: #9b9a9a;
         }
     }
-
 }

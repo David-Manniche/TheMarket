@@ -90,7 +90,6 @@ class SellerProduct extends MyAppModel
                 'selprod_subtract_stock',
                 'selprod_track_inventory',
                 'selprod_threshold_stock_level',
-                'selprod_condition_identifier',
                 'selprod_title',
                 'selprod_url_keyword',
                 'selprod_available_from',
@@ -318,13 +317,17 @@ class SellerProduct extends MyAppModel
         );
 
         $srch->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT OUTER JOIN', 'ptc.ptc_product_id = product_id', 'ptc');
-        $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'product_brand_id = brand.brand_id', 'brand');
         $srch->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'c.prodcat_id = ptc.ptc_prodcat_id', 'c');
 
         $srch->addCondition('c.prodcat_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('c.prodcat_deleted', '=', applicationConstants::NO);
-        $srch->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
-        $srch->addCondition('brand.brand_deleted', '=', applicationConstants::NO);
+        
+        if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+            $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'product_brand_id = brand.brand_id and brand.brand_active = ' . applicationConstants::YES . ' and brand.brand_deleted = ' . applicationConstants::NO, 'brand');
+        } else {
+            $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'product_brand_id = brand.brand_id', 'brand');
+            $srch->addDirectCondition("(CASE WHEN product_brand_id > 0 THEN (brand.brand_active = " . applicationConstants::YES . " AND brand.brand_deleted = " . applicationConstants::NO . ") ELSE 1=1 END)");
+        }
 
         if (!empty($attr)) {
             if (is_string($attr)) {
@@ -1197,5 +1200,16 @@ class SellerProduct extends MyAppModel
         $srch->addFld('psbs_user_id');
         $rs = $srch->getResultSet();
         return FatApp::getDb()->fetch($rs);
+    }
+
+    /**
+     * setSellerProdFulfillmentType - Need to enhance later.
+     *
+     * @param  int $fulfillmentType
+     * @return int
+     */
+    public static function setSellerProdFulfillmentType(int $fulfillmentType): int
+    {
+        return $fulfillmentType;
     }
 }

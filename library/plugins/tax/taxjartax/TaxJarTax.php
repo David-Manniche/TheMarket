@@ -2,7 +2,7 @@
 
 class TaxJarTax extends TaxBase
 {
-    public const KEY_NAME = 'TaxJarTax';
+    public const KEY_NAME = __CLASS__;
        
     public $error;
 
@@ -19,7 +19,16 @@ class TaxJarTax extends TaxBase
     private const RATE_TYPE_PST = 5;
     private const RATE_TYPE_GST = 6;
     private const RATE_TYPE_SPECIAL = 7;
-    
+
+
+    private const TAX_RATE_STATE = 1;
+    private const TAX_RATE_COUNTY = 2;
+    private const TAX_RATE_CITY = 3;
+    private const TAX_RATE_QST = 4;
+    private const TAX_RATE_PST = 5;
+    private const TAX_RATE_GST = 6;
+    private const TAX_RATE_SPECIAL = 7;
+
     public $requiredKeys = [
         'live_key',
         'environment'
@@ -87,7 +96,7 @@ class TaxJarTax extends TaxBase
         }
 
         $this->setItems($itemsArr, $shippingItem, $userId);
-        
+
         try {
             $taxes = $this->client->taxForOrder($this->params);
         } catch (exception $e) {
@@ -96,15 +105,15 @@ class TaxJarTax extends TaxBase
                 'msg' => $e->getMessage(),
             ];
         }
-        
-        
+        //  CommonHelper::printArray($taxes, true);
+
         // if (!isset($taxes->breakdown)) {
         //     return [
         //         'status' => false,
         //         'msg' => Labels::getLabel("LBL_Tax_could_not_be_calculated_from_TaxJar", $this->langId),
         //     ];
         // }
-
+        //CommonHelper::printArray($taxes, true);
         return [
             'status' => true,
             'msg' => Labels::getLabel("MSG_SUCCESS", $this->langId),
@@ -123,19 +132,27 @@ class TaxJarTax extends TaxBase
         $formatedTax = [];
         $types = $this->getRateTypesNames();
         $rateTypes = $this->getRateTypesKeys();
-       
+        $taxRates = $this->getTaxRatesKeys();
+        $rate = 0;
         if (isset($taxes->breakdown->line_items)) {
             foreach ($taxes->breakdown->line_items as $item) {
                 $taxDetails = [];
-            
-                foreach ($rateTypes as $key=> $name) {
+                foreach ($rateTypes as $key => $name) {
                     if (isset($item->$name)) {
                         $taxDetails[$types[$key]]['name'] = $types[$key];
+                        $taxDetails[$types[$key]]['rate'] = $types[$key];
                         $taxDetails[$types[$key]]['value'] = $item->$name;
+                    }
+                }
+                foreach ($taxRates as $key => $name) {
+                    if (isset($item->$name)) {
+                        $rate = $rate + $item->$name;
+                        $taxDetails[$types[$key]]['rate'] = $item->$name;
                     }
                 }
                 $formatedTax[$item->id] = array(
                     'tax' => $taxes->breakdown->tax_collectable,
+                    'rate' => $rate,
                     'taxDetails' => $taxDetails,
                 );
             }
@@ -145,13 +162,13 @@ class TaxJarTax extends TaxBase
             $taxDetails[Labels::getLabel('LBL_TAX', $this->langId)]['value'] = $taxes->amount_to_collect;
             $formatedTax[0] = array(
                 'tax' => $taxes->amount_to_collect,
+                'rate' => $rate,
                 'taxDetails' => $taxDetails,
             );
         }
-
         if (isset($taxes->breakdown->shipping)) {
             $itemId = $taxes->breakdown->line_items[0]->id;
-            foreach ($rateTypes as $key=> $name) {
+            foreach ($rateTypes as $key => $name) {
                 if (isset($taxes->breakdown->shipping->$name)) {
                     if (isset($formatedTax[$itemId]['taxDetails'][$types[$key]]['value'])) {
                         $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] = $formatedTax[$itemId]['taxDetails'][$types[$key]]['value'] + $taxes->breakdown->shipping->$name;
@@ -162,7 +179,6 @@ class TaxJarTax extends TaxBase
                 }
             }
         }
-                 
         return $formatedTax;
     }
 
@@ -181,7 +197,7 @@ class TaxJarTax extends TaxBase
         if (false == $formatted) {
             return $this->client->categories();
         }
-        
+
         $codesArr = $this->client->categories();
         $formatedCodesArr = [];
         if (!empty($codesArr)) {
@@ -232,7 +248,7 @@ class TaxJarTax extends TaxBase
                 'msg' => $e->getMessage(),
             ];
         }
-      
+
         return [
             'status' => true,
             'referenceId' => $order->transaction_id,
@@ -274,23 +290,23 @@ class TaxJarTax extends TaxBase
         foreach ($shippingItem as $item) {
             $shipAmount = $shipAmount + $item['amount'];
         }
-        
+
         $this->params['line_items'] = $lineItems;
         $this->params['shipping'] = $shipAmount;
         $this->params['sales_tax'] = $salesTax;
-        $this->params['amount'] = $totalAmount - $totalDiscount + $shipAmount ;
+        $this->params['amount'] = $totalAmount - $totalDiscount + $shipAmount;
     }
 
     private function setItems($itemsArr, $shippingItem, $userId)
     {
         $totalAmount = 0;
         $lineItems = [];
-       
+
         foreach ($itemsArr as $item) {
             $arr = [
                 'id' => $item['itemCode'],
                 'quantity' => $item['quantity'],
-                'product_tax_code' =>$item['taxCode'],
+                'product_tax_code' => $item['taxCode'],
                 'unit_price' => $item['amount'],
                 'discount' => 0
             ];
@@ -321,7 +337,7 @@ class TaxJarTax extends TaxBase
         return $this;
     }
 
-       
+
     private function setToAddress(array $address)
     {
         if (!$this->validateAddress($address)) {
@@ -344,7 +360,7 @@ class TaxJarTax extends TaxBase
                 }
             }
         }*/
-        
+
         $this->params['to_country'] = $address['countryCode'];
         $this->params['to_zip'] = $address['postalCode'];
         $this->params['to_state'] = $address['stateCode'];
@@ -352,7 +368,7 @@ class TaxJarTax extends TaxBase
         $this->params['to_street'] = $address['line1'] . " " . $address['line2'];
         return $this;
     }
-    
+
     private function validateAddress(array $address)
     {
         if (!is_array($address)) {
@@ -374,8 +390,8 @@ class TaxJarTax extends TaxBase
         //     }
         //     return true;
         // }
-        
-        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country' , 'stateCode', 'countryCode'];
+
+        $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country', 'stateCode', 'countryCode'];
         return !array_diff($requiredKeys, array_keys($address));
     }
 
@@ -402,6 +418,19 @@ class TaxJarTax extends TaxBase
             static::RATE_TYPE_PST => 'pst',
             static::RATE_TYPE_GST => 'gst',
             static::RATE_TYPE_SPECIAL => 'special_district_amount',
+        );
+    }
+
+    private function getTaxRatesKeys()
+    {
+        return array(
+            static::TAX_RATE_STATE => 'state_sales_tax_rate',
+            static::TAX_RATE_COUNTY => 'county_tax_rate',
+            static::TAX_RATE_CITY => 'city_tax_rate',
+            static::TAX_RATE_QST => 'qst',
+            static::TAX_RATE_PST => 'pst',
+            static::TAX_RATE_GST => 'gst',
+            static::TAX_RATE_SPECIAL => 'special_tax_rate',
         );
     }
 }

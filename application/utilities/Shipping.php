@@ -194,14 +194,30 @@ class Shipping
         $srch->joinShippingRates($this->langId);
         $srch->joinShippingLocations($countryId, $stateId, 0);
         $srch->addCondition('selprod_id', 'IN', $selProdIdArr);
-        $srch->addMultipleFields(array('selprod_id', 'shippro_shipprofile_id', 'shipprozone_id', 'shiprate_id', 'coalesce(shipr_l.shiprate_name, shipr.shiprate_identifier) as shiprate_name', 'shiprate_cost', 'shiprate_condition_type', 'shiprate_min_val', 'shiprate_max_val', 'psbs.psbs_user_id', 'product_id', 'shiploc_shipzone_id', 'if(psbs_user_id > 0 or product_seller_id > 0, 1, 0) as shiippingBySeller', 'shipprofile_default', 'shop_id', 'shipprofile_name', 'shop_postalcode'));
+        $srch->addMultipleFields(array('selprod_id', 'shippro_shipprofile_id', 'shipprozone_id', 'shiprate_id', 'coalesce(shipr_l.shiprate_name, shipr.shiprate_identifier) as shiprate_name', 'shiprate_cost', 'shiprate_condition_type', 'shiprate_min_val', 'shiprate_max_val', 'psbs.psbs_user_id', 'product_id', 'shiploc_shipzone_id', 'if(psbs_user_id > 0 or product_seller_id > 0, 1, 0) as shiippingBySeller', 'shipprofile_default', 'shop_id', 'shipprofile_name', 'shop_postalcode', 'shiploc_country_id'));
         $srch->addCondition('shiprate_id', '!=', 'null');
         $srch->addGroupBy('selprod_id');
         $srch->addGroupBy('shiprate_id');
         $srch->addOrder('shiprate_cost');
-        //$srch->addOrder('shiprate_condition_type', 'desc');
+        //$srch->addOrder('shiprate_condition_type', 'desc');       
         $prodSrchRs = $srch->getResultSet();
-        return FatApp::getDb()->fetchAll($prodSrchRs);
+        //$res = FatApp::getDb()->fetchAll($prodSrchRs);
+        /*ToDo : Updated logic and fetch from query and also handle for states*/
+        $res = [];
+        $temp = [];
+        while ($row = FatApp::getDb()->fetch($prodSrchRs)) {
+            if ($row['shiploc_country_id'] > 0) {
+                $temp[] = $row['selprod_id'];
+            }
+            $res[] = $row;
+        }
+
+        foreach ($res as $key => $val) {
+            if (in_array($val['selprod_id'], $temp) && $val['shiploc_country_id'] == -1) {
+                unset($res[$key]);
+            }
+        }
+        return $res = array_merge($res, []);
     }
 
     /**
@@ -253,6 +269,7 @@ class Shipping
             $this->shippedByArr[$shippedBy][$shippingLevel]['products'][$rates['selprod_id']] = $product;
 
             if (empty($fromZipCode)) {
+                unset($physicalSelProdIdArr[$rates['selprod_id']]);
                 /*  $user = self::BY_ADMIN == $shippedBy ? Labels::getLabel('MSG_ADMIN', $this->langId) : Labels::getLabel('MSG_SHOP', $this->langId);
                  $error = Labels::getLabel('MSG_UNABLE_TO_LOCATE_{USER}_POSTAL_CODE', $this->langId);
                  $this->error = CommonHelper::replaceStringData($error, ['{USER}' => $user]); */
@@ -285,12 +302,10 @@ class Shipping
                         FatCache::set($cacheKey, serialize($shippingRates), '.txt');
                     }
                 }
-
+                unset($physicalSelProdIdArr[$rates['selprod_id']]);
                 if (false == $shippingRates || empty($shippingRates)) {
                     continue;
                 }
-
-                unset($physicalSelProdIdArr[$rates['selprod_id']]);
 
                 foreach ($shippingRates as $key => $value) {
                     $shippingCost = [

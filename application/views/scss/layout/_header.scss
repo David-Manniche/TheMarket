@@ -24,6 +24,9 @@
             display: grid;
             align-items: center;
             grid-template-columns: minmax(auto, 30%) 1fr;
+            @include media-breakpoint-down(sm) {
+                grid-template-columns: auto;
+            }
             .location {
                 display: block;
                 white-space: nowrap;
@@ -170,10 +173,7 @@
 }
 
 .cart {
-    float: right;
     position: relative;
-    -webkit-padding-start: 3.125rem;
-    -moz-padding-start: 3.125rem;
     padding-#{$start-direction}: 3.125rem;
     @include media-breakpoint-down(lg) {
         & {
@@ -290,6 +290,8 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+    border: none;
+    background: none;
     &:hover {
         -webkit-transform: rotate(-90deg);
         transform: rotate(-90deg);

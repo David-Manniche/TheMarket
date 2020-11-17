@@ -1,7 +1,7 @@
 <?php
 
 class GuestUserController extends MyAppController
-{    
+{
     public function loginForm($isRegisterForm = 0)
     {
         /* if(UserAuthentication::doCookieLogin()){
@@ -14,7 +14,7 @@ class GuestUserController extends MyAppController
         if (UserAuthentication::isUserLogged()) {
             FatApp::redirectUser(UrlHelper::generateUrl('account'));
         }
-        
+
         $socialLoginApis = Plugin::getDataByType(Plugin::TYPE_SOCIAL_LOGIN, $this->siteLangId);
 
         $loginFrm = $this->getLoginForm();
@@ -242,12 +242,12 @@ class GuestUserController extends MyAppController
         $expiry = strtotime("+7 DAYS");
 
         $values = array(
-        'uauth_user_id' => $userId,
-        'uauth_token' => $token,
-        'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
-        'uauth_browser' => CommonHelper::userAgent(),
-        'uauth_last_access' => date('Y-m-d H:i:s'),
-        'uauth_last_ip' => CommonHelper::getClientIp(),
+            'uauth_user_id' => $userId,
+            'uauth_token' => $token,
+            'uauth_expiry' => date('Y-m-d H:i:s', $expiry),
+            'uauth_browser' => CommonHelper::userAgent(),
+            'uauth_last_access' => date('Y-m-d H:i:s'),
+            'uauth_last_ip' => CommonHelper::getClientIp(),
         );
 
         if (UserAuthentication::saveLoginToken($values)) {
@@ -317,9 +317,9 @@ class GuestUserController extends MyAppController
             $termsAndConditionsLinkHref = 'javascript:void(0)';
         }
         $data = array(
-        'registerFrm' => $registerFrm,
-        'termsAndConditionsLinkHref' => $termsAndConditionsLinkHref,
-        'siteLangId' => $this->siteLangId
+            'registerFrm' => $registerFrm,
+            'termsAndConditionsLinkHref' => $termsAndConditionsLinkHref,
+            'siteLangId' => $this->siteLangId
         );
         $obj = new Extrapage();
         $pageData = $obj->getContentByPageType(Extrapage::REGISTRATION_PAGE_RIGHT_BLOCK, $this->siteLangId);
@@ -335,7 +335,7 @@ class GuestUserController extends MyAppController
 
         $frm = $this->getRegistrationForm($showNewsLetterCheckBox, $signUpWithPhone);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        
+
         if ($post == false) {
             $message = Labels::getLabel(current($frm->getValidationErrors()), $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
@@ -360,7 +360,7 @@ class GuestUserController extends MyAppController
         $post['user_is_advertiser'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
         $post['user_active'] = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         $post['user_verify'] = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
-        
+
         $userObj = new User();
         $returnUserId = (true == MOBILE_APP_API_CALL && 0 < $signUpWithPhone ? true : false);
         if (!$userId = $userObj->saveUserData($post, false, $returnUserId)) {
@@ -707,10 +707,10 @@ class GuestUserController extends MyAppController
 
         $token = UserAuthentication::encryptPassword(FatUtility::getRandomString(20));
         $row['token'] = $token;
-        
+
         $recordId = 0 < $withPhone ? $row['user_id'] : 0;
         $userAuthObj->deleteOldPasswordResetRequest($recordId);
-        
+
         $db = FatApp::getDb();
         $db->startTransaction();
         // commonHelper::printArray($row); die;
@@ -925,7 +925,7 @@ class GuestUserController extends MyAppController
         }
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     public function resendOtp($userId, $getOtpOnly = 0)
     {
         $userId = FatUtility::int($userId);
@@ -951,7 +951,7 @@ class GuestUserController extends MyAppController
         if (1 > $userId && !isset($_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'])) {
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
         }
-        
+
         $userId = 0 < $userId ? $userId : $_SESSION[UserAuthentication::TEMP_SESSION_ELEMENT_NAME]['otpUserId'];
 
         $frm = $this->getOtpForm();
@@ -964,13 +964,17 @@ class GuestUserController extends MyAppController
     public function configureEmail()
     {
         if (!UserAuthentication::isUserLogged()) {
-            Message::addErrorMessage(Labels::getLabel('MSG_PLEASE_LOGIN_TO_CONFIGURE_EMAIL/_PHONE',$this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel('MSG_PLEASE_LOGIN_TO_CONFIGURE_EMAIL/_PHONE', $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
         }
-
-        $phoneNumber = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_phone');
-        $canSendSms = (empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
+        $userId = UserAuthentication::getLoggedUserId();
+        $userObj = new User($userId);
+        $userInfo = $userObj->getUserInfo(array(), true, false);
+        $phoneNumber = isset($userInfo['user_phone']) ? $userInfo['user_phone'] : '';
+        $canSendSms = (!empty($phoneNumber) && SmsArchive::canSendSms(SmsTemplate::LOGIN));
+        $this->set('userInfo', $userInfo);
         $this->set('canSendSms', $canSendSms);
+        $this->set('verificationPending', isset($userInfo['credential_verified']) && applicationConstants::NO == $userInfo['credential_verified']);
         $this->_template->render();
     }
 
@@ -988,7 +992,7 @@ class GuestUserController extends MyAppController
     {
         $phData = User::getAttributesById(UserAuthentication::getLoggedUserId(), ['user_dial_code', 'user_phone']);
         $frm = $this->getPhoneNumberForm();
-        
+
         $dialCode = isset($phData['user_dial_code']) && !empty($phData['user_dial_code']) ? $phData['user_dial_code'] : '';
         $this->set('dialCode', $dialCode);
         $this->set('frm', $frm);
@@ -1096,7 +1100,7 @@ class GuestUserController extends MyAppController
         }
 
         CommonHelper::addCaptchaField($frm);
-        $label = (1 > $withPhone) ? Labels::getLabel('LBL_SUBMIT', $this->siteLangId) : Labels::getLabel('LBL_GET_OTP', $this->siteLangId);
+        $label = (1 > $withPhone) ? Labels::getLabel('LBL_SUBMIT_FORGOT_PASSWORD', $this->siteLangId) : Labels::getLabel('LBL_GET_OTP', $this->siteLangId);
         $frm->addSubmitButton('', 'btn_submit', $label);
         return $frm;
     }
@@ -1119,7 +1123,7 @@ class GuestUserController extends MyAppController
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_RESET_PASSWORD', $this->siteLangId));
         return $frm;
     }
-    
+
     public function redirectAbandonedCartUser($userId, $selProdId, $reminderEmail = false)
     {
         $userId = FatUtility::int($userId);
@@ -1130,7 +1134,7 @@ class GuestUserController extends MyAppController
         if ($reminderEmail == true) {
             FatApp::redirectUser(UrlHelper::generateUrl('Cart'));
         }
-        
+
         $cart = new Cart($userId);
         if (!$cart->hasProducts()) {
             FatApp::redirectUser(UrlHelper::generateUrl('Products', 'view', array($selProdId)));

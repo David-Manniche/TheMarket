@@ -68,6 +68,7 @@ $text_mbstring = 'MBSTRING';
 $text_iconv = 'ICONV';
 $text_rewrite_url = 'Url Rewriting (mod_rewrite)';
 $text_fileinfo = 'FILEINFO';
+$calendar_info = 'Calendar';
 
 
 $button_continue = 'Continue';
@@ -82,6 +83,7 @@ $file_uploads = ini_get('file_uploads');
 $allow_url_fopen = ini_get('allow_url_fopen');
 $session_auto_start = ini_get('session_auto_start');
 $safeModeOn = ini_get('safe_mode');
+
 
 if (in_array('mod_rewrite', apacheGetModules())) {
     $rewrite_url = true;
@@ -104,6 +106,8 @@ $mbstring = extension_loaded('mbstring');
 $ioncube = extension_loaded('IonCube Loader');
 $json = extension_loaded('json');
 $fileinfo = extension_loaded('fileinfo');
+$calendar = extension_loaded('calendar');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -416,8 +420,8 @@ $fileinfo = extension_loaded('fileinfo');
                                     </td>
                                     <td><?php echo $php_version; ?>
                                     </td>
-                                    <td>7.3</td>
-                                    <td class="text-center"><?php if ($php_version >= '7.3') { ?>
+                                    <td>7.3 / 7.4</td>
+                                    <td class="text-center"><?php if ($php_version >= '7.3' && $php_version < '7.5') { ?>
                                         <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg
                                                     class="icon icon--check">
                                                     <use xlink:href="#Check_Circle" /></svg>
@@ -849,6 +853,32 @@ $fileinfo = extension_loaded('fileinfo');
                                     </td>
                                     <td class="text-center">
                                         <?php if ($fileinfo) { ?>
+                                        <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg
+                                                    class="icon icon--check">
+                                                    <use xlink:href="#Check_Circle" /></svg>
+
+                                            </i></span>
+                                        <?php } else { ?>
+                                        <span class="text-danger"><i class="fa fa-minus-circle svg-icn delete"><svg
+                                                    class="icon icon--check">
+                                                    <use xlink:href="#Check_Close" /></svg></i></span>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><?php echo $calendar_info; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($calendar) { ?>
+                                        <?php echo $text_on; ?>
+                                        <?php } else { ?>
+                                        <?php echo $text_off; ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td><?php echo $text_on; ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <?php if ($calendar) { ?>
                                         <span class="text-success"><i class="fa fa-check-circle svg-icn check"><svg
                                                     class="icon icon--check">
                                                     <use xlink:href="#Check_Circle" /></svg>

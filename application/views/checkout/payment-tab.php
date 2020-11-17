@@ -3,13 +3,15 @@ $pmethodName = $paymentMethod["plugin_name"];
 $pmethodDescription = $paymentMethod["plugin_description"];
 $pmethodCode = $paymentMethod["plugin_code"];
 
+$isCodOrPayAtStore = in_array(strtolower($pmethodCode), ['cashondelivery', 'payatstore']);
+
 $frm->setFormTagAttribute('class', 'form');
 
 $otpVerification = (isset($paymentMethod["otp_verification"]) && 0 < $paymentMethod["otp_verification"]);
 $btn = $frm->getField('btn_submit');
 $btn->developerTags['noCaptionTag'] = true;
 
-if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) {
+if ($isCodOrPayAtStore && true === $otpVerification) {
     $btn->value = Labels::getLabel('LBL_GET_OTP', $siteLangId);
 } else {
     $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
@@ -20,7 +22,7 @@ if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) {
 $submitFld = $frm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 
-if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) { ?>
+if ($isCodOrPayAtStore && true === $otpVerification) { ?>
     <div class="otp-block otpBlock-js">
         <div class="otp-block__head">
             <h6><?php echo Labels::getLabel('LBL_PLEASE_ENTER_THE_VERIFICATION_CODE_TO_CONFIRM_YOUR_ORDER', $siteLangId); ?></h6>
@@ -88,8 +90,8 @@ if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) {
         </div>
     </div>
 <?php } else { ?>
-    <div class="text-center paymentForm-js <?php echo 'cashondelivery' != strtolower($pmethodCode) ? 'd-none' : ''; ?>">
-        <?php if ('cashondelivery' == strtolower($pmethodCode)) { ?>
+    <div class="text-center paymentForm-js <?php echo (false == $isCodOrPayAtStore) ? 'd-none' : ''; ?>">
+        <?php if ($isCodOrPayAtStore) { ?>
             <h6><?php echo Labels::getLabel('LBL_PLEASE_CONFIRM_YOUR_ORDER', $siteLangId); ?></h6>
         <?php } ?>
         <?php if (!isset($error)) {
@@ -103,7 +105,7 @@ if ('cashondelivery' == strtolower($pmethodCode) && true === $otpVerification) {
         <?php if (isset($error)) { ?>
             $.mbsmessage(<?php echo $error; ?>, true, 'alert--danger');
         <?php } ?>
-        <?php if ('cashondelivery' == strtolower($pmethodCode)) { ?>
+        <?php if ($isCodOrPayAtStore) { ?>
             $(".intervalTimer-js").parent().parent().hide();
             $(".otpForm-js").removeAttr('action');
             $(".otpVal-js").attr('disabled', 'disabled');

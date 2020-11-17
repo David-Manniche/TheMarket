@@ -341,7 +341,7 @@ class ProductsController extends MyAppController
         }
 
         $templateName = 'filters.php';
-        if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) != FilterHelper::LAYOUT_TOP) {
+        if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) == FilterHelper::LAYOUT_TOP) {
             $templateName = 'filters-top.php';
         }
         echo $this->_template->render(false, false, 'products/' . $templateName, true);
@@ -1096,6 +1096,10 @@ class ProductsController extends MyAppController
         }
 
         if (empty($keyword) || mb_strlen($keyword) < 3) {
+            if (true === MOBILE_APP_API_CALL) {
+                FatUtility::dieJsonError(Labels::getLabel('MSG_PLEASE_ENTER_ATLEAST_3_CHARACTERS', $this->siteLangId));
+            }
+            
             $this->set('keyword', $keyword);
             $this->set('recentSearchArr', $recentSearchArr);
             $html = '';
@@ -1267,7 +1271,7 @@ class ProductsController extends MyAppController
         // $frm->addSubmitButton(null, 'btnProductBuy', Labels::getLabel('LBL_Buy_Now', $formLangId ), array( 'id' => 'btnProductBuy' ) );
         //$frm->addSubmitButton(null, 'btnAddToCart', Labels::getLabel('LBL_Add_to_Cart', $formLangId), array( 'id' => 'btnAddToCart' ));
         // $frm->addHTML(null, 'btnProductBuy', '<button name="btnProductBuy" type="submit" id="btnProductBuy" class="btn btn-brand block-on-mobile add-to-cart--js btnBuyNow"> ' . Labels::getLabel('LBL_Buy_Now', $formLangId) . '</button>');
-        $frm->addHTML(null, 'btnAddToCart', '<button name="btnAddToCart" type="submit" id="btnAddToCart" class="btn btn-brand btn-block quickView add-to-cart--js "> ' . Labels::getLabel('LBL_Add_to_Cart', $formLangId) . '</button>');
+        $frm->addHTML(null, 'btnAddToCart', '<button name="btnAddToCart" type="submit" id="btnAddToCart" class="btn btn-brand btn-block quickView add-to-cart add-to-cart--js "> ' . Labels::getLabel('LBL_Add_to_Cart', $formLangId) . '</button>');
         $frm->addHiddenField('', 'selprod_id');
         return $frm;
     }
@@ -1954,10 +1958,16 @@ class ProductsController extends MyAppController
         $db = FatApp::getDb();
         $taxCategories = $db->fetchAll($rs, 'taxcat_id');
         $json = array();
+        $defaultStringLength = applicationConstants::DEFAULT_STRING_LENGTH;
         foreach ($taxCategories as $key => $taxCategory) {
+            $taxCatName = strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'));
+            $taxCatName1 = substr($taxCatName, 0, $defaultStringLength);
+            if ($defaultStringLength < strlen($taxCatName)) {
+                $taxCatName1 .= '...';
+            }
             $json[] = array(
                 'id' => $key,
-                'name' => strip_tags(html_entity_decode($taxCategory['taxcat_name'], ENT_QUOTES, 'UTF-8'))
+                'name' => $taxCatName1
             );
         }
         die(json_encode($json));

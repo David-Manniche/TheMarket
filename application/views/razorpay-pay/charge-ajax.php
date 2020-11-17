@@ -6,13 +6,8 @@ if (!isset($error)) { ?>
     <?php echo $frm->getFormHtml(); ?>
     <div class="gap"></div>
     <input type="submit" onclick="razorpaySubmit(this);" value="<?php echo $button_confirm; ?>" data-processing-text='<?php echo Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId); ?>' class="btn btn-brand" />
-    <?php if (FatUtility::isAjaxCall()) { ?>
-        <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-brand">
-            <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
-        </a>
-    <?php } else { ?>
-        <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
-    <?php }
+    <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+    <?php
 } else { ?>
     <div class="alert alert--danger"><?php echo $error; ?></div>
 <?php } 

@@ -9,12 +9,15 @@
         .c-hamburger {
             margin: 0;
             margin-#{$end-direction}: 10px;
+            @include media-breakpoint-down(lg) {
+                display: none
+            }
         }
     }
 }
 
 .vertical-menu {
-    position: absolute;
+    position: fixed;
     width: 100%;
     visibility: hidden;
     opacity: 0;
@@ -26,14 +29,21 @@
     -o-transition: all .2s ease-in-out;
     -webkit-transition-delay: 0.15s;
     transition-delay: 0.15s;
+    @include media-breakpoint-down(lg) {
+        display: none;
+        position: sticky;
+        visibility: visible;
+        opacity: 1;
+    }
     .categories.active & {
         visibility: visible;
         opacity: 1;
         top: 100%;
     }
     .menu {
-        width: 100%;
-        position: relative;
+        @include media-breakpoint-up(xl) {
+         width: 20%;      
+        } 
         padding: 0;
         margin: 0;
         background-color: $bg-white;
@@ -94,8 +104,8 @@
         position: absolute;
         list-style: none;
         top: 0px;
-        left: 98%;
-        width: 1080px;
+        #{$end-direction}: 0%;
+        width: 80%;
         min-height: 100%;
         padding: 0 1rem;
         z-index: 99;
@@ -103,6 +113,9 @@
         max-height: 100%;
         background-color: #fff;
         box-shadow: 2px 0px 3px rgba(0, 0, 0, 0.1);
+        @include media-breakpoint-down(lg) {
+            display: none;
+        }
         >ul {
             display: flex;
             flex-wrap: wrap;
@@ -115,7 +128,6 @@
     .menu>li:hover .megadrop {
         opacity: 1;
         visibility: visible;
-        left: 100%;
     }
     .menu>li>ul li ul,
     .menu li>ul li,

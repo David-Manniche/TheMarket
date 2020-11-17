@@ -19,7 +19,7 @@
                     <?php if (!$print) { ?>
                         <div class="">
                             <iframe src="<?php echo Fatutility::generateUrl('buyer', 'viewOrderReturnRequest', $urlParts) . '/print'; ?>" name="frame" style="display:none"></iframe>
-                            <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-brand btn-sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a>
+                            <?php /* <a href="javascript:void(0)" onclick="frames['frame'].print()" class="btn btn-brand btn-sm no-print"><?php echo Labels::getLabel('LBL_Print', $siteLangId); ?></a> */ ?>
                             <a href="<?php echo UrlHelper::generateUrl('Buyer', 'orderReturnRequests'); ?>" class="btn btn-outline-brand btn-sm no-print"><?php echo Labels::getLabel('LBL_Back', $siteLangId); ?></a>
                         </div>
                     <?php } ?>

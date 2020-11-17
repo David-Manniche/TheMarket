@@ -17,9 +17,9 @@
         display: flex;
         -ms-flex-wrap: nowrap;
         flex-wrap: nowrap;
+        overflow-x: auto;
         @include media-breakpoint-down(md) {
             & {
-                overflow-x: auto;
                 overflow-y: hidden;
             }
         }
@@ -43,7 +43,7 @@
                 background: $body-color;
                 height: 1px;
                 position: absolute;
-                z-index: 9;
+                z-index: 1;
                 #{$start-direction}: 0;
                 #{$end-direction}: 100%;
                 -webkit-transition-duration: 0.3s;

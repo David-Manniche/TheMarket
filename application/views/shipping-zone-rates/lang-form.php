@@ -1,19 +1,36 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+$langFrm->setCustomRendererClass('FormRendererBS');
+
+$langFrm->developerTags['colWidthClassesDefault'] = [null, 'col-md-', null, null];
+$langFrm->developerTags['colWidthValuesDefault'] = [null, '12', null, null];
+$langFrm->developerTags['fldWidthClassesDefault'] = [null, null, null, null];
+$langFrm->developerTags['fldWidthValuesDefault'] = [null, null, null, null];
+$langFrm->developerTags['labelWidthClassesDefault'] = [null, null, null, null];
+$langFrm->developerTags['labelWidthValuesDefault'] = [null, null, null, null];
+$langFrm->developerTags['fieldWrapperRowExtraClassDefault'] = 'form-group';
+
 $langFrm->setFormTagAttribute('class', 'form');
 $langFrm->setFormTagAttribute('onsubmit', 'setupLangRate(this); return(false);');
-$langFrm->developerTags['colClassPrefix'] = 'col-sm-4 col-md-';
-$langFrm->developerTags['fld_default_col'] = 12;
+
+
+//$langFrm->developerTags['colClassPrefix'] = 'col-sm-4 col-md-';
+//$langFrm->developerTags['fld_default_col'] = 12;
 
 $cancelFld = $langFrm->getField('btn_cancel');
 $cancelFld->setFieldTagAttribute('onClick', 'clearForm(); return false;');
-$cancelFld->developerTags['col'] = 3;
-$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
+$cancelFld->setFieldTagAttribute('class', 'btn btn-outline-brand');
 $cancelFld->developerTags['noCaptionTag'] = true;
+$cancelFld->developerTags['colClassBeforeWidth'] = 'col-auto';
+$cancelFld->developerTags['colWidthClasses'] = [null, null, null, null];
+$cancelFld->developerTags['colWidthValues'] = [null, null, null, null];
 
 $btnSubmit = $langFrm->getField('btn_submit');
-$btnSubmit->developerTags['col'] = 3;
-$btnSubmit->setFieldTagAttribute('class', "btn btn-brand btn-block");
+$btnSubmit->setFieldTagAttribute('class', "btn btn-brand");
 $btnSubmit->developerTags['noCaptionTag'] = true;
+$btnSubmit->developerTags['colClassBeforeWidth'] = 'col';
+$btnSubmit->developerTags['colWidthClasses'] = [null, null, null, null];
+$btnSubmit->developerTags['colWidthValues'] = [null, null, null, null];
+
 
 ?>
 <div >

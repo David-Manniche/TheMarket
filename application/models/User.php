@@ -131,7 +131,7 @@ class User extends MyAppModel
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $userId);
         $this->objMainTableRecord->setSensitiveFields(
             array(
-            'user_regdate', 'user_id'
+                'user_regdate', 'user_id'
             )
         );
 
@@ -147,10 +147,10 @@ class User extends MyAppModel
             $langId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG');
         }
         return array(
-        static::USER_TYPE_BUYER => Labels::getLabel('LBL_Buyer', $langId),
-        static::USER_TYPE_SELLER => Labels::getLabel('LBL_Seller', $langId),
-        static::USER_TYPE_ADVERTISER => Labels::getLabel('LBL_Advertiser', $langId),
-        static::USER_TYPE_AFFILIATE => Labels::getLabel('LBL_Affiliate', $langId)
+            static::USER_TYPE_BUYER => Labels::getLabel('LBL_Buyer', $langId),
+            static::USER_TYPE_SELLER => Labels::getLabel('LBL_Seller', $langId),
+            static::USER_TYPE_ADVERTISER => Labels::getLabel('LBL_Advertiser', $langId),
+            static::USER_TYPE_AFFILIATE => Labels::getLabel('LBL_Affiliate', $langId)
         );
     }
 
@@ -179,9 +179,9 @@ class User extends MyAppModel
         }
 
         return array(
-        static::AFFILIATE_PAYMENT_METHOD_CHEQUE => Labels::getLabel('LBL_Cheque', $langId),
-        static::AFFILIATE_PAYMENT_METHOD_BANK => Labels::getLabel('LBL_Bank', $langId),
-        static::AFFILIATE_PAYMENT_METHOD_PAYPAL => Labels::getLabel('LBL_PayPal', $langId),
+            static::AFFILIATE_PAYMENT_METHOD_CHEQUE => Labels::getLabel('LBL_Cheque', $langId),
+            static::AFFILIATE_PAYMENT_METHOD_BANK => Labels::getLabel('LBL_Bank', $langId),
+            static::AFFILIATE_PAYMENT_METHOD_PAYPAL => Labels::getLabel('LBL_PayPal', $langId),
         );
     }
 
@@ -267,7 +267,7 @@ class User extends MyAppModel
 
         $userMetaData = [];
         foreach ($result as $val) {
-            $userMetaData[$val[ static::DB_TBL_META_PREFIX . "key"]] = $val[ static::DB_TBL_META_PREFIX . "value"];
+            $userMetaData[$val[static::DB_TBL_META_PREFIX . "key"]] = $val[static::DB_TBL_META_PREFIX . "value"];
         }
         if (!empty($key)) {
             return isset($userMetaData[$key]) ? $userMetaData[$key] : '';
@@ -451,16 +451,16 @@ class User extends MyAppModel
         switch ($preferredDashboard) {
             case User::USER_BUYER_DASHBOARD:
                 return UrlHelper::generateFullUrl('buyer');
-            break;
+                break;
             case User::USER_SELLER_DASHBOARD:
                 return UrlHelper::generateFullUrl('seller');
-            break;
+                break;
             case User::USER_ADVERTISER_DASHBOARD:
                 return UrlHelper::generateFullUrl('advertiser');
-            break;
+                break;
             case User::USER_AFFILIATE_DASHBOARD:
                 return UrlHelper::generateFullUrl('affiliate');
-            break;
+                break;
         }
         return UrlHelper::generateFullUrl('account');
     }
@@ -472,9 +472,9 @@ class User extends MyAppModel
             trigger_error(Labels::getLabel('ERR_Language_Id_not_specified.', $langId), E_USER_ERROR);
         }
         $arr = array(
-        static::SUPPLIER_REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
-        static::SUPPLIER_REQUEST_APPROVED => Labels::getLabel('LBL_Approved', $langId),
-        static::SUPPLIER_REQUEST_CANCELLED => Labels::getLabel('LBL_Cancelled', $langId)
+            static::SUPPLIER_REQUEST_PENDING => Labels::getLabel('LBL_Pending', $langId),
+            static::SUPPLIER_REQUEST_APPROVED => Labels::getLabel('LBL_Approved', $langId),
+            static::SUPPLIER_REQUEST_CANCELLED => Labels::getLabel('LBL_Cancelled', $langId)
         );
         return $arr;
     }
@@ -482,9 +482,9 @@ class User extends MyAppModel
     public static function getCatalogRequestClassArr()
     {
         return array(
-        static::CATALOG_REQUEST_PENDING => static::CLASS_PENDING,
-        static::CATALOG_REQUEST_APPROVED => static::CLASS_APPROVED,
-        static::CATALOG_REQUEST_CANCELLED => static::CLASS_CANCELLED,
+            static::CATALOG_REQUEST_PENDING => static::CLASS_PENDING,
+            static::CATALOG_REQUEST_APPROVED => static::CLASS_APPROVED,
+            static::CATALOG_REQUEST_CANCELLED => static::CLASS_CANCELLED,
         );
     }
 
@@ -519,19 +519,19 @@ class User extends MyAppModel
         } else {
             $srch->addMultipleFields(
                 array(
-                'u.' . static::DB_TBL_PREFIX . 'id',
-                'u.' . static::DB_TBL_PREFIX . 'name',
-                'u.' . static::DB_TBL_PREFIX . 'dial_code',
-                'u.' . static::DB_TBL_PREFIX . 'phone',
-                'u.' . static::DB_TBL_PREFIX . 'profile_info',
-                'u.' . static::DB_TBL_PREFIX . 'regdate',
-                'u.' . static::DB_TBL_PREFIX . 'preferred_dashboard',
-                'u.' . static::DB_TBL_PREFIX . 'registered_initially_for',
-                'u.' . static::DB_TBL_PREFIX . 'parent',
-                'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
-                'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
-                'uc.' . static::DB_TBL_CRED_PREFIX . 'active',
-                'uc.' . static::DB_TBL_CRED_PREFIX . 'verified'
+                    'u.' . static::DB_TBL_PREFIX . 'id',
+                    'u.' . static::DB_TBL_PREFIX . 'name',
+                    'u.' . static::DB_TBL_PREFIX . 'dial_code',
+                    'u.' . static::DB_TBL_PREFIX . 'phone',
+                    'u.' . static::DB_TBL_PREFIX . 'profile_info',
+                    'u.' . static::DB_TBL_PREFIX . 'regdate',
+                    'u.' . static::DB_TBL_PREFIX . 'preferred_dashboard',
+                    'u.' . static::DB_TBL_PREFIX . 'registered_initially_for',
+                    'u.' . static::DB_TBL_PREFIX . 'parent',
+                    'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
+                    'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
+                    'uc.' . static::DB_TBL_CRED_PREFIX . 'active',
+                    'uc.' . static::DB_TBL_CRED_PREFIX . 'verified'
                 )
             );
         }
@@ -597,12 +597,12 @@ class User extends MyAppModel
 
         $srch->addMultipleFields(
             array(
-            'u.' . static::DB_TBL_PREFIX . 'id',
-            'u.' . static::DB_TBL_PREFIX . 'name',
-            'u.' . static::DB_TBL_PREFIX . 'dial_code',
-            'u.' . static::DB_TBL_PREFIX . 'phone',
-            'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
-            'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
+                'u.' . static::DB_TBL_PREFIX . 'id',
+                'u.' . static::DB_TBL_PREFIX . 'name',
+                'u.' . static::DB_TBL_PREFIX . 'dial_code',
+                'u.' . static::DB_TBL_PREFIX . 'phone',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
             )
         );
         return $srch;
@@ -661,12 +661,12 @@ class User extends MyAppModel
             return false;
         }
         $assignValues = array(
-        'ub_user_id' => $this->mainTableRecordId,
-        'ub_bank_name' => $data['ub_bank_name'],
-        'ub_account_holder_name' => $data['ub_account_holder_name'],
-        'ub_account_number' => $data['ub_account_number'],
-        'ub_ifsc_swift_code' => $data['ub_ifsc_swift_code'],
-        'ub_bank_address' => $data['ub_bank_address']
+            'ub_user_id' => $this->mainTableRecordId,
+            'ub_bank_name' => $data['ub_bank_name'],
+            'ub_account_holder_name' => $data['ub_account_holder_name'],
+            'ub_account_number' => $data['ub_account_number'],
+            'ub_ifsc_swift_code' => $data['ub_ifsc_swift_code'],
+            'ub_bank_address' => $data['ub_bank_address']
         );
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_USR_BANK_INFO, $assignValues, false, array(), $assignValues)) {
             $this->error = $this->db->getError();
@@ -696,8 +696,8 @@ class User extends MyAppModel
             return false;
         }
         $assignValues = array(
-        'user_id' => $this->mainTableRecordId,
-        'user_autorenew_subscription' => $data['user_autorenew_subscription'],
+            'user_id' => $this->mainTableRecordId,
+            'user_autorenew_subscription' => $data['user_autorenew_subscription'],
 
         );
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL, $assignValues, false, array(), $assignValues)) {
@@ -709,9 +709,9 @@ class User extends MyAppModel
     public function updateInfo($data = array(), $userId)
     {
         $assignValues = array(
-        'user_company' => $data['user_company'],
-        'user_profile_info' => $data['user_profile_info'],
-        'user_products_services' => $data['user_products_services'],
+            'user_company' => $data['user_company'],
+            'user_profile_info' => $data['user_profile_info'],
+            'user_products_services' => $data['user_products_services'],
         );
         if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $assignValues, array('smt' => static::DB_TBL_PREFIX . 'id = ? ', 'vals' => array((int)$userId)))) {
             $this->error = FatApp::getDb()->getError();
@@ -742,18 +742,18 @@ class User extends MyAppModel
 
         /* Update User information [ */
         $data = array(
-        'user_name' => '',
-        'user_phone' => '',
-        'user_dob' => '',
-        'user_city' => '',
-        'user_country_id' => '',
-        'user_state_id' => '',
-        'user_company' => '',
-        'user_profile_info' => '',
-        'user_address1' => '',
-        'user_address2' => '',
-        'user_zip' => '',
-        'user_products_services' => '',
+            'user_name' => '',
+            'user_phone' => '',
+            'user_dob' => '',
+            'user_city' => '',
+            'user_country_id' => '',
+            'user_state_id' => '',
+            'user_company' => '',
+            'user_profile_info' => '',
+            'user_address1' => '',
+            'user_address2' => '',
+            'user_zip' => '',
+            'user_products_services' => '',
         );
 
         if (!$db->updateFromArray(static::DB_TBL, $data, array('smt' => static::DB_TBL_PREFIX . 'id = ? ', 'vals' => array($this->mainTableRecordId)))) {
@@ -823,7 +823,7 @@ class User extends MyAppModel
     public function updateCredInfo($data = array(), $userId)
     {
         $assignValues = array(
-        static::DB_TBL_CRED_PREFIX . 'password' => UserAuthentication::encryptPassword($data['user_password'])
+            static::DB_TBL_CRED_PREFIX . 'password' => UserAuthentication::encryptPassword($data['user_password'])
         );
         if (!FatApp::getDb()->updateFromArray(static::DB_TBL_CRED, $assignValues, array('smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ? ', 'vals' => array((int)$userId)))) {
             $this->error = FatApp::getDb()->getError();
@@ -867,11 +867,11 @@ class User extends MyAppModel
             return false;
         }
         $assignValues = array(
-        'ura_user_id' => $this->mainTableRecordId,
-        'ura_state_id' => $data['ura_state_id'],
-        'ura_country_id' => $data['ura_country_id'],
-        'ura_zip' => $data['ura_zip'],
-        'ura_phone' => $data['ura_phone']
+            'ura_user_id' => $this->mainTableRecordId,
+            'ura_state_id' => $data['ura_state_id'],
+            'ura_country_id' => $data['ura_country_id'],
+            'ura_zip' => $data['ura_zip'],
+            'ura_phone' => $data['ura_phone']
         );
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_USR_RETURN_ADDR, $assignValues, false, array(), $assignValues)) {
             $this->error = $this->db->getError();
@@ -887,12 +887,12 @@ class User extends MyAppModel
             return false;
         }
         $assignValues = array(
-        'uralang_user_id' => $this->mainTableRecordId,
-        'uralang_lang_id' => $data['lang_id'],
-        'ura_name' => $data['ura_name'],
-        'ura_city' => $data['ura_city'],
-        'ura_address_line_1' => $data['ura_address_line_1'],
-        'ura_address_line_2' => $data['ura_address_line_2']
+            'uralang_user_id' => $this->mainTableRecordId,
+            'uralang_lang_id' => $data['lang_id'],
+            'ura_name' => $data['ura_name'],
+            'ura_city' => $data['ura_city'],
+            'ura_address_line_1' => $data['ura_address_line_1'],
+            'ura_address_line_2' => $data['ura_address_line_2']
         );
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_USR_RETURN_ADDR_LANG, $assignValues, false, array(), $assignValues)) {
             $this->error = $this->db->getError();
@@ -979,8 +979,8 @@ class User extends MyAppModel
 
         $record->setFldValue('usuprequest_attempts', 1, true);
         $onDuplicateKeyUpdate = array(
-        'usuprequest_status' => (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1)) ? 0 : 1,
-        'usuprequest_attempts' => 'mysql_func_usuprequest_attempts+1'
+            'usuprequest_status' => (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1)) ? 0 : 1,
+            'usuprequest_attempts' => 'mysql_func_usuprequest_attempts+1'
         );
         if (!$record->addNew(array(), $onDuplicateKeyUpdate)) {
             $this->error = $record->getError();
@@ -1020,9 +1020,9 @@ class User extends MyAppModel
         foreach ($data['fieldIdsArr'] as $key => $fieldId) {
             if (isset($data['sformfield_' . $fieldId]) && $data['sformfield_' . $fieldId] != '') {
                 $arr = array(
-                'sfreqvalue_request_id' => (int)$supplier_request_id,
-                'sfreqvalue_formfield_id' => (int)$fieldId,
-                'sfreqvalue_text' => $data['sformfield_' . $fieldId],
+                    'sfreqvalue_request_id' => (int)$supplier_request_id,
+                    'sfreqvalue_formfield_id' => (int)$fieldId,
+                    'sfreqvalue_text' => $data['sformfield_' . $fieldId],
                 );
                 $record->assignValues($arr);
                 if (!$record->addNew()) {
@@ -1035,9 +1035,9 @@ class User extends MyAppModel
                 if ($langs) {
                     foreach ($langs as $language_id => $langName) {
                         $langData = array(
-                        'sfreqvaluelang_sfreqvalue_id' => $sfreqvalue_id,
-                        'sfreqvaluelang_lang_id' => $language_id,
-                        'sfreqvalue_sformfield_caption' => $sformFieldCaptionsArr[$language_id][$fieldId]['sformfield_caption']
+                            'sfreqvaluelang_sfreqvalue_id' => $sfreqvalue_id,
+                            'sfreqvaluelang_lang_id' => $language_id,
+                            'sfreqvalue_sformfield_caption' => $sformFieldCaptionsArr[$language_id][$fieldId]['sformfield_caption']
                         );
                         $db->insertFromArray('tbl_user_supplier_request_values_lang', $langData);
                         /* foreach( $sformFieldCaptionsArr[$language_id] as $data ){
@@ -1071,8 +1071,8 @@ class User extends MyAppModel
         $srequest_id = FatUtility::int($data['request_id']);
 
         $assignValues = array(
-        'usuprequest_status' => $data['status'],
-        'usuprequest_comments' => isset($data['comments']) ? $data['comments'] : '',
+            'usuprequest_status' => $data['status'],
+            'usuprequest_comments' => isset($data['comments']) ? $data['comments'] : '',
         );
         if (!FatApp::getDb()->updateFromArray(
             static::DB_TBL_USR_SUPP_REQ,
@@ -1111,12 +1111,12 @@ class User extends MyAppModel
 
         $srch->addMultipleFields(
             array(
-            'u.' . static::DB_TBL_PREFIX . 'id',
-            'u.' . static::DB_TBL_PREFIX . 'name',
-            'u.' . static::DB_TBL_PREFIX . 'dial_code',
-            'u.' . static::DB_TBL_PREFIX . 'phone',
-            'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
-            'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
+                'u.' . static::DB_TBL_PREFIX . 'id',
+                'u.' . static::DB_TBL_PREFIX . 'name',
+                'u.' . static::DB_TBL_PREFIX . 'dial_code',
+                'u.' . static::DB_TBL_PREFIX . 'phone',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'username',
+                'uc.' . static::DB_TBL_CRED_PREFIX . 'email',
             )
         );
         return $srch;
@@ -1157,8 +1157,8 @@ class User extends MyAppModel
         $scatrequest_id = FatUtility::int($data['request_id']);
 
         $assignValues = array(
-        'scatrequest_status' => $data['status'],
-        'scatrequest_comments' => isset($data['comments']) ? $data['comments'] : '',
+            'scatrequest_status' => $data['status'],
+            'scatrequest_comments' => isset($data['comments']) ? $data['comments'] : '',
         );
         if (!FatApp::getDb()->updateFromArray(
             static::DB_TBL_USR_CATALOG_REQ,
@@ -1259,7 +1259,7 @@ class User extends MyAppModel
             if ($referrerUserRow && $referrerUserRow['user_referral_code'] == $userReferrerCode && $userReferrerCode != '' && $referrerUserRow['user_referral_code'] != '') {
                 $referrerUserId = $referrerUserRow['user_id'];
                 $referrerUserName = $referrerUserRow['user_name'];
-                $this->setUserInfo(array( 'user_referrer_user_id' => $referrerUserId ));
+                $this->setUserInfo(array('user_referrer_user_id' => $referrerUserId));
             }
         }
         /* ] */
@@ -1304,7 +1304,7 @@ class User extends MyAppModel
             $affiliateReferrerUserRow = $this->getUserByReferrerCode($affiliateReferrerCode);
             if ($affiliateReferrerUserRow && $affiliateReferrerUserRow['user_referral_code'] == $affiliateReferrerCode && $affiliateReferrerCode != '' && $affiliateReferrerUserRow['user_referral_code'] != '') {
                 $affiliateReferrerUserId = $affiliateReferrerUserRow['user_id'];
-                $this->setUserInfo(array( 'user_affiliate_referrer_user_id' => $affiliateReferrerUserId ));
+                $this->setUserInfo(array('user_affiliate_referrer_user_id' => $affiliateReferrerUserId));
             }
         }
         /* ] */
@@ -1318,11 +1318,11 @@ class User extends MyAppModel
             $utxn_comments = str_replace('{username}', $referredUserName, $utxn_comments);
             $transObj = new Transactions();
             $txnDataArr = array(
-            'utxn_user_id' => $affiliateReferrerUserId,
-            'utxn_credit' => $CONF_AFFILIATE_SIGNUP_COMMISSION,
-            'utxn_status' => Transactions::STATUS_COMPLETED,
-            'utxn_comments' => $utxn_comments,
-            'utxn_type' => Transactions::TYPE_AFFILIATE_REFERRAL_SIGN_UP
+                'utxn_user_id' => $affiliateReferrerUserId,
+                'utxn_credit' => $CONF_AFFILIATE_SIGNUP_COMMISSION,
+                'utxn_status' => Transactions::STATUS_COMPLETED,
+                'utxn_comments' => $utxn_comments,
+                'utxn_type' => Transactions::TYPE_AFFILIATE_REFERRAL_SIGN_UP
             );
             if (!$txnId = $transObj->addTransaction($txnDataArr)) {
                 $this->error = $transObj->getError();
@@ -1363,10 +1363,10 @@ class User extends MyAppModel
         }
 
         if (null != $active) {
-            $arrFlds [static::DB_TBL_CRED_PREFIX . 'active'] = $active;
+            $arrFlds[static::DB_TBL_CRED_PREFIX . 'active'] = $active;
         }
         if (null != $verified) {
-            $arrFlds [static::DB_TBL_CRED_PREFIX . 'verified'] = $verified;
+            $arrFlds[static::DB_TBL_CRED_PREFIX . 'verified'] = $verified;
         }
 
         $record->setFldValue(static::DB_TBL_CRED_PREFIX . 'user_id', $this->mainTableRecordId);
@@ -1411,7 +1411,7 @@ class User extends MyAppModel
         }
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
-        static::DB_TBL_CRED_PREFIX . 'password' => UserAuthentication::encryptPassword($password)
+            static::DB_TBL_CRED_PREFIX . 'password' => UserAuthentication::encryptPassword($password)
         );
         $record->setFldValue(static::DB_TBL_CRED_PREFIX . 'user_id', $userId);
         $record->assignValues($arrFlds);
@@ -1436,7 +1436,7 @@ class User extends MyAppModel
 
         $record = new TableRecord(static::DB_TBL_CRED);
         $arrFlds = array(
-        static::DB_TBL_CRED_PREFIX . 'email' => $email
+            static::DB_TBL_CRED_PREFIX . 'email' => $email
         );
         $record->setFldValue(static::DB_TBL_CRED_PREFIX . 'user_id', $this->mainTableRecordId);
         $record->assignValues($arrFlds);
@@ -1477,13 +1477,13 @@ class User extends MyAppModel
         if (!$db->updateFromArray(
             static::DB_TBL_CRED,
             array(
-            static::DB_TBL_CRED_PREFIX . 'active' => $v
+                static::DB_TBL_CRED_PREFIX . 'active' => $v
             ),
             array(
-            'smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ?',
-            'vals' => array(
-                        $this->mainTableRecordId
-            )
+                'smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ?',
+                'vals' => array(
+                    $this->mainTableRecordId
+                )
             )
         )) {
             $this->error = $db->getError();
@@ -1510,10 +1510,10 @@ class User extends MyAppModel
             static::DB_TBL,
             $arrToUpdate,
             array(
-            'smt' => static::DB_TBL_PREFIX . 'id = ?',
-            'vals' => array(
-            $this->mainTableRecordId
-            )
+                'smt' => static::DB_TBL_PREFIX . 'id = ?',
+                'vals' => array(
+                    $this->mainTableRecordId
+                )
             )
         )) {
             $this->error = $db->getError();
@@ -1610,7 +1610,7 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_CODE', $this->commonLangId);
             return false;
         }
-        
+
         $userId = FatUtility::int($arrCode[0]);
 
         $emvSrch = new SearchBase(static::DB_TBL_USER_EMAIL_VER);
@@ -1717,12 +1717,12 @@ class User extends MyAppModel
         $userType = isset($data['user_registered_initially_for']) ? $data['user_registered_initially_for'] : '';
         $phone = !empty($data['user_phone']) ? $data['user_dial_code'] . $data['user_phone'] : '';
         $data = array(
-                    'user_name' => $data['user_name'],
-                    'user_username' => $data['user_username'],
-                    'user_email' => isset($data['user_email']) ? $data['user_email'] : '',
-                    'user_phone' => $phone,
-                    'user_type' => $userType,
-                );
+            'user_name' => $data['user_name'],
+            'user_username' => $data['user_username'],
+            'user_email' => isset($data['user_email']) ? $data['user_email'] : '',
+            'user_phone' => $phone,
+            'user_type' => $userType,
+        );
         $email = new EmailHandler();
         if (!$email->sendNewRegistrationNotification($langId, $data)) {
             $this->error = Labels::getLabel("ERR_ERROR_IN_SENDING_NOTIFICATION_EMAIL_TO_ADMIN", $langId);
@@ -1736,10 +1736,10 @@ class User extends MyAppModel
         $verificationCode = $this->prepareUserVerificationCode();
         $link = UrlHelper::generateFullUrl('GuestUser', 'userCheckEmailVerification', array('verify' => $verificationCode));
         $data = array(
-                    'user_name' => $data['user_name'],
-                    'link' => $link,
-                    'user_email' => $data['user_email'],
-                );
+            'user_name' => $data['user_name'],
+            'link' => $link,
+            'user_email' => $data['user_email'],
+        );
         $email = new EmailHandler();
         if (!$email->sendSignupVerificationLink($langId, $data)) {
             Message::addMessage(Labels::getLabel("ERR_ERROR_IN_SENDING_VERFICATION_EMAIL", $langId));
@@ -1830,13 +1830,13 @@ class User extends MyAppModel
         if (!empty($phone)) {
             $phone .= array_key_exists('user_dial_code', $data) ? $data['user_dial_code'] : '';
         }
-        
+
         $data = array(
-                    'user_name' => $data['user_name'],
-                    'user_email' => $data['user_email'],
-                    'user_phone' => $phone,
-                    'link' => $link,
-                );
+            'user_name' => $data['user_name'],
+            'user_email' => $data['user_email'],
+            'user_phone' => $phone,
+            'link' => $link,
+        );
 
         $email = new EmailHandler();
         if (!$email->sendWelcomeEmail($langId, $data)) {
@@ -2151,7 +2151,7 @@ class User extends MyAppModel
         $srch->addFld(array('usuprequest_attempts', 'usuprequest_id', 'usuprequest_status'));
         $rs = $srch->getResultSet();
         $supplierRequest = FatApp::getDb()->fetch($rs);
-        if ($supplierRequest['usuprequest_status'] == User::SUPPLIER_REQUEST_APPROVED) {
+        if (is_array($supplierRequest) && $supplierRequest['usuprequest_status'] == User::SUPPLIER_REQUEST_APPROVED) {
             return true;
         }
         return false;
@@ -2217,9 +2217,9 @@ class User extends MyAppModel
         }
         FatApp::getDb()->deleteRecords(static::DB_TBL_USR_MOBILE_TEMP_TOKEN, array('smt' => static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id = ?', 'vals' => array((int)$this->mainTableRecordId)));
         $assignValues = array(
-        static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id' => $this->mainTableRecordId,
-        static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'token' => $generatedToken,
-        static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'expiry' => date('Y-m-d H:i:s', strtotime("+10 MINUTE")),
+            static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id' => $this->mainTableRecordId,
+            static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'token' => $generatedToken,
+            static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'expiry' => date('Y-m-d H:i:s', strtotime("+10 MINUTE")),
         );
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_USR_MOBILE_TEMP_TOKEN, $assignValues, false, array(), $assignValues)) {
             $this->error = FatApp::getDb()->getError();
@@ -2311,8 +2311,8 @@ class User extends MyAppModel
             FatApp::getDb()->deleteRecords(
                 UserAuthentication::DB_TBL_USER_AUTH,
                 [
-                'smt' => 'uauth_fcm_id = ? and uauth_token != ?',
-                'vals' => array($fcmDeviceId, $appToken)
+                    'smt' => 'uauth_fcm_id = ? and uauth_token != ?',
+                    'vals' => array($fcmDeviceId, $appToken)
                 ]
             );
             $values = static::getUserAuthFcmFormattedData($userType, $fcmDeviceId, $deviceOs);
@@ -2321,8 +2321,8 @@ class User extends MyAppModel
             FatApp::getDb()->deleteRecords(
                 UserAuthentication::DB_TBL_USER_AUTH,
                 [
-                'smt' => 'uauth_token = ?',
-                'vals' => array($appToken)
+                    'smt' => 'uauth_token = ?',
+                    'vals' => array($appToken)
                 ]
             );
             $values = static::getUserAuthFcmFormattedData($userType, $fcmDeviceId, $deviceOs, (int)$this->mainTableRecordId, $appToken);
@@ -2377,8 +2377,8 @@ class User extends MyAppModel
     public static function setImageUpdatedOn($userId, $date = '')
     {
         $date = empty($date) ? date('Y-m-d  H:i:s') : $date;
-        $where = array('smt'=>'user_id = ?', 'vals'=>array($userId));
-        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_updated_on'=>date('Y-m-d  H:i:s')), $where);
+        $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
+        FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
 
     public function saveUserData($postedData, $socialUser = false, $returnUserId = false)
@@ -2448,8 +2448,8 @@ class User extends MyAppModel
                     return false;
                 }
             }
-        }        
-        
+        }
+
         if (FatApp::getConfig('CONF_NOTIFY_ADMIN_REGISTRATION', FatUtility::VAR_INT, 1)) {
             if (!$this->notifyAdminRegistration($postedData, $this->commonLangId)) {
                 $db->rollbackTransaction();
@@ -2544,7 +2544,7 @@ class User extends MyAppModel
         $userSrchObj->doNotCalculateRecords();
         $userSrchObj->doNotLimitRecords();
         $userSrchObj->addCondition('user_referral_code', '=', $userReferrerCode);
-        $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code', 'user_name' ));
+        $userSrchObj->addMultipleFields(array('user_id', 'user_referral_code', 'user_name'));
         $rs = $userSrchObj->getResultSet();
         return FatApp::getDb()->fetch($rs);
     }
@@ -2564,12 +2564,12 @@ class User extends MyAppModel
         $urpComments = str_replace("{username}", $referralUserName, $urpComments);
         $rewardsRecord->assignValues(
             array(
-            'urp_user_id' => $referrerUserId,
-            'urp_referral_user_id' => $referredUserId,
-            'urp_points' => $CONF_REGISTRATION_REFERRER_REWARD_POINTS,
-            'urp_comments' => $urpComments,
-            'urp_used' => 0,
-            'urp_date_expiry' => $rewardExpiryDate
+                'urp_user_id' => $referrerUserId,
+                'urp_referral_user_id' => $referredUserId,
+                'urp_points' => $CONF_REGISTRATION_REFERRER_REWARD_POINTS,
+                'urp_comments' => $urpComments,
+                'urp_used' => 0,
+                'urp_date_expiry' => $rewardExpiryDate
             )
         );
         if ($rewardsRecord->save()) {
@@ -2583,6 +2583,16 @@ class User extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
 
+    /**
+     * validateUser - Used in case of social login.
+     *
+     * @param  string $email
+     * @param  string $username
+     * @param  string $socialAccountId
+     * @param  string $keyName
+     * @param  string $userType
+     * @return mixed
+     */
     public function validateUser($email, $username, $socialAccountId, $keyName, $userType)
     {
         $db = FatApp::getDb();
@@ -2602,7 +2612,7 @@ class User extends MyAppModel
         $rs = $srch->getResultSet();
 
         $row = $db->fetch($rs);
-        
+
         if (isset($row['user_active']) && $row['user_active'] != applicationConstants::ACTIVE) {
             $this->error = Labels::getLabel('ERR_YOUR_ACCOUNT_HAS_BEEN_DEACTIVATED', $this->commonLangId);
             return false;
@@ -2648,7 +2658,7 @@ class User extends MyAppModel
                 if (!empty($socialAccountId)) {
                     $assignValues[static::DB_TBL_CRED_PREFIX . 'verified'] = applicationConstants::YES;
                 }
-                
+
                 if (!FatApp::getDb()->insertFromArray(static::DB_TBL_CRED, $assignValues, false, array(), $assignValues)) {
                     $this->error = FatApp::getDb()->getError();
                     return false;
@@ -2692,6 +2702,7 @@ class User extends MyAppModel
             $userPreferredDashboard = static::USER_BUYER_DASHBOARD;
             $user_registered_initially_for = static::USER_TYPE_BUYER;
             $user_is_buyer = 1;
+            $user_is_supplier = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
         }
         if (isset($userType) && $userType == static::USER_TYPE_SELLER) {
             $userPreferredDashboard = static::USER_SELLER_DASHBOARD;
@@ -2782,12 +2793,12 @@ class User extends MyAppModel
         $urpComments = str_replace("{referrerusername}", $referrerUserName, $urpComments);
         $rewardsRecord->assignValues(
             array(
-            'urp_user_id' => $referredUserId,
-            'urp_referral_user_id' => $referrerUserId,
-            'urp_points' => $CONF_REGISTRATION_REFERRAL_REWARD_POINTS,
-            'urp_comments' => $urpComments,
-            'urp_used' => 0,
-            'urp_date_expiry' => $rewardReferralExpiryDate
+                'urp_user_id' => $referredUserId,
+                'urp_referral_user_id' => $referrerUserId,
+                'urp_points' => $CONF_REGISTRATION_REFERRAL_REWARD_POINTS,
+                'urp_comments' => $urpComments,
+                'urp_used' => 0,
+                'urp_date_expiry' => $rewardReferralExpiryDate
             )
         );
         if ($rewardsRecord->save()) {
@@ -2833,16 +2844,16 @@ class User extends MyAppModel
         switch (strtolower($type)) {
             case 'email':
                 return $bccEmails;
-            break;
+                break;
             case 'phone':
                 return $phoneNumbers;
-            break;
+                break;
             default:
                 return [
                     'email' => $bccEmails,
                     'phone' => $phoneNumbers
-                    ];
-            break;
+                ];
+                break;
         }
     }
 
@@ -2872,14 +2883,14 @@ class User extends MyAppModel
     {
         $userId = FatUtility::int($userId);
         $parentId = FatUtility::int($parentId);
-        
+
         $srch = new SearchBase(User::DB_TBL, 'u');
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
-        
+
         if ($userId != $parentId) {
-            $srch->addDirectCondition('(user_id = '. $userId. ' or user_parent = ' . $userId . ')');
+            $srch->addDirectCondition('(user_id = ' . $userId . ' or user_parent = ' . $userId . ')');
         } else {
-            $srch->addDirectCondition('(user_id = '. $userId. ' or user_parent = ' . $parentId . ')');
+            $srch->addDirectCondition('(user_id = ' . $userId . ' or user_parent = ' . $parentId . ')');
         }
         if (true == $active) {
             $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . static::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
@@ -2905,7 +2916,7 @@ class User extends MyAppModel
         }
         $srch = new SearchBase(User::DB_TBL, 'u');
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
-        $srch->addDirectCondition('(user_id = '. $userId. ' or user_parent = ' . $userId .')');
+        $srch->addDirectCondition('(user_id = ' . $userId . ' or user_parent = ' . $userId . ')');
         if (true == $active) {
             $srch->joinTable(static::DB_TBL_CRED, 'LEFT OUTER JOIN', 'uc.' . static::DB_TBL_CRED_PREFIX . 'user_id = u.user_id', 'uc');
             $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'active', '=', applicationConstants::ACTIVE);

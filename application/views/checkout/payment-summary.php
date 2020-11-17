@@ -68,9 +68,9 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                                 ?>
                                 <p class="time-txt">
                                     <i class="fas fa-calendar-day"></i>
-                                    <?php 
-                                        $opshippingDate = isset($address["opshipping_date"]) ? FatDate::format($address["opshipping_date"]) : '';
-                                        echo $opshippingDate . ' ' . $fromTime . ' - ' . $toTime; 
+                                    <?php
+                                    $opshippingDate = isset($address["opshipping_date"]) ? FatDate::format($address["opshipping_date"]) : '';
+                                    echo $opshippingDate . ' ' . $fromTime . ' - ' . $toTime;
                                     ?>
                                 </p>
                                 <?php if (count($orderPickUpData) > 1) { ?>
@@ -250,20 +250,20 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 }
             </script>
         <?php } else { ?>
-            <div class="wallet-balance_info">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</div>
+            <div class="wallet-balance_info"><?php echo Labels::getLabel('LBL_USE_MY_WALLET_BALANCE_TO_PAY_FOR_MY_ORDER', $siteLangId); ?></div>
         <?php } ?>
     </div>
 <?php } ?>
-        <section id="payment" class="section-checkout">
-            <div class="align-items-center mb-4">
-                <?php if ($cartSummary['orderNetAmount'] <= 0) { ?>
-                    <div class="gap"></div>
-                    <div id="wallet">
-                        <h6><?php echo Labels::getLabel('LBL_Payment_to_be_made', $siteLangId); ?>
-                            <strong><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, true); ?></strong>
-                        </h6> <?php
-                                $btnSubmitFld = $confirmForm->getField('btn_submit');
-                                $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
+<section id="payment" class="section-checkout">
+    <div class="align-items-center mb-4">
+        <?php if ($cartSummary['orderNetAmount'] <= 0) { ?>
+            <div class="gap"></div>
+            <div id="wallet">
+                <h6><?php echo Labels::getLabel('LBL_Payment_to_be_made', $siteLangId); ?>
+                    <strong><?php echo CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], true, false, true, false, true); ?></strong>
+                </h6> <?php
+                        $btnSubmitFld = $confirmForm->getField('btn_submit');
+                        $btnSubmitFld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 
                         $confirmForm->developerTags['colClassPrefix'] = 'col-md-';
                         $confirmForm->developerTags['fld_default_col'] = 12;
@@ -279,14 +279,11 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 <ul class="nav nav-payments <?php echo 1 == count($paymentMethods) ? 'd-none' : ''; ?>" role="tablist" id="payment_methods_tab">
                     <?php foreach ($paymentMethods as $key => $val) {
                         $pmethodCode = $val['plugin_code'];
-                        if ($cartHasDigitalProduct && strtolower($pmethodCode) == "cashondelivery") {
+                        if ($cartHasDigitalProduct && in_array(strtolower($pmethodCode), ['cashondelivery', 'payatstore'])) {
                             continue;
                         }
                         $pmethodId = $val['plugin_id'];
                         $pmethodName = $val['plugin_name'];
-                        if (strtolower($val['plugin_code']) == 'cashondelivery' && $fulfillmentType == Shipping::FULFILMENT_PICKUP) {
-                            $pmethodName = Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
-                        }
 
                         if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
                             continue;
@@ -307,7 +304,6 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                     </div>
                 </div>
             <?php } else {
-                echo $cartSummary['orderPaymentGatewayCharges']  . ' < ' . count($paymentMethods);
                 echo Labels::getLabel("LBL_PAYMENT_METHOD_IS_NOT_AVAILABLE._PLEASE_CONTACT_YOUR_ADMINISTRATOR.", $siteLangId);
             } ?>
         </div>
@@ -359,7 +355,7 @@ if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDe
             fcom.ajax(tabObj.attr('href'), '', function(response) {
                 $('#tabs-container').html(response);
                 var paymentMethod = tabObj.data('paymentmethod');
-                if ('cashondelivery' == paymentMethod.toLowerCase()) {
+                if ('cashondelivery' == paymentMethod.toLowerCase() || 'payatstore' == paymentMethod.toLowerCase()) {
                     if (true == enableGcaptcha) {
                         googleCaptcha();
                     }

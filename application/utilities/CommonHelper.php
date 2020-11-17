@@ -367,7 +367,7 @@ class CommonHelper extends FatUtility
         $cartAmount = $requestRow["op_unit_price"] * $requestRow["orrequest_qty"];
 
         $commissionCostValue = $requestRow["op_unit_price"];
-        if ($requestRow['op_commission_include_tax'] && $taxPerQty && FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0)) {
+        if ($requestRow['op_commission_include_tax'] && $taxPerQty /* && FatApp::getConfig('CONF_COMMISSION_INCLUDING_TAX', FatUtility::VAR_INT, 0) */) {
             $commissionCostValue = $commissionCostValue + $taxPerQty;
         }
 
@@ -867,8 +867,13 @@ class CommonHelper extends FatUtility
     {
         $_SESSION['app_user'] = true;
     }
-
-    public static function isAppUser()
+    
+    /**
+     * isAppUser - Used in case of web view.
+     *
+     * @return bool
+     */
+    public static function isAppUser(): bool
     {
         if (isset($_SESSION['app_user'])) {
             return true;

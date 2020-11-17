@@ -73,14 +73,26 @@
         }
         .btn {
             line-height: 1.5;
+            @include media-breakpoint-down(sm) {
+                height: 38px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .txt{
+                @include media-breakpoint-down(sm) {
+                 display: none;
+                }
+            }
         }
         .custom-select {
             border-radius: 3px;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            padding-top: 8px;
+            padding-bottom: 8px;
             font-size: 0.8rem;
             height: auto;
             border: $border;
+            height: 38px;
         }
         .btn-filters {
             border: $border;
@@ -259,6 +271,7 @@
 .cat-accordion .acc-trigger {
     position: absolute;
     top: 9px;
+    z-index: 1;
     #{$end-direction}: 0;
     cursor: pointer;
     width: 10px;
@@ -377,16 +390,18 @@
 
 .price-text-box {
     position: relative;
-}
-
-.price-text-box .input-filter {
-    margin: 0;
-    padding-#{$end-direction}: 5px;
-    padding-#{$start-direction}: 36px;
-    display: inline-block;
-    font-size: 12px;
-    vertical-align: top;
-    height: 40px;
+    .input-filter {
+        margin: 0;
+        padding-#{$end-direction}: 5px;
+        padding-#{$start-direction}: 36px;
+        display: inline-block;
+        font-size: 12px;
+        vertical-align: top;
+        height: 40px;
+    }
+    .input-group-text {
+        font-size: 0.8rem;
+    }
 }
 
 .rsText {
@@ -444,7 +459,9 @@
 }
 
 .listing-products--list {
-    grid-template-columns: repeat(2, 1fr);
+    .product-listing[data-view="4"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
     .products {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -478,7 +495,7 @@
 
 .list-grid-toggle {
     width: 40px;
-    height: 41px;
+    height: 38px;
     padding: 1px 2px;
     border-radius: $radius3;
     border: $border;

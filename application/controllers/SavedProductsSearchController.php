@@ -64,7 +64,7 @@ class SavedProductsSearchController extends LoggedUserController
         }
 
         $curr_page = FatApp::getPostedData('curr_page', FatUtility::VAR_STRING, UrlHelper::generateFullUrl());
-        $searchedUrlString = str_replace($curr_page, '', $_SERVER['HTTP_REFERER']);
+        $searchedUrlString = !isset($_SERVER['HTTP_REFERER']) ? $curr_page : str_replace($curr_page, '', $_SERVER['HTTP_REFERER']);
 
         $post['pssearch_type'] = FatApp::getPostedData('pssearch_type', FatUtility::VAR_INT, 0);
         $post['pssearch_record_id'] = FatApp::getPostedData('pssearch_record_id', FatUtility::VAR_INT, 0);

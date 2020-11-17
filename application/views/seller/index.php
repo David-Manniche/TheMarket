@@ -15,10 +15,10 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                     <?php } ?>
                     <?php if ($userPrivilege->canViewProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
                         <?php if (User::canAddCustomProduct() && $userPrivilege->canEditProducts(UserAuthentication::getLoggedUserId(), true)) { ?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId);?></a>
+                            <a href="<?php echo UrlHelper::generateUrl('seller', 'customProductForm'); ?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_Add_new_catalog', $siteLangId); ?></a>
                         <?php } ?>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId);?></a>
-                        <a href="<?php echo UrlHelper::generateUrl('seller', 'products');?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId);?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'catalog', [0]); ?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_products', $siteLangId); ?></a>
+                        <a href="<?php echo UrlHelper::generateUrl('seller', 'products'); ?>" class="btn btn-outline-brand btn-sm"><?php echo Labels::getLabel('LBL_My_store_inventory', $siteLangId); ?></a>
                     <?php } ?>
                 </div>
             </div>
@@ -332,15 +332,16 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                                                     <?php if ($row['op_selprod_options'] != '') { ?>
                                                                         <div class="item__specification"><?php echo $row['op_selprod_options']; ?></div>
                                                                     <?php } ?>
-                                                                    <div class="item__specification"> 
+                                                                    <div class="item__specification">
                                                                         <span class="label label-inline <?php echo $classArr[$row['orderstatus_color_class']]; ?>">
-                                                                            <?php 
-                                                                            $paymentMethodCode = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
+                                                                            <?php
+                                                                            echo $row['orderstatus_name'];
+                                                                            /* $paymentMethodCode = Plugin::getAttributesById($row['order_pmethod_id'], 'plugin_code');
                                                                             if (strtolower($paymentMethodCode) == 'cashondelivery' && $row['opshipping_fulfillment_type'] == Shipping::FULFILMENT_PICKUP) {
                                                                                 echo Labels::getLabel('LBL_PAY_ON_PICKUP', $siteLangId);
                                                                             } else {
                                                                                 echo $row['orderstatus_name']; 
-                                                                            }
+                                                                            } */
                                                                             ?>
                                                                         </span>
                                                                     </div>

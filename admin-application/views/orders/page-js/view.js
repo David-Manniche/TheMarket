@@ -23,4 +23,7 @@ $(document).ready(function () {
             location.reload();
         });
     };
+    viewPaymemntGatewayResponse = function(data){
+        $.facebox(data, 'faceboxWidth');
+    };
 })();

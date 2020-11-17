@@ -84,9 +84,10 @@ class PaytmPayController extends PaymentController
                 }
 
                 if ($txnInfo['STATUS'] == "TXN_SUCCESS" && $totalPaidMatch) {
-                    $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post['TXNID'], $paymentGatewayCharge, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $request);
+                    $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $post['TXNID'], $paymentGatewayCharge, Labels::getLabel("MSG_Received_Payment", $this->siteLangId), json_encode($post));
                     FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
                 } else {
+                    TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($post));
                     $orderPaymentObj->addOrderPaymentComments($request);
                     if (isset($post['PAYMENTMODE'])) {
                         FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
@@ -95,6 +96,7 @@ class PaytmPayController extends PaymentController
                     }
                 }
             } else {
+                TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($post));
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
             }
         } else {

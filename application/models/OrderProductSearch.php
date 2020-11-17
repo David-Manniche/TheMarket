@@ -217,14 +217,14 @@ class OrderProductSearch extends SearchBase
         $this->joinTable(OrderCancelRequest::DB_TBL, 'LEFT OUTER JOIN', 'ocr.ocrequest_op_id = op.op_id', 'ocr');
     }
 
-    public function joinDigitalDownloads($type = AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD)
+    public function joinDigitalDownloads($type = AttachedFile::FILETYPE_ORDER_PRODUCT_DIGITAL_DOWNLOAD, $join = 'INNER JOIN')
     {
-        $this->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'opa.afile_record_id = op.op_id and afile_type = ' . $type, 'opa');
+        $this->joinTable(AttachedFile::DB_TBL, $join, 'opa.afile_record_id = op.op_id and afile_type = ' . $type, 'opa');
     }
 
-    public function joinDigitalDownloadLinks()
+    public function joinDigitalDownloadLinks($join = 'INNER JOIN')
     {
-        $this->joinTable(OrderProductDigitalLinks::DB_TBL, 'INNER JOIN', 'opd.opddl_op_id = op.op_id', 'opd');
+        $this->joinTable(OrderProductDigitalLinks::DB_TBL, $join, 'opd.opddl_op_id = op.op_id', 'opd');
     }
 
     public function addDigitalDownloadCondition()
@@ -420,17 +420,21 @@ class OrderProductSearch extends SearchBase
         $this->addCondition('o.order_net_amount', '<=', $priceTo);
     }
 
-    public function addStatusCondition($op_status)
+    public function addStatusCondition($op_status, $orderPaymentCancel = false)
     {
         if (is_array($op_status)) {
             if (!empty($op_status)) {
-                $this->addCondition('op.op_status_id', 'IN', $op_status);
+                $cnd = $this->addCondition('op.op_status_id', 'IN', $op_status);
             } else {
-                $this->addCondition('op.op_status_id', '=', 0);
+                $cnd = $this->addCondition('op.op_status_id', '=', 0);
             }
         } else {
             $op_status_id = FatUtility::int($op_status);
-            $this->addCondition('op.op_status_id', '=', $op_status_id);
+            $cnd = $this->addCondition('op.op_status_id', '=', $op_status_id);
+        }
+
+        if (true === $orderPaymentCancel) {
+            $cnd->attachCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_CANCELLED, 'OR');
         }
     }
 

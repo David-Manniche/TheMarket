@@ -34,7 +34,7 @@ if(!empty($orderPickUpData)){
                 </li>
                 <?php } ?>
             </ul>
-			<div class="d-flex"><button class="btn btn-outline-brand btn-sm ml-auto" type="button" onClick="ShippingSummaryData();"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></button></div>
+			<div class="d-flex"><button class="btn btn-outline-brand btn-sm mleft-auto" type="button" onClick="ShippingSummaryData();"><?php echo Labels::getLabel('LBL_Edit', $siteLangId); ?></button></div>
         
  
 <?php }else{ ?>

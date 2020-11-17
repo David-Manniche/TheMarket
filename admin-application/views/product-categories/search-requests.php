@@ -31,7 +31,7 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', array(), $sr_no);
                 break;
             case 'shop_name':
-                $name = $row['shop_name'] . '(' . $row['user_name'] . ')';
+                $name = (0 < $row['prodcat_seller_id'] ? $row['shop_name'] . '(' . $row['user_name'] . ')' : Labels::getLabel('LBL_ADMIN', $adminLangId));
                 $td->appendElement('plaintext', array(), $name);
                 break;
             case 'prodcat_parent':
@@ -63,10 +63,12 @@ foreach ($arr_listing as $sn => $row) {
     }
     $sr_no--;
 }
-if (count($arr_listing) == 0) {
-    $tbl->appendElement('tr')->appendElement('td', array('colspan' => count($arr_flds)), Labels::getLabel('LBL_No_Records_Found', $adminLangId));
-}
 echo $tbl->getHtml();
+
+if (count($arr_listing) == 0) {
+    $this->includeTemplate('_partial/no-record-found.php', array('adminLangId' => $adminLangId));
+}
+
 $postedData['page'] = $page;
 echo FatUtility::createHiddenFormFromData($postedData, array(
     'name' => 'frmCategorySearchPaging'

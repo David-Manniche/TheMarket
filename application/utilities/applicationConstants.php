@@ -90,6 +90,7 @@ class applicationConstants
     public const URL_TYPE_BLOG = 11;
 
     public const SMS_CHARACTER_LENGTH = 160;
+    public const DEFAULT_STRING_LENGTH = 70;
     public const BLOG_TITLE_CHARACTER_LENGTH = 70; /* Used for home page collection.*/
 
     public const BASED_ON_DELIVERY_LOCATION = 1;
@@ -367,15 +368,18 @@ class applicationConstants
             static::CHECKOUT_PRODUCT => array(''),
             static::CHECKOUT_SUBSCRIPTION => array(
                 'CashOnDelivery',
-                'TransferBank'
+                'TransferBank',
+                'PayAtStore'
             ),
             static::CHECKOUT_PPC => array(
                 'CashOnDelivery',
-                'TransferBank'
+                'TransferBank',
+                'PayAtStore'
             ),
             static::CHECKOUT_ADD_MONEY_TO_WALLET => array(
                 'CashOnDelivery',
-                'TransferBank'
+                'TransferBank',
+                'PayAtStore'
             )
         );
     }

@@ -58,6 +58,7 @@
     $("document").ready(function() {
         <?php if (empty($addresses) || count($addresses) == 0){ ?>
             showAddressFormDiv();
+            loadFinancialSummary();
         <?php } else {?>
             loadShippingSummaryDiv();
             loadFinancialSummary();

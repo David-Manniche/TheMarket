@@ -5,6 +5,14 @@ class FilterHelper extends FatUtility
     public const LAYOUT_DEFAULT = 1;
     public const LAYOUT_TOP = 2;
 
+    public static function getLayouts(int $langId)
+    {
+        return [
+            self::LAYOUT_DEFAULT => Labels::getLabel('LBL_Default', $langId),
+            self::LAYOUT_TOP => Labels::getLabel('LBL_TOP', $langId)
+        ];
+    }
+
     public static function getSearchObj($langId, $headerFormParamsAssocArr)
     {
         $langId = FatUtility::int($langId);
@@ -191,9 +199,12 @@ class FilterHelper extends FatUtility
             $srch->setPageNumber(0);
             $srch->setPageSize(9999);
             $result = $srch->fetch(true);
-            $priceArr = [];
+            $priceArr = [
+                'minPrice' => 0,
+                'maxPrice' => 0
+            ];
 
-            if (array_key_exists('aggregations', $result)) {
+            if (is_array($result) && array_key_exists('aggregations', $result)) {
                 $priceArr = [
                     'minPrice' => $result['aggregations']['min_price']['value'],
                     'maxPrice' =>  $result['aggregations']['max_price']['value']

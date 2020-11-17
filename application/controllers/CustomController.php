@@ -218,6 +218,11 @@ class CustomController extends MyAppController
         $this->set('siteLangId', $this->siteLangId);
         $this->set('faqCatIdArr', $faqCatId);
         $this->set('list', $records);
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'custom/search-faqs.php', true, false);
@@ -268,6 +273,11 @@ class CustomController extends MyAppController
         $this->set('listCategories', $recordsCategories);
         $this->set('faqMainCat', $faqMainCat);
         $this->set('page', 'faq');
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
+
         $json['html'] = $this->_template->render(false, false, '_partial/no-record-found.php', true, false);
         if (!empty($records)) {
             $json['html'] = $this->_template->render(false, false, 'custom/search-faqs.php', true, false);
@@ -487,7 +497,11 @@ class CustomController extends MyAppController
         $user = [];
         if ($orderInfo['order_user_id'] > 0) {
             if (0 < UserAuthentication::getLoggedUserId(true) && $orderInfo['order_user_id'] != UserAuthentication::getLoggedUserId(true)) {
-                Message::addErrorMessage(Labels::getLabel("LBL_INVALID_ORDER", $this->siteLangId));
+                $message = Labels::getLabel("LBL_INVALID_ORDER", $this->siteLangId);
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError(current($message));
+                }
+                Message::addErrorMessage($message);
                 FatApp::redirectUser(UrlHelper::generateUrl());
             }
 
@@ -501,6 +515,9 @@ class CustomController extends MyAppController
             $srch = $userObj->getUserSearchObj(['credential_email']);
             $rs = $srch->getResultSet();
             if (!$rs) {
+                if (true === MOBILE_APP_API_CALL) {
+                    LibHelper::dieJsonError($srch->getError());
+                }
                 FatUtility::exitWithErrorCode(404);
             }
             $user = FatApp::getDb()->fetch($rs);
@@ -530,8 +547,9 @@ class CustomController extends MyAppController
             $srch->doNotLimitRecords();
 
             $srch->addMultipleFields(
-                array('ops.*', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*', 'COALESCE(state_name, state_identifier) as state_name', 'COALESCE(country_name, country_code) as country_name')
+                array('ops.*', 'op_product_type', 'op_invoice_number', 'addr.*', 'ts.*', 'tc.*', 'COALESCE(state_name, state_identifier) as state_name', 'COALESCE(country_name, country_code) as country_name')
             );
+            $srch->addGroupBy('opshipping_pickup_addr_id');
             $rs = $srch->getResultSet();
             $orderFulFillmentTypeArr = FatApp::getDb()->fetchAll($rs);
             // CommonHelper::printArray($orderFulFillmentTypeArr, true);
@@ -550,6 +568,10 @@ class CustomController extends MyAppController
             $textMessage = Labels::getLabel('MSG_wallet_success_order_{account}_{credits}', $this->siteLangId);
             $textMessage = str_replace(array_keys($searchReplaceArray), array_values($searchReplaceArray), $textMessage);
         } else {
+            $message = Labels::getLabel('MSG_INVALID_ORDER_TYPE', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
             FatUtility::exitWithErrorCode(404);
         }
 
@@ -576,7 +598,7 @@ class CustomController extends MyAppController
         $this->set('print', $print);
 
         $this->set('orderFulFillmentTypeArr', $orderFulFillmentTypeArr);
-        if (CommonHelper::isAppUser()) {
+        if (CommonHelper::isAppUser() && false ===  MOBILE_APP_API_CALL) {
             $this->set('exculdeMainHeaderDiv', true);
             $this->_template->render(false, false);
         } else {

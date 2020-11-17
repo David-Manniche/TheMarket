@@ -104,8 +104,8 @@ class PayFortStartPayController extends PaymentController
 
     protected function notifyCallBack($response)
     {
-        $order_id = $response['order_id'];
-        $orderPaymentObj = new OrderPayment($order_id, $this->siteLangId);
+        $orderId = $response['order_id'];
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $payment_gateway_charge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $order_info = $orderPaymentObj->getOrderPrimaryinfo();
 
@@ -133,9 +133,10 @@ class PayFortStartPayController extends PaymentController
                     $request .= "\n\n PP_STANDARD :: TOTAL PAID MISMATCH! " . strtolower($response['captured_amount']) . "\n\n";
                 }
                 if ($order_payment_status == 1 && $total_paid_match) {
-                    $orderPaymentObj->addOrderPayment($payment_settings["plugin_code"], $response['id'], $payment_gateway_charge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), $request . "#" . print_r($response, true));
+                    $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $response['id'], $payment_gateway_charge, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode($response));
                     FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($order_id)));
                 } else {
+                    TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($response));
                     $orderPaymentObj->addOrderPaymentComments($request);
                 }
             }

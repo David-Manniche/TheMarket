@@ -5,7 +5,6 @@ class SellerBaseController extends LoggedUserController
     public function __construct($action)
     {
         parent::__construct($action);
-
         if (UserAuthentication::isGuestUserLogged()) {
             $msg = Labels::getLabel('MSG_INVALID_ACCESS', $this->siteLangId);
             LibHelper::exitWithError($msg, false, true);
@@ -13,8 +12,9 @@ class SellerBaseController extends LoggedUserController
         }
         
         if (!User::canAccessSupplierDashboard() || !User::isSellerVerified($this->userParentId)) {
+            $adminLoggedIn = isset($_SESSION[User::ADMIN_SESSION_ELEMENT_NAME]) ? true : false;
             $userObj = new User(UserAuthentication::getLoggedUserId());
-            $userEmail = current($userObj->getUserInfo('credential_email'));
+            $userEmail = current($userObj->getUserInfo('credential_email', !$adminLoggedIn, !$adminLoggedIn));
             if (empty($userEmail)) {
                 FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'configureEmail'));
             }
@@ -25,7 +25,6 @@ class SellerBaseController extends LoggedUserController
             FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
-
         $plugin = new Plugin();
         $keyName = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SPLIT_PAYMENT_METHOD);
         $isStripeConnectLogin = (get_called_class() == 'StripeConnectController' && $action == 'login');

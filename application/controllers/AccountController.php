@@ -397,7 +397,6 @@ class AccountController extends LoggedUserController
         $payoutPlugins = Plugin::getNamesWithCode(Plugin::TYPE_PAYOUTS, $this->siteLangId);
         $accountSummary = $txnObj->getTransactionSummary($userId);
         $payouts = [-1 => Labels::getLabel("LBL_BANK_PAYOUT", $this->siteLangId)] + $payoutPlugins;
-
         $this->set('payouts', $payouts);
         $this->set('userWalletBalance', User::getUserBalance(UserAuthentication::getLoggedUserId()));
         $this->set('codMinWalletBalance', $codMinWalletBalance);
@@ -405,6 +404,17 @@ class AccountController extends LoggedUserController
         $this->set('accountSummary', $accountSummary);
         $this->set('frmRechargeWallet', $this->getRechargeWalletForm($this->siteLangId));
         $this->set('canAddMoneyToWallet', $canAddMoneyToWallet);
+        $this->_template->render();
+    }
+
+    public function payouts()
+    {
+        $payoutPlugins = Plugin::getDataByType(Plugin::TYPE_PAYOUTS, $this->siteLangId);
+        $data = [
+            'isBankPayoutEnabled' => applicationConstants::YES,
+            'payoutPlugins' => array_values($payoutPlugins)
+        ];
+        $this->set('data', $data);
         $this->_template->render();
     }
 
@@ -623,7 +633,6 @@ class AccountController extends LoggedUserController
 
         $userObj = new User($userId);
         $data = $userObj->getUserBankInfo();
-
         $data['uextra_payment_method'] = User::AFFILIATE_PAYMENT_METHOD_CHEQUE;
 
         if (User::isAffiliate()) {
@@ -856,7 +865,7 @@ class AccountController extends LoggedUserController
             if (!empty($row) && 0 < count($row)) {
                 $hasDigitalProducts = 1;
             }
-
+            $splitPaymentMethods = Plugin::getDataByType(Plugin::TYPE_SPLIT_PAYMENT_METHOD, $this->siteLangId);
             $bankInfo = $this->bankInfo();
             $personalInfo = $this->personalInfo();
             $personalInfo['userImage'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'user', array($userId, 'SMALL', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
@@ -864,6 +873,7 @@ class AccountController extends LoggedUserController
             $this->set('bankInfo', empty($bankInfo) ? (object)array() : $bankInfo);
             $this->set('privacyPolicyLink', FatApp::getConfig('CONF_PRIVACY_POLICY_PAGE', FatUtility::VAR_STRING, ''));
             $this->set('hasDigitalProducts', $hasDigitalProducts);
+            $this->set('splitPaymentMethods', $splitPaymentMethods);
             $this->_template->render();
         }
 
@@ -871,9 +881,6 @@ class AccountController extends LoggedUserController
         $this->_template->addJs('js/cropper.js');
         $this->_template->addJs('js/cropper-main.js');
         $this->includeDateTimeFiles();
-
-        /* $langs = Language::getAllNames();
-        CommonHelper::printArray($langs); die(); */
 
         $userId = UserAuthentication::getLoggedUserId();
 
@@ -1063,7 +1070,7 @@ class AccountController extends LoggedUserController
         }
 
         /* CommonHelper::printArray($post);  */
-        $user_state_id = FatUtility::int($post['user_state_id']);
+        $user_state_id = FatApp::getPostedData('user_state_id', FatUtility::VAR_INT, 0);
         $post = $frm->getFormDataFromArray($post);
 
         if (false === $post) {
@@ -1128,11 +1135,17 @@ class AccountController extends LoggedUserController
             FatUtility::dieJsonError($message);
         }
 
-        if (false == SmsArchive::canSendSms()) {
+        if (false == SmsArchive::canSendSms() && !empty($countryIso)) {
             $user = clone $userObj;
             if (false === $user->updateUserMeta('user_country_iso', $countryIso)) {
                 LibHelper::dieJsonError($user->getError());
             }
+        }
+
+        $postUserName = isset($post['user_name']) ? $post['user_name'] : '';
+        $sessionUserName = isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['user_name']) ? $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['user_name'] : '';
+        if (!empty($postUserName) && !empty($sessionUserName) && $postUserName != $sessionUserName) {
+            $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['user_name'] = $postUserName;
         }
 
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
@@ -1148,14 +1161,19 @@ class AccountController extends LoggedUserController
         $userId = UserAuthentication::getLoggedUserId();
 
         if (User::isAffiliate()) {
-            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            $message = Labels::getLabel('LBL_Invalid_Request', $this->siteLangId);
+            FatUtility::dieJsonError($message);
         }
-
-        $frm = $this->getBankInfoForm();
 
         $userObj = new User($userId);
         $data = $userObj->getUserBankInfo();
+
+        if (true === MOBILE_APP_API_CALL) {
+            $this->set('data', $data);
+            $this->_template->render();
+        }
+
+        $frm = $this->getBankInfoForm();
         if ($data != false) {
             $frm->fill($data);
         }
@@ -1494,7 +1512,7 @@ class AccountController extends LoggedUserController
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $action = $this->updateWishList($selprod_id, $wish_list_id, $rowAction);
 
         //UserWishList
@@ -1784,7 +1802,7 @@ class AccountController extends LoggedUserController
         $this->set('products', $products);
         $this->set('showProductShortDescription', false);
         $this->set('showProductReturnPolicy', false);
-        $this->set('colMdVal', 6);
+        $this->set('colMdVal', 5);
         $this->set('page', $page);
         $this->set('recordCount', $srch->recordCount());
         $this->set('pageCount', $srch->pages());
@@ -2374,6 +2392,12 @@ class AccountController extends LoggedUserController
             CommonHelper::redirectUserReferer();
         }
 
+        $attr = array(
+            'IFNULL(shop_name, shop_identifier) as shop_name',
+            'shop_id',
+            'shop_updated_on',
+        );
+        $shopDetails = Shop::getAttributesByUserId($userId, $attr, false, $this->siteLangId);
         $srch = new MessageSearch();
 
         $srch->joinThreadMessage();
@@ -2436,6 +2460,7 @@ class AccountController extends LoggedUserController
         $this->set('threadTypeArr', Thread::getThreadTypeArr($this->siteLangId));
         $this->set('loggedUserId', $userId);
         $this->set('loggedUserName', ucfirst(UserAuthentication::getLoggedUserAttribute('user_name')));
+        $this->set('shopDetails', $shopDetails);
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }

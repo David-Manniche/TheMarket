@@ -26,20 +26,21 @@ foreach ($arrListing as $sn => $listing){
 		$td = $tr->appendElement('td');
 		switch ($key){
 			case 'name':
-				$name ='';
-				$name = '<div class="item__title">'.$listing['op_product_name'].'</div>';
+				$txt = '<div class="item__description">';
+				$txt .= '<div class="item__title">'.$listing['op_product_name'].'</div>';
 				if( $listing['op_selprod_title'] != '' ){
-					$name .= '<div class="item__sub_title"><strong>'.Labels::getLabel('LBL_Custom_Title', $siteLangId).": </strong>".$listing['op_selprod_title'].'</div>';
+					$txt .= '<div class="item__sub_title"><strong>'.Labels::getLabel('LBL_Custom_Title', $siteLangId).": </strong>".$listing['op_selprod_title'].'</div>';
 				}
 
 				if( $listing['op_selprod_options'] != '' ){
-					$name .= '<div class="item__specification">'.Labels::getLabel('LBL_Options', $siteLangId).": </strong>".$listing['op_selprod_options'].'</div>';
+					$txt .= '<div class="item__specification">'.Labels::getLabel('LBL_Options', $siteLangId).": </strong>".$listing['op_selprod_options'].'</div>';
 				}
 
 				if( $listing['op_brand_name'] != '' ){
-					$name .= '<div class="item__brand"><strong>'.Labels::getLabel('LBL_Brand', $siteLangId).": </strong>".$listing['op_brand_name'].'</div>';
+					$txt .= '<div class="item__brand"><strong>'.Labels::getLabel('LBL_Brand', $siteLangId).": </strong>".$listing['op_brand_name'].'</div>';
 				}
-				$td->appendElement('plaintext', array(), $name,true);
+				$txt .= '</div>';
+				$td->appendElement('plaintext', array(), $txt,true);
 			break;
 
 			case 'totSoldQty':

@@ -6,21 +6,26 @@ class PayPalPayoutController extends PayoutBaseController
     public static function reqFields()
     {
         $reqFields = [
-                'amount' => [
-                    'type' => 'float',
-                    'required' => true,
-                    'label' => "Amount",
-                ]
-            ];
+            'amount' => [
+                'type' => PluginSetting::TYPE_FLOAT,
+                'required' => true,
+                'label' => "Amount",
+            ]
+        ];
         $formFields = static::formFields();
         return array_merge($reqFields, $formFields);
     }
 
     public function getRequestForm()
     {
-        $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
-        //return $this->getForm(static::reqFields(), $data);
-        $frm = $this->getFormObj(static::reqFields()); 
+        $userId = UserAuthentication::getLoggedUserId();
+        $frm = $this->getFormObj(static::reqFields());
+
+        $userObj = new User($userId);
+        $data = $userObj->getUserInfo('credential_email as email');
+        if (!empty($data)) {
+            $frm->fill($data);
+        }
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -46,7 +51,7 @@ class PayPalPayoutController extends PayoutBaseController
         $userId = UserAuthentication::getLoggedUserId();
         $frm = $this->getFormObj(static::formFields());
 
-        $data = User::getUserMeta(UserAuthentication::getLoggedUserId());
+        $data = User::getUserMeta($userId);
         if (!empty($data)) {
             $frm->fill($data);
         }
@@ -108,7 +113,9 @@ class PayPalPayoutController extends PayoutBaseController
         $userId = UserAuthentication::getLoggedUserId();
         $userObj = new User($userId);
         $withdrawal_payment_method = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
-
+        if (1 > $withdrawal_payment_method) {
+            $withdrawal_payment_method = Plugin::getAttributesByCode(self::KEY_NAME, 'plugin_id');
+        }
         // $withdrawal_payment_method = ($withdrawal_payment_method > 0 && array_key_exists($withdrawal_payment_method, User::getAffiliatePaymentMethodArr($this->siteLangId))) ? $withdrawal_payment_method  : User::AFFILIATE_PAYMENT_METHOD_BANK;
 
 
@@ -162,20 +169,20 @@ class PayPalPayoutController extends PayoutBaseController
         $senderBatchIdArr = explode('_', $requestData['sender_batch_id']);
         $recordId = end($senderBatchIdArr);
         $recordId = FatUtility::int($recordId);
-        
+
         $txnStatus = '';
         switch ($event_type) {
             case "PAYMENT.PAYOUTS-ITEM.SUCCEEDED":
                 $withdrawStatus = Transactions::WITHDRAWL_STATUS_COMPLETED;
                 $txnStatus = Transactions::STATUS_COMPLETED;
                 break;
-            
+
             case "PAYMENT.PAYOUTS-ITEM.CANCELED":
             case "PAYMENT.PAYOUTS-ITEM.DENIED":
                 $withdrawStatus = Transactions::WITHDRAWL_STATUS_DECLINED;
                 $txnStatus = Transactions::STATUS_DECLINED;
                 break;
-            
+
             case "PAYMENT.PAYOUTS-ITEM.FAILED":
                 $withdrawStatus = Transactions::WITHDRAWL_STATUS_PAYOUT_FAILED;
                 $txnStatus = Transactions::STATUS_DECLINED;

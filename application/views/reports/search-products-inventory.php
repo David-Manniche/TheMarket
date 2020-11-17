@@ -24,16 +24,30 @@ foreach ($arrListing as $sn => $listing) {
                 $td->appendElement('plaintext', array(), $sr_no, true);
                 break;
             case 'name':
-                $name = '<div class="item__title">' . $listing['product_name'] . '</div>';
+                $txt = '<div class="item__description">';
+                $txt .= '<div class="item__title">' . $listing['product_name'] . '</div>';
                 if ($listing['selprod_title'] != '') {
-                    $name .= '<div class="item__sub_title"><strong>' . Labels::getLabel('LBL_Custom_Title', $siteLangId) . ": </strong>" . $listing['selprod_title'] . '</div>';
+                    $txt .= '<div class="item__sub_title"><strong>' . Labels::getLabel('LBL_Custom_Title', $siteLangId) . ": </strong>" . $listing['selprod_title'] . '</div>';
                 }
-                $name .= '<div class="item__brand">' . Labels::getLabel('LBL_Product_SKU', $siteLangId) . ": </strong>" . $listing['selprod_sku'] . '</div>';
+                $txt .= '<div class="item__specification">' . Labels::getLabel('LBL_Product_SKU', $siteLangId) . ": </strong>" . $listing['selprod_sku'] . '</div>';
                 if ($listing['brand_name'] != '') {
-                    $name .= '<div class="item__brand">' . Labels::getLabel('LBL_Brand', $siteLangId) . ": </strong>" . $listing['brand_name'] . '</div>';
+                    $txt .= '<div class="item__brand">' . Labels::getLabel('LBL_Brand', $siteLangId) . ": </strong>" . $listing['brand_name'] . '</div>';
                 }
-
-                $td->appendElement('plaintext', array(), $name, true);
+                if (is_array($listing['options']) && count($listing['options'])) {
+                    $txt .= '<div class="item__specification">';
+                    $count = count($listing['options']);
+                    foreach ($listing['options'] as $op) {
+                        $txt .= '' . wordwrap($op['optionvalue_name'], 150, "<br>\n");
+                        if ($count != 1) {
+                            $variantStr .= ' | ';
+                        }
+                        $count--;
+                    }
+                    $txt .= '</div>';
+                }
+                $txt .= '</div>';
+                    
+                $td->appendElement('plaintext', array(), $txt, true);
                 break;
 
             case 'selprod_stock':

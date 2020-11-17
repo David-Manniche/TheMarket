@@ -279,6 +279,10 @@ class ElasticSearch extends FullTextSearchBase
     public function convertToSystemData($response, $filterKey = '')
     {
         $result = [];
+        if (!is_array($response) || !isset($response['hits'])) {
+            return $result;
+        }
+        
         foreach ($response['hits'] as $key => $value) {
             if (empty($filterKey)) {
                 $result[$key] = $value['_source'];

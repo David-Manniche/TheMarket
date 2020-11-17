@@ -2,20 +2,15 @@
     overflow-x: auto;
 }
 
+.table-wrap {
+    overflow: hidden !important;
+    overflow-x: auto !important;
+}
+
 .table {
     background-color: #fff;
     margin-bottom: 0;
-    @include media-breakpoint-down(lg) {
-        & {
-            white-space: nowrap;
-            display: block;
-        }
-    }
-    @include media-breakpoint-down(md) {
-        & {
-            min-height: 170px;
-        }
-    }
+    text-align: #{$start-direction};
     &-justified {
         thead {
             th:last-child {

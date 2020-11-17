@@ -131,8 +131,8 @@
                 $fld->addFieldTagAttribute('class','quickView'); */
                     $qtyFieldName =  $qtyField->getCaption(); ?>
                     <label class="h6"><?php echo $qtyFieldName; ?></label>
-                    <div class="buy-actions">
-
+                    <div class="row">
+                        <div class="col-auto">
                         <div class="qty-wrapper">
                             <div class="quantity" data-stock="<?php echo $product['selprod_stock']; ?>">
                                 <span class="decrease decrease-js not-allowed"><i class="fas fa-minus"></i></span>
@@ -142,7 +142,8 @@
                                 <span class="increase increase-js"><i class="fas fa-plus"></i></span>
                             </div>
                         </div>
-
+                        </div>
+                        <div class="col">
                         <div class="buy-group">
                             <?php
                             if (strtotime($product['selprod_available_from']) <= strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) {
@@ -151,6 +152,7 @@
                             }
                             echo $frmBuyProduct->getFieldHtml('selprod_id'); ?>
                         </div>
+                        </div>
                     </div>
 
 
@@ -158,15 +160,15 @@
                 <?php echo $frmBuyProduct->getExternalJs();
                 }
             } else { ?>
-                <div class="sold">
-                    <h3 class="text--normal-secondary"><?php echo Labels::getLabel('LBL_Sold_Out', $siteLangId); ?></h3>
-                    <p class="text--normal-secondary"><?php echo Labels::getLabel('LBL_This_item_is_currently_out_of_stock', $siteLangId); ?></p>
+                <div class="tag--soldout tag--soldout-full">
+                    <h3 class=""><?php echo Labels::getLabel('LBL_Sold_Out', $siteLangId); ?></h3>
+                    <p class=""><?php echo Labels::getLabel('LBL_This_item_is_currently_out_of_stock', $siteLangId); ?></p>
                 </div>
             <?php } ?>
             <?php if (strtotime($product['selprod_available_from']) > strtotime(FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'))) { ?>
-                <div class="sold">
-                    <h3 class="text--normal-secondary"><?php echo Labels::getLabel('LBL_Not_Available', $siteLangId); ?></h3>
-                    <p class="text--normal-secondary"><?php echo str_replace('{available-date}', FatDate::Format($product['selprod_available_from']), Labels::getLabel('LBL_This_item_will_be_available_from_{available-date}', $siteLangId)); ?></p>
+                <div class="tag--soldout tag--soldout-full">
+                    <h3 class=""><?php echo Labels::getLabel('LBL_Not_Available', $siteLangId); ?></h3>
+                    <p class=""><?php echo str_replace('{available-date}', FatDate::Format($product['selprod_available_from']), Labels::getLabel('LBL_This_item_will_be_available_from_{available-date}', $siteLangId)); ?></p>
                 </div>
             <?php } ?>
             <!-- ] -->

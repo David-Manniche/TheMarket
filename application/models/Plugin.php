@@ -51,9 +51,16 @@ class Plugin extends MyAppModel
         self::TYPE_SHIPMENT_TRACKING,
     ];
 
+    /* Payment Gateways Applicable For Pay Later. */
+    public const PAY_LATER = [
+        'CashOnDelivery',
+        'PayAtStore'
+    ];
+
     public const ATTRS = [
         self::DB_TBL_PREFIX . 'id',
         self::DB_TBL_PREFIX . 'code',
+        self::DB_TBL_PREFIX . 'type',
         self::DB_TBL_PREFIX . 'description',
         'COALESCE(plg_l.' . self::DB_TBL_PREFIX . 'name, plg.' . self::DB_TBL_PREFIX . 'identifier) as plugin_name',
         self::DB_TBL_PREFIX . 'active',
@@ -330,7 +337,7 @@ class Plugin extends MyAppModel
                 ]
             );
         }
-
+        $srch->addOrder('plugin_display_order', 'ASC');
         $rs = $srch->getResultSet();
 
         $db = FatApp::getDb();
@@ -355,7 +362,7 @@ class Plugin extends MyAppModel
         if (1 > $typeId && 1 > $langId) {
             return false;
         }
-        return $pluginsTypeArr = static::getDataByType($typeId, $langId, true);
+        return static::getDataByType($typeId, $langId, true);
     }
 
     /**
@@ -486,11 +493,24 @@ class Plugin extends MyAppModel
     {
         $db = FatApp::getDb();
         $langId = CommonHelper::getLangId();
+        $pluginKey = Plugin::getAttributesById($id, 'plugin_code');
         $pluginTypesArr = static::getTypeArr($langId);
         $plugins = static::getDataByType($typeId, $langId);
         $activationLimit = static::getActivatationLimit($typeId);
+        $payLater = self::PAY_LATER;
+
+        if (self::TYPE_REGULAR_PAYMENT_METHOD == $typeId) {
+            $plugins = !$plugins ? [] : $plugins;
+            array_walk($plugins, function ($plugin) use (&$activationLimit, $pluginKey, $payLater) {
+                if (in_array($pluginKey, $payLater) && in_array($plugin['plugin_code'], $payLater)) {
+                    $activationLimit++;
+                    return;
+                }
+            });
+        }
+
         if (0 < $activationLimit && $activationLimit <= count($plugins) && self::ACTIVE == $status) {
-            $msg = Labels::getLabel("MSG_MAXIMUM_OF_{LIMIT}_{PLUGIN-TYPE}_CAN_BE_ACTIVATED_SIMULTANEOUSLY", $langId);
+            $msg = Labels::getLabel("MSG_MAXIMUM_OF_{LIMIT}_{PLUGIN-TYPE}_CAN_BE_ACTIVATED_SIMULTANEOUSLY._EXCEPT_PAY_LATER_PLUGINS.", $langId);
             $error = CommonHelper::replaceStringData($msg, ['{LIMIT}' => $activationLimit, '{PLUGIN-TYPE}' => $pluginTypesArr[$typeId]]);
             return false;
         }

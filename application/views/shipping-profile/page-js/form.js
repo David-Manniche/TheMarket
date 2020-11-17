@@ -109,6 +109,30 @@ $(document).ready(function () {
             $('html, body').animate({
                 scrollTop: $("#ship-section--js").offset().top
             }, 1000);
+			
+			setTimeout(function(){
+				$(".zone--js").each(function(){
+					var zoneObj = $(this);
+					var zoneLocId = zoneObj.data("zoneid");
+					var totalCountries = $(".country--js").length;
+					var i = 0;
+					$(".country--js").each(function(){
+						var currObj = $(this);
+						var countryId = currObj.data('countryid');
+						var totalStates = $(".country_" + countryId + " .state--js").length;
+						var disabledStates = $(".country_" + countryId + " .state--js:disabled").length;
+						if (0 < totalStates && totalStates == disabledStates) {
+							$(".checkbox_country_" + countryId).attr('disabled', 'disabled');
+							currObj.addClass('disabled');
+							i++;
+							if (totalCountries == i) {
+								$(".checkbox_zone_" + zoneLocId).attr('disabled', 'disabled');
+								zoneObj.addClass('disabled');
+							}
+						}
+					});
+				});
+			}, 500);
         });
         /* $.facebox(function() {
         	fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function(t) {
@@ -203,10 +227,11 @@ $(document).ready(function () {
 
     setupRate = function (frm) {
         if (!$(frm).validate()) return;
-        $("input[name='btn_submit']").attr('disabled', 'disabled');
+        var submitBtn = $("input[name='btn_submit']");
+        submitBtn.attr('disabled', 'disabled');
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'setup'), data, function (t) {
-            $("input[name='btn_submit']").removeAttr('disabled');
+            submitBtn.removeAttr('disabled');
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
             if (t.langId > 0) {
@@ -215,6 +240,12 @@ $(document).ready(function () {
             }
             $(document).trigger('close.facebox');
         });
+        setTimeout(function(){
+            var attr = submitBtn.attr('disabled');
+            if (typeof attr !== typeof undefined && attr !== false) {
+                submitBtn.removeAttr('disabled');
+            }
+        }, 3000);
     };
 
     editRateLangForm = function (zoneId, rateId, langId) {
@@ -247,7 +278,7 @@ $(document).ready(function () {
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'deleteRate', [rateId]), '', function (t) {
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId);
-            $(document).trigger('close.facebox');
+            clearForm();
         });
     }
 
@@ -277,6 +308,23 @@ $(document).ready(function () {
             },
         });
     }
+	
+	selectCountryStates = function(countryid) {
+		if ($(".checkbox_country_" + countryid).is(":checked")) {
+			$('.link_' + countryid + '.containChild-js').click();
+			var selectedStates = $('.country_' + countryid + ' input[type="checkbox"]:not(:disabled');
+            selectedStates.prop('checked', true);
+            $('.selectedStateCount--js_' + countryid).html(selectedStates.length);
+            $('input[name="rest_of_the_world"]').prop('checked', false);
+        } else {
+            $('.country_' + countryid + ' input[type="checkbox"]:not(:disabled').prop('checked', false);
+            var val = $(".checkbox_country_" + countryid).val();
+            var parentIds = val.split("-");
+            var zoneId = parentIds[0];
+            $('.checkbox_zone_' + zoneId).prop('checked', false);
+            $('.selectedStateCount--js_' + countryid).html(0);
+        }
+	}
 })();
 
 $(document).ready(function () {
@@ -290,15 +338,13 @@ $(document).ready(function () {
     $(document).on('click', '.zone--js', function () {
         var zoneid = $(this).data('zoneid');
         if ($(".checkbox_zone_" + zoneid).is(":checked")) {
-            $('.zone_' + zoneid + ' input[type="checkbox"]').prop('checked', true);
-            $(".zone_" + zoneid + " .statecount--js").each(function (index) {
-                var statecount = $(this).data('totalcount');
-                $(this).html(statecount);
-            });
-            $('input[name="rest_of_the_world"]').prop('checked', false);
-
+			$('.zone_' + zoneid + ' .country--js').each(function(){
+				var countryid = $(this).data('countryid');
+				$('.checkbox_country_' + countryid + ':not(:disabled)').prop('checked', true);
+				selectCountryStates(countryid);
+			});
         } else {
-            $('.zone_' + zoneid + ' input[type="checkbox"]').prop('checked', false);
+            $('.zone_' + zoneid + ' input[type="checkbox"]:not(:disabled)').prop('checked', false);
             $(".zone_" + zoneid + " .statecount--js").each(function (index) {
                 var statecount = $(this).data('totalcount');
                 $(this).html(0);
@@ -308,19 +354,7 @@ $(document).ready(function () {
 
     $(document).on('click', '.country--js', function () {
         var countryid = $(this).data('countryid');
-        var statecount = $(this).data('statecount');
-        if ($(".checkbox_country_" + countryid).is(":checked")) {
-            $('.country_' + countryid + ' input[type="checkbox"]').prop('checked', true);
-            $('.selectedStateCount--js_' + countryid).html(statecount);
-            $('input[name="rest_of_the_world"]').prop('checked', false);
-        } else {
-            $('.country_' + countryid + ' input[type="checkbox"]').prop('checked', false);
-            var val = $(".checkbox_country_" + countryid).val();
-            var parentIds = val.split("-");
-            var zoneId = parentIds[0];
-            $('.checkbox_zone_' + zoneId).prop('checked', false);
-            $('.selectedStateCount--js_' + countryid).html(0);
-        }
+        selectCountryStates(countryid);
     });
 
     $(document).on('click', '.state--js', function () {

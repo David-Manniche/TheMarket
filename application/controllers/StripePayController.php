@@ -233,40 +233,18 @@ class StripePayController extends PaymentController
        
         $message = Labels::getLabel("MSG_PAYMENT_FAILED", $this->siteLangId);
         if (strtolower($charge['status']) == 'succeeded') {
-            $message = 'Id: ' . (string) $charge['charges']['data'][0]['id'] . "&";
-            $message .= 'Object: ' . (string) $charge['charges']['data'][0]['object'] . "&";
-            $message .= 'Amount: ' . (string) $charge['charges']['data'][0]['amount'] . "&";
-            $message .= 'Amount Refunded: ' . (string) $charge['charges']['data'][0]['amount_refunded'] . "&";
-            $message .= 'Application Fee: ' . (string) $charge['charges']['data'][0]['application_fee_amount'] . "&";
-            $message .= 'Balance Transaction: ' . (string) $charge['charges']['data'][0]['balance_transaction'] . "&";
-            $message .= 'Captured: ' . (string) $charge['charges']['data'][0]['captured'] . "&";
-            $message .= 'Created: ' . (string) $charge['charges']['data'][0]['created'] . "&";
-            $message .= 'Currency: ' . (string) $charge['charges']['data'][0]['currency'] . "&";
-            $message .= 'Customer: ' . (string) $charge['charges']['data'][0]['customer'] . "&";
-            $message .= 'Description: ' . (string) $charge['charges']['data'][0]['description'] . "&";
-            $message .= 'Destination: ' . (string) $charge['charges']['data'][0]['destination'] . "&";
-            $message .= 'Dispute: ' . (string) $charge['charges']['data'][0]['dispute'] . "&";
-            $message .= 'Failure Code: ' . (string) $charge['charges']['data'][0]['failure_code'] . "&";
-            $message .= 'Failure Message: ' . (string) $charge['charges']['data'][0]['failure_message'] . "&";
-            $message .= 'Invoice: ' . (string) $charge['charges']['data'][0]['invoice'] . "&";
-            $message .= 'Livemode: ' . (string) $charge['charges']['data'][0]['livemode'] . "&";
-            $message .= 'Paid: ' . (string) $charge['charges']['data'][0]['paid'] . "&";
-            $message .= 'Receipt Email: ' . (string) $charge['charges']['data'][0]['receipt_email'] . "&";
-            $message .= 'Receipt Number: ' . (string) $charge['charges']['data'][0]['receipt_number'] . "&";
-            $message .= 'Refunded: ' . (string) $charge['charges']['data'][0]['refunded'] . "&";
-            $message .= 'Shipping: ' . (string) $charge['charges']['data'][0]['shipping'] . "&";
-            $message .= 'Statement Descriptor: ' . (string) $charge['charges']['data'][0]['statement_descriptor'] . "&";
-            $message .= 'Status: ' . (string) $charge['charges']['data'][0]['status'] . "&";
+           
             /* Recording Payment in DB */
             /* $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
             $payableAmount = $this->formatPayableAmount($paymentAmount); */
             $payment_amount = $charge['charges']['data'][0]['amount'];
-            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), $message);
+            $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['id'], ($payment_amount / 100), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), json_encode($charge));
             /* End Recording Payment in DB */
             if (false === MOBILE_APP_API_CALL) {
                 FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($_POST['order_id'])));
             }
         } else {
+            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $_POST['order_id'], json_encode($charge));
             $orderPaymentObj->addOrderPaymentComments($message);
             if (false === MOBILE_APP_API_CALL) {
                 FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentFailed'));

@@ -8,8 +8,10 @@ $extUrlField = $frm->getField('banner_url');
 $extUrlField->addFieldTagAttribute('placeholder', 'http://');
 
 $fld = $frm->getField('auto_update_other_langs_data');
-$fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
-$fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+if (null != $fld) {
+    $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
+    $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>';
+}
 
 $bannerFld = $frm->getField('banner');
 $bannerFld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');

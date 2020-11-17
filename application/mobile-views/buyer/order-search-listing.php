@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 $statusArr = array(
-    'status'=> 1,
+    'status' => 1,
     'msg' => !empty($msg) ? $msg : Labels::getLabel('MSG_Success', $siteLangId)
 );
 
@@ -13,7 +13,8 @@ $data = array(
     'page' => $page,
     'pageCount' => $pageCount,
     'pageCount' => $pageCount,
-    'recordCount' => $recordCount
+    'recordCount' => $recordCount,
+    'orderStatuses' => $orderStatuses
 );
 if (1 > count((array)$orders)) {
     $statusArr['status'] = 0;

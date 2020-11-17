@@ -107,7 +107,7 @@ $(document).ready(function() {
             slidesToShow: 1,
             arrows: false,
             dots: true,
-            autoplay: false,
+            autoplay: true,
             centerMode: true,
             centerPadding: '15%',
         }

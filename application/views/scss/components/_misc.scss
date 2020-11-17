@@ -68,6 +68,14 @@ a:hover {
     text-decoration: none;
 }
 
+.mleft-auto {
+    margin-#{$start-direction}: auto !important;
+}
+
+.mright-auto {
+    margin-#{$end-direction}: auto !important;
+}
+
 .text-left {
     text-align: #{$start-direction} !important;
 }
@@ -331,4 +339,8 @@ a:hover {
     .checkbox {
         font-size: inherit;
     }
+}
+
+.scroll {
+    padding-#{$end-direction}: 15px;
 }

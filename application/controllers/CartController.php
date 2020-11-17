@@ -11,8 +11,31 @@ class CartController extends MyAppController
     {
         $cartObj = new Cart();
         $cartObj->unsetCartCheckoutType();
+        $cartObj->invalidateCheckoutType();
         $cartObj->removeProductShippingMethod();
         $cartObj->removeProductPickUpAddresses();
+        $productsArr = $cartObj->getProducts($this->siteLangId);
+        $fulfillmentProdArr = [
+            Shipping::FULFILMENT_SHIP => [],
+            Shipping::FULFILMENT_PICKUP => [],
+        ];
+        foreach ($productsArr as $product) {
+            switch ($product['fulfillment_type']) {
+                case Shipping::FULFILMENT_SHIP:
+                    $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                    break;
+                case Shipping::FULFILMENT_PICKUP:
+                    $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                    break;
+                default:
+                    $fulfillmentProdArr[Shipping::FULFILMENT_SHIP][] = $product['selprod_id'];
+                    $fulfillmentProdArr[Shipping::FULFILMENT_PICKUP][] = $product['selprod_id'];
+                    break;
+            }
+        }
+
+        $this->set('shipProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]));
+        $this->set('pickUpProductsCount', count($fulfillmentProdArr[Shipping::FULFILMENT_PICKUP]));
         $this->set('total', $cartObj->countProducts());
         $this->set('hasPhysicalProduct', $cartObj->hasPhysicalProduct());
         $this->_template->render();
@@ -24,9 +47,13 @@ class CartController extends MyAppController
         $products['single'] = array();
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
         $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $cartObj->excludeTax();
+        }
+        $cartObj->unsetCartCheckoutType();
+        $cartObj->invalidateCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
-        $prodGroupIds = array();
-
+        $prodGroupIds = array();       
         $fulfillmentProdArr = [
             Shipping::FULFILMENT_SHIP => [],
             Shipping::FULFILMENT_PICKUP => [],
@@ -194,7 +221,7 @@ class CartController extends MyAppController
         if (0 < $wishlistId) {
             $db = FatApp::getDb();
             $wListObj = new UserWishList();
-            
+
             $srch = UserWishList::getSearchObject(UserAuthentication::getLoggedUserId());
             $srch->addMultipleFields(array('uwlist_id'));
             $srch->doNotCalculateRecords();
@@ -749,6 +776,10 @@ class CartController extends MyAppController
     public function getCartSummary()
     {
         $cartObj = new Cart();
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $cartObj->excludeTax();
+        }
+        $cartObj->invalidateCheckoutType();
         $productsArr = $cartObj->getProducts($this->siteLangId);
         $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
         $this->set('siteLangId', $this->siteLangId);
@@ -821,6 +852,10 @@ class CartController extends MyAppController
         $cart = new Cart();
         if (0 < $fulfilmentType) {
             $cart->setFulfilmentType($fulfilmentType);
+            $cart->setCartCheckoutType($fulfilmentType);
+        }
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $cart->excludeTax();
         }
         $cartSummary = $cart->getCartFinancialSummary($this->siteLangId);
         $this->set('cartSummary', $cartSummary);

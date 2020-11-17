@@ -11,7 +11,7 @@ class PluginBaseController extends MyAppController
         parent::__construct($action);
     }
 
-    protected function updateUserInfo($detail = [])
+    protected function updateUserInfo($detail = [], $redirect = false)
     {
         if (!is_array($detail)) {
             FatUtility::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
@@ -58,5 +58,13 @@ class PluginBaseController extends MyAppController
         $this->set('frm', $frm);
         $this->set('identifier', $this->identifier);
         $this->_template->render(false, false, 'plugins/form.php');
+    }
+
+    protected function redirectBack(string $controller = '', string $action = '')
+    {
+        if (empty($controller)) {
+            CommonHelper::redirectUserReferer();
+        }
+        FatApp::redirectUser(UrlHelper::generateUrl($controller, $action));
     }
 }
