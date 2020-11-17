@@ -2582,7 +2582,17 @@ class User extends MyAppModel
         $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
-
+    
+    /**
+     * validateUser - Used in case of social login.
+     *
+     * @param  string $email
+     * @param  string $username
+     * @param  string $socialAccountId
+     * @param  string $keyName
+     * @param  string $userType
+     * @return mixed
+     */
     public function validateUser($email, $username, $socialAccountId, $keyName, $userType)
     {
         $db = FatApp::getDb();
@@ -2692,6 +2702,7 @@ class User extends MyAppModel
             $userPreferredDashboard = static::USER_BUYER_DASHBOARD;
             $user_registered_initially_for = static::USER_TYPE_BUYER;
             $user_is_buyer = 1;
+            $user_is_supplier = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
         }
         if (isset($userType) && $userType == static::USER_TYPE_SELLER) {
             $userPreferredDashboard = static::USER_SELLER_DASHBOARD;
