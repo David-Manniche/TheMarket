@@ -2,7 +2,7 @@
 
 class AvalaraTax extends TaxBase
 {
-    public const KEY_NAME = 'AvalaraTax';
+    public const KEY_NAME = __CLASS__;
 
     public $langId = 0;
     private $client;
@@ -215,6 +215,11 @@ class AvalaraTax extends TaxBase
             throw new Exception("E_Avalara_Error:_Invalid_To_Product_Shipping_Array_keys");
         }
 
+        foreach ($productsShipping as &$Shipping) {
+            if (empty($Shipping['taxCode'])) {
+                $Shipping['taxCode'] = 'FR000000';
+            }
+        }
         $this->productsShipping = $productsShipping;
 
         return $this;

@@ -73,7 +73,7 @@ foreach ($collections as $collectionIndex => $collectionData) {
 $data = array(
     'isWishlistEnable' => $isWishlistEnable,
     'slides' => $slides,
-    'collections' => $collections,
+    'collections' => array_values($collections),
 );
 
 /* foreach ($banners as $location => $bannerLocationDetail) {

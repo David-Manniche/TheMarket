@@ -425,6 +425,12 @@ Bugs:
     => 042589 - When we place order >> on Thank you screen >> 1. order id should be clickable and user should get redirect to orders
     => 045188 - when banners are added in collection the location is not required on advertiser end
 ------------------TV-9.2.3.20201116----------------------------    
+    => 045312 - when seller having enough money then while adding promotion there is error for budget
+    => 045307 - as free shipping is not there on catalog but lies in import/export
+    => 045317 - seller end> messages> name of shop is listing twice in front of text box
+    => 045315 - Shipping tax code is wrong in case of avalara tax plugin
+--------------------TV-9.2.3.20201117------------------------   
+    => 045217 - Price inclusive tax handling for Tax api's.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

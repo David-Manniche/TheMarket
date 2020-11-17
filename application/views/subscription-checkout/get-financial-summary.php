@@ -10,13 +10,13 @@ $amount = CommonHelper::displayMoneyFormat($cartTotal - $cartAdjustableAmount - 
         <?php if (!empty($cartSummary['cartDiscounts']['coupon_code'])) { ?>
             <div class="coupons-applied">
                 <div class="">
-                    <h6><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?><?php echo Labels::getLabel("LBL_Applied", $siteLangId); ?></h6>
+                    <h6><?php echo $cartSummary['cartDiscounts']['coupon_code']; ?></h6>
                     <p>
                         <?php $arr =  ['{AMOUNT}' => CommonHelper::displayMoneyFormat($cartSummary['cartDiscounts']['coupon_discount_total'])];
                         echo CommonHelper::replaceStringData(Labels::getLabel("LBL_YOU_SAVED_ADDITIONAL_{AMOUNT}", $siteLangId), $arr); ?>
                     </p>
                 </div>
-                <button class="btn btn-outline-brand btn-sm" onClick="removePromoCode()"><?php echo Labels::getLabel('LBL_REMOVE', $siteLangId); ?></button>
+                <button class="close-layer" onClick="removePromoCode()"> </button>
 
             </div>
         <?php } else { ?>

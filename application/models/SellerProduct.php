@@ -90,7 +90,6 @@ class SellerProduct extends MyAppModel
                 'selprod_subtract_stock',
                 'selprod_track_inventory',
                 'selprod_threshold_stock_level',
-                'selprod_condition_identifier',
                 'selprod_title',
                 'selprod_url_keyword',
                 'selprod_available_from',

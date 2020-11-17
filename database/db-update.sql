@@ -1178,3 +1178,6 @@ ALTER TABLE `tbl_transactions_failure_log`
 ALTER TABLE `tbl_transactions_failure_log`
   MODIFY `txnlog_id` bigint(20) NOT NULL AUTO_INCREMENT;
 -- -----------------TV-9.2.3.20201116------------------  
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_MAXIMUM_OF_{LIMIT}_{PLUGIN-TYPE}_CAN_BE_ACTIVATED_SIMULTANEOUSLY';
+-- ------------------TV-9.2.3.20201117-----------------

@@ -1142,6 +1142,12 @@ class AccountController extends LoggedUserController
             }
         }
 
+        $postUserName = isset($post['user_name']) ? $post['user_name'] : '';
+        $sessionUserName = isset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['user_name']) ? $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['user_name'] : '';
+        if (!empty($postUserName) && !empty($sessionUserName) && $postUserName != $sessionUserName) {
+            $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['user_name'] = $postUserName;
+        }
+
         $this->set('msg', Labels::getLabel('MSG_Updated_Successfully', $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();

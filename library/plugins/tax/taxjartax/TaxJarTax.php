@@ -2,8 +2,8 @@
 
 class TaxJarTax extends TaxBase
 {
-    public const KEY_NAME = 'TaxJarTax';
-
+    public const KEY_NAME = __CLASS__;
+       
     public $error;
 
     public $langId = 0;
