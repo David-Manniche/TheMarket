@@ -117,9 +117,8 @@ $data = array(
         }
     }
 } 
-$data = array_merge($data, $banners, $orderProducts); */
+$data = array_merge($data, $banners); */
 
-$data = array_merge($data, $orderProducts);
 
 if (empty($sponsoredProds) && empty($sponsoredShops) && empty($slides) && empty($collections) && empty($banners)) {
     $status = applicationConstants::OFF;
