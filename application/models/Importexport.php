@@ -192,7 +192,7 @@ class Importexport extends ImportexportCommon
                 $i++;
             }
         );
-
+        
         if (!$this->isValidColumns($headingRow, $coloumArr)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Coloum_CSV_File", $langId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -1594,6 +1594,7 @@ class Importexport extends ImportexportCommon
         $adminDefaultShipProfileId =  array_key_first($shippingProfileArr);
         $coloumArr = $this->getProductsCatalogColoumArr($langId, $sellerId, $this->actionType);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
+
         $errInSheet = false;
         $prodType = PRODUCT::PRODUCT_TYPE_PHYSICAL;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
@@ -1605,14 +1606,16 @@ class Importexport extends ImportexportCommon
             foreach ($coloumArr as $columnKey => $columnTitle) {
                 $colIndex = $this->headingIndexArr[$columnTitle];
                 $colValue = $this->getCell($row, $colIndex, '');
-
-                if ($this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
-                    $productTypeTitle = $coloumArr['product_type'];
-                    $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
-                } else {
-                    $productTypeTitle = $coloumArr['product_type_identifier'];
-                    $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
-                    $prodType = (array_key_exists($prodType, $prodTypeIdentifierArr) ? $prodTypeIdentifierArr[$prodType] : 0);
+                
+                if ($this->isDefaultSheetData($langId)) {
+                    if ($this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
+                        $productTypeTitle = $coloumArr['product_type'];
+                        $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
+                    } else {
+                        $productTypeTitle = $coloumArr['product_type_identifier'];
+                        $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
+                        $prodType = (array_key_exists($prodType, $prodTypeIdentifierArr) ? $prodTypeIdentifierArr[$prodType] : 0);
+                    }
                 }
 
                 $invalid = $errMsg = false;
