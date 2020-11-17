@@ -100,7 +100,7 @@ class SellerPackages extends MyAppModel
         $currentActivePlan = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, $columns);
         
         if (!empty($key)) {
-            return $currentActivePlan[$key];
+            return is_array($currentActivePlan) ? $currentActivePlan[$key] : 0;
         }
 
         return $currentActivePlan;
