@@ -23,7 +23,8 @@ if (in_array($actionType, $actionTypeArr)) {
 }
 $tabsAllowedFor = [
     Importexport::TYPE_PRODUCTS,
-    Importexport::TYPE_BRANDS
+    Importexport::TYPE_BRANDS,
+    Importexport::TYPE_SELLER_PRODUCTS,
 ];
 $submitFld = $frm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', "btn btn-brand");
