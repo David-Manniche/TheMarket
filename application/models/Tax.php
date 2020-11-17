@@ -455,15 +455,18 @@ class Tax extends MyAppModel
             $data = [
                 'status' => true,
                 'tax' => 0,
+                'rate' => 0,
                 'taxCode' => $taxCategoryRow['taxcat_code'],
                 'options' => []
             ];
+
             foreach ($taxRates['data'] as $code => $rate) {
                 $data['tax'] = $data['tax'] + $rate['tax'];
+                $data['rate'] = $data['rate'] + $rate['rate'];
                 foreach ($rate['taxDetails'] as $name => $val) {
                     $data['options'][$name]['name'] = $val['name'];
-                    $data['options'][$name]['percentageValue'] = isset($val['tax_rate'])?$val['tax_rate']:0;
-                    $data['options'][$name]['inPercentage'] = TAX::TYPE_FIXED;
+                    $data['options'][$name]['percentageValue'] = isset($val['rate']) ? $val['rate'] : 0;
+                    $data['options'][$name]['inPercentage'] = TAX::TYPE_PERCENTAGE;
                     if (isset($data['options'][$name]['value'])) {
                         $data['options'][$name]['value'] = $data['options'][$name]['value'] + $val['value'];
                     } else {
