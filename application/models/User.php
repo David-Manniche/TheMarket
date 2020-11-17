@@ -2151,7 +2151,7 @@ class User extends MyAppModel
         $srch->addFld(array('usuprequest_attempts', 'usuprequest_id', 'usuprequest_status'));
         $rs = $srch->getResultSet();
         $supplierRequest = FatApp::getDb()->fetch($rs);
-        if ($supplierRequest['usuprequest_status'] == User::SUPPLIER_REQUEST_APPROVED) {
+        if (is_array($supplierRequest) && $supplierRequest['usuprequest_status'] == User::SUPPLIER_REQUEST_APPROVED) {
             return true;
         }
         return false;
