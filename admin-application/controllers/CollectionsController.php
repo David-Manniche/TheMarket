@@ -205,7 +205,8 @@ class CollectionsController extends AdminBaseController
                 $post['collection_deleted'] = applicationConstants::NO;
             }
         }
-        $post['collection_for_app'] = in_array($data['collection_layout_type'], Collections::APP_COLLECTIONS_ONLY) ? 1 : $data['collection_layout_type'];
+        
+        $post['collection_for_app'] = in_array($data['collection_layout_type'], Collections::APP_COLLECTIONS_ONLY) ? 1 : $data['collection_for_app'];
         $collection = new Collections($collectionId);
         $collection->assignValues($post);
         if (!$collection->save()) {
