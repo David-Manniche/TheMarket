@@ -2,8 +2,8 @@
 
 class LoggedUserController extends MyAppController
 {
-    public $userParentId = 0 ;
-    public $userId = 0 ;
+    public $userParentId = 0;
+    public $userId = 0;
     public function __construct($action)
     {
         parent::__construct($action);
@@ -21,7 +21,7 @@ class LoggedUserController extends MyAppController
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'logout'));
         }
 
-        if (0 < $userInfo['user_parent']){
+        if (0 < $userInfo['user_parent']) {
             $parentUser = new User($userInfo['user_parent']);
             $parentUserInfo = $parentUser->getUserInfo(array(), true, true);
             if (false == $parentUserInfo || $parentUserInfo['credential_active'] != applicationConstants::ACTIVE) {
@@ -79,7 +79,7 @@ class LoggedUserController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'configureEmail'));
         }
-        
+
         $this->userParentId = (0 < $userInfo['user_parent']) ? $userInfo['user_parent'] : UserAuthentication::getLoggedUserId();
 
         $this->initCommonValues();
@@ -96,7 +96,7 @@ class LoggedUserController extends MyAppController
     {
         $frm = new Form('frmOrderCancellationRequest');
         $frm->addTextBox('', 'op_invoice_number');
-        $frm->addSelectBox('', 'ocrequest_status', array( '-1' => Labels::getLabel('LBL_Status_Does_Not_Matter', $langId)  ) + OrderCancelRequest::getRequestStatusArr($langId), '', array(), '');
+        $frm->addSelectBox('', 'ocrequest_status', array('-1' => Labels::getLabel('LBL_Status_Does_Not_Matter', $langId)) + OrderCancelRequest::getRequestStatusArr($langId), '', array(), '');
         $frm->addDateField('', 'ocrequest_date_from', '', array('readonly' => 'readonly'));
         $frm->addDateField('', 'ocrequest_date_to', '', array('readonly' => 'readonly'));
 
@@ -110,10 +110,10 @@ class LoggedUserController extends MyAppController
     {
         $frm = new Form('frmOrderReturnRequest');
         $frm->addTextBox('', 'keyword');
-        $frm->addSelectBox('', 'orrequest_status', array( '-1' => Labels::getLabel('LBL_Status_Does_Not_Matter', $langId) ) + OrderReturnRequest::getRequestStatusArr($langId), '', array(), '');
+        $frm->addSelectBox('', 'orrequest_status', array('-1' => Labels::getLabel('LBL_Status_Does_Not_Matter', $langId)) + OrderReturnRequest::getRequestStatusArr($langId), '', array(), '');
         $returnRquestArray = OrderReturnRequest::getRequestTypeArr($langId);
         if (count($returnRquestArray) > applicationConstants::YES) {
-            $frm->addSelectBox('', 'orrequest_type', array( '-1' => Labels::getLabel('LBL_Request_Type_Does_Not_Matter', $langId) ) + $returnRquestArray, '', array(), '');
+            $frm->addSelectBox('', 'orrequest_type', array('-1' => Labels::getLabel('LBL_Request_Type_Does_Not_Matter', $langId)) + $returnRquestArray, '', array(), '');
         } else {
             $frm->addHiddenField('', 'orrequest_type', '-1');
         }
