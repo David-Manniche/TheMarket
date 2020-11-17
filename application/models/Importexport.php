@@ -191,7 +191,7 @@ class Importexport extends ImportexportCommon
                 $i++;
             }
         );
-        
+
         if (!$this->isValidColumns($headingRow, $coloumArr)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Coloum_CSV_File", $langId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -4462,7 +4462,7 @@ class Importexport extends ImportexportCommon
                         if (!$selProdId) {
                             $invalid = true;
                         }
-                    }elseif('related_recommend_sellerproduct_id' == $columnKey){                        
+                    } elseif ('related_recommend_sellerproduct_id' == $columnKey) {
                         $relSelProdId = $colValue;
                         if (0 < $userId) {
                             $relSelProdId = $colValue = $this->getCheckAndSetSelProdIdByTempId($relSelProdId, $userId);
@@ -4471,7 +4471,6 @@ class Importexport extends ImportexportCommon
                         if (1 > $relSelProdId) {
                             $invalid = true;
                         }
-                        
                     }
 
                     if (true === $invalid) {
