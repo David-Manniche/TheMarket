@@ -697,7 +697,7 @@ class Cart extends FatModel
             $taxExtraData = $extraData;
         }
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $taxExtraData);
-        //CommonHelper::printArray($taxData);
+
         if (false == $taxData['status'] && $taxData['msg'] != '') {
             //$this->error = $taxData['msg'];
         }
@@ -709,11 +709,11 @@ class Cart extends FatModel
             $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
             $thePriceincludingTax = $taxData['tax'] + $totalPrice;
             if ($originalTotalPrice != $thePriceincludingTax) {
-                if ($originalTotalPrice > $thePriceincludingTax) {
-                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
-                } else {
-                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
-                }
+                $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
+            }
+        } else {
+            if (array_key_exists('optionsSum', $taxData) && $taxData['tax'] != $taxData['optionsSum']) {
+                $roundingOff = round($taxData['tax'] - $taxData['optionsSum'], 2);
             }
         }
         $sellerProductRow['rounding_off'] = $roundingOff;
@@ -1196,7 +1196,7 @@ class Cart extends FatModel
 
         $totalDiscountAmount = (isset($cartDiscounts['coupon_discount_total'])) ? $cartDiscounts['coupon_discount_total'] : 0;
         $orderNetAmount = (max($cartTotal - $cartVolumeDiscount - $totalDiscountAmount, 0) + $shippingTotal + $cartTaxTotal + $roundingOff);
-       
+
         $orderNetAmount = $orderNetAmount - CommonHelper::rewardPointDiscount($orderNetAmount, $cartRewardPoints);
         $WalletAmountCharge = ($this->isCartUserWalletSelected()) ? min($orderNetAmount, $userWalletBalance) : 0;
         $orderPaymentGatewayCharges = $orderNetAmount - $WalletAmountCharge;

@@ -354,6 +354,7 @@ class Tax extends MyAppModel
                 'status' => false,
                 'msg' => $message,
                 'tax' => $tax,
+                'optionsSum' => $tax,
                 'taxCode' => '',
                 'options' => []
             ];
@@ -396,6 +397,7 @@ class Tax extends MyAppModel
                     'status' => false,
                     'msg' => $error,
                     'tax' => $tax,
+                    'optionsSum' => $tax,
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
                 ];
@@ -430,7 +432,7 @@ class Tax extends MyAppModel
                 'itemCode' => 'S-' . $productId,
                 /*'taxCode' => $taxCategoryRow['taxcat_code'],*/
                 'taxCode' => '',
-                 
+
             ];
             array_push($shippingItems, $shippingItem);
 
@@ -444,6 +446,7 @@ class Tax extends MyAppModel
                     'status' => false,
                     'msg' => $taxRates['msg'],
                     'tax' => $tax,
+                    'optionsSum' => $tax,
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
                 ];
@@ -455,6 +458,7 @@ class Tax extends MyAppModel
             $data = [
                 'status' => true,
                 'tax' => 0,
+                'optionsSum' => 0,
                 'rate' => 0,
                 'taxCode' => $taxCategoryRow['taxcat_code'],
                 'options' => []
@@ -462,6 +466,7 @@ class Tax extends MyAppModel
 
             foreach ($taxRates['data'] as $code => $rate) {
                 $data['tax'] = $data['tax'] + $rate['tax'];
+                $data['optionsSum'] = $data['optionsSum'] + $rate['tax'];
                 $data['rate'] = $data['rate'] + $rate['rate'];
                 foreach ($rate['taxDetails'] as $name => $val) {
                     $data['options'][$name]['name'] = $val['name'];
@@ -485,6 +490,7 @@ class Tax extends MyAppModel
                 'status' => false,
                 'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
                 'tax' => $tax,
+                'optionsSum' => $tax,
                 'taxCode' => '',
                 'options' => []
             ];
@@ -492,6 +498,8 @@ class Tax extends MyAppModel
         $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
 
         $data['tax'] = $tax;
+        $data['optionsSum'] = $tax;
+        $optionsSum = 0;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];
 
         $srch = TaxRuleCombined::getSearchObject();
@@ -505,14 +513,16 @@ class Tax extends MyAppModel
 
         if (!empty($combinedData)) {
             foreach ($combinedData as $comData) {
+                $taxval = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
+                $optionsSum += $taxval;
                 $data['options'][$comData['taxruledet_id']]['taxstr_id'] = $comData['taxstr_id'];
                 $data['options'][$comData['taxruledet_id']]['name'] = isset($comData['taxstr_name']) ? $comData['taxstr_name'] : $defaultTaxName;
                 $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
                 $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
-                $data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
+                $data['options'][$comData['taxruledet_id']]['value'] = $taxval;
             }
         }
-
+        $data['optionsSum'] = $optionsSum;
         $data['status'] = true;
         return $data;
     }
