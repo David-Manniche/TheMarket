@@ -437,6 +437,7 @@ Bugs:
     => 045361 - error n [payment through paypal credit card
     => 045365 - when product having variants then under promotion it's listing the name without option, so unable to distinguish the item
     => 045390 - Update required in seller inventory report.
+---------------TV-9.2.3.20201118------------------------    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
