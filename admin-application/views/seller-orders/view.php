@@ -160,7 +160,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                             <tr>
                                 <?php if (array_key_exists('op_rounding_off', $order) && 0 != $order['op_rounding_off']) { ?>
                                     <td>
-                                        <strong><?php echo (0 < $order['op_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>:
+                                        <strong><?php echo (0 < $order['op_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $adminLangId) : Labels::getLabel('LBL_Rounding_Down', $adminLangId); ?>:
                                         </strong><?php echo CommonHelper::displayMoneyFormat($order['op_rounding_off'], true, true); ?>
                                     </td>
                                 <?php } ?>

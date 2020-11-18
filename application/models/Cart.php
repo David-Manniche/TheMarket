@@ -307,9 +307,9 @@ class Cart extends FatModel
             $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
             $maxConfiguredCommissionVal = FatApp::getConfig("CONF_MAX_COMMISSION", FatUtility::VAR_INT, 0);
 
-            $db = FatApp::getDb();
+            /* $db = FatApp::getDb();
             $prodGroupQtyArr = array();
-            $prodGroupPriceArr = array();
+            $prodGroupPriceArr = array(); */
 
             $associatedAffiliateUserId = 0;
             /* detect current logged user has associated affiliate user[ */
@@ -330,7 +330,7 @@ class Cart extends FatModel
 
             foreach ($this->SYSTEM_ARR['cart'] as $key => $quantity) {
                 $selprod_id = 0;
-                $prodgroup_id = 0;
+                // $prodgroup_id = 0;
                 $sellerProductRow = array();
 
                 $affiliateCommissionPercentage = '';
@@ -356,8 +356,6 @@ class Cart extends FatModel
                 $this->products[$key]['opshipping_rate_id'] = 0;
                 $this->products[$key]['commission_percentage'] = '';
                 $this->products[$key]['commission'] = 0;
-
-
                 $this->products[$key]['tax'] = 0;
                 $this->products[$key]['taxOptions'] = [];
                 $this->products[$key]['reward_point'] = 0;
@@ -368,7 +366,6 @@ class Cart extends FatModel
                 /* seller products[ */
                 if ($selprod_id > 0) {
                     $sellerProductRow = $this->getSellerProductData($selprod_id, $quantity, $siteLangId, $loggedUserId);
-
                     if (!$sellerProductRow) {
                         $this->removeCartKey($key, $selprod_id, $quantity);
                         continue;
@@ -445,24 +442,7 @@ class Cart extends FatModel
                         'shippingCost' => $shippingCost,
                         'buyerId' => $this->cart_user_id
                     );
-                    /* if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
-                        $shipToStateId = 0;
-                        $shipToCountryId = 0;
 
-                        if (isset($extraData['shippingAddress']['addr_country_id'])) {
-                            $shipToCountryId = FatUtility::int($extraData['shippingAddress']['addr_country_id']);
-                        }
-
-                        if (isset($extraData['shippingAddress']['addr_state_id'])) {
-                            $shipToStateId = FatUtility::int($extraData['shippingAddress']['addr_state_id']);
-                        }
-                        
-                        $tax = new Tax();
-                        $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
-                        if (array_key_exists('taxrule_rate', $taxCategoryRow)) {
-                            $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ($taxCategoryRow['taxrule_rate'] / 100)), 2);
-                        }
-                    } */
                     /*[ Product Tax */
                     $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
                     if (isset($cartDiscounts['discountedSelProdIds']) && array_key_exists($sellerProductRow['selprod_id'], $cartDiscounts['discountedSelProdIds'])) {
@@ -483,8 +463,7 @@ class Cart extends FatModel
                             }
                         }
                     }
-                    /*  echo $sellerProductRow['theprice']* $quantity;*/
-                    /* CommonHelper::printArray($taxData); */
+
                     $tax = $taxData['tax'];
 
                     $this->products[$key]['tax'] = $tax;
@@ -726,17 +705,19 @@ class Cart extends FatModel
         $tax = $taxData['tax'];
 
         $roundingOff = 0;
-        $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
-        $thePriceincludingTax = $taxData['tax'] + $totalPrice;
-        if ($originalTotalPrice != $thePriceincludingTax) {
-            if ($originalTotalPrice > $thePriceincludingTax) {
-                $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
-            } else {
-                $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
+            $thePriceincludingTax = $taxData['tax'] + $totalPrice;
+            if ($originalTotalPrice != $thePriceincludingTax) {
+                if ($originalTotalPrice > $thePriceincludingTax) {
+                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
+                } else {
+                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
+                }
             }
         }
         $sellerProductRow['rounding_off'] = $roundingOff;
-      
+
         $sellerProductRow['tax'] = $tax;
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
@@ -1125,9 +1106,11 @@ class Cart extends FatModel
         $taxOptions = [];
         $prodTaxOptions = [];
         $roundingOff = 0;
+        $originalTotalPrice = 0;
         $productSelectedShippingMethodsArr = $this->getProductShippingMethod();
         if (is_array($products) && count($products)) {
             foreach ($products as $product) {
+                // CommonHelper::printArray($product, true);
                 $codEnabled = false;
                 if ($isCodEnabled && $product['is_cod_enabled']) {
                     $codEnabled = true;
@@ -1201,6 +1184,7 @@ class Cart extends FatModel
                 } */
 
                 $roundingOff += $product['rounding_off'];
+                $originalTotalPrice += ($product['actualPrice'] * $product['quantity']);
             }
         }
 
@@ -1212,7 +1196,7 @@ class Cart extends FatModel
 
         $totalDiscountAmount = (isset($cartDiscounts['coupon_discount_total'])) ? $cartDiscounts['coupon_discount_total'] : 0;
         $orderNetAmount = (max($cartTotal - $cartVolumeDiscount - $totalDiscountAmount, 0) + $shippingTotal + $cartTaxTotal + $roundingOff);
-
+       
         $orderNetAmount = $orderNetAmount - CommonHelper::rewardPointDiscount($orderNetAmount, $cartRewardPoints);
         $WalletAmountCharge = ($this->isCartUserWalletSelected()) ? min($orderNetAmount, $userWalletBalance) : 0;
         $orderPaymentGatewayCharges = $orderNetAmount - $WalletAmountCharge;
