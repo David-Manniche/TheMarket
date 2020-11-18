@@ -193,20 +193,20 @@ if (!$print) { ?>
                                             <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?>
                                         </p>
                                     <?php } ?>
+                                    <?php if (array_key_exists('order_rounding_off', $orderDetail) && 0 != $orderDetail['order_rounding_off']) { ?>
+                                        <p>
+                                            <strong>
+                                            <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>:
+                                            </strong>
+                                            <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
+                                        </p>
+                                    <?php } ?>
                                     <p>
                                         <strong>
                                             <?php echo Labels::getLabel('LBL_Order_Total', $siteLangId); ?>:
                                         </strong>
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrderDetail), true, false, true, false, true); ?>
                                     </p>
-                                    <?php if(array_key_exists('order_rounding_off',$orderDetail) && 0 < $orderDetail['order_rounding_off']){?>
-                                    <p>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_Rounding_Off', $siteLangId); ?>: 
-                                        </strong>
-                                        <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
-                                    </p>
-                                    <?php }?>  
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 mb-4">
@@ -452,12 +452,12 @@ if (!$print) { ?>
                                             <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?>
                                         </td>
                                         <td>
-                                            <?php 
-                                                echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true);
+                                            <?php
+                                            echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true);
 
-                                                if ($roundingOff = CommonHelper::getRoundingOff($childOrder)) {
-                                                    echo '(+'. $roundingOff . ')';
-                                                }                                          
+                                            /* if ($roundingOff = CommonHelper::getRoundingOff($childOrder)) {
+                                                echo '(+' . $roundingOff . ')';
+                                            } */
                                             ?>
                                         </td>
                                     </tr>
@@ -491,7 +491,7 @@ if (!$print) { ?>
                                                 <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_tax_charged'], true, false, true, false, true); ?>
                                             </td>
                                         </tr>
-                                    <?php } else {
+                                        <?php } else {
                                         foreach ($taxOptionsTotal as $key => $val) { ?>
                                             <tr>
                                                 <td colspan="8">
@@ -503,7 +503,7 @@ if (!$print) { ?>
                                             </tr>
                                     <?php }
                                     } ?>
-                                    <?php 
+                                    <?php
                                     if (0 < $orderDetail['order_discount_total']) { ?>
                                         <tr>
                                             <td colspan="8">
@@ -534,6 +534,16 @@ if (!$print) { ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
+                                    <?php if (array_key_exists('order_rounding_off', $orderDetail) && 0 != $orderDetail['order_rounding_off']) { ?>
+                                        <tr>
+                                            <td colspan="8">
+                                            <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>
+                                            </td>
+                                            <td>
+                                                <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
                                     <tr>
                                         <td colspan="8">
                                             <?php echo Labels::getLabel('LBL_Total', $siteLangId) ?>
@@ -542,24 +552,15 @@ if (!$print) { ?>
                                             <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_net_amount'], true, false, true, false, true); ?>
                                         </td>
                                     </tr>
-                                    <?php if(array_key_exists('order_rounding_off',$orderDetail) && 0 < $orderDetail['order_rounding_off']){?>
-                                    <tr>
-                                        <td colspan="8">
-                                            <?php echo Labels::getLabel('LBL_Rounding_Off', $siteLangId) ?>
-                                        </td>
-                                        <td>
-                                            <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
-                                        </td>
-                                    </tr>
-                                    <?php } ?>
+
                                 <?php } ?>
                             </tbody>
                         </table>
                     </div>
                     <div class="row mt-4">
-                        <?php 
-                            $transferBank = (isset($orderDetail['plugin_code']) && 'TransferBank' == $orderDetail['plugin_code']);
-                            $class = $transferBank ? "col-lg-3 mb-4" : "col-lg-6 mb-4";
+                        <?php
+                        $transferBank = (isset($orderDetail['plugin_code']) && 'TransferBank' == $orderDetail['plugin_code']);
+                        $class = $transferBank ? "col-lg-3 mb-4" : "col-lg-6 mb-4";
                         ?>
                         <div class="<?php echo $class; ?>">
                             <div class="bg-gray p-3 rounded">

@@ -87,9 +87,9 @@ if ($order['order_reward_point_used'] > 0) {
                                 </td>
                             </tr>
                             <tr>
-                                <?php if (array_key_exists('order_rounding_off',$order) && 0 < $order['order_rounding_off']) { ?>
+                                <?php if (array_key_exists('order_rounding_off', $order) && 0 != $order['order_rounding_off']) { ?>
                                     <td>
-                                        <strong><?php echo Labels::getLabel('LBL_Rounding_Off', $adminLangId); ?>:
+                                        <strong><?php echo (0 < $order['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $adminLangId) : Labels::getLabel('LBL_Rounding_Down', $adminLangId); ?>:
                                         </strong><?php echo CommonHelper::displayMoneyFormat($order['order_rounding_off'], true, true); ?>
                                     </td>
                                 <?php } ?>
@@ -244,7 +244,7 @@ if ($order['order_reward_point_used'] > 0) {
                                         <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($op, 'VOLUME_DISCOUNT')); ?>
                                     </td>
                                     <td class="text-right">
-                                        <?php echo CommonHelper::displayMoneyFormat($total, true, true);?>  
+                                        <?php echo CommonHelper::displayMoneyFormat($total, true, true); ?>
                                     </td>
                                 </tr>
                             <?php
@@ -314,23 +314,23 @@ if ($order['order_reward_point_used'] > 0) {
                                     </td>
                                 </tr>
                             <?php } ?>
+                            <?php if (array_key_exists('order_rounding_off', $order) && 0 != $order['order_rounding_off']) { ?>
+                                <tr>
+                                    <td colspan="8" class="text-right">
+                                    <?php echo (0 < $order['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $adminLangId) : Labels::getLabel('LBL_Rounding_Down', $adminLangId); ?>
+                                    </td>
+                                    <td class="text-right" colspan="2">
+                                        </strong><?php echo CommonHelper::displayMoneyFormat($order['order_rounding_off'], true, true); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                             <tr>
                                 <td colspan="8" class="text-right"><strong><?php echo Labels::getLabel('LBL_Order_Total', $adminLangId); ?></strong>
                                 </td>
                                 <td class="text-right" colspan="2"><strong><?php echo CommonHelper::displayMoneyFormat($order['order_net_amount'], true, true); ?></strong>
                                 </td>
-                            </tr>                            
-                            <?php if (array_key_exists('order_rounding_off',$order) && 0 < $order['order_rounding_off']) { ?>
-                            <tr>
-                                <td colspan="8" class="text-right">
-                                    <?php echo Labels::getLabel('LBL_Rounding_Off', $adminLangId); ?>
-                                </td>
-                                <td class="text-right" colspan="2">
-                                    </strong><?php echo CommonHelper::displayMoneyFormat($order['order_rounding_off'], true, true); ?>
-                                </td>
                             </tr>
-                            <?php } ?>
-                            
+
                         </table>
                     </div>
                 </section>
@@ -517,8 +517,9 @@ if ($order['order_reward_point_used'] > 0) {
                                                 </td>
                                                 <td>
                                                     <div class="break-me">
-                                                        <a href="javascript:void(0);" onclick="viewPaymemntGatewayResponse('<?php echo $row['opayment_gateway_response'];?>')">View</a>
-                                                        <?php //echo nl2br($row['opayment_gateway_response']); ?>
+                                                        <a href="javascript:void(0);" onclick="viewPaymemntGatewayResponse('<?php echo $row['opayment_gateway_response']; ?>')">View</a>
+                                                        <?php //echo nl2br($row['opayment_gateway_response']); 
+                                                        ?>
                                                     </div>
                                                 </td>
                                                 <td>

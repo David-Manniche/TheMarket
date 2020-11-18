@@ -625,6 +625,7 @@ class Cart extends FatModel
                 $shippingAddressId = $this->getCartShippingAddress();
             }
 
+            $shippingAddressDetail = [];
             if (0 < $shippingAddressId) {
                 $address = new Address($shippingAddressId, $this->cart_lang_id);
                 $shippingAddressDetail =  $address->getData(Address::TYPE_USER, $this->cart_user_id);
@@ -712,7 +713,11 @@ class Cart extends FatModel
         $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
 
         $taxObj = new Tax();
-        $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity);
+        $taxExtraData = [];
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && $this->includeTax == true && 0 < Tax::getActivatedServiceId()) {
+            $taxExtraData = $extraData;
+        }
+        $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $taxExtraData);
         //CommonHelper::printArray($taxData);
         if (false == $taxData['status'] && $taxData['msg'] != '') {
             //$this->error = $taxData['msg'];
@@ -720,40 +725,23 @@ class Cart extends FatModel
 
         $tax = $taxData['tax'];
 
-        /*Vivek*/
         $roundingOff = 0;
-        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
-            $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
-            $thePriceincludingTax = $taxData['tax'] + $totalPrice;
-            if ($originalTotalPrice != $thePriceincludingTax) {
-                if ($originalTotalPrice > $thePriceincludingTax) {
-                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
-                    
-                }
+        $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
+        $thePriceincludingTax = $taxData['tax'] + $totalPrice;
+        if ($originalTotalPrice != $thePriceincludingTax) {
+            if ($originalTotalPrice > $thePriceincludingTax) {
+                $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
+            } else {
+                $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
             }
         }
         $sellerProductRow['rounding_off'] = $roundingOff;
-
-        /* if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId()) {
-            $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
-            $thePriceincludingTax = $tax + $totalPrice;
-            if ($originalTotalPrice != $thePriceincludingTax) {
-                if ($originalTotalPrice > $thePriceincludingTax) {
-                    $diff = $originalTotalPrice - $thePriceincludingTax;
-                    $tax = $tax + $diff;
-                } else {
-                    $diff = $thePriceincludingTax - $originalTotalPrice;
-                    $tax = $tax - $diff;
-                }
-            }
-        } */
-
-
+      
         $sellerProductRow['tax'] = $tax;
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
 
-        $sellerProductRow['total'] = $totalPrice; 
+        $sellerProductRow['total'] = $totalPrice;
         $sellerProductRow['netTotal'] = $sellerProductRow['total'] + $sellerProductRow['shipping_cost'] + $roundingOff;
 
         $sellerProductRow['is_digital_product'] = ($sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL) ? 1 : 0;
@@ -1210,10 +1198,9 @@ class Cart extends FatModel
                 $shippingTotal += $product['shipping_cost'];
                 /* if (!$product['shop_eligible_for_free_shipping'] ||  $product['psbs_user_id'] == 0) {
                     $shippingTotal += $product['shipping_cost'];
-                } */   
-                
+                } */
+
                 $roundingOff += $product['rounding_off'];
-                
             }
         }
 

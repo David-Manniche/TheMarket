@@ -156,18 +156,15 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 <td><strong><?php echo Labels::getLabel('LBL_Volume_Discount', $adminLangId); ?></strong> : <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true); ?> </td>
                                 <td><strong><?php echo Labels::getLabel('LBL_Total_Paid', $adminLangId); ?> : </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true); ?>
                                 </td>
-                            </tr>                            
-                                <?php if (array_key_exists('op_rounding_off',$order) && 0 < $order['op_rounding_off']) { ?>
-                                <tr>
+                            </tr>
+                            <tr>
+                                <?php if (array_key_exists('op_rounding_off', $order) && 0 != $order['op_rounding_off']) { ?>
                                     <td>
-                                        <strong><?php echo Labels::getLabel('LBL_Rounding_Off', $adminLangId); ?>:
+                                        <strong><?php echo (0 < $order['op_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>:
                                         </strong><?php echo CommonHelper::displayMoneyFormat($order['op_rounding_off'], true, true); ?>
                                     </td>
-                                </tr>
                                 <?php } ?>
-                               
-                            <?php if ($order["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
-                                <tr>
+                                <?php if ($order["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
                                     <td>
                                         <strong><?php echo Labels::getLabel('LBL_Pickup_Date', $adminLangId); ?> : </strong>
                                         <?php
@@ -176,8 +173,9 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                         echo FatDate::format($order["opshipping_date"]) . ' ' . $fromTime . ' - ' . $toTime;
                                         ?>
                                     </td>
-                                </tr>
-                            <?php } ?>
+                                <?php } ?>
+                            </tr>
+
                         </table>
                     </div>
                 </section>
@@ -255,73 +253,73 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                         <p>
                                             <strong>
                                                 <?php echo $order['shippingAddress']['oua_name']; ?></strong><br>
-                                        <?php
-                                        $shippingAddress = '';
-                                        if ($order['shippingAddress']['oua_address1'] != '') {
-                                            $shippingAddress .= $order['shippingAddress']['oua_address1'] . '<br>';
-                                        }
-
-                                        if ($order['shippingAddress']['oua_address2'] != '') {
-                                            $shippingAddress .= $order['shippingAddress']['oua_address2'] . '<br>';
-                                        }
-
-                                        if ($order['shippingAddress']['oua_city'] != '') {
-                                            $shippingAddress .= $order['shippingAddress']['oua_city'] . ',';
-                                        }
-
-                                        if ($order['shippingAddress']['oua_zip'] != '') {
-                                            $shippingAddress .= ' ' . $order['shippingAddress']['oua_state'];
-                                        }
-
-                                        if ($order['shippingAddress']['oua_zip'] != '') {
-                                            $shippingAddress .= '-' . $order['shippingAddress']['oua_zip'];
-                                        }
-
-                                        if ($order['shippingAddress']['oua_phone'] != '') {
-                                            $shippingAddress .= '<br>Phone: ' . $order['shippingAddress']['oua_phone'];
-                                        }
-
-                                        echo $shippingAddress;
-                                    }
-                                    if (!empty($order['pickupAddress'])) { ?>
-                                        <h5><?php echo Labels::getLabel('LBL_Pickup_Details', $adminLangId); ?></h5>
-                                        <p>
-                                        <strong>
                                             <?php
-                                            $opshippingDate = isset($order['opshipping_date']) ? $order['opshipping_date'] . ' ' : '';
-                                            $timeSlotFrom = isset($order['opshipping_time_slot_from']) ? date('H:i', strtotime($order['opshipping_time_slot_from'])) . ' - ' : '';
-                                            $timeSlotTo = isset($order['opshipping_time_slot_to']) ? date('H:i', strtotime($order['opshipping_time_slot_to'])) : '';
-                                            echo $opshippingDate . ' (' . $timeSlotFrom . $timeSlotTo . ')'; 
-                                            ?>
-                                        </strong><br>
-                                                <?php echo $order['pickupAddress']['oua_name']; ?>, 
-                                        <?php
-                                        $pickupAddress = '';
-                                        if ($order['pickupAddress']['oua_address1'] != '') {
-                                            $pickupAddress .= $order['pickupAddress']['oua_address1'] . '<br>';
-                                        }
+                                            $shippingAddress = '';
+                                            if ($order['shippingAddress']['oua_address1'] != '') {
+                                                $shippingAddress .= $order['shippingAddress']['oua_address1'] . '<br>';
+                                            }
 
-                                        if ($order['pickupAddress']['oua_address2'] != '') {
-                                            $pickupAddress .= $order['pickupAddress']['oua_address2'] . '<br>';
-                                        }
+                                            if ($order['shippingAddress']['oua_address2'] != '') {
+                                                $shippingAddress .= $order['shippingAddress']['oua_address2'] . '<br>';
+                                            }
 
-                                        if ($order['pickupAddress']['oua_city'] != '') {
-                                            $pickupAddress .= $order['pickupAddress']['oua_city'] . ',';
-                                        }
+                                            if ($order['shippingAddress']['oua_city'] != '') {
+                                                $shippingAddress .= $order['shippingAddress']['oua_city'] . ',';
+                                            }
 
-                                        if ($order['pickupAddress']['oua_zip'] != '') {
-                                            $pickupAddress .= ' ' . $order['pickupAddress']['oua_state'];
-                                        }
+                                            if ($order['shippingAddress']['oua_zip'] != '') {
+                                                $shippingAddress .= ' ' . $order['shippingAddress']['oua_state'];
+                                            }
 
-                                        if ($order['pickupAddress']['oua_zip'] != '') {
-                                            $pickupAddress .= '-' . $order['pickupAddress']['oua_zip'];
-                                        }
+                                            if ($order['shippingAddress']['oua_zip'] != '') {
+                                                $shippingAddress .= '-' . $order['shippingAddress']['oua_zip'];
+                                            }
 
-                                        if ($order['pickupAddress']['oua_phone'] != '') {
-                                            $pickupAddress .= '<br>Phone: ' . $order['pickupAddress']['oua_phone'];
+                                            if ($order['shippingAddress']['oua_phone'] != '') {
+                                                $shippingAddress .= '<br>Phone: ' . $order['shippingAddress']['oua_phone'];
+                                            }
+
+                                            echo $shippingAddress;
                                         }
-                                        echo $pickupAddress;
-                                    } ?>
+                                        if (!empty($order['pickupAddress'])) { ?>
+                                            <h5><?php echo Labels::getLabel('LBL_Pickup_Details', $adminLangId); ?></h5>
+                                            <p>
+                                                <strong>
+                                                    <?php
+                                                    $opshippingDate = isset($order['opshipping_date']) ? $order['opshipping_date'] . ' ' : '';
+                                                    $timeSlotFrom = isset($order['opshipping_time_slot_from']) ? date('H:i', strtotime($order['opshipping_time_slot_from'])) . ' - ' : '';
+                                                    $timeSlotTo = isset($order['opshipping_time_slot_to']) ? date('H:i', strtotime($order['opshipping_time_slot_to'])) : '';
+                                                    echo $opshippingDate . ' (' . $timeSlotFrom . $timeSlotTo . ')';
+                                                    ?>
+                                                </strong><br>
+                                                <?php echo $order['pickupAddress']['oua_name']; ?>,
+                                            <?php
+                                            $pickupAddress = '';
+                                            if ($order['pickupAddress']['oua_address1'] != '') {
+                                                $pickupAddress .= $order['pickupAddress']['oua_address1'] . '<br>';
+                                            }
+
+                                            if ($order['pickupAddress']['oua_address2'] != '') {
+                                                $pickupAddress .= $order['pickupAddress']['oua_address2'] . '<br>';
+                                            }
+
+                                            if ($order['pickupAddress']['oua_city'] != '') {
+                                                $pickupAddress .= $order['pickupAddress']['oua_city'] . ',';
+                                            }
+
+                                            if ($order['pickupAddress']['oua_zip'] != '') {
+                                                $pickupAddress .= ' ' . $order['pickupAddress']['oua_state'];
+                                            }
+
+                                            if ($order['pickupAddress']['oua_zip'] != '') {
+                                                $pickupAddress .= '-' . $order['pickupAddress']['oua_zip'];
+                                            }
+
+                                            if ($order['pickupAddress']['oua_phone'] != '') {
+                                                $pickupAddress .= '<br>Phone: ' . $order['pickupAddress']['oua_phone'];
+                                            }
+                                            echo $pickupAddress;
+                                        } ?>
                                 </div>
                             </div>
                         </section>
@@ -383,20 +381,20 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 <?php if (Shipping::FULFILMENT_PICKUP != $order['opshipping_fulfillment_type']) { ?>
                                     <td>
                                         <?php if ($order['op_product_type'] == Product::PRODUCT_TYPE_PHYSICAL) { ?>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?> :
-                                        </strong>
-                                        <?php echo CommonHelper::displayNotApplicable($adminLangId, $order["opshipping_label"]); ?><br>
-                                        <?php if (!empty($order["opshipping_service_code"])) { ?>
                                             <strong>
-                                                <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES', $adminLangId); ?> :
+                                                <?php echo Labels::getLabel('LBL_Shipping_Class', $adminLangId); ?> :
                                             </strong>
-                                            <?php echo $order["opshipping_service_code"]; ?><br>
-                                        <?php } ?>
-                                        <strong>
-                                            <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
-                                        </strong>
-                                        <?php echo ucwords($orderStatusLbl); ?>
+                                            <?php echo CommonHelper::displayNotApplicable($adminLangId, $order["opshipping_label"]); ?><br>
+                                            <?php if (!empty($order["opshipping_service_code"])) { ?>
+                                                <strong>
+                                                    <?php echo Labels::getLabel('LBL_SHIPPING_SERVICES', $adminLangId); ?> :
+                                                </strong>
+                                                <?php echo $order["opshipping_service_code"]; ?><br>
+                                            <?php } ?>
+                                            <strong>
+                                                <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
+                                            </strong>
+                                            <?php echo ucwords($orderStatusLbl); ?>
                                         <?php } else {
                                             echo Labels::getLabel('LBL_N/A', $adminLangId);
                                         } ?>
@@ -404,7 +402,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 <?php } ?>
                                 <td><?php echo CommonHelper::displayMoneyFormat($order["op_unit_price"], true, true); ?></td>
                                 <td><?php echo $order["op_qty"] ?></td>
-                                <?php if ($shippingHanldedBySeller) { ?> 
+                                <?php if ($shippingHanldedBySeller) { ?>
                                     <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'SHIPPING'), true, true); ?></td>
                                 <?php } ?>
                                 <?php if ($order['op_tax_collected_by_seller']) { ?>
@@ -421,12 +419,12 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                 <?php } ?> <td>
                                     <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'VOLUME_DISCOUNT'), true, true); ?></td>
                                 <td>
-                                    <?php 
-                                        echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true); 
-                                       
-                                        if ($roundingOff = CommonHelper::getRoundingOff($order)) {
-                                            echo '(+'. $roundingOff . ')';
-                                        }  
+                                    <?php
+                                    echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true);
+
+                                    if ($roundingOff = CommonHelper::getRoundingOff($order)) {
+                                        echo '(+' . $roundingOff . ')';
+                                    }
                                     ?>
                                 </td>
                             </tr>
