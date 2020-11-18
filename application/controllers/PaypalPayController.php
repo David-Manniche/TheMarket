@@ -37,7 +37,8 @@ class PaypalPayController extends PaymentController
      */
     private function init(): void
     {
-        if (false === $this->plugin->init()) {
+        $userId = UserAuthentication::getLoggedUserId(true);
+        if (false === $this->plugin->init($userId)) {
             $this->setErrorAndRedirect($this->plugin->getError(), FatUtility::isAjaxCall());
         }
 

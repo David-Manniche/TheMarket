@@ -50,6 +50,7 @@ class PaymentMethodBase extends pluginBase
         $srch->addCondition('user_id', '=', $this->userId);
         $rs = $srch->getResultSet();
         $this->userData = FatApp::getDb()->fetch($rs);
+
         return true;
     }
 

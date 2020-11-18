@@ -433,6 +433,7 @@ Bugs:
     => 045217 - Price inclusive tax handling for Tax api's.
     => 045358 - while purchasing subscription plan on applying coupon> button is not proper
     => 045338 - when any product having multiple options and accessed inventories accessed through catalog then serial no. is displaying in minus
+    => 045361 - error n [payment through paypal credit card
 
 Enhancements:
     => Tax module upgrade
