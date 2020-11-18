@@ -55,7 +55,8 @@ class MyAppController extends FatController
         $controllerName = ucfirst(FatUtility::dashed2Camel($urlController));
 
         /* to keep track of temporary hold the product stock, update time in each row of tbl_product_stock_hold against current user[ */
-        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);        
+        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
+        $cartObj->excludeTax();
         $cartProducts = $cartObj->getBasketProducts($this->siteLangId);
         if ($cartProducts) {
             foreach ($cartProducts as $product) {

@@ -42,13 +42,13 @@ class BannerController extends MyAppController
 
                 case Banner::TYPE_PPC:
                     $promotionClickData = array(
-                    'pclick_promotion_id' => $row['banner_record_id'],
-                    'pclick_user_id' => $userId,
-                    'pclick_datetime' => date('Y-m-d H:i:s'),
-                    'pclick_ip' => $_SERVER['REMOTE_ADDR'],
-                    /* 'pclick_cost' => $row['blocation_promotion_cost'], */
-                    'pclick_cost' => $row['promotion_cpc'],
-                    'pclick_session_id' => session_id(),
+                        'pclick_promotion_id' => $row['banner_record_id'],
+                        'pclick_user_id' => $userId,
+                        'pclick_datetime' => date('Y-m-d H:i:s'),
+                        'pclick_ip' => $_SERVER['REMOTE_ADDR'],
+                        /* 'pclick_cost' => $row['blocation_promotion_cost'], */
+                        'pclick_cost' => $row['promotion_cpc'],
+                        'pclick_session_id' => session_id(),
                     );
                     FatApp::getDb()->insertFromArray(Promotion::DB_TBL_CLICKS, $promotionClickData, false, '', $promotionClickData);
 
@@ -56,10 +56,10 @@ class BannerController extends MyAppController
 
                     $promotionClickChargesData = array(
 
-                    'picharge_pclick_id' => $clickId,
-                    'picharge_datetime' => date('Y-m-d H:i:s'),
-                    /* 'picharge_cost'  => $row['blocation_promotion_cost'], */
-                    'picharge_cost' => $row['promotion_cpc'],
+                        'picharge_pclick_id' => $clickId,
+                        'picharge_datetime' => date('Y-m-d H:i:s'),
+                        /* 'picharge_cost'  => $row['blocation_promotion_cost'], */
+                        'picharge_cost' => $row['promotion_cpc'],
 
                     );
 
@@ -67,9 +67,9 @@ class BannerController extends MyAppController
 
 
                     $promotionLogData = array(
-                    'plog_promotion_id' => $row['banner_record_id'],
-                    'plog_date' => date('Y-m-d'),
-                    'plog_clicks' => 1,
+                        'plog_promotion_id' => $row['banner_record_id'],
+                        'plog_date' => date('Y-m-d'),
+                        'plog_clicks' => 1,
                     );
 
                     $onDuplicatePromotionLogData = array_merge($promotionLogData, array('plog_clicks' => 'mysql_func_plog_clicks+1'));
@@ -86,8 +86,8 @@ class BannerController extends MyAppController
 
     public function HomePageBannerTopLayout($bannerId, $langId = 0, $screen = 0)
     {
-		$bannerId = FatUtility::int($bannerId);
-		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $bannerId = FatUtility::int($bannerId);
+        $blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
         $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 1350;
         $h = 405;
@@ -104,8 +104,8 @@ class BannerController extends MyAppController
     // For Mobile API
     public function HomePageBannerMiddleLayout($bannerId, $langId = 0, $screen = 0)
     {
-		$bannerId = FatUtility::int($bannerId);
-		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $bannerId = FatUtility::int($bannerId);
+        $blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
         $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 600;
         $h = 338;
@@ -122,7 +122,7 @@ class BannerController extends MyAppController
     public function HomePageBannerBottomLayout($bannerId, $langId = 0, $screen = 0)
     {
         $bannerId = FatUtility::int($bannerId);
-		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
         $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 600;
         $h = 198;
@@ -139,7 +139,7 @@ class BannerController extends MyAppController
     public function productDetailPageBanner($bannerId, $langId = 0, $screen = 0)
     {
         $bannerId = FatUtility::int($bannerId);
-		$blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
+        $blocationId = Banner::getAttributesById($bannerId, 'banner_blocation_id');
         $bannerDimensions = BannerLocation::getDimensions($blocationId, $screen);
         $w = 600;
         $h = 198;

@@ -1004,23 +1004,16 @@ class HomeController extends MyAppController
                     $collections[$i]['pendingForReviews'] = array();
                     $loggedUserId = UserAuthentication::getLoggedUserId(true);
                     if (0 < $loggedUserId && (FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 0))) {
-                        $collections[$i]['pendingForReviews'] = OrderProduct::pendingForReviews($loggedUserId, $this->siteLangId);
-                        if (count($collections[$i]['pendingForReviews'])) {
-                            foreach ($collections[$i]['pendingForReviews'] as $key => $orderProduct) {
+                        $pendingForReviews = OrderProduct::pendingForReviews($loggedUserId, $this->siteLangId);
+                        if (is_array($pendingForReviews) && 0 < count($pendingForReviews)) {
+                            foreach ($pendingForReviews as $key => &$orderProduct) {
                                 $canSubmitFeedback = Orders::canSubmitFeedback($orderProduct['order_user_id'], $orderProduct['order_id'], $orderProduct['op_selprod_id']);
                                 if (false === $canSubmitFeedback) {
                                     continue;
                                 }
-                                $options = SellerProduct::getSellerProductOptions($orderProduct['op_selprod_id'], true, $this->siteLangId);
-                                $optionTitle = '';
-                                if (is_array($options) && count($options)) {
-                                    foreach ($options as $op) {
-                                        $optionTitle .= $op['option_name'] . ': ' . $op['optionvalue_name'] . ', ';
-                                    }
-                                }
-                                $collections[$i]['pendingForReviews'][$key]['optionsTitle'] = rtrim($optionTitle, ', ');
-                                $collections[$i]['pendingForReviews'][$key]['product_image_url'] = UrlHelper::generateFullUrl('image', 'product', array($orderProduct['selprod_product_id'], "THUMB", $orderProduct['op_selprod_id'], 0, $this->siteLangId));
+                                $orderProduct['product_image_url'] = UrlHelper::generateFullUrl('image', 'product', array($orderProduct['selprod_product_id'], "THUMB", $orderProduct['op_selprod_id'], 0, $this->siteLangId));
                             }
+                            $collections[$i]['pendingForReviews'] = $pendingForReviews;
                         }
                     }
                     break;

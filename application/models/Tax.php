@@ -90,8 +90,8 @@ class Tax extends MyAppModel
         $activatedTaxServiceId = Tax::getActivatedServiceId();
 
         $srch->addFld('taxcat_id');
-        if ($activatedTaxServiceId) {
-            $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+        if (0 < $activatedTaxServiceId) {
+            $srch->addFld('concat(IFNULL(taxcat_name, taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
         } else {
             $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name');
         }
@@ -354,6 +354,7 @@ class Tax extends MyAppModel
                 'status' => false,
                 'msg' => $message,
                 'tax' => $tax,
+                'optionsSum' => $tax,
                 'taxCode' => '',
                 'options' => []
             ];
@@ -391,11 +392,12 @@ class Tax extends MyAppModel
             $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
             $error = '';
-            if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
+            if (false === PluginHelper::includePlugin($pluginKey, Plugin::getDirectory(Plugin::TYPE_TAX_SERVICES), $error, $langId)) {
                 return $data = [
                     'status' => false,
                     'msg' => $error,
                     'tax' => $tax,
+                    'optionsSum' => $tax,
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
                 ];
@@ -430,11 +432,21 @@ class Tax extends MyAppModel
                 'itemCode' => 'S-' . $productId,
                 /*'taxCode' => $taxCategoryRow['taxcat_code'],*/
                 'taxCode' => '',
-                 
+
             ];
             array_push($shippingItems, $shippingItem);
 
             $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
+            if (false === $taxApi->init()) {
+                return $data = [
+                    'status' => false,
+                    'msg' => $taxApi->getError(),
+                    'tax' => $tax,
+                    'taxCode' => $taxCategoryRow['taxcat_code'],
+                    'options' => []
+                ];
+            }
+
             $buyerId = FatUtility::int($extraInfo['buyerId']);
             $taxRates = $taxApi->getRates($itemsArr, $shippingItems, $buyerId);
 
@@ -444,6 +456,7 @@ class Tax extends MyAppModel
                     'status' => false,
                     'msg' => $taxRates['msg'],
                     'tax' => $tax,
+                    'optionsSum' => $tax,
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
                 ];
@@ -455,6 +468,7 @@ class Tax extends MyAppModel
             $data = [
                 'status' => true,
                 'tax' => 0,
+                'optionsSum' => 0,
                 'rate' => 0,
                 'taxCode' => $taxCategoryRow['taxcat_code'],
                 'options' => []
@@ -462,6 +476,7 @@ class Tax extends MyAppModel
 
             foreach ($taxRates['data'] as $code => $rate) {
                 $data['tax'] = $data['tax'] + $rate['tax'];
+                $data['optionsSum'] = $data['optionsSum'] + $rate['tax'];
                 $data['rate'] = $data['rate'] + $rate['rate'];
                 foreach ($rate['taxDetails'] as $name => $val) {
                     $data['options'][$name]['name'] = $val['name'];
@@ -485,6 +500,7 @@ class Tax extends MyAppModel
                 'status' => false,
                 'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
                 'tax' => $tax,
+                'optionsSum' => $tax,
                 'taxCode' => '',
                 'options' => []
             ];
@@ -492,6 +508,8 @@ class Tax extends MyAppModel
         $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
 
         $data['tax'] = $tax;
+        $data['optionsSum'] = $tax;
+        $optionsSum = 0;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];
 
         $srch = TaxRuleCombined::getSearchObject();
@@ -502,17 +520,19 @@ class Tax extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
-
+        
         if (!empty($combinedData)) {
             foreach ($combinedData as $comData) {
+                $taxval = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
+                $optionsSum += $taxval;
                 $data['options'][$comData['taxruledet_id']]['taxstr_id'] = $comData['taxstr_id'];
                 $data['options'][$comData['taxruledet_id']]['name'] = isset($comData['taxstr_name']) ? $comData['taxstr_name'] : $defaultTaxName;
                 $data['options'][$comData['taxruledet_id']]['percentageValue'] = $comData['taxruledet_rate'];
                 $data['options'][$comData['taxruledet_id']]['inPercentage'] = 1;
-                $data['options'][$comData['taxruledet_id']]['value'] = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
+                $data['options'][$comData['taxruledet_id']]['value'] = $taxval;
             }
         }
-
+        $data['optionsSum'] = $optionsSum;
         $data['status'] = true;
         return $data;
     }
@@ -533,7 +553,7 @@ class Tax extends MyAppModel
         $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
         $error = '';
-        if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
+        if (false === PluginHelper::includePlugin($pluginKey, Plugin::getDirectory(Plugin::TYPE_TAX_SERVICES), $error, $langId)) {
             $this->error = $error;
             return false;
         }
@@ -596,6 +616,10 @@ class Tax extends MyAppModel
         array_push($shippingItems, $shippingItem);
 
         $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
+        if (false === $taxApi->init()) {
+            $this->error = $$taxApi->getError();
+            return false;
+        }
 
         $taxRates = $taxApi->createInvoice($itemsArr, $shippingItems, $childOrderInfo['op_selprod_user_id'], $childOrderInfo['order_date_added'], $childOrderInfo['op_invoice_number']);
 
@@ -655,15 +679,8 @@ class Tax extends MyAppModel
      */
     public static function getActivatedServiceId(): int
     {
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = 0;
-        if (0 < $defaultTaxApi) {
-            $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
-        }
-        if (0 < $defaultTaxApiIsActive) {
-            return  $defaultTaxApi;
-        }
-        return  $defaultTaxApiIsActive;
+        $pluginObj = new Plugin();
+        return (int)$pluginObj->getDefaultPluginData(Plugin::TYPE_TAX_SERVICES, 'plugin_id');
     }
 
     /**

@@ -595,7 +595,8 @@ class Cart extends FatModel
         }
 
         $sellerProductRow['actualPrice'] =  $sellerProductRow['theprice'];
-        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) /* && 0 == Tax::getActivatedServiceId() */) {
+        $extraData = [];
+        if ($this->includeTax == true) {
             $shipToStateId = 0;
             $shipToCountryId = 0;
             if ($sellerProductRow['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
@@ -618,31 +619,32 @@ class Cart extends FatModel
                 }
             }
 
-            if ($this->includeTax == true) {
-                $tax = new Tax();
-                $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
-                if (array_key_exists('taxrule_rate', $taxCategoryRow) && 0 == Tax::getActivatedServiceId()) {
-                    $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ($taxCategoryRow['taxrule_rate'] / 100)), 2);
-                } else {
-                    $shippingCost = 0;
-                    if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
-                        $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
-                        $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
-                    }
-                    $isProductShippedBySeller = Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id']);
-                    $extraData = array(
-                        'billingAddress' => isset($sellerProductRow['billing_address']) ? $sellerProductRow['billing_address'] : '',
-                        'shippingAddress' => $shippingAddressDetail,
-                        'shippedBySeller' => $isProductShippedBySeller,
-                        'shippingCost' => $shippingCost,
-                        'buyerId' => $this->cart_user_id
-                    );
-                    $taxObj = new Tax();
-                    $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $sellerProductRow['theprice'], $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
-                    if (isset($taxData['rate'])) {
-                        $ruleRate = ($taxData['tax'] * 100) / ($sellerProductRow['theprice'] * $quantity);
-                        $sellerProductRow['theprice'] = round((($sellerProductRow['theprice'] * $quantity) / (1 + ($ruleRate / 100))) / $quantity, 2);
-                    }
+            $shippingCost = 0;
+            if (!empty($productSelectedShippingMethodsArr['product']) && isset($productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']])) {
+                $shippingDurationRow = $productSelectedShippingMethodsArr['product'][$sellerProductRow['selprod_id']];
+                $shippingCost = ROUND(($shippingDurationRow['mshipapi_cost']), 2);
+            }
+            $isProductShippedBySeller = Product::isProductShippedBySeller($sellerProductRow['product_id'], $sellerProductRow['product_seller_id'], $sellerProductRow['selprod_user_id']);
+            $extraData = array(
+                'billingAddress' => isset($sellerProductRow['billing_address']) ? $sellerProductRow['billing_address'] : '',
+                'shippingAddress' => $shippingAddressDetail,
+                'shippedBySeller' => $isProductShippedBySeller,
+                'shippingCost' => $shippingCost,
+                'buyerId' => $this->cart_user_id
+            );
+        }
+
+        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && $this->includeTax == true) {
+            $tax = new Tax();
+            $taxCategoryRow = $tax->getTaxRates($sellerProductRow['product_id'], $sellerProductRow['selprod_user_id'], $siteLangId, $shipToCountryId, $shipToStateId);
+            if (array_key_exists('taxrule_rate', $taxCategoryRow) && 0 == Tax::getActivatedServiceId()) {
+                $sellerProductRow['theprice'] = round($sellerProductRow['theprice'] / (1 + ($taxCategoryRow['taxrule_rate'] / 100)), 2);
+            } else {
+                $taxObj = new Tax();
+                $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $sellerProductRow['theprice'], $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData, $this->cartCache);
+                if (isset($taxData['rate'])) {
+                    $ruleRate = ($taxData['tax'] * 100) / ($sellerProductRow['theprice'] * $quantity);
+                    $sellerProductRow['theprice'] = round((($sellerProductRow['theprice'] * $quantity) / (1 + ($ruleRate / 100))) / $quantity, 2);
                 }
             }
         }
@@ -692,12 +694,9 @@ class Cart extends FatModel
         $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
 
         $taxObj = new Tax();
-        $taxExtraData = [];
-        if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && $this->includeTax == true && 0 < Tax::getActivatedServiceId()) {
-            $taxExtraData = $extraData;
-        }
-        $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $taxExtraData);
-        //CommonHelper::printArray($taxData);
+
+        $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData);
+        // CommonHelper::printArray($taxData);
         if (false == $taxData['status'] && $taxData['msg'] != '') {
             //$this->error = $taxData['msg'];
         }
@@ -709,16 +708,17 @@ class Cart extends FatModel
             $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
             $thePriceincludingTax = $taxData['tax'] + $totalPrice;
             if ($originalTotalPrice != $thePriceincludingTax) {
-                if ($originalTotalPrice > $thePriceincludingTax) {
-                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
-                } else {
-                    $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
-                }
+                $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
+            }
+        } else {
+            if (array_key_exists('optionsSum', $taxData) && $taxData['tax'] != $taxData['optionsSum']) {
+                $roundingOff = round($taxData['tax'] - $taxData['optionsSum'], 2);
             }
         }
         $sellerProductRow['rounding_off'] = $roundingOff;
 
         $sellerProductRow['tax'] = $tax;
+        $sellerProductRow['optionsTaxSum'] = $taxData['optionsSum'];
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
 
@@ -1158,6 +1158,7 @@ class Cart extends FatModel
                     'shippingCost' => $shippingCost,
                     'buyerId' => $this->cart_user_id
                 );
+
                 $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
 
                 if (false == $taxData['status'] && $taxData['msg'] != '') {
@@ -1196,7 +1197,7 @@ class Cart extends FatModel
 
         $totalDiscountAmount = (isset($cartDiscounts['coupon_discount_total'])) ? $cartDiscounts['coupon_discount_total'] : 0;
         $orderNetAmount = (max($cartTotal - $cartVolumeDiscount - $totalDiscountAmount, 0) + $shippingTotal + $cartTaxTotal + $roundingOff);
-       
+
         $orderNetAmount = $orderNetAmount - CommonHelper::rewardPointDiscount($orderNetAmount, $cartRewardPoints);
         $WalletAmountCharge = ($this->isCartUserWalletSelected()) ? min($orderNetAmount, $userWalletBalance) : 0;
         $orderPaymentGatewayCharges = $orderNetAmount - $WalletAmountCharge;

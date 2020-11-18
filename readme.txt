@@ -429,13 +429,14 @@ Bugs:
     => 045307 - as free shipping is not there on catalog but lies in import/export
     => 045317 - seller end> messages> name of shop is listing twice in front of text box
     => 045315 - Shipping tax code is wrong in case of avalara tax plugin
+    => 043189 - some variation in price when product price is incl. tax and multiple qty are added to cart
 --------------------TV-9.2.3.20201117------------------------   
     => 045217 - Price inclusive tax handling for Tax api's.
     => 045358 - while purchasing subscription plan on applying coupon> button is not proper
     => 045338 - when any product having multiple options and accessed inventories accessed through catalog then serial no. is displaying in minus
     => 045361 - error n [payment through paypal credit card
-    => 045365	when product having variants then under promotion it's listing the name without option, so unable to distinguish the item
-
+    => 045365 - when product having variants then under promotion it's listing the name without option, so unable to distinguish the item
+    => 045390 - Update required in seller inventory report.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

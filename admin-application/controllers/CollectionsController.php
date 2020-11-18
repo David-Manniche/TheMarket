@@ -636,7 +636,6 @@ class CollectionsController extends AdminBaseController
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $data = FatApp::getDb()->fetch($rs);
-
             if ($data === false) {
                 FatUtility::dieWithError($this->str_invalid_request);
             }

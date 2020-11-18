@@ -1,5 +1,5 @@
 <?php
-class TaxBase extends PluginBase
-{   
 
+class TaxBase extends PluginBase
+{
 }
