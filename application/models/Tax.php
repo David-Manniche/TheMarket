@@ -520,7 +520,7 @@ class Tax extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
-
+        
         if (!empty($combinedData)) {
             foreach ($combinedData as $comData) {
                 $taxval = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
