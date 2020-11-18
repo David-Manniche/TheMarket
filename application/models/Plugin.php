@@ -102,7 +102,7 @@ class Plugin extends MyAppModel
      * getDirectory - Used to get plugin directory
      *
      * @param  mixed $pluginType
-     * @return void
+     * @return mixed
      */
     public static function getDirectory(int $pluginType)
     {

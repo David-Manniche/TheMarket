@@ -30,7 +30,7 @@ class TaxJarTax extends TaxBase
     private const TAX_RATE_SPECIAL = 7;
 
     public $requiredKeys = [
-        'live_key',
+        'sandbox_key',
         'environment'
     ];
 
@@ -43,28 +43,7 @@ class TaxJarTax extends TaxBase
      */
     public function __construct(int $langId, array $fromAddress = array(), array $toAddress = array())
     {
-        $this->langId = FatUtility::int($langId);
-        if (1 > $this->langId) {
-            $this->langId = CommonHelper::getLangId();
-        }
-
-        if (false == $this->validateSettings($langId)) {
-            return [
-                'status' => false,
-                'msg' => $this->error,
-            ];
-        }
-
-        $isLiveMode = $this->settings['environment'];
-        $apiToken = $this->settings['live_key'];
-        if (0 == $isLiveMode) {
-            $apiToken = $this->settings['sandbox_key'];
-        }
-
-        $this->client = TaxJar\Client::withApiKey($apiToken);
-        if (0 == $isLiveMode) {
-            $this->client->setApiConfig('api_url', TaxJar\Client::SANDBOX_API_URL);
-        }
+        $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
 
         if (!empty($fromAddress)) {
             $this->setFromAddress($fromAddress);
@@ -73,9 +52,45 @@ class TaxJarTax extends TaxBase
         if (!empty($toAddress)) {
             $this->setToAddress($toAddress);
         }
+        $this->requiredKeys();
+    }
 
-        //$this->client->setApiConfig('headers', ['X-TJ-Expected-Response' => 422]);
-        //$this->client->setApiConfig('debug', true);
+    /**
+     * requiredKeys
+     *
+     * @return void
+     */
+    public function requiredKeys()
+    {
+        $envoirment = FatUtility::int($this->getKey('environment'));
+        if (0 < $envoirment) {
+            $this->requiredKeys = [
+                'live_key',
+                'environment',
+            ];
+        }
+    }
+     
+
+    /**
+     * init
+     *
+     * @return void
+     */
+    public function init()
+    {
+        if (false == $this->validateSettings()) {
+            return false;
+        }
+        
+        $env = $this->settings['environment'];
+        $apiToken = Plugin::ENV_SANDBOX == $env ? $this->settings['sandbox_key'] : $this->settings['live_key'];
+
+        $this->client = TaxJar\Client::withApiKey($apiToken);
+        if (Plugin::ENV_SANDBOX == $env) {
+            $this->client->setApiConfig('api_url', TaxJar\Client::SANDBOX_API_URL);
+        }
+        return true;
     }
 
     /**
@@ -194,11 +209,18 @@ class TaxJarTax extends TaxBase
      */
     public function getCodes(int $pageSize = null, int $pageNumber = null, string $filter = null, array $orderBy = null, bool $formatted = true)
     {
-        if (false == $formatted) {
-            return $this->client->categories();
+        try {
+            $codesArr = $this->client->categories();
+            if (false == $formatted) {
+                return $codesArr;
+            }
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
+            ];
         }
 
-        $codesArr = $this->client->categories();
         $formatedCodesArr = [];
         if (!empty($codesArr)) {
             foreach ($codesArr as $code) {
@@ -211,17 +233,10 @@ class TaxJarTax extends TaxBase
             }
         }
 
-        try {
-            return [
-                'status' => true,
-                'data' => $formatedCodesArr
-            ];
-        } catch (\Exception $e) {
-            return [
-                'status' => false,
-                'msg' => $e->getMessage()
-            ];
-        }
+        return [
+            'status' => true,
+            'data' => $formatedCodesArr
+        ];
     }
 
     /**

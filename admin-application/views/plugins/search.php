@@ -124,7 +124,7 @@ $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadList ); return(fal
 $frm->setFormTagAttribute('action', UrlHelper::generateUrl('plugins', $function));
 $frm->addHiddenField('', 'status');
 $frm->addHiddenField('', 'plugin_type', $pluginType); ?>
-<section class="section">
+<section class="section mt-0">
     <div class="sectionhead">
         <h4><?php echo CommonHelper::replaceStringData(Labels::getLabel('LBL_{PLUGINNAME}_PLUGINS', $adminLangId), ['{PLUGINNAME}' =>  $pluginTypes[$type]]); ?> </h4>
         <?php

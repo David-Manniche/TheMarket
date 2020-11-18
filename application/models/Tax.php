@@ -90,8 +90,8 @@ class Tax extends MyAppModel
         $activatedTaxServiceId = Tax::getActivatedServiceId();
 
         $srch->addFld('taxcat_id');
-        if ($activatedTaxServiceId) {
-            $srch->addFld('concat(IFNULL(taxcat_name,taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
+        if (0 < $activatedTaxServiceId) {
+            $srch->addFld('concat(IFNULL(taxcat_name, taxcat_identifier), " (",taxcat_code,")")as taxcat_name');
         } else {
             $srch->addFld('IFNULL(taxcat_name,taxcat_identifier)as taxcat_name');
         }
@@ -391,7 +391,7 @@ class Tax extends MyAppModel
             $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
             $error = '';
-            if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
+            if (false === PluginHelper::includePlugin($pluginKey, Plugin::getDirectory(Plugin::TYPE_TAX_SERVICES), $error, $langId)) {
                 return $data = [
                     'status' => false,
                     'msg' => $error,
@@ -430,11 +430,21 @@ class Tax extends MyAppModel
                 'itemCode' => 'S-' . $productId,
                 /*'taxCode' => $taxCategoryRow['taxcat_code'],*/
                 'taxCode' => '',
-                 
+
             ];
             array_push($shippingItems, $shippingItem);
 
             $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
+            if (false === $taxApi->init()) {
+                return $data = [
+                    'status' => false,
+                    'msg' => $taxApi->getError(),
+                    'tax' => $tax,
+                    'taxCode' => $taxCategoryRow['taxcat_code'],
+                    'options' => []
+                ];
+            }
+
             $buyerId = FatUtility::int($extraInfo['buyerId']);
             $taxRates = $taxApi->getRates($itemsArr, $shippingItems, $buyerId);
 
@@ -533,7 +543,7 @@ class Tax extends MyAppModel
         $pluginKey = Plugin::getAttributesById($activatedTaxServiceId, 'plugin_code');
 
         $error = '';
-        if (false === PluginHelper::includePlugin($pluginKey, 'tax', $error, $langId)) {
+        if (false === PluginHelper::includePlugin($pluginKey, Plugin::getDirectory(Plugin::TYPE_TAX_SERVICES), $error, $langId)) {
             $this->error = $error;
             return false;
         }
@@ -596,6 +606,10 @@ class Tax extends MyAppModel
         array_push($shippingItems, $shippingItem);
 
         $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
+        if (false === $taxApi->init()) {
+            $this->error = $$taxApi->getError();
+            return false;
+        }
 
         $taxRates = $taxApi->createInvoice($itemsArr, $shippingItems, $childOrderInfo['op_selprod_user_id'], $childOrderInfo['order_date_added'], $childOrderInfo['op_invoice_number']);
 
@@ -655,15 +669,8 @@ class Tax extends MyAppModel
      */
     public static function getActivatedServiceId(): int
     {
-        $defaultTaxApi = FatApp::getConfig('CONF_DEFAULT_PLUGIN_' . Plugin::TYPE_TAX_SERVICES, FatUtility::VAR_INT, 0);
-        $defaultTaxApiIsActive = 0;
-        if (0 < $defaultTaxApi) {
-            $defaultTaxApiIsActive = Plugin::getAttributesById($defaultTaxApi, 'plugin_active');
-        }
-        if (0 < $defaultTaxApiIsActive) {
-            return  $defaultTaxApi;
-        }
-        return  $defaultTaxApiIsActive;
+        $pluginObj = new Plugin();
+        return (int)$pluginObj->getDefaultPluginData(Plugin::TYPE_TAX_SERVICES, 'plugin_id');
     }
 
     /**
