@@ -21,7 +21,7 @@ class UsersController extends AdminBaseController
         $this->objPrivilege->canViewUsers();
         $frmSearch = $this->getUserSearchForm();
         $data = FatApp::getPostedData();
-        if ($data) {
+        if (is_array($data) && isset($data['id'])) {
             $data['user_id'] = $data['id'];
             unset($data['id']);
             $frmSearch->fill($data);
