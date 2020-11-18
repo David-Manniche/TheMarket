@@ -1181,3 +1181,6 @@ ALTER TABLE `tbl_transactions_failure_log`
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_MAXIMUM_OF_{LIMIT}_{PLUGIN-TYPE}_CAN_BE_ACTIVATED_SIMULTANEOUSLY';
 -- ------------------TV-9.2.3.20201117-----------------
+-- ---Rounding off with order---- --
+ALTER TABLE `tbl_order_products` ADD `op_rounding_off` DECIMAL(4,2) NOT NULL AFTER `op_tax_code`;
+ALTER TABLE `tbl_orders` ADD `order_rounding_off` DECIMAL(4,2) NOT NULL AFTER `order_deleted`;

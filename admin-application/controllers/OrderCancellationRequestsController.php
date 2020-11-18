@@ -56,7 +56,7 @@ class OrderCancellationRequestsController extends AdminBaseController
             array(
                 'ocrequest_id', 'ocrequest_message', 'ocrequest_date', 'ocrequest_status',
                 'buyer.user_name as buyer_name', 'buyer_cred.credential_username as buyer_username', 'buyer_cred.credential_email as buyer_email', 'buyer.user_phone as buyer_phone', 'seller.user_name as seller_name', 'seller_cred.credential_username as seller_username', 'seller_cred.credential_email as seller_email', 'seller.user_phone as seller_phone', 'op_invoice_number',
-                'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'op_qty', 'op_unit_price', 'order_tax_charged', 'op_other_charges'
+                'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'IFNULL(ocreason_title, ocreason_identifier) as ocreason_title', 'op_qty', 'op_unit_price', 'order_tax_charged', 'op_other_charges', 'op_rounding_off'
             )
         );
 
@@ -134,14 +134,14 @@ class OrderCancellationRequestsController extends AdminBaseController
         $srch->joinOrderProductChargesByType(OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addMultipleFields(array('order_reward_point_used', 'order_pmethod_id','opcharge_amount','order_reward_point_value'));
+        $srch->addMultipleFields(array('order_reward_point_used', 'order_pmethod_id', 'opcharge_amount', 'order_reward_point_value'));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
-        
+
         $orderRewardUsed = 0;
         if (!empty($row) && $row['order_reward_point_used'] > 0) {
             //$orderRewardUsed = $row['order_reward_point_used'];
-            $orderRewardUsed = -1 * ( $row['order_reward_point_used'] / $row['order_reward_point_value']) * $row['opcharge_amount'] ;
+            $orderRewardUsed = -1 * ($row['order_reward_point_used'] / $row['order_reward_point_value']) * $row['opcharge_amount'];
         }
 
         $canRefundToCard = false;
@@ -193,7 +193,7 @@ class OrderCancellationRequestsController extends AdminBaseController
                 $notAllowedStatusChangeArr = array_merge(
                     unserialize(FatApp::getConfig("CONF_PROCESSING_ORDER_STATUS")),
                     unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")),
-                    (array)FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")
+                    (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")
                 );
                 $status = Orders::getOrderStatusArr($this->adminLangId);
                 if (in_array($row['op_status_id'], $notAllowedStatusChangeArr)) {

@@ -24,6 +24,7 @@
 /testcases/bootstrap.php
 /error_log
 /application/views/designer/*
+/public/application_top.php
 
 # zip files
 /*.zip

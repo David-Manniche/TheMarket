@@ -29,6 +29,7 @@ $mins = abs($mins);
 $hrs = floor($mins / 60);
 $mins -= $hrs * 60;
 $offset = sprintf('%+d:%02d', $hrs * $sgn, $mins);
+FatApp::getDb()->query("SET sql_mode = 'NO_ENGINE_SUBSTITUTION'");
 FatApp::getDb()->query("SET time_zone = '" . $offset . "'");
 /* ] */
 
