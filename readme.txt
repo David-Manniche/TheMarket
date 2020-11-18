@@ -438,6 +438,7 @@ Bugs:
     => 045365 - when product having variants then under promotion it's listing the name without option, so unable to distinguish the item
     => 045390 - Update required in seller inventory report.
     => 045416 - on order details page >> shipping charges should be properly aligned.
+    => 045418 - On Sales report >> in case of rounding off amount >> Some warning message is there 
 ---------------TV-9.2.3.20201118------------------------    
 Enhancements:
     => Tax module upgrade
