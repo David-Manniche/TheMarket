@@ -1169,7 +1169,7 @@ class AccountController extends LoggedUserController
         $data = $userObj->getUserBankInfo();
 
         if (true === MOBILE_APP_API_CALL) {
-            $this->set('data', $data);
+            $this->set('data', ['bankInfo' => (object)$data]);
             $this->_template->render();
         }
 
