@@ -308,6 +308,8 @@ $combTaxCount = 0;
     $(function() {
         $('.selectpicker').selectpicker();
     });
+   
+    
 </script>
 <script>
     $(document).ready(function() {

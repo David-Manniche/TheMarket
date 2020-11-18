@@ -1,6 +1,4 @@
 $("document").ready(function() {
-	$(".addr_country_id").trigger("change");
-
 	$('select[name="taxrule_taxstr_id[]"]').each(function() {
 		$(this).trigger('change');
     });
@@ -19,13 +17,31 @@ $("document").ready(function() {
 		}
 		$(dv).selectpicker('refresh');
 	});
+        
+        
+        $(document).on('change', 'select.selectpicker', function() {
+                if($(this).val().length > 0){
+                    $(this).siblings('button').removeClass('error');
+                }else{
+                    $(this).siblings('button').addClass('error');
+                }
+		
+	});
 
 });
 
 
 (function() {
 	setupTaxRule = function(frm) {
-        if (!$(frm).validate()) return;
+        if (!$(frm).validate()){
+            $('.selectpicker').each(function(){
+                if($(this).hasClass('error')){
+                    $(this).siblings('button').addClass('error');
+                }
+            })
+            
+            return;            
+        } 
 		/* var data = fcom.frmData(frm); */
 		var dataToSave = [];
 		$(".tax-rule-form--js").each(function(index, data) {
@@ -87,24 +103,7 @@ $("document").ready(function() {
             }
         });
     };
-})();
-
-function checkStatesDefault(parentIndex, countryId, stateIds) {
-	var dv = '.tax-rule-form-'+ parentIndex + ' .selectpicker';
-	fcom.ajax(fcom.makeUrl('Users', 'getStates', [countryId, 0]), '', function(res) {
-		$(dv).empty();
-		var firstChild = '<option value = "-1" >All</option>';
-		$(dv).append(firstChild);
-		$(dv).append(res);
-		$(dv).selectpicker('val', stateIds);
-		if (stateIds.indexOf("-1") > -1 ) {
-			$(dv).attr('disabled', true);
-		}
-		$(dv).selectpicker('refresh');
-	});
-}
-
-function getCountryStatesTaxInTaxForm(currentSel, countryId, stateId) {
+    getCountryStatesTaxInTaxForm = function(currentSel, countryId, stateId) {    
 	var parentIndex = $(currentSel).parents('.tax-rule-form--js').data('index');
 	var dv = '.tax-rule-form-'+ parentIndex + ' .selectpicker';
 	
@@ -118,21 +117,44 @@ function getCountryStatesTaxInTaxForm(currentSel, countryId, stateId) {
         $(dv).selectpicker('refresh');
         return;
     }
-    fcom.displayProcessing();
+    fcom.displayProcessing();    
     fcom.ajax(fcom.makeUrl('Users', 'getStates', [countryId, stateId]), '', function(res) {
 		var locationFld = '.tax-rule-form-'+ parentIndex + ' select[name="taxruleloc_type[]"]';
 		$(dv).removeAttr('disabled');
 		$(locationFld).removeAttr('disabled');
 		$(dv).append(res);
+                $(dv).find("option[value='-1']:eq(1)").remove();
 		$(dv).selectpicker('refresh');
 		if ('' == countryId) {
 			$(locationFld).val($(locationFld + " option:first").val()).attr('disabled', 'disabled');
 		} else if ('' == $(locationFld).val()) {
-			$(locationFld).val($(locationFld + " option:eq(1)").val());
+			$(locationFld).val($(locationFld + " option:eq(1)").val()); 
+                        $(locationFld).trigger('change');
 		}
+                
     });
     $.systemMessage.close();
 };
+    
+})();
+
+function checkStatesDefault(parentIndex, countryId, stateIds) {    
+	var dv = '.tax-rule-form-'+ parentIndex + ' .selectpicker';
+	fcom.ajax(fcom.makeUrl('Users', 'getStates', [countryId, 0]), '', function(res) {
+		$(dv).empty();
+		var firstChild = '<option value = "-1" >All</option>';
+		$(dv).append(firstChild);
+		$(dv).append(res);
+                $(dv).find("option[value='-1']:eq(1)").remove();
+		$(dv).selectpicker('val', stateIds);
+		if (stateIds.indexOf("-1") > -1 ) {
+			$(dv).attr('disabled', true);
+		}
+		$(dv).selectpicker('refresh');
+	});
+}
+
+
 
 function getCombinedTaxes(currentSel, taxStrId) {
 	var parentIndex = $(currentSel).parents('.tax-rule-form--js').data('index');
