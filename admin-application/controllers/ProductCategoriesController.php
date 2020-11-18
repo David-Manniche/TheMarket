@@ -85,6 +85,7 @@ class ProductCategoriesController extends AdminBaseController
         $prodCat = new ProductCategory();
         $categoriesArr = $prodCat->getCategoriesForSelectBox($this->adminLangId, $prodCatId);
         $categories =  array(0 => Labels::getLabel('LBL_Root_Category', $this->adminLangId)) + $prodCat->makeAssociativeArray($categoriesArr);
+        $data = array('parent_category_name' => $categories[0]);
         if (0 < $prodCatId) {
             $data = ProductCategory::getAttributesById($prodCatId);
             if ($data === false) {
@@ -97,9 +98,9 @@ class ProductCategoriesController extends AdminBaseController
             }            
             $data['parent_category_name'] = $categories[$data['prodcat_parent']] ?? '';
             
-            $data = array_merge($data, $catNameArr);
-            $prodCatFrm->fill($data);
+            $data = array_merge($data, $catNameArr);            
         }
+        $prodCatFrm->fill($data);
         $mediaLanguages = applicationConstants::bannerTypeArr();
         $screenArr = applicationConstants::getDisplaysArr($this->adminLangId);
         $langData = Language::getAllNames();
