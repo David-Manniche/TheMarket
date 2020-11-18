@@ -683,7 +683,14 @@ class AdvertiserController extends AdvertiserBaseController
                     $rs = $srch->getResultSet();
                     $row = FatApp::getDb()->fetch($rs);
                     if (!empty($row)) {
-                        $label = $row['selprod_title'] . ' (' . $row['product_name'] . ')';
+                        $variantStr = '';
+                        $options = SellerProduct::getSellerProductOptions($row['selprod_id'], true, $this->siteLangId);
+                        if (is_array($options) && count($options)) {
+                            foreach ($options as $op) {
+                                $variantStr .= '(' . $op['option_name'] . ': ' . $op['optionvalue_name'] . ')';
+                            }
+                        }
+                        $label = ($row['selprod_title'] != '') ? $row['selprod_title'] . $variantStr : $row['product_name'] . $variantStr;
                         $value = $row['selprod_id'];
                     }
                 }
