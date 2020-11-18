@@ -8,7 +8,7 @@ class PatchUpdateController extends AdminBaseController
         ini_set('memory_limit', '100M');
         set_time_limit(0);
     }
-    
+
     /**
      * updateShippingProfiles
      * @Description : For V9.3 to update default shipping profile for all seller and admin if not created and products are not bound.
@@ -34,8 +34,8 @@ class PatchUpdateController extends AdminBaseController
         }
         /* For All Sellers */
         echo 'Done!';
-    }    
-    
+    }
+
     public function updateTaxCategories()
     {
         $plugin = new Plugin();
@@ -48,7 +48,15 @@ class PatchUpdateController extends AdminBaseController
         if (false === $taxPluginObj = PluginHelper::callPlugin($pluginKey, [$this->adminLangId], $error, $this->adminLangId)) {
             FatUtility::dieWithError($error);
         }
+    
+        if (false === $taxPluginObj->init()) {
+            FatUtility::dieWithError($taxPluginObj->getError());
+        }
+
         $codesArr = $taxPluginObj->getCodes(null, null, null, array(), false);
+        if (is_array($codesArr) && false === $codesArr['status']) {
+            FatUtility::dieWithError($codesArr['msg']);
+        }
 
         $db = FatApp::getDb();
         $parentArr = [];
