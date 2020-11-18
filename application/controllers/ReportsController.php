@@ -73,7 +73,7 @@ class ReportsController extends SellerBaseController
         $cnd = $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PAID);
         $cnd->attachCondition('plugin_code', '=', 'cashondelivery');
         $cnd->attachCondition('plugin_code', '=', 'payatstore');
-        $srch->addMultipleFields(array('op_selprod_title', 'op_product_name', 'op_selprod_options', 'op_brand_name', 'SUM(op_refund_qty) as totRefundQty', 'SUM(op_qty - op_refund_qty) as totSoldQty', 'op.op_selprod_id', 'IFNULL(tquwl.wishlist_user_counts, 0) as wishlist_user_counts'));
+        $srch->addMultipleFields(array('op_selprod_title', 'op_product_name', 'op_selprod_options', 'op_brand_name', 'SUM(op_refund_qty) as totRefundQty', 'SUM(op_qty - op_refund_qty) as totSoldQty', 'op.op_selprod_id', 'IFNULL(tquwl.wishlist_user_counts, 0) as wishlist_user_counts', 'op_selprod_sku'));
         $srch->addGroupBy('op.op_selprod_id');
         $srch->addGroupBy('op.op_is_batch');
         if ($topPerformed) {
@@ -89,7 +89,8 @@ class ReportsController extends SellerBaseController
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $sheetData = array();
-            $arr = array(Labels::getLabel('LBL_Product', $this->siteLangId), Labels::getLabel('LBL_Custom_Title', $this->siteLangId), Labels::getLabel('LBL_Options', $this->siteLangId), Labels::getLabel('LBL_Brand', $this->siteLangId), Labels::getLabel('LBL_WishList_User_Counts', $this->siteLangId));
+            $arr = array(Labels::getLabel('LBL_Product', $this->siteLangId), Labels::getLabel('LBL_Custom_Title', $this->siteLangId), Labels::getLabel('LBL_Options', $this->siteLangId), Labels::getLabel('LBL_Brand', $this->siteLangId),Labels::getLabel('LBL_SKU', $this->siteLangId), Labels::getLabel('LBL_WishList_User_Counts', $this->siteLangId));
+            
             if ($topPerformed) {
                 array_push($arr, Labels::getLabel('LBL_Sold_Quantity', $this->siteLangId));
             } else {
@@ -98,8 +99,8 @@ class ReportsController extends SellerBaseController
 
             array_push($sheetData, $arr);
             while ($row = FatApp::getDb()->fetch($rs)) {
-                $arr = array($row['op_product_name'], $row['op_selprod_title'], $row['op_selprod_options'],  $row['op_brand_name'], $row['wishlist_user_counts']);
-
+                $arr = array($row['op_product_name'], $row['op_selprod_title'], $row['op_selprod_options'],  $row['op_brand_name'],$row['op_selprod_sku'], $row['wishlist_user_counts']);
+             
                 if ($topPerformed) {
                     array_push($arr, $row['totSoldQty']);
                 } else {
@@ -174,17 +175,17 @@ class ReportsController extends SellerBaseController
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addCondition('wishlist_user_counts', '>', applicationConstants::NO);
         $srch->addOrder('wishlist_user_counts', 'DESC');
-        $srch->addMultipleFields(array('selprod_id', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_active', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(tquwl.wishlist_user_counts, 0) as wishlist_user_counts'));
+        $srch->addMultipleFields(array('selprod_id', 'product_id', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'selprod_active', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(tquwl.wishlist_user_counts, 0) as wishlist_user_counts', 'selprod_sku'));
 
         if ($export == "export") {
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $rs = $srch->getResultSet();
             $sheetData = array();
-            $arr = array(Labels::getLabel('LBL_Product', $this->siteLangId), Labels::getLabel('LBL_Custom_Title', $this->siteLangId), Labels::getLabel('LBL_Brand', $this->siteLangId), Labels::getLabel('LBL_User_Counts', $this->siteLangId));
+            $arr = array(Labels::getLabel('LBL_Product', $this->siteLangId), Labels::getLabel('LBL_Custom_Title', $this->siteLangId), Labels::getLabel('LBL_Brand', $this->siteLangId),Labels::getLabel('LBL_SKU', $this->siteLangId), Labels::getLabel('LBL_User_Counts', $this->siteLangId));
             array_push($sheetData, $arr);
             while ($row = FatApp::getDb()->fetch($rs)) {
-                $arr = array($row['product_name'], $row['selprod_title'], $row['brand_name'], $row['wishlist_user_counts']);
+                $arr = array($row['product_name'], $row['selprod_title'], $row['brand_name'], $row['selprod_sku'], $row['wishlist_user_counts']);
                 array_push($sheetData, $arr);
             }
             CommonHelper::convertToCsv($sheetData, Labels::getLabel('LBL_Most_Favorites_Products_Report', $this->siteLangId) . date("Y-m-d") . '.csv', ',');
@@ -353,7 +354,7 @@ class ReportsController extends SellerBaseController
         $srch->addMultipleFields(
             array(
                 'selprod_id', 'selprod_user_id', 'selprod_cost', 'selprod_price', 'selprod_stock', 'selprod_product_id',
-                'selprod_active', 'selprod_available_from', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title',
+                'selprod_active', 'selprod_available_from', 'IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title','selprod_sku',
                 'b_l.brand_name', 'IFNULL(qryop.stock_on_order, 0) as stock_on_order'
             )
         );
@@ -387,7 +388,7 @@ class ReportsController extends SellerBaseController
                     $arr['options'] = SellerProduct::getSellerProductOptions($arr['selprod_id'], true, $this->siteLangId);
                 }
             }
-            $this->set('arrListing', $arrListing);            
+            $this->set('arrListing', $arrListing);
             $this->set('page', $page);
             $this->set('pageSize', $pageSize);
             $this->set('pageCount', $srch->pages());

@@ -375,6 +375,7 @@ class OrderPayment extends Orders
             $this->error = Labels::getLabel('MSG_Invalid_Order', $this->commonLangId);
             return false;
         }
+        return true;
     }
 
     public function chargeUserWallet($amountToBeCharge)
