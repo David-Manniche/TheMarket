@@ -435,8 +435,8 @@ Bugs:
     => 045358 - while purchasing subscription plan on applying coupon> button is not proper
     => 045338 - when any product having multiple options and accessed inventories accessed through catalog then serial no. is displaying in minus
     => 045361 - error n [payment through paypal credit card
-    => 045365	when product having variants then under promotion it's listing the name without option, so unable to distinguish the item
-
+    => 045365 - when product having variants then under promotion it's listing the name without option, so unable to distinguish the item
+    => 045390 - Update required in seller inventory report.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
