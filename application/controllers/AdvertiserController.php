@@ -592,7 +592,7 @@ class AdvertiserController extends AdvertiserBaseController
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAll($rs, 'promotion_id');
         $promotionBudgetDurationArr = Promotion::getPromotionBudgetDurationArr($this->siteLangId);
-        
+
         $this->set('arrYesNo', applicationConstants::getYesNoArr($this->siteLangId));
         $this->set('arrYesNoClassArr', applicationConstants::getYesNoClassArr());
         $this->set('activeInactiveArr', applicationConstants::getActiveInactiveArr($this->siteLangId));
@@ -1106,9 +1106,16 @@ class AdvertiserController extends AdvertiserBaseController
         $products = $db->fetchAll($rs, 'selprod_id');
         $json = array();
         foreach ($products as $key => $product) {
+            $variantStr = '';
+            $options = SellerProduct::getSellerProductOptions($product['selprod_id'], true, $this->siteLangId);
+            if (is_array($options) && count($options)) {
+                foreach ($options as $op) {
+                    $variantStr .= '(' . $op['option_name'] . ': ' . $op['optionvalue_name'] . ')';
+                }
+            }
             $json[] = array(
                 'id' => $key,
-                'name' => strip_tags(html_entity_decode(($product['selprod_title'] != '') ? $product['selprod_title'] : $product['product_name'], ENT_QUOTES, 'UTF-8'))
+                'name' => strip_tags(html_entity_decode(($product['selprod_title'] != '') ? $product['selprod_title'] . $variantStr : $product['product_name'] . $variantStr, ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
