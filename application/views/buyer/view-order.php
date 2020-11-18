@@ -196,7 +196,7 @@ if (!$print) { ?>
                                     <?php if (array_key_exists('order_rounding_off', $orderDetail) && 0 != $orderDetail['order_rounding_off']) { ?>
                                         <p>
                                             <strong>
-                                            <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>:
+                                                <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>:
                                             </strong>
                                             <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
                                         </p>
@@ -473,7 +473,7 @@ if (!$print) { ?>
                                     </tr>
                                     <?php if (0 < $shippingCharges) { ?>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="8">
                                                 <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId) ?>
                                             </td>
                                             <td>
@@ -537,7 +537,7 @@ if (!$print) { ?>
                                     <?php if (array_key_exists('order_rounding_off', $orderDetail) && 0 != $orderDetail['order_rounding_off']) { ?>
                                         <tr>
                                             <td colspan="8">
-                                            <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>
+                                                <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>
                                             </td>
                                             <td>
                                                 <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
