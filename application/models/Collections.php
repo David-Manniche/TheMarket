@@ -195,7 +195,7 @@ class Collections extends MyAppModel
      */
     public static function getTypeSpecificLayouts(int $langId): array
     {
-        return $collectionLayouts = [
+        return [
             self::COLLECTION_TYPE_PRODUCT => [
                 self::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
                 self::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),

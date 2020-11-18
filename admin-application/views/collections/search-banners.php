@@ -2,7 +2,9 @@
 <div class="sectionhead" style=" padding-bottom:20px">
     <h4><?php echo Labels::getLabel('LBL_Banners_Listing', $adminLangId); ?>
     </h4>
-    <a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="bannerForm(<?php echo $collection_id; ?>)" ;><?php echo Labels::getLabel('LBL_ADD_NEW', $adminLangId); ?></a>
+    <a href="javascript:void(0)" class="themebtn btn-default btn-sm" onClick="bannerForm(<?php echo $collection_id; ?>, 0)" ;>
+        <?php echo Labels::getLabel('LBL_ADD_NEW', $adminLangId); ?>
+    </a>
 </div>
 <?php
 $arr_flds = array(
