@@ -316,6 +316,7 @@ class CommonHelper extends FatUtility
                     $rewardDiscount = isset($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) ? abs($opArr['charges'][OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT]['opcharge_amount']) : 0;
                     $amount = $amount + $rewardDiscount;
                 }
+                $amount += $opArr['op_rounding_off'];
                 break;
             case 'SHIPPING':
                 $amount = $shippingAmount;
@@ -420,6 +421,7 @@ class CommonHelper extends FatUtility
 
         if ($requestRow['op_qty'] == $requestRow['orrequest_qty']) {
             $op_refund_amount = $totalPaidAmtBuyer;
+            $op_refund_amount += $requestRow["op_rounding_off"];
         } else {
             $op_refund_amount = $cartAmount - ($rewardAmountPerQty * $requestRow['orrequest_qty']) + $taxToRefund - $deductVolumeDiscountFromRefund - $deductCouponDiscountFromRefund;
         }
@@ -865,7 +867,7 @@ class CommonHelper extends FatUtility
     {
         $_SESSION['app_user'] = true;
     }
-    
+
     /**
      * isAppUser - Used in case of web view.
      *
@@ -1989,5 +1991,13 @@ class CommonHelper extends FatUtility
             $file_row = AttachedFile::getAttachment($fileType, $recordId, $recordSubId, $langId, true, $screen);
         }
         return $file_row;
+    }
+
+    public static function getRoundingOff($childOrder)
+    {
+        if (array_key_exists('op_rounding_off', $childOrder) && $childOrder['op_rounding_off'] != 0) {
+            return CommonHelper::displayMoneyFormat($childOrder['op_rounding_off']);
+        }
+        return false;
     }
 }

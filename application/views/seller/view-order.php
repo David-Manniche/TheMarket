@@ -127,8 +127,15 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                         if($rewardPointDiscount != 0){?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Reward_Point_Discount',$siteLangId);?>:</strong> <?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount);?></p>
                                 <?php }  */ ?>
+                                <?php if (array_key_exists('order_rounding_off', $orderDetail) && 0 != $orderDetail['order_rounding_off'] ) { ?>
+                                    <p>
+                                        <strong>
+                                        <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>:
+                                        </strong>
+                                        <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
+                                    </p>
+                                <?php } ?>
                                 <p><strong><?php echo Labels::getLabel('LBL_Order_Total', $siteLangId); ?>: </strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?>
-                                </p>
 
                             </div>
                         </div>
@@ -267,8 +274,9 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                             } ?>
                                         </td>
                                     <?php } ?>
-
-                                    <td><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?></td>
+                                    <td>
+                                        <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'netamount', false, User::USER_TYPE_SELLER), true, false, true, false, true); ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

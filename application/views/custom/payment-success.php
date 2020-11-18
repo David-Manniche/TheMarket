@@ -295,10 +295,17 @@ array_walk($orderFulFillmentTypeArr, function ($row) use (&$fulfillmentType) {
                                                                     <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></span>
                                                                 </li>
                                                             <?php  } ?>
+                                                            <?php if (array_key_exists('order_rounding_off', $orderInfo) && $orderInfo['order_rounding_off'] != 0) { ?>
+                                                                <li class="list-group-item">
+                                                                    <span class="label"><?php echo (0 < $orderInfo['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?></span>
+                                                                    <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_rounding_off']); ?></span>
+                                                                </li>
+                                                            <?php } ?>
                                                             <li class="list-group-item hightlighted">
                                                                 <span class="label"><?php echo Labels::getLabel('LBL_NET_AMOUNT', $siteLangId); ?></span>
                                                                 <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
                                                             </li>
+
                                                         </ul>
                                                     </div>
                                                 </div>
