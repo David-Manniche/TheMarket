@@ -15,7 +15,7 @@ class AvalaraTax extends TaxBase
     private $invoiceId;
     private $response;
     private $invoiceDate;
-    
+
     public $requiredKeys = [
         'account_number',
         'company_code',
@@ -30,16 +30,9 @@ class AvalaraTax extends TaxBase
      * @param  array $fromAddress
      * @param  array $toAddress
      */
-    public function __construct(int $langId, array $fromAddress = [] , array $toAddress = [])
+    public function __construct(int $langId, array $fromAddress = [], array $toAddress = [])
     {
-        $this->langId = FatUtility::int($langId);
-        if (1 > $this->langId) {
-            $this->langId = CommonHelper::getLangId();
-        }
-
-        if (false == $this->validateSettings()) {
-            return false;
-        }
+        $this->langId = 0 < $langId ? $langId : CommonHelper::getLangId();
 
         if (!empty($fromAddress)) {
             $this->setFromAddress($fromAddress);
@@ -48,13 +41,26 @@ class AvalaraTax extends TaxBase
         if (!empty($toAddress)) {
             $this->setToAddress($toAddress);
         }
-        
+    }
+
+    /**
+     * init
+     *
+     * @return void
+     */
+    public function init()
+    {
+        if (false == $this->validateSettings()) {
+            return false;
+        }
+
         $environment = FatUtility::int($this->settings['environment']) == 1 ? 'production' : 'sandbox';
 
-        $this->client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $environment);
+        $this->client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $environment);
         $this->client->withLicenseKey($this->settings['account_number'], $this->settings['license_key']);
         $this->client->withCatchExceptions(false);
         $this->companyCode = $this->settings['company_code'];
+        return true;
     }
 
     public function checkCredentials($account_number, $license_key)
@@ -76,8 +82,8 @@ class AvalaraTax extends TaxBase
     {
         try {
             $this->setProducts($itemsArr)
-                    ->setProductsShipping($shippingItem)
-                    ->setCustomerCode($userId);
+                ->setProductsShipping($shippingItem)
+                ->setCustomerCode($userId);
 
             $taxes = $this->calculateTaxes();
         } catch (\Exception $e) {
@@ -108,10 +114,10 @@ class AvalaraTax extends TaxBase
     {
         try {
             $this->setProducts($itemsArr)
-                    ->setProductsShipping($shippingItem)
-                    ->setCustomerCode($userId)
-                    ->setInvoiceId($InvoiceNo)
-                    ->setInvoiceDate($invoiceDate);
+                ->setProductsShipping($shippingItem)
+                ->setCustomerCode($userId)
+                ->setInvoiceId($InvoiceNo)
+                ->setInvoiceDate($invoiceDate);
 
             $taxes = $this->calculateTaxes(true);
         } catch (\Exception $e) {
@@ -137,17 +143,22 @@ class AvalaraTax extends TaxBase
 
     public function getCodes($pageSize = null, $pageNumber = null, $filter = null, $orderBy = null, $formatted = true)
     {
+
         if (!empty($filter)) {
             $filter = "description contains '$filter' or taxCode contains '$filter'";
         }
 
-        $recordCount = 0;
-       
-        if (false == $formatted) {
-            return $this->client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);
+        try {
+            $codesArr = $this->client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);
+            if (false == $formatted) {
+                return $codesArr;
+            }
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'msg' => $e->getMessage()
+            ];
         }
-
-        $codesArr = $this->client->listTaxCodes($filter, $pageSize, $pageNumber, $orderBy);
 
         $formatedCodesArr = [];
         if (!empty($codesArr)) {
@@ -159,18 +170,10 @@ class AvalaraTax extends TaxBase
                 );
             }
         }
-
-        try {
-            return [
-                'status' => true,
-                'data' => $formatedCodesArr
-            ];
-        } catch (\Exception $e) {
-            return [
-                'status' => false,
-                'msg' => $e->getMessage()
-            ];
-        }
+        return [
+            'status' => true,
+            'data' => $formatedCodesArr
+        ];
     }
 
     public function getTaxApiActualResponse()
@@ -214,9 +217,9 @@ class AvalaraTax extends TaxBase
         if (!$this->validateitemArrKeys(current($productsShipping))) {
             throw new Exception("E_Avalara_Error:_Invalid_To_Product_Shipping_Array_keys");
         }
-        
-        foreach($productsShipping as &$Shipping){
-            if(empty($Shipping['taxCode'])){
+
+        foreach ($productsShipping as &$Shipping) {
+            if (empty($Shipping['taxCode'])) {
                 $Shipping['taxCode'] = 'FR000000';
             }
         }
@@ -288,14 +291,14 @@ class AvalaraTax extends TaxBase
             }
 
             foreach ($this->products as $itemKey => $item) {
-                $tb->withLine($item['amount']*$item['quantity'], $item['quantity'], $item['itemCode'], $item['taxCode']);
+                $tb->withLine($item['amount'] * $item['quantity'], $item['quantity'], $item['itemCode'], $item['taxCode']);
                 $tb->withLineDescription(Labels::getLabel('LBL_Product', $this->langId));
 
                 $fromAddress = $this->fromAddress;
                 $toAddress = $this->toAddress;
 
                 $tb->withLineAddress(Avalara\TransactionAddressType::C_SHIPFROM, $fromAddress['line1'], $fromAddress['line2'], null, $fromAddress['city'], $fromAddress['stateCode'], $fromAddress['postalCode'], $fromAddress['countryCode'])
-                        ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['stateCode'], $toAddress['postalCode'], $toAddress['countryCode']);
+                    ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['stateCode'], $toAddress['postalCode'], $toAddress['countryCode']);
             }
 
 
@@ -307,7 +310,7 @@ class AvalaraTax extends TaxBase
                 $toAddress = $this->toAddress;
 
                 $tb->withLineAddress(Avalara\TransactionAddressType::C_SHIPFROM, $fromAddress['line1'], $fromAddress['line2'], null, $fromAddress['city'], $fromAddress['state'], $fromAddress['postalCode'], $fromAddress['country'])
-                        ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['state'], $toAddress['postalCode'], $toAddress['country']);
+                    ->withLineAddress(Avalara\TransactionAddressType::C_SHIPTO, $toAddress['line1'], $toAddress['line2'], null, $toAddress['city'], $toAddress['state'], $toAddress['postalCode'], $toAddress['country']);
             }
 
             if (!empty($this->invoiceId)) {
@@ -347,7 +350,7 @@ class AvalaraTax extends TaxBase
         if (!is_array($address)) {
             return false;
         }
-       
+
         $requiredKeys = ['line1', 'line2', 'city', 'state', 'postalCode', 'country', 'stateCode', 'country', 'countryCode'];
         return !array_diff($requiredKeys, array_keys($address));
     }
@@ -364,21 +367,26 @@ class AvalaraTax extends TaxBase
 
     private function formatTaxes($taxes)
     {
-        // CommonHelper::printArray($taxes);
+        //CommonHelper::printArray($taxes);
         $formatedTax = [];
+        $rate = 0;
         foreach ($taxes->lines as $line) {
             $taxDetails = [];
             foreach ($line->details as $lineTaxdetail) {
                 $taxName = $lineTaxdetail->taxName;
+                $rate += $lineTaxdetail->rate;
                 if (isset($taxDetails[$taxName])) {
                     $taxDetails[$taxName]['value'] += $lineTaxdetail->tax;
+                    $taxDetails[$taxName]['rate'] += $lineTaxdetail->rate;
                 } else {
                     $taxDetails[$taxName]['value'] = $lineTaxdetail->tax;
                     $taxDetails[$taxName]['name'] = $taxName;
+                    $taxDetails[$taxName]['rate'] = $lineTaxdetail->rate;
                 }
             }
             $formatedTax[$line->itemCode] = array(
                 'tax' => $line->tax,
+                'rate' => $rate,
                 'taxDetails' => $taxDetails,
             );
         }

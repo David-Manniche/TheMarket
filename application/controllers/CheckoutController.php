@@ -1138,7 +1138,7 @@ class CheckoutController extends MyAppController
 
         $order_affiliate_user_id = 0;
         $order_affiliate_total_commission = 0;
-
+        $totalRoundingOff = 0;
         if ($cartProducts) {
             foreach ($cartProducts as $cartProduct) {
                 $productShippingData = array();
@@ -1355,7 +1355,8 @@ class CheckoutController extends MyAppController
                         'op_selprod_return_age' => $productInfo['return_age'],
                         'op_selprod_cancellation_age' => $productInfo['cancellation_age'],
                         'op_product_warranty' => $productInfo['product_warranty']
-                    ]
+                    ],
+                    'op_rounding_off' => $cartProduct['rounding_off'],
                 );
 
                 $order_affiliate_user_id = isset($cartProduct['affiliate_user_id']) ? $cartProduct['affiliate_user_id'] : '';
@@ -1401,7 +1402,9 @@ class CheckoutController extends MyAppController
                     ),
 
                 );
+                $totalRoundingOff += $cartProduct['rounding_off'];
             }
+            $orderData['order_rounding_off'] = $totalRoundingOff;
         }
         $orderData['order_affiliate_user_id'] = $order_affiliate_user_id;
         $orderData['order_affiliate_total_commission'] = $order_affiliate_total_commission;
@@ -2124,6 +2127,7 @@ class CheckoutController extends MyAppController
         $this->set('shippingAddress', $shippingAddress);
         $this->set('products', $products);
         $this->set('cartSummary', $cartSummary);
+        //CommonHelper::printArray($cartSummary, true);
         $data = $this->_template->render(false, false, 'checkout/get-financial-summary.php', true, false);
 
         $orderNetAmt = $cartSummary['orderNetAmount'];

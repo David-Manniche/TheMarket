@@ -937,7 +937,7 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponCategory');
         $frm->addHtml('', 'coupon_name', '');
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Category', $this->adminLangId), 'category_name');
-        $fld2 = $frm->addHtml('', 'addNewCategoryLink', '<a target="_blank" href="' . UrlHelper::generateUrl('productCategories') . '">' . Labels::getLabel('LBL_Category_Not_Found?_Click_here_to_add_new_category', $this->adminLangId) . '</a>');
+        $fld2 = $frm->addHtml('', 'addNewCategoryLink', '<small class="text--small"><a target="_blank" href="' . UrlHelper::generateUrl('productCategories') . '">' . Labels::getLabel('LBL_Category_Not_Found?_Click_here_to_add_new_category', $this->adminLangId) . '</a></small>');
         $fld1->attachField($fld2);
         $frm->addHiddenField('', 'coupon_id');
         return $frm;

@@ -8875,7 +8875,7 @@ body.switchtoggled .color_pallete .pallete_control {
 .table--listing th:first-child,
 .table td:first-child {
     border-radius: 5px 0 0 5px;
-    padding-left: 20px;
+    /* padding-left: 20px; */
 }
 
 .table--listing th:last-child {

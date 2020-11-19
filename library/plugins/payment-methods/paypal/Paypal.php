@@ -49,9 +49,10 @@ class Paypal extends PaymentMethodBase
     /**
      * init
      *
+     * @param  int $userId
      * @return bool
      */
-    public function init(): bool
+    public function init(int $userId): bool
     {
         if (false == $this->validateSettings()) {
             return false;
@@ -60,6 +61,13 @@ class Paypal extends PaymentMethodBase
         if (false === $this->loadBaseCurrencyCode()) {
             return false;
         }
+        
+        if (0 < $userId) {
+            if (false === $this->loadLoggedUserInfo($userId)) {
+                return false;
+            }
+        }
+
 
         $this->clientId = 0 < $this->settings['env'] ? $this->settings['live_client_id'] : $this->settings['client_id'];
         $this->secretKey = 0 < $this->settings['env'] ? $this->settings['live_secret_key'] : $this->settings['secret_key'];
@@ -86,9 +94,8 @@ class Paypal extends PaymentMethodBase
         return new PayPalHttpClient($this->environment());
     }
 
-    //=== Create papal order    
     /**
-     * createOrder
+     * createOrder - Create papal order
      *
      * @param  mixed $orderId
      * @return bool
@@ -169,12 +176,15 @@ class Paypal extends PaymentMethodBase
             ];
         }
 
+        $customerName = !isset($orderInfo['customer_name']) || empty($orderInfo['customer_name']) ? $this->userData['user_name'] : $orderInfo['customer_name'];
+        $customerEmail = !isset($orderInfo['customer_email']) || empty($orderInfo['customer_email']) ? $this->userData['credential_email'] : $orderInfo['customer_email'];
+
         $request_body["intent"] = "CAPTURE";
         $request_body["payer"] = [
             "name" => [
-                "given_name" => $orderInfo['customer_name'],
+                "given_name" => $customerName,
             ],
-            "email_address" => $orderInfo['customer_email']
+            "email_address" => $customerEmail
         ];
 
 

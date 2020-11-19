@@ -14,6 +14,14 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
         $shippingMethod .= !empty($op['opshipping_label']) ? '<li>' . $op['opshipping_label'] . '</li>' : '';
     }
 }
+
+$fulfillmentType = Shipping::FULFILMENT_SHIP;
+array_walk($orderFulFillmentTypeArr, function ($row) use (&$fulfillmentType) {
+    if (Product::PRODUCT_TYPE_PHYSICAL == $row['op_product_type']) {
+        $fulfillmentType = $row['opshipping_fulfillment_type'];
+        return;
+    }
+});
 ?>
 <div id="body" class="body">
     <section class="section">
@@ -33,16 +41,16 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                             <h3>
                                 <?php
                                 if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
-                                    $msg = Labels::getLabel('LBL_YOUR_ORDER_#{ORDER-ID}_HAS_BEEN_PLACED!', $siteLangId);
+                                    $msg = Labels::getLabel('LBL_YOUR_ORDER_{ORDER-ID}_HAS_BEEN_PLACED!', $siteLangId);
                                     $orderDetailUrl = UrlHelper::generateUrl('Buyer', 'viewOrder', array($orderInfo['order_id']));
-                                    $orderDetailLinkHtml = '<a href="' . $orderDetailUrl . '">'. $orderInfo['order_id'] . '</a>';
+                                    $orderDetailLinkHtml = '<a href="' . $orderDetailUrl . '" class="link">#' . $orderInfo['order_id'] . '</a>';
                                 } else {
                                     $msg = Labels::getLabel('LBL_ORDER_#{ORDER-ID}_TRANSACTION_COMPLETED!', $siteLangId);
                                     $orderProducts = current($orderInfo['orderProducts']);
                                     $orderDetailUrl = UrlHelper::generateUrl('Seller', 'viewSubscriptionOrder', array($orderProducts['ossubs_id']));
                                     $orderDetailLinkHtml = $orderInfo['order_id'];
-                                    if ( isset($orderProducts['ossubs_id']) ) {
-                                        $orderDetailLinkHtml = '<a href="' . $orderDetailUrl . '">'. $orderInfo['order_id'] . '</a>';
+                                    if (isset($orderProducts['ossubs_id'])) {
+                                        $orderDetailLinkHtml = '<a href="' . $orderDetailUrl . '">' . $orderInfo['order_id'] . '</a>';
                                     }
                                 }
                                 $msg = CommonHelper::replaceStringData($msg, ['{ORDER-ID}' => $orderDetailLinkHtml]);
@@ -287,10 +295,17 @@ if (Orders::ORDER_PRODUCT == $orderInfo['order_type']) {
                                                                     <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($shippingCharges); ?></span>
                                                                 </li>
                                                             <?php  } ?>
+                                                            <?php if (array_key_exists('order_rounding_off', $orderInfo) && $orderInfo['order_rounding_off'] != 0) { ?>
+                                                                <li class="list-group-item">
+                                                                    <span class="label"><?php echo (0 < $orderInfo['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?></span>
+                                                                    <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_rounding_off']); ?></span>
+                                                                </li>
+                                                            <?php } ?>
                                                             <li class="list-group-item hightlighted">
                                                                 <span class="label"><?php echo Labels::getLabel('LBL_NET_AMOUNT', $siteLangId); ?></span>
                                                                 <span class="ml-auto"><?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount']); ?></span>
                                                             </li>
+
                                                         </ul>
                                                     </div>
                                                 </div>

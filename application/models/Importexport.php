@@ -75,6 +75,7 @@ class Importexport extends ImportexportCommon
                 if (!$sellerDashboard) {
                     $arr[static::TYPE_USERS] = Labels::getLabel('LBL_users', $langId);
                     $arr[static::TYPE_LANGUAGE_LABELS] = Labels::getLabel('LBL_Language_Labels', $langId);
+                    $arr[static::TYPE_PRODUCTS] = Labels::getLabel('LBL_My_Products', $langId);
                 } else {
                     $arr[static::TYPE_SELLER_PRODUCTS] = Labels::getLabel('LBL_My_Products', $langId);
                 }
@@ -1593,6 +1594,7 @@ class Importexport extends ImportexportCommon
         $adminDefaultShipProfileId =  array_key_first($shippingProfileArr);
         $coloumArr = $this->getProductsCatalogColoumArr($langId, $sellerId, $this->actionType);
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
+
         $errInSheet = false;
         $prodType = PRODUCT::PRODUCT_TYPE_PHYSICAL;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
@@ -1604,14 +1606,16 @@ class Importexport extends ImportexportCommon
             foreach ($coloumArr as $columnKey => $columnTitle) {
                 $colIndex = $this->headingIndexArr[$columnTitle];
                 $colValue = $this->getCell($row, $colIndex, '');
-
-                if ($this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
-                    $productTypeTitle = $coloumArr['product_type'];
-                    $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
-                } else {
-                    $productTypeTitle = $coloumArr['product_type_identifier'];
-                    $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
-                    $prodType = (array_key_exists($prodType, $prodTypeIdentifierArr) ? $prodTypeIdentifierArr[$prodType] : 0);
+                
+                if ($this->isDefaultSheetData($langId)) {
+                    if ($this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
+                        $productTypeTitle = $coloumArr['product_type'];
+                        $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
+                    } else {
+                        $productTypeTitle = $coloumArr['product_type_identifier'];
+                        $prodType = mb_strtolower($this->getCell($row, $this->headingIndexArr[$productTypeTitle], ''));
+                        $prodType = (array_key_exists($prodType, $prodTypeIdentifierArr) ? $prodTypeIdentifierArr[$prodType] : 0);
+                    }
                 }
 
                 $invalid = $errMsg = false;
@@ -4462,7 +4466,7 @@ class Importexport extends ImportexportCommon
                         if (!$selProdId) {
                             $invalid = true;
                         }
-                    }elseif('related_recommend_sellerproduct_id' == $columnKey){                        
+                    } elseif ('related_recommend_sellerproduct_id' == $columnKey) {
                         $relSelProdId = $colValue;
                         if (0 < $userId) {
                             $relSelProdId = $colValue = $this->getCheckAndSetSelProdIdByTempId($relSelProdId, $userId);
@@ -4471,7 +4475,6 @@ class Importexport extends ImportexportCommon
                         if (1 > $relSelProdId) {
                             $invalid = true;
                         }
-                        
                     }
 
                     if (true === $invalid) {
