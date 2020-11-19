@@ -94,6 +94,13 @@ if (0 < $shippingTotal) {
     );
 }
 
+if (array_key_exists('roundingOff', $cartSummary) && $cartSummary['roundingOff'] != 0) {
+    $priceDetail['priceDetail'][] = array(
+        'key' => (0 < $cartSummary['roundingOff']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId),
+        'value' => CommonHelper::displayMoneyFormat($cartSummary['roundingOff'])
+    );
+}
+
 $priceDetail['netPayable'] = array(
     'key' => Labels::getLabel('LBL_Net_Payable', $siteLangId),
     'value' => CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'])
