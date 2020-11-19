@@ -8,7 +8,7 @@ $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
 $fileFld = $frm->getField('file');
 $fileFld->htmlBeforeField='<div class="filefield"><span class="filename"></span>';
-$preferredDimensionsStr = '<label class="filelabel">'.Labels::getLabel('LBL_Browse_File', $siteLangId).'</label></div><small class="form-text text-muted">'.Labels::getLabel('MSG_Allowed_Extensions', $siteLangId).'</small>';
+$preferredDimensionsStr = '</div><span class="form-text text-muted">'.Labels::getLabel('MSG_Allowed_Extensions', $siteLangId).'</span>';
 $fileFld->htmlAfterField = $preferredDimensionsStr;
 
 $btnSubmitFld = $frm->getField('btn_submit');

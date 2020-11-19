@@ -993,7 +993,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld = $frm->addSelectBox(Labels::getLabel("LBL_Pay_At_Store_Order_Status", $this->adminLangId), 'CONF_PAY_AT_STORE_ORDER_STATUS', $orderStatusArr, false, array(), '');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Set_the_Pay_at_store_order_status.", $this->adminLangId) . "</small>";
 
-                $fld = $frm->addSelectBox(Labels::getLabel("LBL_Cash_on_Delivery_Order_Status", $this->adminLangId), 'CONF_POP_ORDER_STATUS', $orderStatusArr, false, array(), '');
+                $fld = $frm->addSelectBox(Labels::getLabel("LBL_Cash_on_Delivery_Order_Status", $this->adminLangId), 'CONF_COD_ORDER_STATUS', $orderStatusArr, false, array(), '');
                 $fld->htmlAfterField = "<small>" . Labels::getLabel("LBL_Set_the_Cash_on_delivery_order_status.", $this->adminLangId) . "</small>";
 
                 $fld = $frm->addSelectBox(

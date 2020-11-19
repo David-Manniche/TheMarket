@@ -408,7 +408,7 @@ class ProductsController extends MyAppController
                 'selprod_id', 'selprod_user_id', 'selprod_code', 'selprod_condition', 'selprod_price', 'special_price_found', 'splprice_start_date', 'splprice_end_date', 'COALESCE(selprod_title, product_name, product_identifier) as selprod_title', 'selprod_warranty', 'selprod_return_policy', 'selprodComments',
                 'theprice', 'selprod_stock', 'selprod_threshold_stock_level', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'brand_id', 'COALESCE(brand_name, brand_identifier) as brand_name', 'brand_short_description', 'user_name',
                 'shop_id', 'COALESCE(shop_name, shop_identifier) as shop_name', 'COALESCE(sq_sprating.prod_rating,0) prod_rating ', 'COALESCE(sq_sprating.totReviews,0) totReviews',
-                'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled', 'selprod_available_from', 'selprod_min_order_qty', 'product_updated_on', 'product_warranty', 'selprod_return_age', 'selprod_cancellation_age', 'shop_return_age', 'shop_cancellation_age'
+                'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled', 'selprod_available_from', 'selprod_min_order_qty', 'product_updated_on', 'product_warranty', 'selprod_return_age', 'selprod_cancellation_age', 'shop_return_age', 'shop_cancellation_age', 'selprod_fulfillment_type', 'shop_fulfillment_type', 'product_fulfillment_type'
             )
         );
 
@@ -533,7 +533,27 @@ class ProductsController extends MyAppController
             $shippingRates = array();
             $shippingDetails = array();
         }
+        $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
+        $fulfillmentType = $product['selprod_fulfillment_type'];
+        if (true == $isProductShippedBySeller) {
+            if ($product['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
+                $fulfillmentType = $product['shop_fulfillment_type'];
+                $product['selprod_fulfillment_type'] = $fulfillmentType;
+            }
+        } else {
+            $fulfillmentType = isset($product['product_fulfillment_type']) ? $product['product_fulfillment_type'] : Shipping::FULFILMENT_SHIP;
+            $product['selprod_fulfillment_type'] = $fulfillmentType;
+            if (FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1) != Shipping::FULFILMENT_ALL) {
+                $fulfillmentType = FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1);
+                $product['selprod_fulfillment_type'] = $fulfillmentType;
+            }
+        }
 
+        if ($product['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
+            $fulfillmentType = Shipping::FULFILMENT_ALL;
+        }
+        
+        $this->set('fulfillmentType', $fulfillmentType);
         $this->set('codEnabled', $codEnabled);
         $this->set('shippingRates', $shippingRates);
         $this->set('shippingDetails', $shippingDetails);

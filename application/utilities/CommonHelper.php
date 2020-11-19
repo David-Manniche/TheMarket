@@ -424,6 +424,9 @@ class CommonHelper extends FatUtility
             $op_refund_amount += $requestRow["op_rounding_off"];
         } else {
             $op_refund_amount = $cartAmount - ($rewardAmountPerQty * $requestRow['orrequest_qty']) + $taxToRefund - $deductVolumeDiscountFromRefund - $deductCouponDiscountFromRefund;
+            if (0 > $requestRow["op_rounding_off"]) {
+                $op_refund_amount += $requestRow["op_rounding_off"];
+            }
         }
 
         $op_refund_shipping = 0;

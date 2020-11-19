@@ -77,7 +77,7 @@ class Orders extends MyAppModel
     public static function getActiveSubscriptionStatusArr()
     {
         $activeSubscriptionStatuses =
-            array(FatApp::getConfig("CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS"));
+            array(FatApp::getConfig("CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0));
 
 
 
@@ -1142,7 +1142,7 @@ class Orders extends MyAppModel
             $orderInfo = $this->getOrderById($orderId);
 
             foreach ($subOrders as $subkey => $subval) {
-                $this->addChildSubscriptionOrderHistory($orderId, $subval[OrderSubscription::DB_TBL_PREFIX . "id"], $orderInfo[Orders::DB_TBL_PREFIX . 'language_id'], FatApp::getConfig("CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS"), '', true);
+                $this->addChildSubscriptionOrderHistory($orderId, $subval[OrderSubscription::DB_TBL_PREFIX . "id"], $orderInfo[Orders::DB_TBL_PREFIX . 'language_id'], FatApp::getConfig("CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS", FatUtility::VAR_INT, 11), '', true);
 
 
 
@@ -1295,7 +1295,7 @@ class Orders extends MyAppModel
 
             $subOrders = $this->getChildOrders(array("order" => $orderId), $orderInfo['order_type']);
             foreach ($subOrders as $subkey => $subval) {
-                $this->addChildProductOrderHistory($subval["op_id"], $orderInfo['order_language_id'], FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS"), '', true);
+                $this->addChildProductOrderHistory($subval["op_id"], $orderInfo['order_language_id'], FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0), '', true);
                 if ($subval['op_product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
                     $emailObj->newDigitalOrderBuyer($orderId, $subval["op_id"], $orderInfo['order_language_id']);
                 }
@@ -1387,7 +1387,7 @@ class Orders extends MyAppModel
         if (!$orderInfo['order_payment_status'] && ($orderPaymentStatus < 0)) {
             $subOrders = $this->getChildOrders(array("order" => $orderId), $orderInfo['order_type']);
             foreach ($subOrders as $subkey => $subval) {
-                $this->addChildProductOrderHistory($subval["op_id"], $orderInfo['order_language_id'], FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"), '', true);
+                $this->addChildProductOrderHistory($subval["op_id"], $orderInfo['order_language_id'], FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0), '', true);
             }
         }
     }
@@ -1433,7 +1433,7 @@ class Orders extends MyAppModel
         }
 
         // If current order status is not paid up but new status is paid then commence updating the product's weightage
-        if (!in_array($childOrderInfo['op_status_id'], (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && in_array($opStatusId, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS")) && in_array(strtolower($childOrderInfo['plugin_code']),  ['cashondelivery', 'payatstore'])) {
+        if (!in_array($childOrderInfo['op_status_id'], (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0)) && in_array($opStatusId, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0)) && in_array(strtolower($childOrderInfo['plugin_code']), ['cashondelivery', 'payatstore'])) {
             if ($childOrderInfo['op_is_batch']) {
                 $opSelprodCodeArr = explode('|', $childOrderInfo['op_selprod_code']);
             } else {
@@ -1459,7 +1459,7 @@ class Orders extends MyAppModel
             unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS"))
         );
 
-        if (!in_array($childOrderInfo['op_status_id'], $arr) && in_array($opStatusId, array_diff($arr, array(FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"))))) {
+        if (!in_array($childOrderInfo['op_status_id'], $arr) && in_array($opStatusId, array_diff($arr, array(FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0))))) {
             $selProdIdArr = array();
             if ($childOrderInfo['op_is_batch']) {
                 $selProdIdArr = explode('|', $childOrderInfo['op_batch_selprod_id']);
@@ -1489,7 +1489,7 @@ class Orders extends MyAppModel
         /* ] */
 
         /* If old order status is the processing or complete status but new status is not then commence restock, and remove coupon, voucher and reward history [ */
-        if (in_array($childOrderInfo['op_status_id'], array_merge($arr, array(FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS")))) && in_array($opStatusId, array(FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"), FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")))) {
+        if (in_array($childOrderInfo['op_status_id'], array_merge($arr, array(FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS", FatUtility::VAR_INT, 0)))) && in_array($opStatusId, array(FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0), FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0)))) {
             // ReStock subtraction can work manually
             /* foreach($selProdIdArr as $opSelprodId){
             if(empty($opSelprodId)) { continue; }
@@ -1499,7 +1499,7 @@ class Orders extends MyAppModel
         /* ] */
 
         /* If current order status is not cancelled but new status is cancelled then commence cancelling the order [ */
-        if (($childOrderInfo['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) && ($opStatusId == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS")) && ($childOrderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PAID)) {
+        if (($childOrderInfo['op_status_id'] != FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0)) && ($opStatusId == FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0)) && ($childOrderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PAID)) {
             if ($moveRefundToWallet) {
                 /* CommonHelper::printArray($childOrderInfo); die; */
                 $formattedRequestValue = "#" . $childOrderInfo["op_invoice_number"];
@@ -1512,7 +1512,7 @@ class Orders extends MyAppModel
                 }
 
                 $txnAmount = (($childOrderInfo["op_unit_price"] * $childOrderInfo["op_qty"]) + $childOrderInfo["op_other_charges"] + $childOrderInfo["op_rounding_off"]);
-                
+
                 /*Refund to Buyer[*/
                 if ($txnAmount > 0) {
                     $txnDataArr = array(
@@ -1590,7 +1590,7 @@ class Orders extends MyAppModel
         /* ] */
 
         /* If current order status is not return request approved but new status is return request approved then commence the order operation [ */
-        if (!in_array($childOrderInfo['op_status_id'], (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS")) && in_array($opStatusId, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS")) && ($childOrderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PAID || in_array(strtolower($childOrderInfo['plugin_code']), ['cashondelivery', 'payatstore']))) {
+        if (!in_array($childOrderInfo['op_status_id'], (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0)) && in_array($opStatusId, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0)) && ($childOrderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PAID || in_array(strtolower($childOrderInfo['plugin_code']), ['cashondelivery', 'payatstore']))) {
             if ($moveRefundToWallet) {
                 $formattedRequestValue = "#" . $childOrderInfo["op_invoice_number"];
                 $comments = sprintf(Labels::getLabel('LBL_Return_Request_Approved', $langId), $formattedRequestValue);
@@ -1870,9 +1870,9 @@ class Orders extends MyAppModel
             $buyerAllowCancelStatuses = unserialize(FatApp::getConfig("CONF_ALLOW_CANCELLATION_ORDER_STATUS"));
         }
 
-        // $buyerAllowCancelStatuses = array_diff($buyerAllowCancelStatuses, (array)FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
+        // $buyerAllowCancelStatuses = array_diff($buyerAllowCancelStatuses, (array)FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", FatUtility::VAR_INT, 0));
 
-        $buyerAllowCancelStatuses = array_diff($buyerAllowCancelStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"));
+        $buyerAllowCancelStatuses = array_diff($buyerAllowCancelStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0));
         $buyerAllowCancelStatuses = array_diff($buyerAllowCancelStatuses, unserialize(FatApp::getConfig("CONF_PROCESSING_ORDER_STATUS")));
         $buyerAllowCancelStatuses = array_diff($buyerAllowCancelStatuses, unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
 
@@ -1885,8 +1885,8 @@ class Orders extends MyAppModel
         /* if( $isDigitalProduct ){
         $buyerAllowReturnStatuses = unserialize(FatApp::getConfig("CONF_DIGITAL_RETURN_READY_ORDER_STATUS"));
         } */
-        $buyerAllowReturnStatuses = array_diff($buyerAllowReturnStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
-        $buyerAllowReturnStatuses = array_diff($buyerAllowReturnStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"));
+        $buyerAllowReturnStatuses = array_diff($buyerAllowReturnStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $buyerAllowReturnStatuses = array_diff($buyerAllowReturnStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0));
         $buyerAllowReturnStatuses = array_diff($buyerAllowReturnStatuses, unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         return $buyerAllowReturnStatuses;
     }
@@ -1894,26 +1894,26 @@ class Orders extends MyAppModel
     public static function getVendorOrderPaymentCreditedStatuses()
     {
         $vendorPaymentStatuses = unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS"));
-        $vendorPaymentStatuses = array_diff($vendorPaymentStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
-        $vendorPaymentStatuses = array_diff($vendorPaymentStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"));
-        $vendorPaymentStatuses = array_diff($vendorPaymentStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS"));
+        $vendorPaymentStatuses = array_diff($vendorPaymentStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $vendorPaymentStatuses = array_diff($vendorPaymentStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $vendorPaymentStatuses = array_diff($vendorPaymentStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS", FatUtility::VAR_INT, 0));
         return $vendorPaymentStatuses;
     }
 
     public static function getBuyerAllowedDigitalDownloadStatues()
     {
-        $buyerAllowDigitalDownloadStatuses = unserialize(FatApp::getConfig("CONF_ENABLE_DIGITAL_DOWNLOADS", null, ''));
+        $buyerAllowDigitalDownloadStatuses = unserialize(FatApp::getConfig("CONF_ENABLE_DIGITAL_DOWNLOADS"));
         return $buyerAllowDigitalDownloadStatuses;
     }
 
     public function getVendorAllowedUpdateOrderStatuses($fetchForDigitalProduct = false, $fetchForCOD = false, $fetchForPayPickup = false)
     {
-        $processingStatuses = array_merge(unserialize(FatApp::getConfig("CONF_PROCESSING_ORDER_STATUS")), (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_STRING, ''));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS"));
+        $processingStatuses = array_merge(unserialize(FatApp::getConfig("CONF_PROCESSING_ORDER_STATUS")), (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS", FatUtility::VAR_INT, 0));
         $processingStatuses = array_diff($processingStatuses, unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0));
 
         $digitalProdOrderStatusArr = Orders::getOrderProductStatusArr(CommonHelper::getLangId(), array(), 0, true);
         $digitalProductOrderStatusArr = array();
@@ -1931,14 +1931,14 @@ class Orders extends MyAppModel
         if ($fetchForCOD) {
             $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0));
             $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_COD_ORDER_STATUS", FatUtility::VAR_INT, 0));
-            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_PAY_AT_STORE_ORDER_STATUS"));
+            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_PAY_AT_STORE_ORDER_STATUS", FatUtility::VAR_INT, 0));
         }
 
         if ($fetchForPayPickup) {
             $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_PAY_AT_STORE_ORDER_STATUS", FatUtility::VAR_INT, 0));
-            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_COD_ORDER_STATUS"));
-            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-            $processingStatuses = array_merge($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_COD_ORDER_STATUS", FatUtility::VAR_INT, 0));
+            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS", FatUtility::VAR_INT, 0));
+            $processingStatuses = array_merge($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0));
         }
 
         return $processingStatuses;
@@ -1947,28 +1947,28 @@ class Orders extends MyAppModel
     public function getAdminAllowedUpdateOrderStatuses($fetchForCOD = false, $productType = false, $fetchForPayPickup = false)
     {
         $processingStatuses = array_merge(unserialize(FatApp::getConfig("CONF_PROCESSING_ORDER_STATUS")), unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
-        $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"));
+        $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0));
 
         if ($fetchForCOD) {
-            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS"));
-            $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_COD_ORDER_STATUS"));
-            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_PAY_AT_STORE_ORDER_STATUS"));
+            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0));
+            $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_COD_ORDER_STATUS", FatUtility::VAR_INT, 0));
+            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_PAY_AT_STORE_ORDER_STATUS", FatUtility::VAR_INT, 0));
         }
 
         if ($fetchForPayPickup) {
-            $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_PAY_AT_STORE_ORDER_STATUS"));
-            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_COD_ORDER_STATUS"));
-            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
+            $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_PAY_AT_STORE_ORDER_STATUS", FatUtility::VAR_INT, 0));
+            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_COD_ORDER_STATUS", FatUtility::VAR_INT, 0));
+            $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS", FatUtility::VAR_INT, 0));
         }
 
         switch ($productType) {
             case Product::PRODUCT_TYPE_DIGITAL:
-                $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-                $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
+                $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS", FatUtility::VAR_INT, 0));
+                $processingStatuses = array_diff((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0));
                 break;
         }
 
@@ -1978,25 +1978,25 @@ class Orders extends MyAppModel
     public function getAdminAllowedUpdateShippingUser()
     {
         $processingStatuses = unserialize(FatApp::getConfig("CONF_PROCESSING_ORDER_STATUS"));
-        $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS"));
+        $processingStatuses = array_merge((array) $processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_PAID_ORDER_STATUS", FatUtility::VAR_INT, 0));
         $processingStatuses = array_diff($processingStatuses, unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS")));
         $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS"));
-        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS"));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS", FatUtility::VAR_INT, 0));
+        $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0));
         return $processingStatuses;
     }
 
     public function getNotAllowedOrderCancellationStatuses()
     {
         $cancellationStatuses = array_merge(
-            (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", null, ''),
-            (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", null, ''),
-            (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS", null, ''),
-            (array) FatApp::getConfig("CONF_RETURN_REQUEST_WITHDRAWN_ORDER_STATUS", null, ''),
-            (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", null, ''),
-            (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", null, ''),
+            (array) FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS", FatUtility::VAR_INT, 0),
+            (array) FatApp::getConfig("CONF_DEFAULT_CANCEL_ORDER_STATUS", FatUtility::VAR_INT, 0),
+            (array) FatApp::getConfig("CONF_RETURN_REQUEST_ORDER_STATUS", FatUtility::VAR_INT, 0),
+            (array) FatApp::getConfig("CONF_RETURN_REQUEST_WITHDRAWN_ORDER_STATUS", FatUtility::VAR_INT, 0),
+            (array) FatApp::getConfig("CONF_RETURN_REQUEST_APPROVED_ORDER_STATUS", FatUtility::VAR_INT, 0),
+            (array) FatApp::getConfig("CONF_DEFAULT_DEIVERED_ORDER_STATUS", FatUtility::VAR_INT, 0),
             unserialize(FatApp::getConfig("CONF_COMPLETED_ORDER_STATUS"))
         );
         return $cancellationStatuses;
