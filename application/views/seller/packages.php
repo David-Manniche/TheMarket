@@ -10,7 +10,6 @@
                             <?php echo html_entity_decode($pageData['epage_content']);?>
                         </div>
                     </div>
-                    
                         <ul class="packages-box">
                             <?php
                               $packageArrClass= SellerPackages::getPackageClass();
