@@ -34,6 +34,7 @@
                     if ($listing['brand_name'] != '') {
                         $txt .= '<div class="item__brand">' . Labels::getLabel('LBL_Brand', $siteLangId) . ": </strong>" . $listing['brand_name'] . '</div>';
                     }
+                    $variantStr = '';
                     if (is_array($listing['options']) && count($listing['options'])) {
                         $txt .= '<div class="item__specification">';
                         $count = count($listing['options']);
