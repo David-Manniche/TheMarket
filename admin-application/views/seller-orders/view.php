@@ -422,9 +422,9 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                     <?php
                                     echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true);
 
-                                    if ($roundingOff = CommonHelper::getRoundingOff($order)) {
+                                    /* if ($roundingOff = CommonHelper::getRoundingOff($order)) {
                                         echo '(+' . $roundingOff . ')';
-                                    }
+                                    } */
                                     ?>
                                 </td>
                             </tr>
