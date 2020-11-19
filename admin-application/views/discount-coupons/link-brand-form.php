@@ -1,9 +1,9 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.'); 
-$frmProduct->setFormTagAttribute('class', 'web_form form_horizontal');
-$frmProduct->developerTags['colClassPrefix'] = 'col-md-';
-$frmProduct->developerTags['fld_default_col'] = 12;
-$fld = $frmProduct->getField('product_name');
+$frm->setFormTagAttribute('class', 'web_form form_horizontal');
+$frm->developerTags['colClassPrefix'] = 'col-md-';
+$frm->developerTags['fld_default_col'] = 12;
+$fld = $frm->getField('brand_name');
 $fld->setWrapperAttribute('class', 'ui-front');
 ?>
 
@@ -23,13 +23,13 @@ $fld->setWrapperAttribute('class', 'ui-front');
 			<li><a href="javascript:void(0)" onclick="couponLinkCategoryForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Categories',$adminLangId);?></a></li>
 			<li><a href="javascript:void(0)" onclick="couponLinkUserForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Users',$adminLangId);?></a></li>
                         <li><a href="javascript:void(0)" onclick="couponLinkShopForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Shops',$adminLangId);?></a></li>
-			<li><a href="javascript:void(0)" onclick="couponLinkBrandForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Brands',$adminLangId);?></a></li>
+			<li><a class="active" href="javascript:void(0)" onclick="couponLinkBrandForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Brands',$adminLangId);?></a></li>
 		</ul>
 		
 		<div class="tabs_panel_wrap" >
 			<div class="tabs_panel">
-				<?php echo $frmProduct->getFormHtml(); ?>
-				<div id="coupon_products_list" class="col-xs-9 box--scroller"></div>
+				<?php echo $frm->getFormHtml(); ?>
+				<div id="coupon_list" class="col-xs-9 box--scroller"></div>
 			</div>
 		</div>
 	</div>
@@ -40,15 +40,15 @@ $fld->setWrapperAttribute('class', 'ui-front');
 <script type="text/javascript">
 $("document").ready(function(){
 	
-	reloadCouponProduct(<?php echo $coupon_id; ?>);
+	reloadCouponBrand(<?php echo $coupon_id; ?>);
 	
-	$('input[name=\'product_name\']').autocomplete({
+	$('input[name=\'brand_name\']').autocomplete({
         'classes': {
             "ui-autocomplete": "custom-ui-autocomplete"
         },
 		'source': function(request, response) {			
 			$.ajax({
-				url: fcom.makeUrl('Products', 'autoComplete'),
+				url: fcom.makeUrl('Brands', 'autoComplete'),
 				data: {keyword: request['term'],fIsAjax:1},
 				dataType: 'json',
 				type: 'post',
@@ -60,9 +60,9 @@ $("document").ready(function(){
 			});
 		},
 		'select': function(event, ui) {
-			updateCouponProduct(<?php echo $coupon_id; ?>, ui.item.id );
-            $('input[name=\'product_name\']').val('');
-            return false;
+			updateCouponBrand(<?php echo $coupon_id; ?>, ui.item.id );
+                        $('input[name=\'brand_name\']').val('');
+                        return false;
 		}
 	});
 	

@@ -12,6 +12,8 @@ class DiscountCoupons extends MyAppModel
     public const DB_TBL_COUPON_TO_PRODUCT = 'tbl_coupon_to_products';
     public const DB_TBL_COUPON_TO_USER = 'tbl_coupon_to_users';
     public const DB_TBL_COUPON_TO_PLAN = 'tbl_coupon_to_plan';
+    public const DB_TBL_COUPON_TO_SHOP = 'tbl_coupon_to_shops';
+    public const DB_TBL_COUPON_TO_BRAND = 'tbl_coupon_to_brands';
     public const DB_TBL_COUPON_HOLD = 'tbl_coupons_hold';
     public const DB_TBL_COUPON_HOLD_PENDING_ORDER = 'tbl_coupons_hold_pending_order';
     public const DB_TBL_COUPON_HISTORY = 'tbl_coupons_history';
@@ -190,6 +192,54 @@ AND couponlang_lang_id = ' . $langId,
         $srch->addMultipleFields(array("user_id", "user_name", "user_dial_code", "user_phone", "credential_username"));
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetchAll($rs, 'user_id');
+        return $row;
+    }
+    
+    public static function getCouponShops($coupon_id, $lang_id = 0)
+    {
+        $coupon_id = FatUtility::int($coupon_id);
+        $lang_id = FatUtility::int($lang_id);
+
+        if (!$coupon_id) {
+            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $lang_id), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = new SearchBase(static::DB_TBL_COUPON_TO_SHOP);
+        $srch->addCondition('cts_coupon_id', '=', $coupon_id);
+        $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_id = cts_shop_id', 'p');
+        $srch->addMultipleFields(array("shop_id", "shop_identifier"));
+        if ($lang_id) {
+            $srch->joinTable(Shop::DB_TBL . '_lang', 'LEFT OUTER JOIN', 's_l.shoplang_shop_id = shop_id AND shoplang_lang_id = ' . $lang_id, 's_l');
+            $srch->addFld(array('shop_name'));
+        }        
+        $rs = $srch->getResultSet();
+
+        $row = FatApp::getDb()->fetchAll($rs, 'shop_id');
+        return $row;
+    }
+    
+    public static function getCouponBrands($coupon_id, $lang_id = 0)
+    {
+        $coupon_id = FatUtility::int($coupon_id);
+        $lang_id = FatUtility::int($lang_id);
+
+        if (!$coupon_id) {
+            trigger_error(Labels::getLabel("ERR_Arguments_not_specified.", $lang_id), E_USER_ERROR);
+            return false;
+        }
+
+        $srch = new SearchBase(static::DB_TBL_COUPON_TO_BRAND);
+        $srch->addCondition('ctb_coupon_id', '=', $coupon_id);
+        $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'brand_id = ctb_brand_id', 'b');
+        $srch->addMultipleFields(array("brand_id", "brand_identifier"));
+        if ($lang_id) {
+            $srch->joinTable(Brand::DB_TBL . '_lang', 'LEFT OUTER JOIN', 'b_l.brandlang_brand_id = brand_id AND brandlang_lang_id = ' . $lang_id, 'b_l');
+            $srch->addFld(array('brand_name'));
+        }        
+        $rs = $srch->getResultSet();
+
+        $row = FatApp::getDb()->fetchAll($rs, 'brand_id');
         return $row;
     }
 
@@ -755,8 +805,8 @@ AND couponlang_lang_id = ' . $langId,
             ;
             return false;
         }
-
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_CATEGORY, array('smt' => 'ctc_coupon_id = ? AND ctc_prodcat_id = ?', 'vals' => array($coupon_id, $prodcat_id) ))) {
+        $db = FatApp::getDb();
+        if (!$db->deleteRecords(static::DB_TBL_COUPON_TO_CATEGORY, array('smt' => 'ctc_coupon_id = ? AND ctc_prodcat_id = ?', 'vals' => array($coupon_id, $prodcat_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -791,12 +841,11 @@ AND couponlang_lang_id = ' . $langId,
         $spplan_id = FatUtility::int($spplan_id);
 
         if (1 > $coupon_id || 1 > $spplan_id) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            ;
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);            
             return false;
         }
-
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_PLAN, array('smt' => 'ctplan_coupon_id = ? AND ctplan_spplan_id = ?', 'vals' => array($coupon_id, $spplan_id) ))) {
+        $db = FatApp::getDb();
+        if (!$db->deleteRecords(static::DB_TBL_COUPON_TO_PLAN, array('smt' => 'ctplan_coupon_id = ? AND ctplan_spplan_id = ?', 'vals' => array($coupon_id, $spplan_id) ))) {
             $this->error = $db->getError();
             return false;
         }
@@ -807,15 +856,49 @@ AND couponlang_lang_id = ' . $langId,
     {
         $coupon_id = FatUtility::int($coupon_id);
         $product_id = FatUtility::int($product_id);
-
+        
         if (1 > $coupon_id || 1 > $product_id) {
-            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);
-            ;
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);            
             return false;
         }
-
-        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_COUPON_TO_PRODUCT, array('smt' => 'ctp_coupon_id = ? AND ctp_product_id = ?', 'vals' => array($coupon_id, $product_id) ))) {
+        
+        $db = FatApp::getDb();
+        if (!$db->deleteRecords(static::DB_TBL_COUPON_TO_PRODUCT, array('smt' => 'ctp_coupon_id = ? AND ctp_product_id = ?', 'vals' => array($coupon_id, $product_id) ))) {
             $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function removeCouponShop($coupon_id, $shop_id)
+    {
+        $coupon_id = FatUtility::int($coupon_id);
+        $shop_id = FatUtility::int($shop_id);
+
+        if (1 > $coupon_id || 1 > $shop_id) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);            
+            return false;
+        }
+        $db = FatApp::getDb();
+        if (!$db->deleteRecords(static::DB_TBL_COUPON_TO_SHOP, array('smt' => 'cts_coupon_id = ? AND cts_shop_id = ?', 'vals' => array($coupon_id, $shop_id) ))) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function removeCouponBrand($coupon_id, $brand_id)
+    {
+        $coupon_id = FatUtility::int($coupon_id);
+        $brand_id = FatUtility::int($brand_id);
+
+        if (1 > $coupon_id || 1 > $brand_id) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);            
+            return false;
+        }
+        $db = FatApp::getDb();
+        if (!$db->deleteRecords(static::DB_TBL_COUPON_TO_BRAND, array('smt' => 'ctb_coupon_id = ? AND ctb_brand_id = ?', 'vals' => array($coupon_id, $brand_id) ))) {
+            $this->error = $db->getError();            
             return false;
         }
         return true;
@@ -857,6 +940,48 @@ AND couponlang_lang_id = ' . $langId,
         $assignValues = array();
         $assignValues['ctu_coupon_id'] = $coupon_id;
         $assignValues['ctu_user_id'] = $user_id;
+        $record->assignValues($assignValues);
+        if (!$record->addNew(array(), $assignValues)) {
+            $this->error = $record->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function addUpdateCouponShop($coupon_id, $shop_id)
+    {
+        $coupon_id = FatUtility::int($coupon_id);
+        $shop_id = FatUtility::int($shop_id);
+        if (1 > $coupon_id || 1 > $shop_id) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);            
+            return false;
+        }
+
+        $record = new TableRecord(static::DB_TBL_COUPON_TO_SHOP);
+        $assignValues = array();
+        $assignValues['cts_coupon_id'] = $coupon_id;
+        $assignValues['cts_shop_id'] = $shop_id;
+        $record->assignValues($assignValues);
+        if (!$record->addNew(array(), $assignValues)) {
+            $this->error = $record->getError();
+            return false;
+        }
+        return true;
+    }
+    
+    public function addUpdateCouponBrand($coupon_id, $brand_id)
+    {
+        $coupon_id = FatUtility::int($coupon_id);
+        $brand_id = FatUtility::int($brand_id);
+        if (1 > $coupon_id || 1 > $brand_id) {
+            $this->error = Labels::getLabel('ERR_Invalid_Request', $this->commonLangId);            
+            return false;
+        }
+
+        $record = new TableRecord(static::DB_TBL_COUPON_TO_BRAND);
+        $assignValues = array();
+        $assignValues['ctb_coupon_id'] = $coupon_id;
+        $assignValues['ctb_brand_id'] = $brand_id;
         $record->assignValues($assignValues);
         if (!$record->addNew(array(), $assignValues)) {
             $this->error = $record->getError();

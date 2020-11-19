@@ -21,6 +21,8 @@ $fld->setWrapperAttribute('class', 'ui-front');
                         <li><a href="javascript:void(0)" onclick="couponLinkProductForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Products', $adminLangId); ?></a></li>
                         <li><a class="active" href="javascript:void(0)" onclick="couponLinkCategoryForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Categories', $adminLangId); ?></a></li>
                         <li><a href="javascript:void(0)" onclick="couponLinkUserForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Users', $adminLangId); ?></a></li>
+                        <li><a href="javascript:void(0)" onclick="couponLinkShopForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Shops',$adminLangId);?></a></li>
+			<li><a href="javascript:void(0)" onclick="couponLinkBrandForm(<?php echo $coupon_id ?>);"><?php echo Labels::getLabel('LBL_Link_Brands',$adminLangId);?></a></li>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <div class="tabs_panel">
