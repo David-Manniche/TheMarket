@@ -20,6 +20,10 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
     $orderStatusLbl = strpos($orderStatus, "_") ? str_replace('_', ' ', $orderStatus) : $orderStatus;
 }
 
+if (!empty($order['opship_tracking_url'])) {
+    $orderStatusLbl = Labels::getLabel('LBL_SHIPPED', $adminLangId);
+}
+
 ?>
 <div class="page">
     <div class="container container-fluid">
@@ -391,10 +395,12 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                                                 </strong>
                                                 <?php echo $order["opshipping_service_code"]; ?><br>
                                             <?php } ?>
-                                            <strong>
-                                                <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
-                                            </strong>
-                                            <?php echo ucwords($orderStatusLbl); ?>
+                                            <?php if (!empty($orderStatusLbl)) { ?>
+                                                <strong>
+                                                    <?php echo Labels::getLabel('LBL_ORDER_STATUS', $adminLangId); ?>:
+                                                </strong>
+                                                <?php echo ucwords($orderStatusLbl); ?>
+                                            <?php } ?>
                                         <?php } else {
                                             echo Labels::getLabel('LBL_N/A', $adminLangId);
                                         } ?>
@@ -609,7 +615,7 @@ if (!empty($order["thirdPartyorderInfo"]) && isset($order["thirdPartyorderInfo"]
                             $notiFld->developerTags['col'] = (null != $manualFld) ? 4 : 6;
 
                             $fldTracking = $frm->getField('tracking_number');
-
+							$fldTracking->developerTags['col'] = 6;	
                             if (null != $manualFld) {
                                 $manualFld->setFieldTagAttribute('class', 'manualShipping-js fieldsVisibility-js');
                                 $manualFld->developerTags['col'] = 4;

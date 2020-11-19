@@ -24,7 +24,7 @@ function pageRedirect(op_id) {
         var data = fcom.frmData(frm);
         var orderStatusId = $(frm.op_status_id).val();
 
-        if ('' == $(".shippingUser-js").val()){
+        if (0 < $(".shippingUser-js").length && '' == $(".shippingUser-js").val()){
             $.systemMessage(langLbl.shippingUser,'alert--danger', false);
             return;
         }
