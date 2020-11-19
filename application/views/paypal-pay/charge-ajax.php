@@ -19,7 +19,7 @@
             },
             //=== Call your server to create an order
             createOrder: function(data, actions) {
-                $.mbsmessage(langLbl.requestProcessing, true, 'alert--process');
+                $.mbsmessage(langLbl.requestProcessing, false, 'alert--process');
                 return fetch(fcom.makeUrl('PaypalPay', 'createOrder', ['<?php echo $orderInfo['id']; ?>']), {
                     method: "POST",
                 }).then(function(res) {
@@ -36,7 +36,7 @@
             },
             //=== Call your server to save the transaction
             onApprove: function(data, actions) {
-                $.mbsmessage(langLbl.requestProcessing,true,'alert--process');
+                $.mbsmessage(langLbl.requestProcessing, false, 'alert--process');
                 return fetch(fcom.makeUrl('PaypalPay', 'captureOrder', [data.orderID]), {
                     method: "POST",
                 }).then(function(res) {
@@ -66,7 +66,7 @@
 
     $(document).ready(function() {
         loadPayPalButtons();
-        setTimeout(function(){
+        setTimeout(function() {
             if ('' != $("#paypal-buttons").html()) {
                 $(".loading-js").hide();
             }
