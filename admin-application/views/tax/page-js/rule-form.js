@@ -105,15 +105,15 @@ $("document").ready(function() {
     };
     getCountryStatesTaxInTaxForm = function(currentSel, countryId, stateId) {    
 	var parentIndex = $(currentSel).parents('.tax-rule-form--js').data('index');
-	var dv = '.tax-rule-form-'+ parentIndex + ' .selectpicker';
-	
+	var dv = '.tax-rule-form-'+ parentIndex + ' .selectpicker';	
     $(dv).empty();
     var firstChild = '<option value = "-1" >All</option>';
     $(dv).append(firstChild);
-    if(countryId == -1) {
+    if(countryId == -1) {       
         $(dv).attr('disabled', true);
         $('.tax-rule-form-'+ parentIndex + ' select[name="taxruleloc_type[]"]').val(-1);
         $('.tax-rule-form-'+ parentIndex + ' select[name="taxruleloc_type[]"]').attr('disabled', true);
+        $(dv).val(-1);
         $(dv).selectpicker('refresh');
         return;
     }
@@ -129,8 +129,10 @@ $("document").ready(function() {
 			$(locationFld).val($(locationFld + " option:first").val()).attr('disabled', 'disabled');
 		} else if ('' == $(locationFld).val()) {
 			$(locationFld).val($(locationFld + " option:eq(1)").val()); 
-                        $(locationFld).trigger('change');
-		}
+                        $(locationFld).trigger('change');                        
+		}else if(-1 == $(locationFld).val()){
+                    $(locationFld).trigger('change');
+                }
                 
     });
     $.systemMessage.close();
