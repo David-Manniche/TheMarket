@@ -10,7 +10,7 @@ $logoFld->addFieldTagAttribute('class', 'btn btn-brand btn-sm');
 $logoFld->addFieldTagAttribute('onChange', 'logoPopupImage(this)');
 $logoLangFld = $brandLogoFrm->getField('lang_id');
 $logoLangFld->addFieldTagAttribute('class', 'logo-language-js');
-$logoPreferredDimensions = '<small class="text--small logoPreferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '500 x 500').'</small>';
+$logoPreferredDimensions = '<small class="text--small logoPreferredDimensions-js">' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '500 x 500') . '</small>';
 $htmlAfterField = $logoPreferredDimensions;
 $htmlAfterField .= '<div id="logo-listing"></div>';
 $logoFld->htmlAfterField = $htmlAfterField;
@@ -26,7 +26,7 @@ $imageLangFld->addFieldTagAttribute('class', 'image-language-js');
 $screenFld = $brandImageFrm->getField('slide_screen');
 $screenFld->addFieldTagAttribute('class', 'prefDimensions-js');
 
-$htmlAfterField = '<div style="margin-top:15px;" class="preferredDimensions-js">'.sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '2000 x 500').'</div>';
+$htmlAfterField = '<div style="margin-top:15px;" class="preferredDimensions-js">' . sprintf(Labels::getLabel('LBL_Preferred_Dimensions_%s', $adminLangId), '2000 x 500') . '</div>';
 $htmlAfterField .= '<div id="image-listing"></div>';
 $imageFld->htmlAfterField = $htmlAfterField;
 
@@ -76,50 +76,45 @@ $imageFld->htmlAfterField = $htmlAfterField;*/ ?>
     </div>
 </section>
 <script>
-$('input[name=banner_min_width]').val(2000);
-$('input[name=banner_min_height]').val(500);
-$('input[name=logo_min_width]').val(150);
-$('input[name=logo_min_height]').val(150);
-var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
-var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
-var aspectRatio = 4 / 1;
+    $('input[name=banner_min_width]').val(2000);
+    $('input[name=banner_min_height]').val(500);
+    $('input[name=logo_min_width]').val(150);
+    $('input[name=logo_min_height]').val(150);
+    var ratioTypeSquare = <?php echo AttachedFile::RATIO_TYPE_SQUARE; ?>;
+    var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
+    var aspectRatio = 4 / 1;
 
-$(document).on('change','.prefDimensions-js',function(){
-    var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
-    var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
+    $(document).on('change', '.prefDimensions-js', function() {
+        var screenDesktop = <?php echo applicationConstants::SCREEN_DESKTOP ?>;
+        var screenIpad = <?php echo applicationConstants::SCREEN_IPAD ?>;
 
-    if($(this).val() == screenDesktop)
-    {
-        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
-        $('input[name=banner_min_width]').val(2000);
-        $('input[name=banner_min_height]').val(500);
-        aspectRatio = 4 / 1;
-    }
-    else if($(this).val() == screenIpad)
-    {
-        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
-        $('input[name=banner_min_width]').val(1024);
-        $('input[name=banner_min_height]').val(360);
-        aspectRatio = 128 / 45;
-    }
-    else{
-        $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
-        $('input[name=banner_min_width]').val(640);
-        $('input[name=banner_min_height]').val(360);
-        aspectRatio = 16 / 9;
-    }
-});
+        if ($(this).val() == screenDesktop) {
+            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '2000 x 500'));
+            $('input[name=banner_min_width]').val(2000);
+            $('input[name=banner_min_height]').val(500);
+            aspectRatio = 4 / 1;
+        } else if ($(this).val() == screenIpad) {
+            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '1024 x 360'));
+            $('input[name=banner_min_width]').val(1024);
+            $('input[name=banner_min_height]').val(360);
+            aspectRatio = 128 / 45;
+        } else {
+            $('.preferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '640 x 360'));
+            $('input[name=banner_min_width]').val(640);
+            $('input[name=banner_min_height]').val(360);
+            aspectRatio = 16 / 9;
+        }
+    });
 
-$(document).on('change','.prefRatio-js',function(){
-    if($(this).val() == ratioTypeSquare)
-    {
-        $('input[name=logo_min_width]').val(500);
-        $('input[name=logo_min_height]').val(500);
-		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 500'));
-    } else {
-        $('input[name=logo_min_width]').val(500);
-        $('input[name=logo_min_height]').val(280);
-		$('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 280'));
-    }
-});
+    $(document).on('change', '.prefRatio-js', function() {
+        if ($(this).val() == ratioTypeSquare) {
+            $('input[name=logo_min_width]').val(500);
+            $('input[name=logo_min_height]').val(500);
+            $('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 500'));
+        } else {
+            $('input[name=logo_min_width]').val(500);
+            $('input[name=logo_min_height]').val(280);
+            $('.logoPreferredDimensions-js').html((langLbl.preferredDimensions).replace(/%s/g, '500 x 280'));
+        }
+    });
 </script>

@@ -147,9 +147,9 @@ $(document).on('change','.prefDimensions-js',function(){
 		searchProductBrands(document.frmSearch);
 	};
 
-	deleteMedia = function( brandId, fileType, langId, slide_screen ){
+	deleteMedia = function( brandId, fileType, afileId ){
 		if(!confirm(langLbl.confirmDelete)){return;}
-		fcom.updateWithAjax(fcom.makeUrl('brands', 'removeBrandMedia',[brandId, fileType, langId, slide_screen]), '', function(t) {
+		fcom.updateWithAjax(fcom.makeUrl('brands', 'removeBrandMedia',[brandId, fileType, afileId]), '', function(t) {
 			brandImages(brandId,fileType,slide_screen,langId);
 			reloadList();
 		});
