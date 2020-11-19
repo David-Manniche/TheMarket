@@ -542,6 +542,22 @@ AND couponlang_lang_id = ' . $langId,
         $cCategorySrch->addGroupBy('ctc_coupon_id');
         $cCategorySrch->addMultipleFields(array('ctc_coupon_id', 'GROUP_CONCAT(ctc_prodcat_id) as grouped_coupon_categories'));
         /* ] */
+        
+        /* Coupon shops[ */
+        $cShopSrch = new SearchBase(DiscountCoupons::DB_TBL_COUPON_TO_SHOP);
+        $cShopSrch->doNotCalculateRecords();
+        $cShopSrch->doNotLimitRecords();
+        $cShopSrch->addGroupBy('cts_coupon_id');
+        $cShopSrch->addMultipleFields(array('cts_coupon_id', 'GROUP_CONCAT(cts_shop_id) as grouped_coupon_shops'));
+        /* ] */
+        
+        /* Coupon brands[ */
+        $cBrandSrch = new SearchBase(DiscountCoupons::DB_TBL_COUPON_TO_BRAND);
+        $cBrandSrch->doNotCalculateRecords();
+        $cBrandSrch->doNotLimitRecords();
+        $cBrandSrch->addGroupBy('ctb_coupon_id');
+        $cBrandSrch->addMultipleFields(array('ctb_coupon_id', 'GROUP_CONCAT(ctb_brand_id) as grouped_coupon_brands'));
+        /* ] */        
 
         $srch = DiscountCoupons::getSearchObject($langId);
         $srch->doNotCalculateRecords();
@@ -554,6 +570,8 @@ AND couponlang_lang_id = ' . $langId,
         $srch->joinTable('(' . $userCouponHistorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = user_coupon_history.couponhistory_coupon_id', 'user_coupon_history');
         $srch->joinTable('(' . $cProductSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctp.ctp_coupon_id', 'ctp');
         $srch->joinTable('(' . $cCategorySrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctc.ctc_coupon_id', 'ctc');
+        $srch->joinTable('(' . $cShopSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = cts.cts_coupon_id', 'cts');
+        $srch->joinTable('(' . $cBrandSrch->getQuery() . ')', 'LEFT OUTER JOIN', 'dc.coupon_id = ctb.ctb_coupon_id', 'ctb');
 
 
         // if ($orderId !='') {
@@ -584,7 +602,7 @@ AND couponlang_lang_id = ' . $langId,
         $srch->addMultipleFields($selectArr);
 
         /* checking current coupon is valid for current logged user[ */
-        $directCondtion1 = ' (grouped_coupon_users IS NULL AND grouped_coupon_products IS NULL AND grouped_coupon_categories IS NULL) ';
+        $directCondtion1 = ' (grouped_coupon_users IS NULL AND grouped_coupon_products IS NULL AND grouped_coupon_categories IS NULL AND grouped_coupon_shops IS NULL AND grouped_coupon_brands IS NULL) ';
         $directCondtion2 = ' ( grouped_coupon_users IS NOT NULL AND ( FIND_IN_SET(' . $userId . ', grouped_coupon_users) ) ) ';
         /* ] */
 
@@ -611,8 +629,22 @@ AND couponlang_lang_id = ' . $langId,
             }
         }
         /* ] */
-
-        $srch->addDirectCondition("(" . $directCondtion1 . ' OR ( ' . $directCondtion2 . $directCondtion3 . $directCondition4 . ' )' . " )", 'AND');
+       
+        $directCondtion5 = '';
+        foreach ($cartProducts as $cartProduct) {
+            if (!$cartProduct['is_batch']) {
+                $directCondtion5 .= ' OR ( grouped_coupon_shops IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['shop_id'] . ', grouped_coupon_shops) ) ) ';
+            }
+        }
+        
+        $directCondtion6 = '';
+        foreach ($cartProducts as $cartProduct) {
+            if (!$cartProduct['is_batch']) {
+                $directCondtion6 .= ' OR ( grouped_coupon_brands IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['brand_id'] . ', grouped_coupon_brands) ) ) ';
+            }
+        }
+       
+        $srch->addDirectCondition("(" . $directCondtion1 . ' OR ( ' . $directCondtion2 . $directCondtion3 . $directCondition4 . $directCondtion5 . $directCondtion6 . ' )' . " )", 'AND');
 
         $srch->addGroupBy('dc.coupon_id');
         $srch->addHaving('coupon_uses_count', '>', 'mysql_func_coupon_used_count + coupon_hold_count + pending_order_hold_count', 'AND', true);
@@ -623,8 +655,7 @@ AND couponlang_lang_id = ' . $langId,
         // } else {
         //     $srch->addHaving('coupon_uses_count', '>', 'mysql_func_coupon_used_count + coupon_hold_count', 'AND', true);
         //     $srch->addHaving('coupon_uses_coustomer', '>', 'mysql_func_user_coupon_used_count', 'AND', true);
-        // }
-
+        // }        
         $rs = $srch->getResultSet();
         if ($coupon_code != '') {
             $data = FatApp::getDb()->fetch($rs);
