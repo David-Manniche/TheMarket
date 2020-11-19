@@ -908,20 +908,21 @@
         padding-#{$start-direction}: 15px;
         padding-top: 8px;
         padding-bottom: 8px;
+        min-height: 166px;
         @include media-breakpoint-down(sm) {
-            & {
-                margin: 1rem 0;
-                padding: 0 5px;
-            }
+            min-height: inherit;
+            margin: 1rem 0;
+            padding: 0 5px;
         }
         .icn svg {
             width: 34px;
             height: 34px;
             fill: $brand-color !important;
         }
-        .cards,
+        .card,
         .box--share {
-            min-height: 188px;
+            min-height: inherit;
+            //min-height: 188px;
         }
     }
 }
