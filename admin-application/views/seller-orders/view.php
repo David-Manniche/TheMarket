@@ -543,7 +543,7 @@ if (!empty($order['opship_tracking_url'])) {
                                         <td>
                                             <?php
                                             echo nl2br($row['oshistory_comments']);
-                                            echo ($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($adminLangId, '');
+                                            echo ' ' . (($row['oshistory_orderstatus_id'] > 0) ? $orderStatuses[$row['oshistory_orderstatus_id']] : CommonHelper::displayNotApplicable($adminLangId, '')) . ' ';
                                             if ($row['oshistory_orderstatus_id'] ==  OrderStatus::ORDER_SHIPPED) {
                                                 if (empty($row['oshistory_courier'])) {
                                                     $str = !empty($row['oshistory_tracking_number']) ? ': ' . Labels::getLabel('LBL_Tracking_Number', $adminLangId) . ' ' . $row['oshistory_tracking_number'] : '';
