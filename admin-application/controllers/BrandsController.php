@@ -408,12 +408,25 @@ class BrandsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function media($brand_id = 0)
+    public function media($brand_id = 0, $langId = 0, $slide_screen = 0)
     {
         $this->objPrivilege->canEditBrands();
         $brand_id = FatUtility::int($brand_id);
         $brandLogoFrm = $this->getBrandLogoForm($brand_id);
+        $data['lang_id'] = $langId;
+        $data['ratio_type'] = AttachedFile::RATIO_TYPE_SQUARE;
+        if (0 < $brand_id) {
+            $brandLogo = current(AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BRAND_LOGO, $brand_id, 0, $langId, false));
+            if (is_array($brandLogo) && count($brandLogo)) {
+                $data['ratio_type'] = $brandLogo['afile_aspect_ratio'];
+            }
+        }
+        $brandLogoFrm->fill($data);
+
+        $data['slide_screen'] = 1 > $slide_screen ? applicationConstants::SCREEN_DESKTOP : $slide_screen;
         $brandImageFrm = $this->getBrandImageForm($brand_id);
+        $brandImageFrm->fill($data);
+
         $this->set('languages', Language::getAllNames());
         $this->set('brand_id', $brand_id);
         $this->set('brandLogoFrm', $brandLogoFrm);
@@ -673,10 +686,9 @@ class BrandsController extends AdminBaseController
         $this->_template->render(false, false);
     }
 
-    public function removeBrandMedia($brand_id, $imageType = '', $lang_id = 0, $slide_screen = 0)
+    public function removeBrandMedia($brand_id, $imageType = '', $afileId = 0)
     {
         $brand_id = FatUtility::int($brand_id);
-        $lang_id = FatUtility::int($lang_id);
         if (!$brand_id) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
@@ -688,7 +700,7 @@ class BrandsController extends AdminBaseController
             $fileType = AttachedFile::FILETYPE_BRAND_IMAGE;
         }
         $fileHandlerObj = new AttachedFile();
-        if (!$fileHandlerObj->deleteFile($fileType, $brand_id, 0, 0, $lang_id, $slide_screen)) {
+        if (!$fileHandlerObj->deleteFile($fileType, $brand_id, $afileId)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }

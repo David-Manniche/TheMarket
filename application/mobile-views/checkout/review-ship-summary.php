@@ -6,7 +6,6 @@ if (isset($cartOrderData['shopping_cart']['product_shipping_methods']['product']
     $selectedShippingProducts = $cartOrderData['shopping_cart']['product_shipping_methods']['product'];
 }
 
-$productItems = [];
 foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
     ksort($shippedByItemArr);
     foreach ($shippedByItemArr as $shipLevel => $items) {
@@ -74,7 +73,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                         $product['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                         $data['products'] = [$product];
                         $data['shipLevel'] = $shipLevel;
-                        $data['rates']['data'][] = isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : (object)[];
+                        $data['rates']['data'][] = is_array($selectedShippingProducts) && isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : (object)[];
                         $productItems[$shippedBy]['data'][] = $data;
                     }
                 }

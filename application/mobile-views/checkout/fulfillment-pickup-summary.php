@@ -2,7 +2,6 @@
 
 ksort($shippingRates);
 
-$productItems = [];
 $levelNo = 0;
 foreach ($shippingRates as $pickUpBy => $levelItems) {
     if (isset($levelItems['products']) && count($levelItems['products']) > 0 && $pickUpBy == 0) {
