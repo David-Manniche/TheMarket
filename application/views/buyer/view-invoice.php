@@ -312,6 +312,16 @@
                                                                     <td style="padding:10px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat($rewardPointDiscount, true, false, true, false, true); ?></td>
                                                                 </tr>
                                                             <?php } ?>
+                                                            <?php if (array_key_exists('order_rounding_off', $orderDetail) && 0 != $orderDetail['order_rounding_off']) { ?>
+                                                                <tr>
+                                                                    <td style="padding:10px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2">
+                                                                        <?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId); ?>
+                                                                    </td>
+                                                                    <td style="padding:10px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1">
+                                                                        <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php } ?>
                                                             <tr>
                                                                 <td style="padding:10px;text-align: center;font-weight:700;font-size: 18px;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><strong><?php echo Labels::getLabel('LBL_Grand_Total', $siteLangId) ?></strong> </td>
                                                                 <td style="padding:10px;text-align: center;font-weight:700;font-size: 18px;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><strong><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder), true, false, true, false, true); ?></strong></td>
