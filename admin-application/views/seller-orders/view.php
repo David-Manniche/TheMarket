@@ -428,9 +428,9 @@ if (!empty($order['opship_tracking_url'])) {
                                     <?php
                                     echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($order, 'netamount', false, User::USER_TYPE_SELLER), true, true);
 
-                                    if ($roundingOff = CommonHelper::getRoundingOff($order)) {
+                                    /* if ($roundingOff = CommonHelper::getRoundingOff($order)) {
                                         echo '(+' . $roundingOff . ')';
-                                    }
+                                    } */
                                     ?>
                                 </td>
                             </tr>

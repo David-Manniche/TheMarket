@@ -32201,7 +32201,9 @@ a.ui-button:active,
   border: solid 1px #dee2e6;
   border-radius: 4px; }
   .payment-area .tab-content .tabs-container {
-    padding: 1rem; }
+    padding: 1rem;
+    position: relative;
+    z-index: 0; }
 .payment-area .paypal-data {
   text-align: center; }
   .payment-area .paypal-data p {
@@ -33377,18 +33379,20 @@ a.ui-button:active,
     padding-right: 15px;
     padding-left: 15px;
     padding-top: 8px;
-    padding-bottom: 8px; }
+    padding-bottom: 8px;
+    min-height: 166px; }
     @media (max-width: 767.98px) {
       .widget-scroll .widget-stats {
+        min-height: inherit;
         margin: 1rem 0;
         padding: 0 5px; } }
     .widget-scroll .widget-stats .icn svg {
       width: 34px;
       height: 34px;
       fill: var(--brand-color) !important; }
-    .widget-scroll .widget-stats .cards,
+    .widget-scroll .widget-stats .card,
     .widget-scroll .widget-stats .box--share {
-      min-height: 188px; }
+      min-height: inherit; }
 
 .share-earn {
   display: flex;

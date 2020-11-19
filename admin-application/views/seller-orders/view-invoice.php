@@ -187,12 +187,12 @@
                                                             </td>
                                                             <td style="padding:15px;">
                                                                 <p><strong><?php echo Labels::getLabel('LBL_Order_Date', $adminLangId); ?>:</strong> <?php echo FatDate::format($orderDetail['order_date_added']); ?> </p>
-                                                                <?php 
+                                                                <?php
                                                                 /* <p><strong><?php echo Labels::getLabel('LBL_Invoice_Date', $adminLangId); ?>:</strong> <?php echo (!empty($orderDetail['opshipping_date'])) ? FatDate::format($orderDetail['opshipping_date']) : 'NA'; ?></p> */
                                                                 ?>
                                                                 <?php if (!empty($orderDetail['opship_tracking_number'])) { ?>
                                                                     <p><strong><?php echo Labels::getLabel('LBL_Tracking_ID', $adminLangId); ?>:</strong> <?php echo (!empty($orderDetail['opship_tracking_number'])) ? $orderDetail['opship_tracking_number'] : 'NA'; ?> </p>
-                                                                <?php /* <p><strong><?php echo Labels::getLabel('LBL_Tote-Id', $adminLangId);?>: </strong>  LOREM </p> */ ?>
+                                                                    <?php /* <p><strong><?php echo Labels::getLabel('LBL_Tote-Id', $adminLangId);?>: </strong>  LOREM </p> */ ?>
                                                                 <?php } ?>
                                                             </td>
                                                         </tr>
@@ -228,20 +228,20 @@
                                                             <?php $volumeDiscount = CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT'); ?>
                                                             <td style="padding:10px;font-size:12px;text-align: left;">
                                                                 <?php
-                                                                    echo ($orderDetail['op_selprod_title'] != '') ? $orderDetail['op_selprod_title'] : $orderDetail['op_product_name'];
+                                                                echo ($orderDetail['op_selprod_title'] != '') ? $orderDetail['op_selprod_title'] : $orderDetail['op_product_name'];
+                                                                echo '<br>';
+                                                                echo Labels::getLabel('Lbl_Brand', $adminLangId) . ' : ';
+                                                                echo CommonHelper::displayNotApplicable($adminLangId, $orderDetail['op_brand_name']);
+                                                                echo '<br>';
+                                                                if ($orderDetail['op_selprod_options'] != '') {
+                                                                    echo $orderDetail['op_selprod_options'] . '<br>';
+                                                                }
+                                                                echo Labels::getLabel('LBL_Sold_By', $adminLangId) . ': ' . $orderDetail['op_shop_name'];
+                                                                if ($orderDetail['op_shipping_duration_name'] != '') {
                                                                     echo '<br>';
-                                                                    echo Labels::getLabel('Lbl_Brand', $adminLangId) . ' : ';
-                                                                    echo CommonHelper::displayNotApplicable($adminLangId, $orderDetail['op_brand_name']);
-                                                                    echo '<br>';
-                                                                    if ($orderDetail['op_selprod_options'] != '') {
-                                                                        echo $orderDetail['op_selprod_options'] . '<br>';
-                                                                    }
-                                                                    echo Labels::getLabel('LBL_Sold_By', $adminLangId) . ': ' . $orderDetail['op_shop_name'];
-                                                                    if ($orderDetail['op_shipping_duration_name'] != '') {
-                                                                        echo '<br>';
-                                                                        echo Labels::getLabel('LBL_Shipping_Method', $adminLangId) . ' : ';
-                                                                        echo $orderDetail['op_shipping_durations'] . '-' . $orderDetail['op_shipping_duration_name'];
-                                                                    }
+                                                                    echo Labels::getLabel('LBL_Shipping_Method', $adminLangId) . ' : ';
+                                                                    echo $orderDetail['op_shipping_durations'] . '-' . $orderDetail['op_shipping_duration_name'];
+                                                                }
                                                                 ?>
                                                             </td>
                                                             <?php if ($orderDetail['op_tax_collected_by_seller']) { ?>
@@ -289,6 +289,12 @@
                                                             <tr>
                                                                 <td style="padding:10px;font-size:12px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo Labels::getLabel('LBL_Total_Tax', $adminLangId) ?></td>
                                                                 <td style="padding:10px;font-size:12px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"><?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($orderDetail, 'TAX'), true, false, true, false, true); ?></td>
+                                                            </tr>
+                                                        <?php } ?>
+                                                        <?php if (array_key_exists('order_rounding_off', $orderDetail) && 0 != $orderDetail['order_rounding_off']) { ?>
+                                                            <tr>
+                                                                <td style="padding:10px; font-size:12px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="2"><?php echo (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $adminLangId) : Labels::getLabel('LBL_Rounding_Down', $adminLangId); ?></td>
+                                                                <td style="padding:10px; font-size:12px;text-align: center;border-top:1px solid #ddd;border-left:1px solid #ddd;" colspan="1"> <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'], true, false, true, false, true); ?></td>
                                                             </tr>
                                                         <?php } ?>
                                                         <?php $volumeDiscount = CommonHelper::orderProductAmount($orderDetail, 'VOLUME_DISCOUNT');
