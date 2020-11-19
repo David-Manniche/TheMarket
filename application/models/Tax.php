@@ -508,6 +508,7 @@ class Tax extends MyAppModel
         $tax = round((($prodPrice * $qty) * $taxCategoryRow['taxrule_rate']) / 100, 2);
 
         $data['tax'] = $tax;
+        $data['rate'] = $taxCategoryRow['taxrule_rate'];
         $data['optionsSum'] = $tax;
         $optionsSum = 0;
         $data['taxCode'] = $taxCategoryRow['taxcat_code'];
@@ -520,7 +521,7 @@ class Tax extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $combinedData = FatApp::getDb()->fetchAll($srch->getResultSet());
-        
+
         if (!empty($combinedData)) {
             foreach ($combinedData as $comData) {
                 $taxval = round((($prodPrice * $qty) * $comData['taxruledet_rate']) / 100, 2);
@@ -680,7 +681,7 @@ class Tax extends MyAppModel
     public static function getActivatedServiceId(): int
     {
         $pluginObj = new Plugin();
-        return (int)$pluginObj->getDefaultPluginData(Plugin::TYPE_TAX_SERVICES, 'plugin_id');
+        return (int) $pluginObj->getDefaultPluginData(Plugin::TYPE_TAX_SERVICES, 'plugin_id');
     }
 
     /**

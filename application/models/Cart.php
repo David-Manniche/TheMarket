@@ -705,8 +705,11 @@ class Cart extends FatModel
 
         $roundingOff = 0;
         if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
-            $originalTotalPrice = $sellerProductRow['actualPrice'] * $quantity;
+            $originalTotalPrice = ($sellerProductRow['actualPrice'] * $quantity);
             $thePriceincludingTax = $taxData['tax'] + $totalPrice;
+            if (0 < $sellerProductRow['volume_discount_total'] && array_key_exists('rate', $taxData)) {
+                $thePriceincludingTax = $thePriceincludingTax + (($sellerProductRow['volume_discount_total'] * $taxData['rate']) / 100);
+            }
             if ($originalTotalPrice != $thePriceincludingTax) {
                 $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
             }
