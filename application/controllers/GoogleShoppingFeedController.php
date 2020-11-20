@@ -23,6 +23,10 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         parent::__construct($action);
         $this->init();
         $this->userPrivilege->canViewAdvertisementFeed(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
+            Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
+        }
     }
 
     /**
