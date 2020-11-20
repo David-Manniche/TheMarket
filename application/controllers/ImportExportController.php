@@ -231,6 +231,7 @@ class ImportExportController extends SellerBaseController
 
     public function importForm($actionType)
     {
+        $post = FatApp::getPostedData();
         $options = Importexport::getImportExportTypeArr('import', $this->siteLangId, true);
         if (!isset($options[$actionType])) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
@@ -248,6 +249,9 @@ class ImportExportController extends SellerBaseController
         }
 
         $frm = $this->getImportExportForm($this->siteLangId, 'IMPORT', $actionType);
+        if (!empty($post)) {
+            $frm->fill($post);
+        }
         $this->set('frm', $frm);
         $this->set('actionType', $actionType);
         $this->set('displayMediaTab', $displayMediaTab);

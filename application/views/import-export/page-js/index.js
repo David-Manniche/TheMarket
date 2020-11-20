@@ -61,11 +61,11 @@ $(document).ready(function() {
         document.frmImportExport.submit();
     };
 
-    importForm = function(actionType) {
+    importForm = function(actionType, formData = '') {
         if (actionType == inventoryUpdate) {
             inventoryUpdateForm();
         } else {
-            fcom.ajax(fcom.makeUrl('ImportExport', 'importForm', [actionType]), '', function(t) {
+            fcom.ajax(fcom.makeUrl('ImportExport', 'importForm', [actionType]), formData, function(t) {
                 $(importDv).html(t);
             });
         }
@@ -89,6 +89,8 @@ $(document).ready(function() {
 
     importFile = function(method, actionType) {
         var data = new FormData();
+        var form = $('#frmImportExport')[0]; // You need to use standard javascript object here
+        var formData = fcom.frmData(form);
         $inputs = $('#frmImportExport input[type=text],#frmImportExport select,#frmImportExport input[type=hidden]');
         $inputs.each(function() {
             data.append(this.name, $(this).val());
@@ -113,21 +115,27 @@ $(document).ready(function() {
                             $(document).trigger('close.facebox');
                             $(document).trigger('close.mbsmessage');
                             $.systemMessage(ans.msg, 'alert--success');
-                            if ('importData' == method) {
-                                importForm(actionType);
-                            } else {
-                                importMediaForm(actionType);
-                            }
                         } else {
                             $('#fileupload_div').html('');
                             $(document).trigger('close.mbsmessage');
                             $.systemMessage(ans.msg, 'alert--danger');
                         }
-
+						
+						if ('importData' == method) {
+							importForm(actionType, formData);
+						} else {
+							importMediaForm(actionType);
+						}
+						
                         if (typeof ans.CSVfileUrl !== 'undefined') {
                             location.href = ans.CSVfileUrl;
                         }
                     } catch (exc) {
+						if ('importData' == method) {
+							importForm(actionType, formData);
+						} else {
+							importMediaForm(actionType);
+						}
                         $(document).trigger('close.mbsmessage');
                         $.systemMessage(exc.message, 'alert--danger');
                     }
