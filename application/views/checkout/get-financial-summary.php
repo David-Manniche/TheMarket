@@ -29,13 +29,14 @@
                             <div class="product-profile__data">
                                 <div class="title"><a class="" href="<?php echo $productUrl; ?>" title="<?php echo $product['product_name'] ?>"><?php echo $product['selprod_title'] ?></a></div>
                                 <div class="options">
-                                    <p class=""><?php if (isset($product['options']) && count($product['options'])) {
-                                                    $optionStr = '';
-                                                    foreach ($product['options'] as $key => $option) {
-                                                        $optionStr .= $option['optionvalue_name'] . '|';
-                                                    }
-                                                    echo rtrim($optionStr, '|');
-                                                } ?></p>
+                                    <p class="">
+                                        <?php if (isset($product['options']) && count($product['options'])) {
+                                            $optionStr = '';
+                                            foreach ($product['options'] as $key => $option) {
+                                                $optionStr .= $option['optionvalue_name'] . '|';
+                                            }
+                                            echo rtrim($optionStr, '|');
+                                        } ?></p>
                                 </div>
                             </div>
                         </div>
