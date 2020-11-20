@@ -1553,7 +1553,7 @@ END,   special_price_found ) as special_price_found'
 
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addGroupBy('product_id');
-
+        // echo $srch->getQuery();
         if (!empty($keyword)) {
             $srch->addGroupBy('keywordmatched');
             $srch->addOrder('keywordmatched', 'desc');
