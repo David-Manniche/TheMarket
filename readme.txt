@@ -441,6 +441,7 @@ Bugs:
     => 045418 - On Sales report >> in case of rounding off amount >> Some warning message is there 
 ---------------TV-9.2.3.20201118------------------------    
     => 045415 - cancellation age, return age, cod etc options are not listing on product detail page
+    => 045366 - seller dashboard> sales> under sales discounted amount is displaying which is offered by admin
 
 Enhancements:
     => Tax module upgrade
