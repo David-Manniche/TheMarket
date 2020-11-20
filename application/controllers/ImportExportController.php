@@ -50,7 +50,7 @@ class ImportExportController extends SellerBaseController
                 if (isset($endId) && $endId > 1 && $endId > $min) {
                     $max = $endId;
                 }
-                $obj->export($actionType, $langId, $sheetType, null, null, $min, $max, $userId);
+                $obj->export($actionType, $langId, $sheetType, null, null, $min, $max, $userId, true);
                 break;
             case Importexport::BY_BATCHES:
                 if (isset($batchNumber) && $batchNumber > 0) {
@@ -62,11 +62,11 @@ class ImportExportController extends SellerBaseController
                     $max = $batchCount;
                 }
                 $min = (!$min) ? 1 : $min;
-                $obj->export($actionType, $langId, $sheetType, $min, $max, null, null, $userId);
+                $obj->export($actionType, $langId, $sheetType, $min, $max, null, null, $userId, true);
                 break;
 
             default:
-                $obj->export($actionType, $langId, $sheetType, null, null, null, null, $userId);
+                $obj->export($actionType, $langId, $sheetType, null, null, null, null, $userId, true);
                 break;
         }
     }

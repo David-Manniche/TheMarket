@@ -200,7 +200,7 @@ class Importexport extends ImportexportCommon
         $this->headingIndexArr = array_flip($headingRow);
     }
 
-    public function export($type, $langId, $sheetType, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = 0)
+    public function export($type, $langId, $sheetType, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = 0, $sellerDashboard = false)
     {
         $all = !isset($offset) && !isset($noOfRows) && !isset($minId) && !isset($maxId);
         $userId = FatUtility::int($userId);
@@ -233,12 +233,12 @@ class Importexport extends ImportexportCommon
                 $this->actionType = self::ACTION_ADMIN_PRODUCTS;
                 switch ($sheetType) {
                     case Importexport::PRODUCT_CATALOG:
-                        $sheetName = Labels::getLabel('LBL_Marketplace_Products', $langId) . $sheetName;
+                        $sheetName = (!$sellerDashboard ? Labels::getLabel('LBL_My_Products', $langId) : Labels::getLabel('LBL_Marketplace_Products', $langId)) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductsCatalog($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_OPTION:
-                        $sheetName = Labels::getLabel('LBL_Marketplace_Product_Options', $langId) . $sheetName;
+                        $sheetName = (!$sellerDashboard ? Labels::getLabel('LBL_My_Product_Options', $langId) : Labels::getLabel('LBL_Marketplace_Product_Options', $langId)) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductOptions($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
@@ -248,7 +248,7 @@ class Importexport extends ImportexportCommon
                         $this->exportProductTags($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_SPECIFICATION:
-                        $sheetName = Labels::getLabel('LBL_Marketplace_Product_Specifications', $langId) . $sheetName;
+                        $sheetName = (!$sellerDashboard ? Labels::getLabel('LBL_My_Product_Specifications', $langId) : Labels::getLabel('LBL_Marketplace_Product_Specifications', $langId)) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductSpecification($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
@@ -266,12 +266,12 @@ class Importexport extends ImportexportCommon
                 $this->actionType = self::ACTION_SELLER_PRODUCTS;
                 switch ($sheetType) {
                     case Importexport::PRODUCT_CATALOG:
-                        $sheetName = Labels::getLabel('LBL_Seller_Products', $langId) . $sheetName;
+                        $sheetName = ((0 < $userId) ? Labels::getLabel('LBL_My_Products', $langId) : Labels::getLabel('LBL_Seller_Products', $langId)) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductsCatalog($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_OPTION:
-                        $sheetName = Labels::getLabel('LBL_Seller_Product_Options', $langId) . $sheetName;
+                        $sheetName = ((0 < $userId) ? Labels::getLabel('LBL_My_Product_Options', $langId) : Labels::getLabel('LBL_Seller_Product_Options', $langId)) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductOptions($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
@@ -281,7 +281,7 @@ class Importexport extends ImportexportCommon
                         $this->exportProductTags($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::PRODUCT_SPECIFICATION:
-                        $sheetName = Labels::getLabel('LBL_Seller_Product_Specifications', $langId) . $sheetName;
+                        $sheetName = ((0 < $userId) ? Labels::getLabel('LBL_My_Product_Specifications', $langId) : Labels::getLabel('LBL_Seller_Product_Specifications', $langId)) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportProductSpecification($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
