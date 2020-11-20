@@ -456,7 +456,6 @@ Enhancements:
     => Category Listing Page UI 
     => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------
-Enhancements:
     => Enhance discount module     
     
 Notes:
