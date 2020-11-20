@@ -434,9 +434,11 @@ class Importexport extends ImportexportCommon
                 $this->exportCategoryMedia($langId);
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
+                $catMediaId = $type == Importexport::TYPE_PRODUCTS ? 0 : $userId;
                 $sheetName = Labels::getLabel('LBL_Product_Media', $langId) . $sheetName;
                 $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
-                $this->exportProductMedia($langId, $offset, $noOfRows, $minId, $maxId, $userId);
+                $this->exportProductMedia($langId, $offset, $noOfRows, $minId, $maxId, $catMediaId, $type);
                 break;
             case Importexport::TYPE_INVENTORIES:
                 $sheetName = Labels::getLabel('LBL_Seller_Product_Digital_File', $langId) . $sheetName;
@@ -2902,7 +2904,7 @@ class Importexport extends ImportexportCommon
         FatUtility::dieJsonSuccess($success);
     }
 
-    public function exportProductMedia($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null)
+    public function exportProductMedia($langId, $offset = null, $noOfRows = null, $minId = null, $maxId = null, $userId = null, $type = 0)
     {
         $userId = FatUtility::int($userId);
         $srch = Product::getSearchObject();
@@ -2911,8 +2913,10 @@ class Importexport extends ImportexportCommon
         $srch->joinTable(Option::DB_TBL, 'LEFT OUTER JOIN', 'o.option_id = ov.optionvalue_option_id', 'o');
         $srch->doNotCalculateRecords();
         if ($userId) {
-            $cnd = $srch->addCondition('tp.product_seller_id', '=', $userId, 'AND');
-            $cnd->attachCondition('tp.product_seller_id', '=', 0);
+            $srch->addCondition('tp.product_seller_id', '=', $userId);
+        } else {
+            $opr = $type == Importexport::TYPE_SELLER_PRODUCTS ? '>' : '=';
+            $srch->addCondition('tp.product_seller_id', $opr, 0);
         }
 
         if (isset($offset) && isset($noOfRows)) {
@@ -2929,7 +2933,6 @@ class Importexport extends ImportexportCommon
 
         $srch->addMultipleFields(array('product_id', 'product_identifier', 'afile_record_id', 'afile_record_subid', 'afile_type', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'optionvalue_identifier', 'option_identifier', 'optionvalue_id', 'option_id'));
         $rs = $srch->getResultSet();
-
         $sheetData = array();
         /* Sheet Heading Row [ */
         $headingsArr = $this->getProductMediaColoumArr($langId);
