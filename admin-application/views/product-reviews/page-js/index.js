@@ -19,11 +19,17 @@ $(document).ready(function(){
 			});
 		},
 		select: function(event, ui) {
+			console.log('select');
 			$("input[name='reviewed_for_id']").val( ui.item.id );
 		}
 	});
-	$('input[name=\'reviewed_for\']').keyup(function(){
-		$('input[name=\'reviewed_for_id\']').val('');
+	$('input[name=\'reviewed_for\']').keydown(function(){		
+		if(event.keyCode == 13) {
+			event.preventDefault();
+		}else {
+			$('input[name=\'reviewed_for_id\']').val('');
+		}	
+		
 	});
 });
 (function() {
