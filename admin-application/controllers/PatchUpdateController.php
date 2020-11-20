@@ -35,6 +35,72 @@ class PatchUpdateController extends AdminBaseController
         /* For All Sellers */
         echo 'Done!';
     }
+    
+    /**
+     * updateTaxRules
+     * @Description : For V9.3 to insert tax as 0 for tax-category in which "Rest Of The World" country is not bind.
+     * @return void
+     */
+    public function updateTaxRules()
+    {
+        if (0 < Tax::getActivatedServiceId()) {
+            echo 'No Need as Tax Api Enabled';
+        }
+        $countryId = -1;
+        $stateId = -1;
+        $taxCatArr = Tax::getSaleTaxCatArr($this->adminLangId);
+        $structureId = TaxStructure::getDefaultTaxStructureId();
+        foreach ($taxCatArr as $taxCatId => $cat) {
+            $srch = TaxRuleLocation::getSearchObject();
+            $srch->addCondition('taxruleloc_taxcat_id', '=', $taxCatId);
+            $srch->addCondition('taxruleloc_country_id', '=', $countryId);
+            $res = $srch->getResultSet();
+            $locationsData = FatApp::getDb()->fetch($res);
+            if ($locationsData == false) {
+                $ruleId = 0;
+                $states = [];
+                $taxRuleObj = new TaxRule($ruleId);
+                $rule['taxrule_taxcat_id'] = $taxCatId;
+                $rule['taxrule_name'] = Labels::getLabel('LBL_Zero_Tax', CommonHelper::getLangId());
+                $rule['taxrule_taxstr_id'] = $structureId;
+                $rule['taxrule_rate'] = 0;
+                $taxRuleObj->assignValues($rule);
+                if (!$taxRuleObj->save()) {
+                    Message::addErrorMessage($taxRuleObj->getError());
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+
+                $ruleId = $taxRuleObj->getMainTableRecordId();
+                /* [ update location data */
+                $locData = array(
+                    'taxruleloc_taxcat_id' => $taxCatId,
+                    'taxruleloc_taxrule_id' => $ruleId,
+                    'taxruleloc_country_id' => $countryId,
+                    'taxruleloc_state_id' => $stateId,
+                    'taxruleloc_type' => TaxRule::TYPE_ALL_STATES,
+                    'taxruleloc_unique' => 1
+                );
+                $locObj = new TaxRuleLocation();
+                if (!$locObj->updateLocations($locData)) {
+                    Message::addErrorMessage($locObj->getError());
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+
+                $combinedTax = array(
+                    'taxruledet_taxrule_id' => $ruleId,
+                    'taxruledet_taxstr_id' => $structureId,
+                    'taxruledet_rate' => 0,
+                );
+                $taxRuleComObj = new TaxRuleCombined(0);
+                $taxRuleComObj->assignValues($combinedTax);
+                if (!$taxRuleComObj->save()) {
+                    Message::addErrorMessage($locObj->getError());
+                    FatUtility::dieJsonError(Message::getHtml());
+                }
+            }
+        }
+        echo 'Done!';
+    }
 
     public function updateTaxCategories()
     {
