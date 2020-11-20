@@ -447,6 +447,7 @@ Bugs:
     => 045241 - admin> reviews> filters> review for filter suggestion is not working
     => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
     => 045510 - Admin dashboard - Threshold products listing
+    => 045517 - Price filter range and their search with options.
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
