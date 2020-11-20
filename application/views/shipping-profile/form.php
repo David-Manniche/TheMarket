@@ -74,7 +74,7 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
             </div>
             <?php if (empty($profileData) || ((isset($profileData['shipprofile_default'])))) { ?>
                 <div class="row mb-4">
-                    <div class="col-md-7 mb-4">
+                    <div class="col-md-12 mb-4">
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="card-title"><?php echo Labels::getLabel('LBL_Shipping_to', $siteLangId); ?>
@@ -92,11 +92,12 @@ $submitBtnFld->developerTags['noCaptionTag'] = true;
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5 mb-4">
+                    
+                    <!--<div class="col-md-5 mb-4">
                         <div class="card">
                             <div id="ship-section--js"></div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             <?php } ?>
         </div>

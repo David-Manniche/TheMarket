@@ -22,9 +22,11 @@ $minFld->setWrapperAttribute('class', 'condition-field--js '. $extraClass);
 
 $maxFld = $frm->getField('shiprate_max_val');
 $maxFld->setWrapperAttribute('class', 'condition-field--js '. $extraClass);
-
+/*
 $cancelFld = $frm->getField('btn_cancel');
 $cancelFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+ * 
+ */
 ?>
 <div class="portlet">
 	<div class="portlet__head">

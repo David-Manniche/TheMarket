@@ -149,7 +149,7 @@ if (!empty($excludeLocations)) {
                         $lbl = (0 < $zone_id ? Labels::getLabel("LBL_UPDATE_ZONE", $adminLangId) : Labels::getLabel("LBL_ADD_ZONE", $adminLangId));
                     ?>
                     <input type="submit" name="btn_submit" value="<?php echo $lbl; ?>">
-                    <input type="button" name="cancel" onClick="searchProductsSection(<?php echo $profile_id; ?>);" value="<?php echo Labels::getLabel("LBL_Cancel", $adminLangId); ?>">
+                    <!--<input type="button" name="cancel" onClick="searchProductsSection(<?php echo $profile_id; ?>);" value="<?php echo Labels::getLabel("LBL_Cancel", $adminLangId); ?>">-->
                 </div>
             </div>
         </div>

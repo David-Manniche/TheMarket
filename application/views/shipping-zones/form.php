@@ -150,12 +150,6 @@ if (!empty($excludeLocations)) {
                     <div class="col">
                         <input class="btn btn-brand" type="submit" name="btn_submit" value="<?php echo Labels::getLabel("LBL_Add_Zone", $siteLangId); ?>">
                     </div>
-
-                    <div class="col-auto">
-                        <input class="btn btn-outline-brand" type="button" name="cancel" onClick="clearForm();" value="<?php echo Labels::getLabel("LBL_Cancel", $siteLangId); ?>">
-                    </div>
-
-
                 </div>
             </form>
         </div>
