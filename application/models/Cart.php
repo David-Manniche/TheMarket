@@ -9,6 +9,7 @@ class Cart extends FatModel
     private $valdateCheckoutType;
     private $fulfilmentType = 0;
     private $includeTax = true;
+    private $pageType = 0;
 
     public const DB_TBL = 'tbl_user_cart';
     public const DB_TBL_PREFIX = 'usercart_';
@@ -18,10 +19,12 @@ class Cart extends FatModel
     public const TYPE_PRODUCT = 1;
     public const TYPE_SUBSCRIPTION = 2;
 
+    public const PAGE_TYPE_CART = 1;
+    public const PAGE_TYPE_CHECKOUT = 2;
 
     public const CART_MAX_DISPLAY_QTY = 9;
 
-    public function __construct($user_id = 0, $langId = 0, $tempCartUserId = 0)
+    public function __construct($user_id = 0, $langId = 0, $tempCartUserId = 0, $pageType = 0)
     {
         parent::__construct();
         $this->valdateCheckoutType = true;
@@ -80,6 +83,7 @@ class Cart extends FatModel
             $this->SYSTEM_ARR['shopping_cart'] = array();
         }
         $this->cartCache = true;
+        $this->pageType = $pageType;
     }
 
     public static function getCartKeyPrefixArr()
@@ -1162,23 +1166,25 @@ class Cart extends FatModel
                     'buyerId' => $this->cart_user_id
                 );
 
-                $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
+                if (self::PAGE_TYPE_CART != $this->pageType) {
+                    $taxData = $taxObj->calculateTaxRates($product['product_id'], $taxableProdPrice, $product['selprod_user_id'], $langId, $product['quantity'], $extraData, $this->cartCache);
 
-                if (false == $taxData['status'] && $taxData['msg'] != '') {
-                    $this->error = $taxData['msg'];
-                }
-                if (array_key_exists('options', $taxData)) {
-                    foreach ($taxData['options'] as $optionId => $optionval) {
-                        $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
-                        if (isset($optionval['value']) && 0 < $optionval['value']) {
-                            $taxOptions[$optionval['name']]['value'] = isset($taxOptions[$optionval['name']]['value']) ? ($taxOptions[$optionval['name']]['value'] + $optionval['value']) : $optionval['value'];
-                            $taxOptions[$optionval['name']]['title'] = CommonHelper::displayTaxPercantage($optionval);
+                    if (false == $taxData['status'] && $taxData['msg'] != '') {
+                        $this->error = $taxData['msg'];
+                    }
+                    if (array_key_exists('options', $taxData)) {
+                        foreach ($taxData['options'] as $optionId => $optionval) {
+                            $prodTaxOptions[$product['selprod_id']][$optionId] = $optionval;
+                            if (isset($optionval['value']) && 0 < $optionval['value']) {
+                                $taxOptions[$optionval['name']]['value'] = isset($taxOptions[$optionval['name']]['value']) ? ($taxOptions[$optionval['name']]['value'] + $optionval['value']) : $optionval['value'];
+                                $taxOptions[$optionval['name']]['title'] = CommonHelper::displayTaxPercantage($optionval);
+                            }
                         }
                     }
-                }
 
-                $tax = $taxData['tax'];
-                $cartTaxTotal += $tax;
+                    $tax = $taxData['tax'];
+                    $cartTaxTotal += $tax;
+                }
 
                 $originalShipping += $product['shipping_cost'];
                 $totalSiteCommission += $product['commission'];

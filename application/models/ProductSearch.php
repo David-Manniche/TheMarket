@@ -160,6 +160,10 @@ class ProductSearch extends SearchBase
             $useTempTable = false;
         }
 
+        if (array_key_exists('price-min-range', $criteria) || array_key_exists('min_price_range', $criteria)) {
+            $useTempTable = false;
+        }
+        $useTempTable = false; /* Need to cross check results in case of temp table */
         if ($useTempTable === true) {
             $srch = new SearchBase(Product::DB_PRODUCT_MIN_PRICE);
             $srch->doNotLimitRecords();
@@ -168,6 +172,7 @@ class ProductSearch extends SearchBase
             $tmpQry = $srch->getQuery();
             $this->joinTable('(' . $tmpQry . ')', 'INNER JOIN', 'pricetbl.pmp_product_id = msellprod.selprod_product_id and msellprod.selprod_id = pricetbl.pmp_selprod_id', 'pricetbl');
             $this->joinTable(SellerProduct::DB_TBL_SELLER_PROD_SPCL_PRICE, 'LEFT OUTER JOIN', 'msplpric.splprice_selprod_id = pricetbl.pmp_selprod_id and pricetbl.pmp_splprice_id = msplpric.splprice_id', 'msplpric');
+            // $this->addFld('pricetbl.maxprice');
         } else {
             $this->joinBasedOnPriceCondition($splPriceForDate, $criteria, $checkAvailableFrom);
         }
@@ -224,7 +229,7 @@ class ProductSearch extends SearchBase
             $srch->addFld('COALESCE(splprice_price, sprods.selprod_price) as theprice');
             $srch->addFld('if(sp_l.selprod_title LIKE ' . FatApp::getDb()->quoteVariable('%' . $criteria['keyword'] . '%') . ',  1, 0 ) as keywordFound');
             /* if (isset($criteria['max_price']) && true == $criteria['max_price']) {
-                $srch->addFld('MAX(COALESCE(tsp.splprice_price, sprods.selprod_price)) ) as maxprice');
+                $srch->addFld('MAX(COALESCE(tsp.splprice_price, sprods.selprod_price)) as maxprice');
             } */
         } else {
             $srch->addFld('MIN(COALESCE(tsp.splprice_price, sprods.selprod_price)) AS theprice');
@@ -232,6 +237,16 @@ class ProductSearch extends SearchBase
             /* if (isset($criteria['max_price']) && true == $criteria['max_price']) {
                 $srch->addFld('MAX(COALESCE(tsp.splprice_price, sprods.selprod_price)) AS maxprice');
             } */
+        }
+
+        $minPriceRange = 0;
+        if (array_key_exists('price-min-range', $criteria)) {
+            $minPriceRange = floor($criteria['price-min-range']);
+        } elseif (array_key_exists('min_price_range', $criteria)) {
+            $minPriceRange = floor($criteria['min_price_range']);
+        }
+        if (0 < $minPriceRange) {
+            $srch->addDirectCondition('COALESCE(tsp.splprice_price, sprods.selprod_price) >= ' . $minPriceRange);
         }
 
         $srch->joinTable(

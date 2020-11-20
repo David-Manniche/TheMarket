@@ -2264,8 +2264,7 @@ class SellerProductsController extends AdminBaseController
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
-        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
-
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);        
         $srch = SellerProduct::getSearchObject($this->adminLangId);
 
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
@@ -2276,17 +2275,17 @@ class SellerProductsController extends AdminBaseController
             $condition = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
             $condition->attachCondition('selprod_title', 'LIKE', '%' . $post['keyword'] . '%');
         }
-        $cnd = $srch->addCondition('emailarchive_tpl_name', 'LIKE', 'threshold_notification_vendor_custom');
-        $cnd->attachCondition('emailarchive_tpl_name', 'LIKE', 'threshold_notification_vendor', 'OR');
+        /* $cnd = $srch->addCondition('emailarchive_tpl_name', 'LIKE', 'threshold_notification_vendor_custom');
+        $cnd->attachCondition('emailarchive_tpl_name', 'LIKE', 'threshold_notification_vendor', 'OR'); */
         $srch->addDirectCondition('selprod_stock <= selprod_threshold_stock_level');
         $srch->addDirectCondition('selprod_track_inventory = ' . Product::INVENTORY_TRACK);
-        $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
         $srch->addMultipleFields(array('selprod_id', 'selprod_user_id', 'IF(selprod_title is NULL or selprod_title = "" ,product_name, selprod_title) as product_name', 'selprod_stock', 'selprod_threshold_stock_level', 'emailarchive_sent_on'));
 
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
+        $srch->addGroupBy('selprod_id');
         $srch->addOrder('selprod_id', 'DESC');
-        /* echo $srch->getQuery(); die; */
+        
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
 

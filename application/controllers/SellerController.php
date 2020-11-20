@@ -4771,6 +4771,11 @@ class SellerController extends SellerBaseController
     public function specialPrice($selProd_id = 0)
     {
         $this->userPrivilege->canViewSpecialPrice(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
+            Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
+        }
+        
         $selProd_id = FatUtility::int($selProd_id);
 
         if (0 < $selProd_id || 0 > $selProd_id) {

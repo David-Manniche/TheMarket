@@ -43,7 +43,6 @@ trait SellerProducts
         $rs = $srch->getResultSet();
         $adminCatalogs = $srch->recordCount();
         $this->set('adminCatalogs', $adminCatalogs);
-
         $this->_template->render(true, true);
     }
 
@@ -120,6 +119,11 @@ trait SellerProducts
 
         $selprod_id = FatUtility::int($selprod_id);
         $product_id = FatUtility::int($product_id);
+
+        if (!$product_id) {
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
+
         $userId = $this->userParentId;
         $userObj = new User($userId);
         $vendorReturnAddress = $userObj->getUserReturnAddress($this->siteLangId);
@@ -143,10 +147,6 @@ trait SellerProducts
                 Message::addErrorMessage(Labels::getLabel('MSG_Please_add_return_address_before_adding/updating_product', $this->siteLangId));
                 FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', array(User::RETURN_ADDRESS_ACCOUNT_TAB, $langId)));
             }
-        }
-        if (!$product_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
         }
 
         $productRow = Product::getProductDataById($this->siteLangId, $product_id, array('product_type'));
@@ -2585,6 +2585,10 @@ trait SellerProducts
     public function volumeDiscount($selProd_id = 0)
     {
         $this->userPrivilege->canViewVolumeDiscount(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
+            Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
+        }
         $selProd_id = FatUtility::int($selProd_id);
         if (0 < $selProd_id || 0 > $selProd_id) {
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
@@ -2776,6 +2780,10 @@ trait SellerProducts
     public function relatedProducts($selProd_id = 0)
     {
         $this->userPrivilege->canViewRelatedProducts(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
+            Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
+        }
         $selProd_id = FatUtility::int($selProd_id);
         if (0 < $selProd_id || 0 > $selProd_id) {
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
@@ -2953,6 +2961,10 @@ trait SellerProducts
     public function upsellProducts($selProd_id = 0)
     {
         $this->userPrivilege->canViewBuyTogetherProducts(UserAuthentication::getLoggedUserId());
+        if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
+            Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
+            FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
+        }
         $selProd_id = FatUtility::int($selProd_id);
         if (0 < $selProd_id || 0 > $selProd_id) {
             $selProd_id = SellerProduct::getAttributesByID($selProd_id, 'selprod_id', false);
