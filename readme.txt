@@ -445,6 +445,8 @@ Bugs:
     => 045366 - seller dashboard> sales> under sales discounted amount is displaying which is offered by admin
 --------------------TV-9.2.3.20201120---------------------
     => 045241 - admin> reviews> filters> review for filter suggestion is not working
+    => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -50,7 +50,7 @@ class CartController extends MyAppController
         $products['groups'] = array();
         $products['single'] = array();
         $loggedUserId = UserAuthentication::getLoggedUserId(true);
-        $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id'], Cart::PAGE_TYPE_CART);
         if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
             $cartObj->excludeTax();
         }
@@ -131,9 +131,6 @@ class CartController extends MyAppController
                 }
 
                 $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
-                /* Exclude Tax on Cart Listing For API */
-                unset($cartSummary['cartTaxTotal']);
-                /* Exclude Tax on Cart Listing For API */
 
                 $this->set('cartSummary', $cartSummary);
 
@@ -560,7 +557,7 @@ class CartController extends MyAppController
             $key = md5($key);
         }
         $quantity = isset($post['quantity']) ? FatUtility::int($post['quantity']) : 1;
-        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id']);
+        $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id'], Cart::PAGE_TYPE_CART);
         if (!$cartObj->update($key, $quantity)) {
             if (true === MOBILE_APP_API_CALL) {
                 LibHelper::dieJsonError($cartObj->getError());
@@ -583,13 +580,11 @@ class CartController extends MyAppController
         }
         if (true === MOBILE_APP_API_CALL) {
             $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
+            $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id'], Cart::PAGE_TYPE_CART);
             $cartObj->setFulfilmentType($fulfilmentType);
             $cartObj->setCartCheckoutType($fulfilmentType);
             $productsArr = $cartObj->getProducts($this->siteLangId);
             $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
-            /* Exclude Tax on Cart Listing For API */
-            unset($cartSummary['cartTaxTotal']);
-            /* Exclude Tax on Cart Listing For API */
             $this->set('products', $productsArr);
             $this->set('cartSummary', $cartSummary);
             $this->_template->render();
