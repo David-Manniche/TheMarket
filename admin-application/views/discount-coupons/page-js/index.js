@@ -134,6 +134,20 @@ $(document).on('change', '.language-js', function () {
         });
         //});
     };
+    
+    couponLinkShopForm = function (couponId) {
+        fcom.displayProcessing();
+        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'linkShopForm', [couponId]), '', function (t) {
+            fcom.updateFaceboxContent(t);
+        });        
+    };
+    
+    couponLinkBrandForm = function (couponId) {
+        fcom.displayProcessing();
+        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'linkBrandForm', [couponId]), '', function (t) {        
+            fcom.updateFaceboxContent(t);
+        });        
+    };
 
     addCouponLinkPlanForm = function (couponId) {
         $.facebox(function () {
@@ -195,6 +209,35 @@ $(document).on('change', '.language-js', function () {
             reloadCouponProduct(couponId);
         });
     };
+    
+    reloadCouponShop = function (couponId) {
+        $("#coupon_list").html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'couponShops', [couponId]), '', function (t) {
+            $("#coupon_list").html(t);
+        });
+    };
+
+    updateCouponShop = function (couponId, shopId) {
+        var data = 'coupon_id=' + couponId + '&shop_id=' + shopId;
+        fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'updateCouponShop'), data, function (t) {
+            reloadCouponShop(couponId);
+        });
+    };
+    
+    reloadCouponBrand = function (couponId) {
+        $("#coupon_list").html(fcom.getLoader());
+        fcom.ajax(fcom.makeUrl('DiscountCoupons', 'couponBrands', [couponId]), '', function (t) {
+            $("#coupon_list").html(t);
+        });
+    };
+
+    updateCouponBrand = function (couponId, productId) {
+        var data = 'coupon_id=' + couponId + '&brand_id=' + productId;
+        fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'updateCouponBrand'), data, function (t) {
+            reloadCouponBrand(couponId);
+        });
+    };
+    
 
     removeCouponCategory = function (couponId, prodCatId) {
         var agree = confirm(langLbl.confirmRemoveOption);
@@ -243,6 +286,22 @@ $(document).on('change', '.language-js', function () {
         $("#coupon_users_list").html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('DiscountCoupons', 'couponUsers', [couponId]), '', function (t) {
             $("#coupon_users_list").html(t);
+        });
+    };
+    
+    removeCouponShop = function (couponId, shopId) {
+        var agree = confirm(langLbl.confirmRemoveOption);
+        if (!agree) { return false; }
+        fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'removeCouponShop'), 'coupon_id=' + couponId + '&shop_id=' + shopId, function (t) {
+            reloadCouponShop(couponId);
+        });
+    };
+    
+    removeCouponBrand = function (couponId, brandId) {
+        var agree = confirm(langLbl.confirmRemoveOption);
+        if (!agree) { return false; }
+        fcom.updateWithAjax(fcom.makeUrl('DiscountCoupons', 'removeCouponBrand'), 'coupon_id=' + couponId + '&brand_id=' + brandId, function (t) {
+            reloadCouponBrand(couponId);
         });
     };
 

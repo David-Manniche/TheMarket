@@ -17,7 +17,7 @@ $arr = array(
     'taxTotal' => Labels::getLabel('LBL_Tax_Charged', $siteLangId),
     'shippingTotal' => Labels::getLabel('LBL_Shipping_Charges', $siteLangId),
     'totalRefundedAmount' => Labels::getLabel('LBL_Refunded_Amount', $siteLangId),
-    'totalSalesEarnings' => Labels::getLabel('LBL_Sales_Earnings', $siteLangId)
+    'totalSalesEarnings' => Labels::getLabel('LBL_Commission_Charges', $siteLangId)
 );
 if (empty($orderDate)) {
     $arr_flds = array_merge($arrFlds1, $arr);

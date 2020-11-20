@@ -441,6 +441,10 @@ Bugs:
     => 045418 - On Sales report >> in case of rounding off amount >> Some warning message is there 
 ---------------TV-9.2.3.20201118------------------------    
     => 045415 - cancellation age, return age, cod etc options are not listing on product detail page
+----------------TV-9.2.3.20201119-------------------
+    => 045366 - seller dashboard> sales> under sales discounted amount is displaying which is offered by admin
+--------------------TV-9.2.3.20201120---------------------
+    => 045241 - admin> reviews> filters> review for filter suggestion is not working
     => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
 
 Enhancements:
@@ -453,7 +457,9 @@ Enhancements:
     => Advanced search UI and Auto Suggestions.
     => Category Listing Page UI 
     => Notification Emails on/off conf setting. 
-    ------------TV-9.2.1.20200925------------------------     
+    ------------TV-9.2.1.20200925------------------------
+Enhancements:
+    => Enhance discount module     
     
 Notes:
     

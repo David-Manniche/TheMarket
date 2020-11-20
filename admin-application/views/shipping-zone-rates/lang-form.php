@@ -3,9 +3,11 @@ $langFrm->setFormTagAttribute('class', 'web_form form_horizontal layout--'. $for
 $langFrm->setFormTagAttribute('onsubmit', 'setupLangRate(this); return(false);');
 $langFrm->developerTags['colClassPrefix'] = 'col-md-';
 $langFrm->developerTags['fld_default_col'] = 12;
-
+/*
 $cancelFld = $langFrm->getField('btn_cancel');
 $cancelFld->setFieldTagAttribute('onClick', 'searchProductsSection($(\'input[name="profile_id"]\').val()); return false;');
+ * 
+ */
 
 ?>
 <div class="portlet">

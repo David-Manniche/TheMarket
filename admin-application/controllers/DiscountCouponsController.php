@@ -356,6 +356,56 @@ class DiscountCouponsController extends AdminBaseController
 
         $this->_template->render(false, false);
     }
+    
+    public function linkShopForm($coupon_id = 0)
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $coupon_id = FatUtility::int($coupon_id);
+
+        if (1 > $coupon_id) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+
+        $frm = $this->getShopForm();
+
+        $srch = DiscountCoupons::getSearchObject($this->adminLangId);
+        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name', 'coupon_code'));
+        $srch->addCondition('coupon_id', '=', $coupon_id);
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+
+        $row['coupon_name'] = "<h3> " . Labels::getLabel('LBL_Coupon_Name', $this->adminLangId) . " : " . $row['coupon_name'] . " | " . Labels::getLabel('LBL_Coupon_Code', $this->adminLangId) . " : " . $row['coupon_code'] . "</h3>";
+        $frm->fill($row);
+        $this->set('coupon_id', $coupon_id);
+        $this->set('couponData', $row);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
+    
+    public function linkBrandForm($coupon_id = 0)
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $coupon_id = FatUtility::int($coupon_id);
+
+        if (1 > $coupon_id) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+
+        $frm = $this->getBrandForm();
+
+        $srch = DiscountCoupons::getSearchObject($this->adminLangId);
+        $srch->addMultipleFields(array('coupon_id', 'IFNULL(coupon_title,coupon_identifier) as coupon_name', 'coupon_code'));
+        $srch->addCondition('coupon_id', '=', $coupon_id);
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+
+        $row['coupon_name'] = "<h3> " . Labels::getLabel('LBL_Coupon_Name', $this->adminLangId) . " : " . $row['coupon_name'] . " | " . Labels::getLabel('LBL_Coupon_Code', $this->adminLangId) . " : " . $row['coupon_code'] . "</h3>";
+        $frm->fill($row);
+        $this->set('coupon_id', $coupon_id);
+        $this->set('couponData', $row);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
 
     public function media($coupon_id = 0)
     {
@@ -449,6 +499,36 @@ class DiscountCouponsController extends AdminBaseController
         $this->set('coupon_id', $coupon_id);
         $this->_template->render(false, false);
     }
+    
+    public function couponShops($coupon_id = 0)
+    {
+        $this->objPrivilege->canViewDiscountCoupons();
+        $coupon_id = FatUtility::int($coupon_id);
+
+        if (1 > $coupon_id) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+
+        $couponShops = DiscountCoupons::getCouponShops($coupon_id, $this->adminLangId);
+        $this->set('couponShops', $couponShops);
+        $this->set('coupon_id', $coupon_id);
+        $this->_template->render(false, false);
+    }
+    
+    public function couponBrands($coupon_id = 0)
+    {
+        $this->objPrivilege->canViewDiscountCoupons();
+        $coupon_id = FatUtility::int($coupon_id);
+
+        if (1 > $coupon_id) {
+            FatUtility::dieWithError($this->str_invalid_request);
+        }
+
+        $couponBrands = DiscountCoupons::getCouponBrands($coupon_id, $this->adminLangId);
+        $this->set('couponBrands', $couponBrands);
+        $this->set('coupon_id', $coupon_id);
+        $this->_template->render(false, false);
+    }
 
     public function updateCouponCategory()
     {
@@ -532,6 +612,63 @@ class DiscountCouponsController extends AdminBaseController
         $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully.', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
+    
+    public function updateCouponShop()
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $post = FatApp::getPostedData();
+
+        if (false === $post) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $coupon_id = FatUtility::int($post['coupon_id']);
+        $shop_id = FatUtility::int($post['shop_id']);
+
+        if (1 > $coupon_id || 1 > $shop_id) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $obj = new DiscountCoupons();
+        if (!$obj->addUpdateCouponShop($coupon_id, $shop_id)) {
+            Message::addErrorMessage(Labels::getLabel($obj->getError(), $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully.', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function updateCouponBrand()
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $post = FatApp::getPostedData();
+
+        if (false === $post) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $coupon_id = FatUtility::int($post['coupon_id']);
+        $brand_id = FatUtility::int($post['brand_id']);
+
+        if (1 > $coupon_id || 1 > $brand_id) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $obj = new DiscountCoupons();
+        if (!$obj->addUpdateCouponBrand($coupon_id, $brand_id)) {
+            Message::addErrorMessage(Labels::getLabel($obj->getError(), $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully.', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
     public function removeCouponPlan()
     {
         $this->objPrivilege->canEditDiscountCoupons();
@@ -629,6 +766,58 @@ class DiscountCouponsController extends AdminBaseController
 
         $obj = new DiscountCoupons();
         if (!$obj->addUpdateCouponUser($coupon_id, $user_id)) {
+            Message::addErrorMessage(Labels::getLabel($obj->getError(), $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully.', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function removeCouponShop()
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $post = FatApp::getPostedData();
+        if (false === $post) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $coupon_id = FatUtility::int($post['coupon_id']);
+        $shop_id = FatUtility::int($post['shop_id']);
+        if (1 > $coupon_id || 1 > $shop_id) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $obj = new DiscountCoupons();
+        if (!$obj->removeCouponShop($coupon_id, $shop_id)) {
+            Message::addErrorMessage(Labels::getLabel($obj->getError(), $this->adminLangId));
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $this->set('msg', Labels::getLabel('MSG_Record_Updated_Successfully.', $this->adminLangId));
+        $this->_template->render(false, false, 'json-success.php');
+    }
+    
+    public function removeCouponBrand()
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $post = FatApp::getPostedData();
+        if (false === $post) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $coupon_id = FatUtility::int($post['coupon_id']);
+        $brand_id = FatUtility::int($post['brand_id']);
+        if (1 > $coupon_id || 1 > $brand_id) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $obj = new DiscountCoupons();
+        if (!$obj->removeCouponBrand($coupon_id, $brand_id)) {
             Message::addErrorMessage(Labels::getLabel($obj->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -971,6 +1160,27 @@ class DiscountCouponsController extends AdminBaseController
         $frm = new Form('frmCouponUser');
         $frm->addHtml('', 'coupon_name', '');
         $frm->addTextBox(Labels::getLabel('LBL_Add_User', $this->adminLangId), 'user_name');
+        $frm->addHiddenField('', 'coupon_id');
+        return $frm;
+    }
+    
+    private function getShopForm()
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $frm = new Form('frmCouponProduct');
+        $frm->addHtml('', 'coupon_name', '');
+        $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Shop', $this->adminLangId), 'shop_name');
+        $frm->addHiddenField('', 'coupon_id');
+        return $frm;
+    }
+    
+    private function getBrandForm()
+    {
+        $this->objPrivilege->canEditDiscountCoupons();
+        $frm = new Form('frmCouponProduct');
+        $frm->addHtml('', 'coupon_name', '');
+        $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Add_Brand', $this->adminLangId), 'brand_name');
+        $fld1->htmlAfterField = '<small class="text--small"><a target="_blank" href="' . UrlHelper::generateUrl('brands') . '">' . Labels::getLabel('LBL_Brand_Not_Found?_Click_here_to_add_new_brand', $this->adminLangId) . '</a></small>';
         $frm->addHiddenField('', 'coupon_id');
         return $frm;
     }

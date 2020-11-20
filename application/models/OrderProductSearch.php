@@ -337,8 +337,8 @@ class OrderProductSearch extends SearchBase
         $cnd->attachCondition('opshipping_by_seller_user_id', '>', 0, 'AND');
         $cnd = $subSrch->addCondition($alias . '_tc.opcharge_type', '=', OrderProduct::CHARGE_TYPE_TAX, 'OR');
         $cnd->attachCondition('op_tax_collected_by_seller', '>', 0, 'AND');
-        $subSrch->addCondition($alias . '_tc.opcharge_type', 'IN', array(OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT, OrderProduct::CHARGE_TYPE_DISCOUNT, OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT), 'OR');
-
+        $subSrch->addCondition($alias . '_tc.opcharge_type', 'IN', array(OrderProduct::CHARGE_TYPE_VOLUME_DISCOUNT, /*OrderProduct::CHARGE_TYPE_DISCOUNT, OrderProduct::CHARGE_TYPE_REWARD_POINT_DISCOUNT*/), 'OR');
+        
         $srch->joinTable('(' . $subSrch->getQuery() . ')', 'LEFT OUTER JOIN', $alias . 'c.opcharge_op_id = ' . $alias . '.op_id', $alias . 'c');
 
         switch ($type) {
@@ -354,7 +354,7 @@ class OrderProductSearch extends SearchBase
         }
 
         $srch->addGroupBy($alias . '.op_selprod_user_id');
-
+       
         $qrytotalOrders = $srch->getQuery();
         $this->joinTable('(' . $qrytotalOrders . ')', 'LEFT OUTER JOIN', 'op.op_selprod_user_id = ' . $alias . '.' . $alias . '_op_selprod_user_id', $alias);
     }

@@ -211,8 +211,11 @@ class ShippingZoneRatesController extends AdminBaseController
         $cndFld->requirements()->addOnChangerequirementUpdate(0, 'eq', 'shiprate_condition_type', $fldCndTypeUnReq);
         
         $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        /*
         $btn = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->adminLangId));
         $fld->attachField($btn);
+         * 
+         */
         return $frm;
     }
     
@@ -224,8 +227,11 @@ class ShippingZoneRatesController extends AdminBaseController
         $frm->addHiddenField('', 'lang_id', $langId);
         $frm->addRequiredField(Labels::getLabel('LBL_Rate_Name', $this->adminLangId), 'shiprate_name');
         $fld = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
+        /*
         $btn = $frm->addButton('', 'btn_cancel', Labels::getLabel('LBL_Cancel', $this->adminLangId));
         $fld->attachField($btn);
+         * 
+         */
         return $frm;
     }
 }

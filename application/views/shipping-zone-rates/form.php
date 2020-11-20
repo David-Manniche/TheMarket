@@ -27,16 +27,18 @@ $submitBtnFld = $frm->getField('btn_submit');
 $submitBtnFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
 $submitBtnFld->developerTags['testClass'] = 'testc';
 $submitBtnFld->setWrapperAttribute('class', 'col-auto');
-$submitBtnFld->developerTags['col'] = 6;
+//$submitBtnFld->developerTags['col'] = 6;
 $submitBtnFld->developerTags['noCaptionTag'] = true;
-
+/*
 $cancelBtnFld = $frm->getField('btn_cancel');
 $cancelBtnFld->setFieldTagAttribute('onClick', 'clearForm(); return false;');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-wide');
 //$cancelBtnFld->setWrapperAttribute('class', 'col-auto');
-$cancelBtnFld->developerTags['col'] = 6;
+//$cancelBtnFld->developerTags['col'] = 6;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
 $cancelBtnFld->setWrapperAttribute('class', 'text-right');
+ * 
+ */
 
 ?>
 <div class="card-header">
