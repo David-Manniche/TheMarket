@@ -446,7 +446,7 @@ Bugs:
 --------------------TV-9.2.3.20201120---------------------
     => 045241 - admin> reviews> filters> review for filter suggestion is not working
     => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
-
+    => 045510 - Admin dashboard - Threshold products listing
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -458,7 +458,7 @@ Enhancements:
     => Category Listing Page UI 
     => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------
-    => Enhance discount module     
+    => Enhance discount module added brand and shop discounts    
     
 Notes:
     
