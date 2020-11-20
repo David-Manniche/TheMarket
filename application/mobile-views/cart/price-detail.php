@@ -101,9 +101,15 @@ if (array_key_exists('roundingOff', $cartSummary) && $cartSummary['roundingOff']
     );
 }
 
+$orderNetAmount = $cartSummary['orderNetAmount'];
+if (isset($cartPage) && true === $cartPage) {
+    $orderNetAmount = $cartSummary['cartTotal'] - ((0 < $cartSummary['cartVolumeDiscount']) ? $cartSummary['cartVolumeDiscount'] : 0);
+    $orderNetAmount = $orderNetAmount - ((isset($cartSummary['cartDiscounts']['coupon_discount_total']) && 0 < $cartSummary['cartDiscounts']['coupon_discount_total']) ? $cartSummary['cartDiscounts']['coupon_discount_total'] : 0);
+}
+
 $priceDetail['netPayable'] = array(
     'key' => Labels::getLabel('LBL_Net_Payable', $siteLangId),
-    'value' => CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'])
+    'value' => CommonHelper::displayMoneyFormat($orderNetAmount)
 );
 
 $data['cartSummary']['cartDiscounts'] = !empty($data['cartSummary']['cartDiscounts']) ? $data['cartSummary']['cartDiscounts'] : (object)array();

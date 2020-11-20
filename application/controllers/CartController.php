@@ -5,6 +5,10 @@ class CartController extends MyAppController
     public function __construct($action)
     {
         parent::__construct($action);
+
+        /* For API Use */
+        $this->set('cartPage', true);
+        /* For API Use */
     }
 
     public function index()
@@ -127,6 +131,10 @@ class CartController extends MyAppController
                 }
 
                 $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
+                /* Exclude Tax on Cart Listing For API */
+                unset($cartSummary['cartTaxTotal']);
+                /* Exclude Tax on Cart Listing For API */
+
                 $this->set('cartSummary', $cartSummary);
 
                 $this->set('cartSelectedBillingAddress', $billingAddressDetail);
@@ -579,6 +587,9 @@ class CartController extends MyAppController
             $cartObj->setCartCheckoutType($fulfilmentType);
             $productsArr = $cartObj->getProducts($this->siteLangId);
             $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
+            /* Exclude Tax on Cart Listing For API */
+            unset($cartSummary['cartTaxTotal']);
+            /* Exclude Tax on Cart Listing For API */
             $this->set('products', $productsArr);
             $this->set('cartSummary', $cartSummary);
             $this->_template->render();
