@@ -43,7 +43,6 @@ trait SellerProducts
         $rs = $srch->getResultSet();
         $adminCatalogs = $srch->recordCount();
         $this->set('adminCatalogs', $adminCatalogs);
-
         $this->_template->render(true, true);
     }
 
@@ -120,6 +119,11 @@ trait SellerProducts
 
         $selprod_id = FatUtility::int($selprod_id);
         $product_id = FatUtility::int($product_id);
+
+        if (!$product_id) {
+            FatApp::redirectUser($_SESSION['referer_page_url']);
+        }
+
         $userId = $this->userParentId;
         $userObj = new User($userId);
         $vendorReturnAddress = $userObj->getUserReturnAddress($this->siteLangId);
@@ -143,10 +147,6 @@ trait SellerProducts
                 Message::addErrorMessage(Labels::getLabel('MSG_Please_add_return_address_before_adding/updating_product', $this->siteLangId));
                 FatApp::redirectUser(UrlHelper::generateUrl('seller', 'shop', array(User::RETURN_ADDRESS_ACCOUNT_TAB, $langId)));
             }
-        }
-        if (!$product_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            FatApp::redirectUser($_SESSION['referer_page_url']);
         }
 
         $productRow = Product::getProductDataById($this->siteLangId, $product_id, array('product_type'));
