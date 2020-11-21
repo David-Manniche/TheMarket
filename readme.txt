@@ -448,6 +448,7 @@ Bugs:
     => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
     => 045510 - Admin dashboard - Threshold products listing
     => 045517 - Price filter range and their search with options.
+---------------TV-9.2.3.20201121-----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -460,7 +461,7 @@ Enhancements:
     => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------
     => Enhance discount module added brand and shop discounts    
-    
+    ---------------TV-9.2.3.20201121--------------------
 Notes:
     
     Composer :
