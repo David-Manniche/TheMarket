@@ -35494,7 +35494,8 @@ div.faqanswer {
 .hero-slider {
   position: relative;
   padding-top: 20px;
-  margin: 0; }
+  margin: 0 auto;
+  text-align: center; }
   @media (max-width: 767.98px) {
     .hero-slider {
       padding-top: 10px; } }
