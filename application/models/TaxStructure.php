@@ -313,4 +313,38 @@ class TaxStructure extends MyAppModel
         }
         return $translatedData;
     }
+    
+    public static function getDefaultTaxStructureId(){        
+        
+        $srch = self::getSearchObject();  
+        $srch->addCondition('taxstr_is_combined', '=', 0);
+        $srch->addFld('taxstr_id');
+        $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
+        if (empty($row)) {  
+            
+            $taxStrName = Labels::getLabel('LBL_STRUCTURE_SINGLE_TYPE', CommonHelper::getLangId());
+            /* [ CREATE DEFAULT TAX STRUCTURE*/
+            $dataToInsert = array(
+                'taxstr_identifier' => $taxStrName,
+                'taxstr_parent' => 0,
+                'taxstr_is_combined' => 0,
+            ); 
+            $obj = new TaxStructure();   
+            $obj->assignValues($dataToInsert);
+            if (!$obj->save()) {
+                Message::addErrorMessage($obj->getError());
+            }            
+            $data = array(
+                     static::DB_TBL_LANG_PREFIX . 'taxstr_id' => $obj->mainTableRecordId,
+                     static::DB_TBL_LANG_PREFIX . 'lang_id' => CommonHelper::getLangId(),
+                    'taxstr_name' => $taxStrName,
+                );
+            if (!$obj->updateLangData(CommonHelper::getLangId(), $data)) {
+                Message::addErrorMessage($obj->getError());
+            }
+            return $obj->getMainTableRecordId();
+        }        
+        return $row['taxstr_id'];
+    }
 }

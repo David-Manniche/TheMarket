@@ -104,36 +104,43 @@ $(document).ready(function () {
             $.mbsmessage(langLbl.saveProfileFirst, true, 'alert--danger');
             return;
         }
-        fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function (t) {
-            $('#ship-section--js').html(t);
-            $('html, body').animate({
-                scrollTop: $("#ship-section--js").offset().top
-            }, 1000);
-			
-			setTimeout(function(){
-				$(".zone--js").each(function(){
-					var zoneObj = $(this);
-					var zoneLocId = zoneObj.data("zoneid");
-					var totalCountries = $(".country--js").length;
-					var i = 0;
-					$(".country--js").each(function(){
-						var currObj = $(this);
-						var countryId = currObj.data('countryid');
-						var totalStates = $(".country_" + countryId + " .state--js").length;
-						var disabledStates = $(".country_" + countryId + " .state--js:disabled").length;
-						if (0 < totalStates && totalStates == disabledStates) {
-							$(".checkbox_country_" + countryId).attr('disabled', 'disabled');
-							currObj.addClass('disabled');
-							i++;
-							if (totalCountries == i) {
-								$(".checkbox_zone_" + zoneLocId).attr('disabled', 'disabled');
-								zoneObj.addClass('disabled');
-							}
-						}
-					});
-				});
-			}, 500);
-        });
+        
+        $.mbsmessage(langLbl.processing, false, 'alert--process'); 
+            fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function (t) {
+                $.facebox(t,'faceboxWidth');
+               
+                /*$('#ship-section--js').html(t);            
+                $('html, body').animate({
+                    scrollTop: $("#ship-section--js").offset().top
+                }, 1000);
+                */
+                            setTimeout(function(){
+                                    $(".zone--js").each(function(){
+                                            var zoneObj = $(this);
+                                            var zoneLocId = zoneObj.data("zoneid");
+                                            var totalCountries = $(".country--js").length;
+                                            var i = 0;
+                                            $(".country--js").each(function(){
+                                                    var currObj = $(this);
+                                                    var countryId = currObj.data('countryid');
+                                                    var totalStates = $(".country_" + countryId + " .state--js").length;
+                                                    var disabledStates = $(".country_" + countryId + " .state--js:disabled").length;
+                                                    if (0 < totalStates && totalStates == disabledStates) {
+                                                            $(".checkbox_country_" + countryId).attr('disabled', 'disabled');
+                                                            currObj.addClass('disabled');
+                                                            i++;
+                                                            if (totalCountries == i) {
+                                                                    $(".checkbox_zone_" + zoneLocId).attr('disabled', 'disabled');
+                                                                    zoneObj.addClass('disabled');
+                                                            }
+                                                    }
+                                            });
+                                    });
+                                    $.mbsmessage.close();
+                            }, 350);
+            });
+        
+       
         /* $.facebox(function() {
         	fcom.ajax(fcom.makeUrl('ShippingZones', 'form', [profileId, zoneId]), '', function(t) {
         		fcom.updateFaceboxContent(t);
@@ -179,6 +186,7 @@ $(document).ready(function () {
             var profileId = $('input[name="profile_id"]').val();
             searchZone(profileId, true);
             clearForm();
+            $(document).trigger('close.facebox');
         });
     };
 
@@ -210,19 +218,19 @@ $(document).ready(function () {
     };
 
     addEditShipRates = function (zoneId, rateId) {
+        /*
         fcom.ajax(fcom.makeUrl('shippingZoneRates', 'form', [zoneId, rateId]), '', function (t) {
             $('#ship-section--js').html(t);
             $('html, body').animate({
                 scrollTop: $("#ship-section--js").offset().top
             }, 1000);
         });
-
-        /* $.facebox(function() {
+        */
+        $.facebox(function() {
         	fcom.ajax(fcom.makeUrl('shippingZoneRates', 'form', [zoneId, rateId]), '', function(t) {
-        		fcom.updateFaceboxContent(t);
-        		fcom.resetFaceboxHeight();
+        		fcom.updateFaceboxContent(t);        		
         	});
-        }); */
+        });
     };
 
     setupRate = function (frm) {
@@ -249,8 +257,11 @@ $(document).ready(function () {
     };
 
     editRateLangForm = function (zoneId, rateId, langId) {
-        fcom.ajax(fcom.makeUrl('shippingZoneRates', 'langForm', [zoneId, rateId, langId]), '', function (t) {
-            $('#ship-section--js').html(t);
+        $.facebox(function() {
+            fcom.ajax(fcom.makeUrl('shippingZoneRates', 'langForm', [zoneId, rateId, langId]), '', function (t) {
+                /*$('#ship-section--js').html(t);*/
+                fcom.updateFaceboxContent(t);                
+            });
         });
     };
 

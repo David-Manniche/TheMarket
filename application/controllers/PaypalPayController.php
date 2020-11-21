@@ -146,7 +146,7 @@ class PaypalPayController extends PaymentController
             $this->setErrorAndRedirect($msg, true);
         }
 
-        if (strtolower($purchaseUnit['payee']) != strtolower($this->settings['payee_email'])) {
+        if (isset($purchaseUnit['payee']) && strtolower($purchaseUnit['payee']) != strtolower($this->settings['payee_email'])) {
             TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($post));
             $msg = Labels::getLabel("MSG_PAYMENT_FAILED_:_{STATUS}", $this->siteLangId);
             $statusMsg = Labels::getLabel("MSG_INVALID_PAYEE(MERCHANT_EMAIL)", $this->siteLangId);

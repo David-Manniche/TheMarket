@@ -1185,3 +1185,26 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_MAXIMUM_OF_{LIMIT}
 ALTER TABLE `tbl_order_products` ADD `op_rounding_off` DECIMAL(4,2) NOT NULL AFTER `op_tax_code`;
 ALTER TABLE `tbl_orders` ADD `order_rounding_off` DECIMAL(4,2) NOT NULL AFTER `order_deleted`;
 -- ------------------TV-9.2.3.20201118----------------------
+
+
+CREATE TABLE `tbl_coupon_to_shops` (
+  `cts_shop_id` int(11) NOT NULL,
+  `cts_coupon_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `tbl_coupon_to_shops`
+  ADD PRIMARY KEY (`cts_shop_id`,`cts_coupon_id`);
+
+
+CREATE TABLE `tbl_coupon_to_brands` (
+  `ctb_brand_id` int(11) NOT NULL,
+  `ctb_coupon_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+--
+ALTER TABLE `tbl_coupon_to_brands`
+  ADD UNIQUE KEY `ctp_brand_id` (`ctb_brand_id`,`ctb_coupon_id`);
+
+
+DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_Multi-vendor_Ecommerce_Marketplace_Solution';

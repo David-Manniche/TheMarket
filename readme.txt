@@ -441,7 +441,14 @@ Bugs:
     => 045418 - On Sales report >> in case of rounding off amount >> Some warning message is there 
 ---------------TV-9.2.3.20201118------------------------    
     => 045415 - cancellation age, return age, cod etc options are not listing on product detail page
-
+----------------TV-9.2.3.20201119-------------------
+    => 045366 - seller dashboard> sales> under sales discounted amount is displaying which is offered by admin
+--------------------TV-9.2.3.20201120---------------------
+    => 045241 - admin> reviews> filters> review for filter suggestion is not working
+    => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
+    => 045510 - Admin dashboard - Threshold products listing
+    => 045517 - Price filter range and their search with options.
+---------------TV-9.2.3.20201121-----------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -452,8 +459,9 @@ Enhancements:
     => Advanced search UI and Auto Suggestions.
     => Category Listing Page UI 
     => Notification Emails on/off conf setting. 
-    ------------TV-9.2.1.20200925------------------------     
-    
+    ------------TV-9.2.1.20200925------------------------
+    => Enhance discount module added brand and shop discounts    
+    ---------------TV-9.2.3.20201121--------------------
 Notes:
     
     Composer :
@@ -471,3 +479,4 @@ Notes:
     Default Shipping profile setup:
        
        To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles
+       To Bind Zero Tax category as default if "Rest Of The World" country is not bind,Open <site-url>/admin/patch-update/update-tax-rules

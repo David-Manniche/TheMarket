@@ -3078,7 +3078,7 @@ class AccountController extends LoggedUserController
             array(
                 'orrmsg_id', 'orrmsg_from_user_id', 'orrmsg_msg',
                 'orrmsg_date', 'msg_user.user_name as msg_user_name', 'orrequest_status',
-                'orrmsg_from_admin_id', 'admin_name', 'ifnull(s_l.shop_name, s.shop_identifier) as shop_name', 's.shop_id', 'op_selprod_user_id'
+                'orrmsg_from_admin_id', 'admin_name', 'ifnull(s_l.shop_name, s.shop_identifier) as shop_name', 's.shop_id', 'op_selprod_user_id', 'op_rounding_off'
             )
         );
 

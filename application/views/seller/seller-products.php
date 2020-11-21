@@ -33,7 +33,7 @@
     }
     $page = isset($page) ? $page : 1;
     $recordCount = isset($recordCount) ? $recordCount : 1;
-    $sr_no = ($page > 1 && !$product_id) ? $recordCount - (($page - 1) * $pageSize) : count($arrListing);
+    $sr_no = ($page >= 1 && !$product_id) ? $recordCount - (($page - 1) * $pageSize) : count($arrListing);
 
     foreach ($arrListing as $sn => $row) {
         $tr = $tbl->appendElement('tr', array('class' => ($row['selprod_active'] != applicationConstants::ACTIVE) ? '' : ''));
