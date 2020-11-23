@@ -131,7 +131,7 @@ class Importexport extends ImportexportCommon
     {
         $arr = array(
             static::SELLER_PROD_GENERAL_DATA => Labels::getLabel('LBL_General_Data', $langId),
-            static::SELLER_PROD_OPTION => Labels::getLabel('LBL_Product_Options', $langId),
+            static::SELLER_PROD_OPTION => Labels::getLabel('LBL_INVENTORY_OPTIONS', $langId),
             static::SELLER_PROD_SEO => Labels::getLabel('LBL_SEO_Data', $langId),
             static::SELLER_PROD_SPECIAL_PRICE => Labels::getLabel('LBL_Special_Price', $langId),
             static::SELLER_PROD_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $langId),
@@ -303,7 +303,7 @@ class Importexport extends ImportexportCommon
                         $this->exportSellerProdGeneralData($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::SELLER_PROD_OPTION:
-                        $sheetName = Labels::getLabel('LBL_Seller_Product_Option', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_SELLER_INVENTORY_OPTIONS', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportSellerProdOptionData($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;

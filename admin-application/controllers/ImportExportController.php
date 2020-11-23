@@ -345,7 +345,7 @@ class ImportExportController extends AdminBaseController
             case Importexport::TYPE_INVENTORIES:
                 $this->objPrivilege->canViewSellerProducts();
                 $displayMediaTab = false;
-                $title = Labels::getLabel('LBL_Import_Seller_Products', $langId);
+                $title = Labels::getLabel('LBL_IMPORT_SELLER_INVENTORIES', $langId);
                 break;
             case Importexport::TYPE_OPTIONS:
                 $this->objPrivilege->canViewOptions();
