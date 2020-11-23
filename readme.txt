@@ -452,6 +452,7 @@ Bugs:
     => 045435 - android- wallet> add money> transfer bank and pay at store option are coming
     => 045448 - android- during checkout> shipping is not listing on cart review screen
     => 045426 - android- on clicking saved cart option > item removes from cart but not listing on app
+    => 045413 - android-under recommended products> product image listing is jittery
 
 Enhancements:
     => Tax module upgrade
