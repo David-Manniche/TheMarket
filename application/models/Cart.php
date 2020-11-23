@@ -725,7 +725,7 @@ class Cart extends FatModel
         $sellerProductRow['rounding_off'] = $roundingOff;
 
         $sellerProductRow['tax'] = $tax;
-        $sellerProductRow['optionsTaxSum'] = $taxData['optionsSum'];
+        $sellerProductRow['optionsTaxSum'] = isset($taxData['optionsSum']) ? $taxData['optionsSum'] : 0;
         $sellerProductRow['taxCode'] = $taxData['taxCode'];
         /* ] */
 

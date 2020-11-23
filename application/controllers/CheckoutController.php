@@ -2152,6 +2152,10 @@ class CheckoutController extends MyAppController
         $orderId = isset($_SESSION['order_id']) ? $_SESSION['order_id'] : '';
         $couponsList = DiscountCoupons::getValidCoupons($loggedUserId, $this->siteLangId, '', $orderId);
         $this->set('couponsList', $couponsList);
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
 
         $PromoCouponsFrm = $this->getPromoCouponsForm($this->siteLangId);
         $this->set('PromoCouponsFrm', $PromoCouponsFrm);

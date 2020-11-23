@@ -54,9 +54,15 @@ class AvalaraTax extends TaxBase
             return false;
         }
 
+        $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId, FatUtility::VAR_STRING, '');
+        if (empty($websiteName) || empty(CONF_WEB_APP_VERSION)) {
+            $this->error = Labels::getLabel('MSG_SITE_NAME_AND_SITE_VERSION_MUST_BE_DEFINED', $this->langId);
+            return false;
+        }
+
         $environment = FatUtility::int($this->settings['environment']) == 1 ? 'production' : 'sandbox';
 
-        $this->client = new Avalara\AvaTaxClient(FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId), FatApp::getConfig('CONF_YOKART_VERSION'), $_SERVER['HTTP_HOST'], $environment);
+        $this->client = new Avalara\AvaTaxClient($websiteName, CONF_WEB_APP_VERSION, $_SERVER['HTTP_HOST'], $environment);
         $this->client->withLicenseKey($this->settings['account_number'], $this->settings['license_key']);
         $this->client->withCatchExceptions(false);
         $this->companyCode = $this->settings['company_code'];
