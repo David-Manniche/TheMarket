@@ -450,6 +450,7 @@ Bugs:
     => 045517 - Price filter range and their search with options.
 ---------------TV-9.2.3.20201121-----------------------
     => 045577 - guest user can't add digital item to cart 
+    => 045647 - on reward point sms variable coming of {reward_point_balance}
 
 Enhancements:
     => Tax module upgrade
