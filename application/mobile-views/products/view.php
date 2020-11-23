@@ -2,36 +2,36 @@
 
 foreach ($upsellProducts as $index => $btProduct) {
     $uploadedTime = AttachedFile::setTimeParam($btProduct['product_updated_on']);
-    $upsellProducts[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($btProduct['product_id'], "THUMB", $btProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $upsellProducts[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($btProduct['product_id'], "SMALL", $btProduct['selprod_id'], 0, $siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $upsellProducts[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($btProduct['selprod_price'], false, false, false);
     $upsellProducts[$index]['theprice'] = CommonHelper::displayMoneyFormat($btProduct['theprice'], false, false, false);
 }
 
 foreach ($relatedProductsRs as $index => $rProduct) {
     $uploadedTime = AttachedFile::setTimeParam($rProduct['product_updated_on']);
-    $relatedProductsRs[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($rProduct['product_id'], "THUMB", $rProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $relatedProductsRs[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($rProduct['product_id'], "SMALL", $rProduct['selprod_id'], 0, $siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $relatedProductsRs[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($rProduct['selprod_price'], false, false, false);
     $relatedProductsRs[$index]['theprice'] = CommonHelper::displayMoneyFormat($rProduct['theprice'], false, false, false);
 }
 
 foreach ($recommendedProducts as $index => $recProduct) {
     $uploadedTime = AttachedFile::setTimeParam($recProduct['product_updated_on']);
-    $recommendedProducts[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($recProduct['product_id'], "THUMB", $recProduct['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $recommendedProducts[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($recProduct['product_id'], "SMALL", $recProduct['selprod_id'], 0, $siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $recommendedProducts[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($recProduct['selprod_price'], false, false, false);
     $recommendedProducts[$index]['theprice'] = CommonHelper::displayMoneyFormat($recProduct['theprice'], false, false, false);
 }
 
 foreach ($recentlyViewed as $index => $recViewed) {
     $uploadedTime = AttachedFile::setTimeParam($recViewed['product_updated_on']);
-    $recentlyViewed[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($recViewed['product_id'], "THUMB", $recViewed['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $recentlyViewed[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($recViewed['product_id'], "SMALL", $recViewed['selprod_id'], 0, $siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $recentlyViewed[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($recViewed['selprod_price'], false, false, false);
     $recentlyViewed[$index]['theprice'] = CommonHelper::displayMoneyFormat($recViewed['theprice'], false, false, false);
 }
 
 foreach ($productImagesArr as $afile_id => $image) {
     $uploadedTime = AttachedFile::setTimeParam($image['afile_updated_at']);
-    $originalImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'] )).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-    $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'product', array($product['product_id'], 'MEDIUM', 0, $image['afile_id'] )).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $originalImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'product', array($product['product_id'], 'ORIGINAL', 0, $image['afile_id'])) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $mainImgUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'product', array($product['product_id'], 'SMALL', 0, $image['afile_id'])) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $productImagesArr[$afile_id]['product_image_url'] = $mainImgUrl;
 }
 
@@ -122,14 +122,14 @@ if (!empty($product)) {
     if (0 < $codEnabled) {
         $product['productPolicies'][] = array(
             'title' => Labels::getLabel('LBL_Cash_on_delivery_is_available', $siteLangId),
-            'icon' => CONF_WEBROOT_URL.'images/safepayments.png'
+            'icon' => CONF_WEBROOT_URL . 'images/safepayments.png'
         );
     }
     $product['youtubeUrlThumbnail'] = '';
     if (!empty($product['product_youtube_video'])) {
         $youtubeVideoUrl = $product['product_youtube_video'];
         $videoCode = UrlHelper::parseYouTubeurl($youtubeVideoUrl);
-        $product['youtubeUrlThumbnail'] = 'https://img.youtube.com/vi/'.$videoCode.'/hqdefault.jpg';
+        $product['youtubeUrlThumbnail'] = 'https://img.youtube.com/vi/' . $videoCode . '/hqdefault.jpg';
     }
     $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
 }

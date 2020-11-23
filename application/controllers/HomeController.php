@@ -1350,7 +1350,7 @@ class HomeController extends MyAppController
             LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
         $detail = CommonHelper::getUrlTypeData($url);
-        $this->set('data', ['urlSegmentsDetail' => $detail]);
+        $this->set('data', ['urlSegmentsDetail' => (object)$detail]);
         $this->_template->render();
     }
 

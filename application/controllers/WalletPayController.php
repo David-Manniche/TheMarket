@@ -175,7 +175,7 @@ class WalletPayController extends MyAppController
         $pmRs = $pmSrch->getResultSet();
         $paymentMethods = FatApp::getDb()->fetchAll($pmRs);
         $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
-
+        
         $this->set('paymentMethods', $paymentMethods);
         $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
         $this->set('headerData', $headerData);

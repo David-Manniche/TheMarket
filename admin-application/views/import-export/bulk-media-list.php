@@ -45,7 +45,7 @@ foreach ($records as $sn => $row) {
                 break;
             case 'files':
                 $fullPath = CONF_UPLOADS_PATH . AttachedFile::FILETYPE_BULK_IMAGES_PATH . $row['afile_physical_path'];
-                $count = Labels::getLabel('LBL_NA', $adminLangId);
+                $count = Labels::getLabel('LBL_N/A', $adminLangId);
                 if (file_exists($fullPath)) {
                     $allFiles = scandir($fullPath);
                     $files_count = array_diff($allFiles, array('..', '.'));

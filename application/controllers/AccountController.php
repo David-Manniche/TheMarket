@@ -1411,7 +1411,7 @@ class AccountController extends LoggedUserController
         if ($uwlp_uwlist_id && $selprod_id) {
             if (!$wListObj->addUpdateListProducts($uwlp_uwlist_id, $selprod_id)) {
                 Message::addMessage($successMsg);
-                $msg = Labels::getLabel('LBL_Error_while_assigning_product_under_selected_list.');
+                $msg = Labels::getLabel('LBL_Error_while_assigning_product_under_selected_list.', $this->siteLangId);
 
                 if (true === MOBILE_APP_API_CALL) {
                     LibHelper::dieJsonError($msg);
@@ -1440,6 +1440,7 @@ class AccountController extends LoggedUserController
         $this->set('wish_list_id', $uwlp_uwlist_id);
         $this->set('msg', $successMsg);
         if (true === MOBILE_APP_API_CALL) {
+            $this->set('data', ['wish_list_id' => $uwlp_uwlist_id]);
             $this->_template->render();
         }
         $this->_template->render(false, false, 'json-success.php');
