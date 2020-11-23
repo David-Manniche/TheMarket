@@ -447,6 +447,8 @@ Bugs:
     => 045241 - admin> reviews> filters> review for filter suggestion is not working
     => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
     => 045510 - Admin dashboard - Threshold products listing
+    => 045435 - android- wallet> add money> transfer bank and pay at store option are coming
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

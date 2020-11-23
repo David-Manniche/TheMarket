@@ -3,9 +3,8 @@
 $data = empty($data) ? array() : $data;
 $data = array_merge($commonData, $data);
 
-if (applicationConstants::ON != $status) {
-    $msg = Labels::getLabel('MSG_NO_RECORD_FOUND', $siteLangId);
-    $status = applicationConstants::OFF;
+if (applicationConstants::OFF == $status) {
+    $msg = isset($msg) ? $msg : Labels::getLabel('MSG_NO_RECORD_FOUND', $siteLangId);
 }
 
 $response = array(
