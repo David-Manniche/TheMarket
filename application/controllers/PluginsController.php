@@ -18,7 +18,7 @@ class PluginsController extends LoggedUserController
         }
 
         $data = self::getSettings();
-        $this->set('data', $data);
+        $this->set('data', ['pluginDetail' => (object)$data]);
         $this->_template->render();
     }
 }
