@@ -447,6 +447,8 @@ Bugs:
     => 045241 - admin> reviews> filters> review for filter suggestion is not working
     => 042957 - Seller >> when we import any file then sometimes "error occured " gets display.
     => 045510 - Admin dashboard - Threshold products listing
+    => 045517 - Price filter range and their search with options.
+---------------TV-9.2.3.20201121-----------------------
     => 045435 - android- wallet> add money> transfer bank and pay at store option are coming
 
 Enhancements:
@@ -461,7 +463,7 @@ Enhancements:
     => Notification Emails on/off conf setting. 
     ------------TV-9.2.1.20200925------------------------
     => Enhance discount module added brand and shop discounts    
-    
+    ---------------TV-9.2.3.20201121--------------------
 Notes:
     
     Composer :
@@ -479,3 +481,4 @@ Notes:
     Default Shipping profile setup:
        
        To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles
+       To Bind Zero Tax category as default if "Rest Of The World" country is not bind,Open <site-url>/admin/patch-update/update-tax-rules

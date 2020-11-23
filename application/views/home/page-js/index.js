@@ -23,9 +23,10 @@ $(document).ready(function() {
             centerPadding: '15%',
 
         }
-
-        $('.js-hero-slider').slick(slickOptions);
-
+        if($('.js-hero-slider .hero-item').length > 1){
+            $('.js-hero-slider').slick(slickOptions); 
+        }
+       
         $('.featured-item-js').slick({
 
             centerMode: true,
@@ -111,8 +112,10 @@ $(document).ready(function() {
             centerMode: true,
             centerPadding: '15%',
         }
-
-        $('.js-hero-slider').slick(slickOptions);
+        
+        if($('.js-hero-slider .hero-item').length > 1){
+            $('.js-hero-slider').slick(slickOptions); 
+        }
 
         $('.featured-item-js').slick({
             centerMode: true,

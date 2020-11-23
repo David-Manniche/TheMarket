@@ -1,7 +1,8 @@
 .hero-slider {
     position: relative;
     padding-top: 20px;
-    margin: 0;
+    margin: 0 auto;
+    text-align: center;
     @include media-breakpoint-down(sm) {
         & {
             padding-top: 10px;

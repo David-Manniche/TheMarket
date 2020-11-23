@@ -1205,3 +1205,6 @@ CREATE TABLE `tbl_coupon_to_brands` (
 --
 ALTER TABLE `tbl_coupon_to_brands`
   ADD UNIQUE KEY `ctp_brand_id` (`ctb_brand_id`,`ctb_coupon_id`);
+
+
+DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_Multi-vendor_Ecommerce_Marketplace_Solution';

@@ -53,7 +53,7 @@ $this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData, 
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-4 col-xs-6 d-none d-xl-block d-lg-block hide--mobile">
-						<div class="slogan"><?php echo Labels::getLabel('LBL_Multi-vendor_Ecommerce_Marketplace_Solution', $siteLangId); ?></div>
+						<div class="slogan"><?php // Labels::getLabel('LBL_Multi-vendor_Ecommerce_Marketplace_Solution', $siteLangId); ?></div>
 					</div>
 					<div class="col-lg-8 col-xs-12">
 						<div class="short-links">
