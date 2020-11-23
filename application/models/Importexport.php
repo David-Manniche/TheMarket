@@ -298,7 +298,7 @@ class Importexport extends ImportexportCommon
             case Importexport::TYPE_INVENTORIES:
                 switch ($sheetType) {
                     case Importexport::SELLER_PROD_GENERAL_DATA:
-                        $sheetName = Labels::getLabel('LBL_Seller_Product_General', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_SELLER_INVENTORY_GENERAL', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportSellerProdGeneralData($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
