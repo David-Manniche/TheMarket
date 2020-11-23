@@ -1105,12 +1105,19 @@ class EmailHandler extends FatModel
                 self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements, '', 0, array(), $bccEmails);
 
                 if (!in_array(strtolower($paymentType), ['cashondelivery', 'payatstore', 'transferbank'])) {
+                    /*
                     $phoneNumbers = $receipentsInfo['phone'];
                     $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
                     $phoneNumbers[] = $userPhone;
                     foreach ($phoneNumbers as $phone) {
                         $this->sendSms($tpl, $phone, $arrReplacements, $langId);
                     }
+                     * 
+                     */
+                    
+                    $sellerInfo = User::getAttributesById($val['op_selprod_user_id'], array('user_dial_code', 'user_phone'));
+                    $sellerPhone = !empty($sellerInfo['user_phone']) ? $sellerInfo['user_dial_code'] . $sellerInfo['user_phone'] : '';                    
+                    $this->sendSms($tpl, $sellerPhone, $arrReplacements, $langId);
                 }
                 $notiArrReplacements = array(
                     '{PRODUCT}' => $val["op_product_name"],
