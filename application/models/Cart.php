@@ -431,10 +431,10 @@ class Cart extends FatModel
                     }
                     /*]*/
                     if ($this->products[$key]['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-
-                        $addressBilling = new Address($this->getCartBillingAddress(), $siteLangId);
-                        $this->products[$key]['billing_address'] = $addressBilling->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-
+                        if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {    
+                            $addressBilling = new Address($this->getCartBillingAddress(), $siteLangId);
+                            $this->products[$key]['billing_address'] = $addressBilling->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
+                        }    
                         $shipingAddress = isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '';
                     } else {
                         $shipingAddress = isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '';

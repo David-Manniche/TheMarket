@@ -449,6 +449,8 @@ Bugs:
     => 045510 - Admin dashboard - Threshold products listing
     => 045517 - Price filter range and their search with options.
 ---------------TV-9.2.3.20201121-----------------------
+    => 045577 - guest user can't add digital item to cart 
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
