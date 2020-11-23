@@ -24,12 +24,12 @@ if (0 < $productsCount) {
         }
         $productsArr[$type][] = $product;
     }
+}
 
-    foreach ($saveForLaterProducts as &$slProduct) {
-        $slProduct['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($slProduct['selprod_id']));
-        $slProduct['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($slProduct['product_id'], "THUMB", $slProduct['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
-        $productsArr['saveForLater'][] = $slProduct;
-    }
+foreach ($saveForLaterProducts as &$slProduct) {
+    $slProduct['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($slProduct['selprod_id']));
+    $slProduct['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($slProduct['product_id'], "THUMB", $slProduct['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
+    $productsArr['saveForLater'][] = $slProduct;
 }
 
 $data = array(
@@ -48,6 +48,6 @@ $data = array(
 
 require_once(CONF_THEME_PATH . 'cart/price-detail.php');
 
-if (empty($productsArr)) {
+if (empty(array_filter($productsArr))) {
     $status = applicationConstants::OFF;
 }
