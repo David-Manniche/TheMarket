@@ -1328,8 +1328,9 @@ function stylePhoneNumberFld(element = "input[name='user_phone']", destroy = fal
     var country = '' == langLbl.defaultCountryCode ? 'in' : langLbl.defaultCountryCode;
     inputList.forEach(function(input) {
         if (true == destroy) {
-            $('.iti').replaceWith(input);
-            $(input).removeAttr('style');
+			$(input).removeAttr('style');
+			var clone = input.cloneNode(true);
+			$('.iti').replaceWith(clone);
         } else {
             var iti = window.intlTelInput(input, {
                 separateDialCode: true,
