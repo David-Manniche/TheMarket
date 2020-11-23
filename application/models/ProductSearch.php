@@ -1157,7 +1157,9 @@ class ProductSearch extends SearchBase
 
                     break;
                 case applicationConstants::BASED_ON_RADIUS:
-                    $this->addFld('shop.distance as availableInLocation');
+                    if (array_key_exists('ykGeoLat', $this->geoAddress) && $this->geoAddress['ykGeoLat'] != '' && array_key_exists('ykGeoLng', $this->geoAddress) && $this->geoAddress['ykGeoLng'] != '') {
+                        $this->addFld('shop.distance as availableInLocation');
+                    }
                     break;
             }
         }
