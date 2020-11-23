@@ -450,6 +450,7 @@ Bugs:
     => 045517 - Price filter range and their search with options.
 ---------------TV-9.2.3.20201121-----------------------
     => 045435 - android- wallet> add money> transfer bank and pay at store option are coming
+    => 045448 - android- during checkout> shipping is not listing on cart review screen
 
 Enhancements:
     => Tax module upgrade
