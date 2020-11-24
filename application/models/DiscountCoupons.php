@@ -595,7 +595,7 @@ AND couponlang_lang_id = ' . $langId,
 
         /* $srch->addMultipleFields(array( 'dc.*', 'dc_l.coupon_description', 'IFNULL(dc_l.coupon_title, dc.coupon_identifier) as coupon_title', 'IFNULL(COUNT(coupon_history.couponhistory_id), 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count','count(user_coupon_history.couponhistory_id) as user_coupon_used_count', 'ctu.grouped_coupon_users', 'ctp.grouped_coupon_products', 'ctc.grouped_coupon_categories')); */
 
-        $selectArr = array('dc.*', 'dc_l.coupon_description', 'IFNULL(dc_l.coupon_title, dc.coupon_identifier) as coupon_title', 'IFNULL(coupon_history.coupon_used_count, 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count', 'count(user_coupon_history.couponhistory_id) as user_coupon_used_count', 'ctu.grouped_coupon_users', 'ctp.grouped_coupon_products', 'ctc.grouped_coupon_categories');
+        $selectArr = array('dc.*', 'dc_l.coupon_description', 'IFNULL(dc_l.coupon_title, dc.coupon_identifier) as coupon_title', 'IFNULL(coupon_history.coupon_used_count, 0) as coupon_used_count', 'IFNULL(COUNT(coupon_hold.couponhold_coupon_id), 0) as coupon_hold_count', 'count(user_coupon_history.couponhistory_id) as user_coupon_used_count', 'ctu.grouped_coupon_users', 'ctp.grouped_coupon_products', 'ctc.grouped_coupon_categories','cts.grouped_coupon_shops','ctb.grouped_coupon_brands');
         // if ($orderId !='') {
         $selectArr = array_merge($selectArr, array('IFNULL(ctop.pending_order_hold_count,0) as pending_order_hold_count'));
         // }
@@ -603,14 +603,18 @@ AND couponlang_lang_id = ' . $langId,
 
         /* checking current coupon is valid for current logged user[ */
         $directCondtion1 = ' (grouped_coupon_users IS NULL AND grouped_coupon_products IS NULL AND grouped_coupon_categories IS NULL AND grouped_coupon_shops IS NULL AND grouped_coupon_brands IS NULL) ';
-        $directCondtion2 = ' ( grouped_coupon_users IS NOT NULL AND ( FIND_IN_SET(' . $userId . ', grouped_coupon_users) ) ) ';
+        $directCondtion2 = ' ( grouped_coupon_users IS NOT NULL AND  FIND_IN_SET(' . $userId . ', grouped_coupon_users) AND grouped_coupon_products IS NULL AND grouped_coupon_categories IS NULL AND grouped_coupon_shops IS NULL AND grouped_coupon_brands IS NULL) ';
+        
         /* ] */
 
         /* Or current coupon is valid for current cart products[  */
         $directCondtion3 = '';
         foreach ($cartProducts as $cartProduct) {
             if (!$cartProduct['is_batch']) {
-                $directCondtion3 .= ' OR ( grouped_coupon_products IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['product_id'] . ', grouped_coupon_products) ) ) ';
+                if(!empty($directCondtion3)){
+                  $directCondtion3 .='OR ';  
+                } 
+                $directCondtion3 .= ' ( grouped_coupon_products IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['product_id'] . ', grouped_coupon_products) ) ) ';
             }
         }
         /* ] */
@@ -643,8 +647,11 @@ AND couponlang_lang_id = ' . $langId,
                 $directCondtion6 .= ' OR ( grouped_coupon_brands IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['brand_id'] . ', grouped_coupon_brands) ) ) ';
             }
         }
+        
+        $directCondtion7 = 'grouped_coupon_users IS NOT NULL AND ( FIND_IN_SET(' . $userId . ', grouped_coupon_users) )  AND';
+        $directCondtion8 = ' grouped_coupon_users IS NULL AND';
 
-        $srch->addDirectCondition("(" . $directCondtion1 . ' OR ( ' . $directCondtion2 . $directCondtion3 . $directCondition4 . $directCondtion5 . $directCondtion6 . ' )' . " )", 'AND');
+        $srch->addDirectCondition("(" . $directCondtion1 . "OR ".$directCondtion2."OR (". $directCondtion7 ."(" .$directCondtion3 . $directCondition4 . $directCondtion5 . $directCondtion6. ")) OR ( " . $directCondtion8 ."(". $directCondtion3 . $directCondition4 . $directCondtion5 . $directCondtion6 . ")))", 'AND');
 
         $srch->addGroupBy('dc.coupon_id');
         $srch->addHaving('coupon_uses_count', '>', 'mysql_func_coupon_used_count + coupon_hold_count + pending_order_hold_count', 'AND', true);
