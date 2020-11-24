@@ -1265,16 +1265,21 @@ class Cart extends FatModel
             $prodObj = new Product();
 
             /* binded product_ids are not in array, are in string, so converting the same to array[ */
+            
             if (!empty($couponInfo['grouped_coupon_products'])) {
                 $couponInfo['grouped_coupon_products'] = explode(",", $couponInfo['grouped_coupon_products']);
+            }else{
+                $couponInfo['grouped_coupon_products'] = array();
+            }
+            
+            if (!empty($couponInfo['grouped_coupon_users'])) {
+                $couponInfo['grouped_coupon_users'] = explode(",", $couponInfo['grouped_coupon_users']);
+            }else{
+                $couponInfo['grouped_coupon_users'] = array();
             }
 
             if (!empty($couponInfo['grouped_coupon_categories'])) {
                 $couponInfo['grouped_coupon_categories'] = explode(",", $couponInfo['grouped_coupon_categories']);
-                if (!is_array($couponInfo['grouped_coupon_categories'])) {
-                    return array();
-                }
-
                 $productIdsArr = array();
 
                 foreach ($cartProducts as $cartProduct) {
@@ -1291,17 +1296,47 @@ class Cart extends FatModel
                 }
 
                 if (!empty($productIdsArr)) {
+                    $couponInfo['grouped_coupon_products'] = array_merge($couponInfo['grouped_coupon_products'], $productIdsArr);
+                    /*
                     if (empty($couponInfo['grouped_coupon_products']) || $this->cart_user_id == $couponInfo['grouped_coupon_users']) {
                         $couponInfo['grouped_coupon_products'] = $productIdsArr;
                     } else {
                         $couponInfo['grouped_coupon_products'] = array_merge($couponInfo['grouped_coupon_products'], $productIdsArr);
                     }
+                     * 
+                     */
                 }
             }
-            /* ] */
-
-            if (empty($couponInfo['grouped_coupon_products']) || $this->cart_user_id == $couponInfo['grouped_coupon_users']) {
-                $subTotal = $cartSubTotal;
+            /* ] */            
+            
+            if (!empty($couponInfo['grouped_coupon_shops'])) {
+                $couponInfo['grouped_coupon_shops'] = explode(",", $couponInfo['grouped_coupon_shops']);
+                $productIdsArr = array();
+                foreach ($cartProducts as $cartProduct) {
+                    if (in_array($cartProduct['shop_id'], $couponInfo['grouped_coupon_shops'])) {
+                        $productIdsArr[] = $cartProduct['product_id'];
+                    }                    
+                }
+                if (!empty($productIdsArr)) {
+                    $couponInfo['grouped_coupon_products'] = array_merge($couponInfo['grouped_coupon_products'], $productIdsArr);
+                }
+            }
+            if (!empty($couponInfo['grouped_coupon_brands'])) {
+                $couponInfo['grouped_coupon_brands'] = explode(",", $couponInfo['grouped_coupon_brands']);
+               
+                $productIdsArr = array();
+                foreach ($cartProducts as $cartProduct) {  
+                        if (in_array($cartProduct['brand_id'], $couponInfo['grouped_coupon_brands'])) {
+                            $productIdsArr[] = $cartProduct['product_id'];
+                        }
+                }
+                if (!empty($productIdsArr)) {
+                    $couponInfo['grouped_coupon_products'] = array_merge($couponInfo['grouped_coupon_products'], $productIdsArr);
+                }
+            }         
+            
+            if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id ,$couponInfo['grouped_coupon_users'])) OR empty($couponInfo['grouped_coupon_products']) ) {
+                $subTotal = $cartSubTotal;            
             } else {
                 $subTotal = 0;
                 foreach ($cartProducts as $cartProduct) {
@@ -1315,7 +1350,7 @@ class Cart extends FatModel
                         }
                     }
                 }
-            }
+            } 
 
             if ($couponInfo['coupon_discount_in_percent'] == applicationConstants::FLAT) {
                 $couponInfo['coupon_discount_value'] = min($couponInfo['coupon_discount_value'], $subTotal);
@@ -1325,7 +1360,7 @@ class Cart extends FatModel
             foreach ($cartProducts as $cartProduct) {
                 $discount = 0;
                 $cartVolumeDiscount += $cartProduct['volume_discount_total'];
-                if (empty($couponInfo['grouped_coupon_products']) || $this->cart_user_id == $couponInfo['grouped_coupon_users']) {
+                if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id ,$couponInfo['grouped_coupon_users'])) || empty($couponInfo['grouped_coupon_products'])) {
                     $status = true;
                 } else {
                     if ($cartProduct['is_batch']) {
@@ -1371,7 +1406,7 @@ class Cart extends FatModel
             /*[ Calculate discounts for each Seller Products*/
             $discountedSelProdIds = array();
             $discountedProdGroupIds = array();
-            if (empty($couponInfo['grouped_coupon_products']) || $this->cart_user_id == $couponInfo['grouped_coupon_users']) {
+            if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id ,$couponInfo['grouped_coupon_users'])) OR empty($couponInfo['grouped_coupon_products'])) {
                 foreach ($cartProducts as $cartProduct) {
                     if ($cartProduct['is_batch']) {
                         /* $totalSelProdDiscount = round(($discountTotal*$cartProduct['prodgroup_total'])/$subTotal,2);
