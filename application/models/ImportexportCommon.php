@@ -419,9 +419,7 @@ class ImportexportCommon extends FatModel
                 $arr['product_cod_enabled'] = Labels::getLabel('LBL_COD_available', $langId);
             }
 
-            if (!$userId) {
-                $arr['product_featured'] = Labels::getLabel('LBL_Featured', $langId);
-            }
+            $arr['product_featured'] = Labels::getLabel('LBL_Featured', $langId);
             $arr['product_approved'] = Labels::getLabel('LBL_Approved', $langId);
             $arr['product_active'] = Labels::getLabel('LBL_Active', $langId);
             $arr['product_deleted'] = Labels::getLabel('LBL_Deleted', $langId);
