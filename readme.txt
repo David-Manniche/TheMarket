@@ -491,3 +491,5 @@ Notes:
        
        To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles
        To Bind Zero Tax category as default if "Rest Of The World" country is not bind,Open <site-url>/admin/patch-update/update-tax-rules
+
+    Please replace tbl_countries, tbl_states from db_withdata.sql.
