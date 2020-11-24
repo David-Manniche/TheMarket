@@ -496,21 +496,33 @@ class Plugin extends MyAppModel
         $pluginKey = Plugin::getAttributesById($id, 'plugin_code');
         $pluginTypesArr = static::getTypeArr($langId);
         $plugins = static::getDataByType($typeId, $langId);
+        // CommonHelper::printArray($plugins);
         $activationLimit = static::getActivatationLimit($typeId);
         $payLater = self::PAY_LATER;
 
+        $msg = '';
         if (self::TYPE_REGULAR_PAYMENT_METHOD == $typeId) {
+            $msg = ' ' . Labels::getLabel('MSG_EXCEPT_PAY_LATER_PLUGINS.', $langId);
             $plugins = !$plugins ? [] : $plugins;
-            array_walk($plugins, function ($plugin) use (&$activationLimit, $pluginKey, $payLater) {
+            $activatedPayLaterPlugins = 0;
+            array_walk($plugins, function ($plugin) use (&$activationLimit, $pluginKey, $payLater, &$activatedPayLaterPlugins) {
+                if (in_array($plugin['plugin_code'], $payLater)) {
+                    $activatedPayLaterPlugins++;
+                }
+
                 if (in_array($pluginKey, $payLater) && in_array($plugin['plugin_code'], $payLater)) {
                     $activationLimit++;
                     return;
                 }
             });
+
+            if (!in_array($pluginKey, $payLater) && $activationLimit == count($plugins) && $activatedPayLaterPlugins == count($payLater)) {
+                $activationLimit++;
+            }
         }
 
         if (0 < $activationLimit && $activationLimit <= count($plugins) && self::ACTIVE == $status) {
-            $msg = Labels::getLabel("MSG_MAXIMUM_OF_{LIMIT}_{PLUGIN-TYPE}_CAN_BE_ACTIVATED_SIMULTANEOUSLY._EXCEPT_PAY_LATER_PLUGINS.", $langId);
+            $msg = Labels::getLabel("MSG_MAXIMUM_OF_{LIMIT}_{PLUGIN-TYPE}_CAN_BE_ACTIVATED_SIMULTANEOUSLY.", $langId) . $msg;
             $error = CommonHelper::replaceStringData($msg, ['{LIMIT}' => $activationLimit, '{PLUGIN-TYPE}' => $pluginTypesArr[$typeId]]);
             return false;
         }
