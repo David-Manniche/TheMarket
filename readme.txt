@@ -457,7 +457,7 @@ Bugs:
     => 045426 - android- on clicking saved cart option > item removes from cart but not listing on app
     => 045413 - android-under recommended products> product image listing is jittery
     => 045533 - Discount coupons > Link with one shop >> Add products from different shops in cart >> Coupon should get applied to only that particular shops products and not on whole order amount .
-
+    => 045691 - when adding product tag with special character then tags not coming
 
 Enhancements:
     => Tax module upgrade
