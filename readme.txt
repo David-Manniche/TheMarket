@@ -456,7 +456,7 @@ Bugs:
     => 045448 - android- during checkout> shipping is not listing on cart review screen
     => 045426 - android- on clicking saved cart option > item removes from cart but not listing on app
     => 045413 - android-under recommended products> product image listing is jittery
-
+    => 045670 - Export brand media files issue
 
 Enhancements:
     => Tax module upgrade
