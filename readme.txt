@@ -458,7 +458,7 @@ Bugs:
     => 045413 - android-under recommended products> product image listing is jittery
     => 045670 - Export brand media files issue
     => 045533 - Discount coupons > Link with one shop >> Add products from different shops in cart >> Coupon should get applied to only that particular shops products and not on whole order amount .
-
+--------------TV-9.2.3.20201124-------------------------
 
 Enhancements:
     => Tax module upgrade
