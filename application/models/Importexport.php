@@ -1177,7 +1177,7 @@ class Importexport extends ImportexportCommon
     public function exportBrandMedia($langId)
     {
         $srch = Brand::getSearchObject();
-        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id');
+        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id AND ( afile_type = ' . AttachedFile::FILETYPE_BRAND_LOGO . ' OR afile_type = ' . AttachedFile::FILETYPE_BRAND_IMAGE . ')');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type'));
