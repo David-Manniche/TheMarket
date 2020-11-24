@@ -17,7 +17,7 @@
                                         $optionData[$key]['value'] = $data['option_name'] . '(' . $data['option_identifier'] . ')';
                                     }
                                     ?>
-                                    <input type="text" name="option_groups" value='<?php echo json_encode($optionData); ?>'>
+                                    <input type="text" name="option_groups" value='<?php echo htmlspecialchars(json_encode($optionData)); ?>'>
                                 </div>
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                             <div class="caption-wraper"><label class="field_label"><?php echo Labels::getLabel('LBL_Product_Tags', $siteLangId); ?></label></div>
                             <div class="field-wraper">
                                 <div class="field_cover">
-                                    <input class="tag_name" type="text" name="tag_name" id="get-tags"  value='<?php echo json_encode($tagData); ?>'>
+                                    <input class="tag_name" type="text" name="tag_name" id="get-tags"  value='<?php echo htmlspecialchars(json_encode($tagData), ENT_QUOTES, 'UTF-8'); ?>'>
                                 </div>
                             </div>
                         </div>
