@@ -459,6 +459,7 @@ Bugs:
     => 045670 - Export brand media files issue
     => 045533 - Discount coupons > Link with one shop >> Add products from different shops in cart >> Coupon should get applied to only that particular shops products and not on whole order amount .
     => 045691 - when adding product tag with special character then tags not coming
+    => 045732 - Category image cropper not coming in admin side
 
 Enhancements:
     => Tax module upgrade
