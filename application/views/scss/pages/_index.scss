@@ -126,6 +126,7 @@
 .collection-corner {
     .products {
         border-color: #fff;
+        outline-color: #fff;
         margin: 0 1rem 1.5rem;
         @include media-breakpoint-down(sm) {
             & {
