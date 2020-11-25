@@ -131,7 +131,7 @@ class Importexport extends ImportexportCommon
     {
         $arr = array(
             static::SELLER_PROD_GENERAL_DATA => Labels::getLabel('LBL_General_Data', $langId),
-            static::SELLER_PROD_OPTION => Labels::getLabel('LBL_Product_Options', $langId),
+            static::SELLER_PROD_OPTION => Labels::getLabel('LBL_INVENTORY_OPTIONS', $langId),
             static::SELLER_PROD_SEO => Labels::getLabel('LBL_SEO_Data', $langId),
             static::SELLER_PROD_SPECIAL_PRICE => Labels::getLabel('LBL_Special_Price', $langId),
             static::SELLER_PROD_VOLUME_DISCOUNT => Labels::getLabel('LBL_Volume_Discount', $langId),
@@ -298,12 +298,12 @@ class Importexport extends ImportexportCommon
             case Importexport::TYPE_INVENTORIES:
                 switch ($sheetType) {
                     case Importexport::SELLER_PROD_GENERAL_DATA:
-                        $sheetName = Labels::getLabel('LBL_Seller_Product_General', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_SELLER_INVENTORY_GENERAL', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportSellerProdGeneralData($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
                     case Importexport::SELLER_PROD_OPTION:
-                        $sheetName = Labels::getLabel('LBL_Seller_Product_Option', $langId) . $sheetName;
+                        $sheetName = Labels::getLabel('LBL_SELLER_INVENTORY_OPTIONS', $langId) . $sheetName;
                         $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId);
                         $this->exportSellerProdOptionData($langId, $offset, $noOfRows, $minId, $maxId, $userId);
                         break;
@@ -1177,7 +1177,7 @@ class Importexport extends ImportexportCommon
     public function exportBrandMedia($langId)
     {
         $srch = Brand::getSearchObject();
-        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id');
+        $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'brand_id = afile_record_id AND ( afile_type = ' . AttachedFile::FILETYPE_BRAND_LOGO . ' OR afile_type = ' . AttachedFile::FILETYPE_BRAND_IMAGE . ')');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(array('brand_id', 'brand_identifier', 'afile_record_id', 'afile_record_subid', 'afile_lang_id', 'afile_screen', 'afile_physical_path', 'afile_name', 'afile_display_order', 'afile_type'));
@@ -1926,7 +1926,7 @@ class Importexport extends ImportexportCommon
             }
 
             if (false === $errorInRow && count($prodDataArr)) {
-                $prodDataArr['product_added_on'] = date('Y-m-d H:i:s');;
+                $prodDataArr['product_added_on'] = date('Y-m-d H:i:s');
                 $prodDataArr['product_added_by_admin_id'] = (1 > $userId) ? applicationConstants::YES : applicationConstants::NO;
 
                 $shippro_shipprofile_id = 0;
@@ -1941,7 +1941,6 @@ class Importexport extends ImportexportCommon
                     $productId = $prodData['product_id'];
 
                     if ($sellerId) {
-                        $prodDataArr['product_featured'] = $prodData['product_featured'];
                         $prodDataArr['product_approved'] = $prodData['product_approved'];
                         unset($prodDataArr['product_added_on']);
                     }
@@ -1951,7 +1950,7 @@ class Importexport extends ImportexportCommon
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                         continue;
                     }
-
+                    
                     $where = array('smt' => 'product_id = ?', 'vals' => array($productId));
                     $this->db->updateFromArray(Product::DB_TBL, $prodDataArr, $where);
 

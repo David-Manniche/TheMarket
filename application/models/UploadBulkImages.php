@@ -173,7 +173,6 @@ class UploadBulkImages extends FatModel
             }
             return $locations;
         }
-        die('here');
         return [];
     }
 }

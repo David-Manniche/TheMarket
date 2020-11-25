@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
-<?php $gatewayCount=0; 
+<?php $gatewayCount = 0;
 foreach ($paymentMethods as $key => $val) {
     if (in_array($val['plugin_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_ADD_MONEY_TO_WALLET])) {
         unset($paymentMethods[$key]);
@@ -21,8 +21,8 @@ foreach ($paymentMethods as $key => $val) {
                         <div class="col-md-8">
                             <div class="you-pay">
                                 <?php echo Labels::getLabel('LBL_Net_Payable', $siteLangId); ?> : <?php echo CommonHelper::displayMoneyFormat($orderInfo['order_net_amount'], true, false, true, false, true); ?>
-                                <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) {?>
-                                <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $orderInfo['order_net_amount']);  ?></p>
+                                <?php if (CommonHelper::getCurrencyId() != FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) { ?>
+                                    <p><?php echo CommonHelper::currencyDisclaimer($siteLangId, $orderInfo['order_net_amount']);  ?></p>
                                 <?php } ?>
                             </div>
                         </div>
@@ -33,11 +33,7 @@ foreach ($paymentMethods as $key => $val) {
                                         <?php foreach ($paymentMethods as $key => $val) {
                                             $pmethodCode = $val['plugin_code'];
                                             $pmethodId = $val['plugin_id'];
-                                            $pmethodName = $val['plugin_name'];
-
-                                            if (in_array($pmethodCode, $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_PRODUCT])) {
-                                                continue;
-                                            }?>
+                                            $pmethodName = $val['plugin_name']; ?>
                                             <li class="nav-item">
                                                 <a class="nav-link" aria-selected="true" href="<?php echo UrlHelper::generateUrl('Checkout', 'PaymentTab', array($orderInfo['order_id'], $pmethodId)); ?>" data-paymentmethod="<?php echo $pmethodCode; ?>">
                                                     <div class="payment-box">
@@ -49,7 +45,7 @@ foreach ($paymentMethods as $key => $val) {
                                         } ?>
                                     </ul>
                                     <div class="tab-content">
-                                        <div class="tab-pane fade show active" role="tabpanel" >
+                                        <div class="tab-pane fade show active" role="tabpanel">
                                             <div class="tabs-container" id="tabs-container"></div>
                                         </div>
                                     </div>
@@ -66,7 +62,6 @@ foreach ($paymentMethods as $key => $val) {
 </section>
 <?php if ($orderInfo['order_net_amount']) { ?>
     <script type="text/javascript">
-
         var tabsId = '#payment_methods_tab';
         $(document).ready(function() {
             $(tabsId + " li:first a").addClass('active');
@@ -83,7 +78,7 @@ foreach ($paymentMethods as $key => $val) {
                 return false;
             });
         });
-        
+
         function loadTab(tabObj) {
             if (isUserLogged() == 0) {
                 loginPopUpBox();
@@ -109,10 +104,10 @@ foreach ($paymentMethods as $key => $val) {
             });
         }
 
-        sendPayment = function (frm, dv = '') {
+        sendPayment = function(frm, dv = '') {
             var data = fcom.frmData(frm);
             var action = $(frm).attr('action');
-            fcom.ajax(action, data, function (t) {
+            fcom.ajax(action, data, function(t) {
                 // debugger;
                 try {
                     var json = $.parseJSON(t);

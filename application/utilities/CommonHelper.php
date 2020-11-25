@@ -1939,10 +1939,15 @@ class CommonHelper extends FatUtility
                 $urlType = applicationConstants::URL_TYPE_PRODUCT;
                 break;
             case 'collections/view':
+            case 'shops/collection':
                 $collectionType = 0 < $recordId ? Collections::getAttributesById($recordId, 'collection_type') : 0;
                 $urlType = applicationConstants::URL_TYPE_COLLECTION;
+                if (0 < $recordId) {
+                    $queryString = array_values(array_diff($queryString, [$recordId]));
+                }
                 $extra = [
-                    'collectionType' => $collectionType
+                    'collectionType' => $collectionType,
+                    'queryParams' => $queryString
                 ];
                 break;
             case 'guest-user/login-form':

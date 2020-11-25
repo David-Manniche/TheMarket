@@ -7,7 +7,7 @@
             return  $b['fulfillment_type'] - $a['fulfillment_type'];
         });
     ?>
-        <ul class="list-group list-cart">
+        <ul class="list-group list-cart <?php echo (count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) != $productsCount) ? '' : 'list-cart-page'; ?>">
             <?php
             //if (count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) > 0 && count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) != $productsCount) { 
             if (count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) != $productsCount) {
@@ -128,25 +128,26 @@
                         </p>
                     </div>
                 </div>
-               <div class="wrap-qty-price">
-                <div class="product-quantity">
-                    <div class="quantity quantity-2" data-stock="<?php echo $product['selprod_stock']; ?>">
-                        <span class="decrease decrease-js <?php echo ($product['quantity'] <= $product['selprod_min_order_qty']) ? 'not-allowed' : ''; ?>"><i class="fas fa-minus"></i></span>
-                        <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
-                            <input name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" class="qty-input cartQtyTextBox productQty-js" value="<?php echo $product['quantity']; ?>" type="text" />
+                <div class="wrap-qty-price">
+                    <div class="product-quantity">
+                        <div class="quantity quantity-2" data-stock="<?php echo $product['selprod_stock']; ?>">
+                            <span class="decrease decrease-js <?php echo ($product['quantity'] <= $product['selprod_min_order_qty']) ? 'not-allowed' : ''; ?>"><i class="fas fa-minus"></i></span>
+                            <div class="qty-input-wrapper" data-stock="<?php echo $product['selprod_stock']; ?>">
+                                <input name="qty_<?php echo md5($product['key']); ?>" data-key="<?php echo md5($product['key']); ?>" class="qty-input cartQtyTextBox productQty-js" value="<?php echo $product['quantity']; ?>" type="text" />
+                            </div>
+                            <span class="increase increase-js <?php echo ($product['selprod_stock'] <= $product['quantity']) ? 'not-allowed' : ''; ?>"><i class="fas fa-plus"></i></span>
                         </div>
-                        <span class="increase increase-js <?php echo ($product['selprod_stock'] <= $product['quantity']) ? 'not-allowed' : ''; ?>"><i class="fas fa-plus"></i></span>
                     </div>
+                    <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></div>
                 </div>
-                <div class="product-price"><?php echo CommonHelper::displayMoneyFormat($product['theprice']); ?></div></div>
                 <div class="product-action">
                     <ul class="list-actions">
                         <li>
                             <a href="javascript:void(0)" onclick="cart.remove('<?php echo md5($product['key']); ?>','cart')">
-                            <svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
+                                <svg class="svg" width="24px" height="24px" title="<?php echo Labels::getLabel('LBL_Remove', $siteLangId); ?>">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#remove">
                                     </use>
-                            </svg>
+                                </svg>
                             </a></li>
                     </ul>
                 </div>

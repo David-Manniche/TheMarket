@@ -1307,7 +1307,7 @@ class Orders extends MyAppModel
             $paymentMethodRow = Plugin::getAttributesById($orderInfo['order_pmethod_id']);
 
             /* Use Reward Point [ */
-            if (in_array(strtolower($paymentMethodRow['plugin_code']), ['cashondelivery', 'payatstore']) && $orderInfo['order_reward_point_used'] > 0) {
+            if (is_array($paymentMethodRow) && !empty($paymentMethodRow) && in_array(strtolower($paymentMethodRow['plugin_code']), ['cashondelivery', 'payatstore']) && $orderInfo['order_reward_point_used'] > 0) {
                 UserRewards::debit($orderInfo['order_user_id'], $orderInfo['order_reward_point_used'], $orderId, $orderInfo['order_language_id']);
             }
             /*]*/

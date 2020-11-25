@@ -279,13 +279,14 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("APP_SHOW_MORE", 1, "Show More", 2),
 ("APP_I_AM_LISTENING", 1, "Say Something I Am Listening", 2),
 ("APP_VOICE_SEARCH", 1, "Voice Search", 2),
-("APP_EXPLORE", 1, "Explore", 2);
+("APP_EXPLORE", 1, "Explore", 2)
+ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 
 --
 -- ShipStation Plugin
 --
 
-  INSERT INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ship Station', '8', 'ShipStationShipping', '0', '1');
+  INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Ship Station', '8', 'ShipStationShipping', '0', '1');
   UPDATE `tbl_shipping_apis` SET `shippingapi_identifier` = 'Shipping Services' WHERE `tbl_shipping_apis`.`shippingapi_id` = 2;
   UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'Shipping Services' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 1;
   UPDATE `tbl_shipping_apis_lang` SET `shippingapi_name` = 'خدمات الشحن' WHERE `tbl_shipping_apis_lang`.`shippingapilang_shippingapi_id` = 2 AND `tbl_shipping_apis_lang`.`shippingapilang_lang_id` = 2;
@@ -1208,3 +1209,5 @@ ALTER TABLE `tbl_coupon_to_brands`
 
 
 DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_Multi-vendor_Ecommerce_Marketplace_Solution';
+-- ---------------------TV-9.2.3.20201124------------------
+update `tbl_products` set `product_fulfillment_type` = 2 WHERE `product_fulfillment_type` = 0; 

@@ -114,8 +114,8 @@ class AdminPrivilege
     public const SECTION_SMS_TEMPLATE = 108;
     public const SECTION_SHIPPING_PACKAGES = 109;
     public const SECTION_SHIPPING_MANAGEMENT = 110;
-	public const SECTION_IMAGE_ATTRIBUTES = 111;
-    public const SECTION_PICKUP_ADDRESSES = 111;
+    public const SECTION_IMAGE_ATTRIBUTES = 111;
+    public const SECTION_PICKUP_ADDRESSES = 112;
 
     public const PRIVILEGE_NONE = 0;
     public const PRIVILEGE_READ = 1;
@@ -140,9 +140,9 @@ class AdminPrivilege
     public static function getPermissionArr()
     {
         $arr = array(
-        static::PRIVILEGE_NONE => Labels::getLabel('MSG_None', CommonHelper::getLangId()),
-        static::PRIVILEGE_READ => Labels::getLabel('MSG_Read_Only', CommonHelper::getLangId()),
-        static::PRIVILEGE_WRITE => Labels::getLabel('MSG_Read_and_Write', CommonHelper::getLangId())
+            static::PRIVILEGE_NONE => Labels::getLabel('MSG_None', CommonHelper::getLangId()),
+            static::PRIVILEGE_READ => Labels::getLabel('MSG_Read_Only', CommonHelper::getLangId()),
+            static::PRIVILEGE_WRITE => Labels::getLabel('MSG_Read_and_Write', CommonHelper::getLangId())
         );
         return $arr;
     }
@@ -150,137 +150,137 @@ class AdminPrivilege
     public static function getPermissionModulesArr()
     {
         $arr = array(
-        static::SECTION_ADMIN_DASHBOARD => Labels::getLabel('MSG_Admin_Dashboard', CommonHelper::getLangId()),
-        static::SECTION_SHOPS => Labels::getLabel('MSG_Shops', CommonHelper::getLangId()),
-        static::SECTION_PRODUCT_CATEGORIES => Labels::getLabel('MSG_Product_Categories', CommonHelper::getLangId()),
-        static::SECTION_PRODUCTS => Labels::getLabel('MSG_Products', CommonHelper::getLangId()),
-        static::SECTION_SELLER_PRODUCTS => Labels::getLabel('MSG_Seller_Products', CommonHelper::getLangId()),
-        static::SECTION_PRODUCT_REVIEWS => Labels::getLabel('MSG_Product_Reviews', CommonHelper::getLangId()),
-        static::SECTION_BRANDS => Labels::getLabel('MSG_Brands', CommonHelper::getLangId()),
-        static::SECTION_OPTIONS => Labels::getLabel('MSG_Options', CommonHelper::getLangId()),
-        static::SECTION_TAGS => Labels::getLabel('MSG_Tags', CommonHelper::getLangId()),
-        static::SECTION_BRAND_REQUESTS => Labels::getLabel('MSG_Brand_Requests', CommonHelper::getLangId()),
-        static::SECTION_ATTRIBUTES => Labels::getLabel('MSG_Attributes', CommonHelper::getLangId()),
+            static::SECTION_ADMIN_DASHBOARD => Labels::getLabel('MSG_Admin_Dashboard', CommonHelper::getLangId()),
+            static::SECTION_SHOPS => Labels::getLabel('MSG_Shops', CommonHelper::getLangId()),
+            static::SECTION_PRODUCT_CATEGORIES => Labels::getLabel('MSG_Product_Categories', CommonHelper::getLangId()),
+            static::SECTION_PRODUCTS => Labels::getLabel('MSG_Products', CommonHelper::getLangId()),
+            static::SECTION_SELLER_PRODUCTS => Labels::getLabel('MSG_Seller_Products', CommonHelper::getLangId()),
+            static::SECTION_PRODUCT_REVIEWS => Labels::getLabel('MSG_Product_Reviews', CommonHelper::getLangId()),
+            static::SECTION_BRANDS => Labels::getLabel('MSG_Brands', CommonHelper::getLangId()),
+            static::SECTION_OPTIONS => Labels::getLabel('MSG_Options', CommonHelper::getLangId()),
+            static::SECTION_TAGS => Labels::getLabel('MSG_Tags', CommonHelper::getLangId()),
+            static::SECTION_BRAND_REQUESTS => Labels::getLabel('MSG_Brand_Requests', CommonHelper::getLangId()),
+            static::SECTION_ATTRIBUTES => Labels::getLabel('MSG_Attributes', CommonHelper::getLangId()),
 
-        static::SECTION_USERS => Labels::getLabel('MSG_Users', CommonHelper::getLangId()),
-        static::SECTION_SHIPPING_COMPANY_USERS => Labels::getLabel('MSG_Shipping_Company_Users', CommonHelper::getLangId()),
-        static::SECTION_SUPPLIER_APPROVAL_FORM => Labels::getLabel('MSG_Seller_Approval_Form', CommonHelper::getLangId()),
-        static::SECTION_SUPPLIER_APPROVAL_REQUESTS => Labels::getLabel('MSG_Seller_Approval_Requests', CommonHelper::getLangId()),
-        static::SECTION_CATALOG_REQUESTS => Labels::getLabel('MSG_Catalog_Requests', CommonHelper::getLangId()),
-        static::SECTION_CUSTOM_PRODUCT_REQUESTS => Labels::getLabel('MSG_Custom_Catalog_Requests', CommonHelper::getLangId()),
-        static::SECTION_CUSTOM_CATALOG_PRODUCT_REQUESTS => Labels::getLabel('MSG_Custom_Catalog_Product_Requests', CommonHelper::getLangId()),
+            static::SECTION_USERS => Labels::getLabel('MSG_Users', CommonHelper::getLangId()),
+            static::SECTION_SHIPPING_COMPANY_USERS => Labels::getLabel('MSG_Shipping_Company_Users', CommonHelper::getLangId()),
+            static::SECTION_SUPPLIER_APPROVAL_FORM => Labels::getLabel('MSG_Seller_Approval_Form', CommonHelper::getLangId()),
+            static::SECTION_SUPPLIER_APPROVAL_REQUESTS => Labels::getLabel('MSG_Seller_Approval_Requests', CommonHelper::getLangId()),
+            static::SECTION_CATALOG_REQUESTS => Labels::getLabel('MSG_Catalog_Requests', CommonHelper::getLangId()),
+            static::SECTION_CUSTOM_PRODUCT_REQUESTS => Labels::getLabel('MSG_Custom_Catalog_Requests', CommonHelper::getLangId()),
+            static::SECTION_CUSTOM_CATALOG_PRODUCT_REQUESTS => Labels::getLabel('MSG_Custom_Catalog_Product_Requests', CommonHelper::getLangId()),
 
-        static::SECTION_CONTENT_PAGES => Labels::getLabel('MSG_Content_Pages', CommonHelper::getLangId()),
-        static::SECTION_CONTENT_BLOCKS => Labels::getLabel('MSG_Content_Blocks', CommonHelper::getLangId()),
-        static::SECTION_NAVIGATION_MANAGEMENT => Labels::getLabel('MSG_Navigation_Management', CommonHelper::getLangId()),
-        static::SECTION_COUNTRIES => Labels::getLabel('MSG_Countries', CommonHelper::getLangId()),
-        /* static::SECTION_ZONES => Labels::getLabel('MSG_Zones',CommonHelper::getLangId()), */
-        static::SECTION_STATES => Labels::getLabel('MSG_States', CommonHelper::getLangId()),
-        static::SECTION_COLLECTIONS => Labels::getLabel('MSG_Collections', CommonHelper::getLangId()),
-        static::SECTION_EMPTY_CART_ITEMS_MANAGEMENT => Labels::getLabel('MSG_Empty_Cart_Management', CommonHelper::getLangId()),
-        static::SECTION_SOCIALPLATFORM => Labels::getLabel('MSG_Social_Platform', CommonHelper::getLangId()),
-        static::SECTION_SHOP_REPORT_REASONS => Labels::getLabel('MSG_Shop_Report_Reasons', CommonHelper::getLangId()),
-        static::SECTION_ORDER_CANCEL_REASONS => Labels::getLabel('MSG_Order_Cancel_Reasons', CommonHelper::getLangId()),
-        static::SECTION_ORDER_RETURN_REASONS => Labels::getLabel('MSG_Order_Return_Reasons', CommonHelper::getLangId()),
-        static::SECTION_TESTIMONIAL => Labels::getLabel('MSG_Testimonial', CommonHelper::getLangId()),
-        static::SECTION_DISCOUNT_COUPONS => Labels::getLabel('MSG_Discount_Coupons', CommonHelper::getLangId()),
-        static::SECTION_LANGUAGE_LABELS => Labels::getLabel('MSG_Language_Labels', CommonHelper::getLangId()),
-        static::SECTION_SLIDES => Labels::getLabel('MSG_Home_Page_Slide_Management', CommonHelper::getLangId()),
-        static::SECTION_BANNERS => Labels::getLabel('MSG_Banners', CommonHelper::getLangId()),
+            static::SECTION_CONTENT_PAGES => Labels::getLabel('MSG_Content_Pages', CommonHelper::getLangId()),
+            static::SECTION_CONTENT_BLOCKS => Labels::getLabel('MSG_Content_Blocks', CommonHelper::getLangId()),
+            static::SECTION_NAVIGATION_MANAGEMENT => Labels::getLabel('MSG_Navigation_Management', CommonHelper::getLangId()),
+            static::SECTION_COUNTRIES => Labels::getLabel('MSG_Countries', CommonHelper::getLangId()),
+            /* static::SECTION_ZONES => Labels::getLabel('MSG_Zones',CommonHelper::getLangId()), */
+            static::SECTION_STATES => Labels::getLabel('MSG_States', CommonHelper::getLangId()),
+            static::SECTION_COLLECTIONS => Labels::getLabel('MSG_Collections', CommonHelper::getLangId()),
+            static::SECTION_EMPTY_CART_ITEMS_MANAGEMENT => Labels::getLabel('MSG_Empty_Cart_Management', CommonHelper::getLangId()),
+            static::SECTION_SOCIALPLATFORM => Labels::getLabel('MSG_Social_Platform', CommonHelper::getLangId()),
+            static::SECTION_SHOP_REPORT_REASONS => Labels::getLabel('MSG_Shop_Report_Reasons', CommonHelper::getLangId()),
+            static::SECTION_ORDER_CANCEL_REASONS => Labels::getLabel('MSG_Order_Cancel_Reasons', CommonHelper::getLangId()),
+            static::SECTION_ORDER_RETURN_REASONS => Labels::getLabel('MSG_Order_Return_Reasons', CommonHelper::getLangId()),
+            static::SECTION_TESTIMONIAL => Labels::getLabel('MSG_Testimonial', CommonHelper::getLangId()),
+            static::SECTION_DISCOUNT_COUPONS => Labels::getLabel('MSG_Discount_Coupons', CommonHelper::getLangId()),
+            static::SECTION_LANGUAGE_LABELS => Labels::getLabel('MSG_Language_Labels', CommonHelper::getLangId()),
+            static::SECTION_SLIDES => Labels::getLabel('MSG_Home_Page_Slide_Management', CommonHelper::getLangId()),
+            static::SECTION_BANNERS => Labels::getLabel('MSG_Banners', CommonHelper::getLangId()),
 
-        static::SECTION_SHIPPING_APIS => Labels::getLabel('MSG_Shipping_Api_Methods', CommonHelper::getLangId()),
-        static::SECTION_SHIPPING_DURATIONS => Labels::getLabel('MSG_Shipping_Durations', CommonHelper::getLangId()),
-        /* static::SECTION_MANUAL_SHIPPING_API => Labels::getLabel('MSG_Manual_Shipping_Api',CommonHelper::getLangId()), */
+            static::SECTION_SHIPPING_APIS => Labels::getLabel('MSG_Shipping_Api_Methods', CommonHelper::getLangId()),
+            static::SECTION_SHIPPING_DURATIONS => Labels::getLabel('MSG_Shipping_Durations', CommonHelper::getLangId()),
+            /* static::SECTION_MANUAL_SHIPPING_API => Labels::getLabel('MSG_Manual_Shipping_Api',CommonHelper::getLangId()), */
 
-        static::SECTION_GENERAL_SETTINGS => Labels::getLabel('MSG_General_Settings', CommonHelper::getLangId()),
-        static::SECTION_PAYMENT_METHODS => Labels::getLabel('MSG_Payment_Methods', CommonHelper::getLangId()),
-        static::SECTION_CURRENCY_MANAGEMENT => Labels::getLabel('MSG_Currency_Management', CommonHelper::getLangId()),
-        static::SECTION_TAX => Labels::getLabel('MSG_Tax', CommonHelper::getLangId()),
-        static::SECTION_COMMISSION => Labels::getLabel('MSG_Commission', CommonHelper::getLangId()),
-        static::SECTION_AFFILIATE_COMMISSION => Labels::getLabel('MSG_Affiliate_Commission', CommonHelper::getLangId()),
-        static::SECTION_EMAIL_TEMPLATES => Labels::getLabel('MSG_Email_Templates', CommonHelper::getLangId()),
-        static::SECTION_POLICY_POINTS => Labels::getLabel('MSG_Policy_Points', CommonHelper::getLangId()),
-        static::SECTION_SELLER_PACKAGES => Labels::getLabel('MSG_Seller_Packages', CommonHelper::getLangId()),
-        static::SECTION_REWARDS_ON_PURCHASE => Labels::getLabel('MSG_Rewards_on_purchase', CommonHelper::getLangId()),
+            static::SECTION_GENERAL_SETTINGS => Labels::getLabel('MSG_General_Settings', CommonHelper::getLangId()),
+            static::SECTION_PAYMENT_METHODS => Labels::getLabel('MSG_Payment_Methods', CommonHelper::getLangId()),
+            static::SECTION_CURRENCY_MANAGEMENT => Labels::getLabel('MSG_Currency_Management', CommonHelper::getLangId()),
+            static::SECTION_TAX => Labels::getLabel('MSG_Tax', CommonHelper::getLangId()),
+            static::SECTION_COMMISSION => Labels::getLabel('MSG_Commission', CommonHelper::getLangId()),
+            static::SECTION_AFFILIATE_COMMISSION => Labels::getLabel('MSG_Affiliate_Commission', CommonHelper::getLangId()),
+            static::SECTION_EMAIL_TEMPLATES => Labels::getLabel('MSG_Email_Templates', CommonHelper::getLangId()),
+            static::SECTION_POLICY_POINTS => Labels::getLabel('MSG_Policy_Points', CommonHelper::getLangId()),
+            static::SECTION_SELLER_PACKAGES => Labels::getLabel('MSG_Seller_Packages', CommonHelper::getLangId()),
+            static::SECTION_REWARDS_ON_PURCHASE => Labels::getLabel('MSG_Rewards_on_purchase', CommonHelper::getLangId()),
 
-        static::SECTION_ORDERS => Labels::getLabel('MSG_Orders', CommonHelper::getLangId()),
-        static::SECTION_VENDOR_ORDERS => Labels::getLabel('MSG_Seller_Orders', CommonHelper::getLangId()),
-        static::SECTION_WITHDRAW_REQUESTS => Labels::getLabel('MSG_Withdraw_Requests', CommonHelper::getLangId()),
-        static::SECTION_ORDER_CANCELLATION_REQUESTS => Labels::getLabel('MSG_Order_Cancellation_Requests', CommonHelper::getLangId()),
-        static::SECTION_ORDER_RETURN_REQUESTS => Labels::getLabel('MSG_Order_Return_Requests', CommonHelper::getLangId()),
+            static::SECTION_ORDERS => Labels::getLabel('MSG_Orders', CommonHelper::getLangId()),
+            static::SECTION_VENDOR_ORDERS => Labels::getLabel('MSG_Seller_Orders', CommonHelper::getLangId()),
+            static::SECTION_WITHDRAW_REQUESTS => Labels::getLabel('MSG_Withdraw_Requests', CommonHelper::getLangId()),
+            static::SECTION_ORDER_CANCELLATION_REQUESTS => Labels::getLabel('MSG_Order_Cancellation_Requests', CommonHelper::getLangId()),
+            static::SECTION_ORDER_RETURN_REQUESTS => Labels::getLabel('MSG_Order_Return_Requests', CommonHelper::getLangId()),
 
-        static::SMART_RECOMENDED_WEIGHTAGES => Labels::getLabel('MSG_Recommended_Weightages', CommonHelper::getLangId()),
-        static::SMART_PRODUCT_TAG_PRODUCTS => Labels::getLabel('MSG_Recommended_Tag_Products', CommonHelper::getLangId()),
+            static::SMART_RECOMENDED_WEIGHTAGES => Labels::getLabel('MSG_Recommended_Weightages', CommonHelper::getLangId()),
+            static::SMART_PRODUCT_TAG_PRODUCTS => Labels::getLabel('MSG_Recommended_Tag_Products', CommonHelper::getLangId()),
 
-        static::SECTION_PROMOTIONS => Labels::getLabel('MSG_Promotions', CommonHelper::getLangId()),
+            static::SECTION_PROMOTIONS => Labels::getLabel('MSG_Promotions', CommonHelper::getLangId()),
 
-        static::SECTION_META_TAGS => Labels::getLabel('MSG_Meta_Tags', CommonHelper::getLangId()),
-        static::SECTION_FAQ_CATEGORY => Labels::getLabel('MSG_Faq_Category', CommonHelper::getLangId()),
-        static::SECTION_FAQ => Labels::getLabel('MSG_Faq', CommonHelper::getLangId()),
-        static::SECTION_URL_REWRITE => Labels::getLabel('MSG_Url_Rewriting', CommonHelper::getLangId()),
-		static::SECTION_IMAGE_ATTRIBUTES => Labels::getLabel('MSG_Image_Attributes', CommonHelper::getLangId()),
-		
-        static::SECTION_BLOG_POST_CATEGORIES => Labels::getLabel('MSG_Blog_Categories', CommonHelper::getLangId()),
-        static::SECTION_BLOG_POSTS => Labels::getLabel('MSG_Blog_Posts', CommonHelper::getLangId()),
-        static::SECTION_BLOG_CONTRIBUTIONS => Labels::getLabel('MSG_Blog_Contributions', CommonHelper::getLangId()),
-        static::SECTION_BLOG_COMMENTS => Labels::getLabel('MSG_Blog_Comments', CommonHelper::getLangId()),
+            static::SECTION_META_TAGS => Labels::getLabel('MSG_Meta_Tags', CommonHelper::getLangId()),
+            static::SECTION_FAQ_CATEGORY => Labels::getLabel('MSG_Faq_Category', CommonHelper::getLangId()),
+            static::SECTION_FAQ => Labels::getLabel('MSG_Faq', CommonHelper::getLangId()),
+            static::SECTION_URL_REWRITE => Labels::getLabel('MSG_Url_Rewriting', CommonHelper::getLangId()),
+            static::SECTION_IMAGE_ATTRIBUTES => Labels::getLabel('MSG_Image_Attributes', CommonHelper::getLangId()),
 
-        static::SECTION_SHOP_REPORTS => Labels::getLabel('MSG_Shop_Reports', CommonHelper::getLangId()),
-        static::SECTION_SHOPS_REPORT => Labels::getLabel('MSG_Shops_Report', CommonHelper::getLangId()),
-        static::SECTION_SALES_REPORT => Labels::getLabel('MSG_Sales_Report', CommonHelper::getLangId()),
-        static::SECTION_USERS_REPORT => Labels::getLabel('MSG_Users_Report', CommonHelper::getLangId()),
-        static::SECTION_PRODUCTS_REPORT => Labels::getLabel('MSG_Products_Report', CommonHelper::getLangId()),
-        static::SECTION_TAX_REPORT => Labels::getLabel('MSG_Tax_Report', CommonHelper::getLangId()),
-        static::SECTION_COMMISSION_REPORT => Labels::getLabel('MSG_Commission_Report', CommonHelper::getLangId()),
-        static::SECTION_CATALOG_REPORT => Labels::getLabel('MSG_Catalog_Report', CommonHelper::getLangId()),
-        static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('MSG_Proformance_Report', CommonHelper::getLangId()),
-        static::SECTION_AFFILIATES_REPORT => Labels::getLabel('MSG_Affiliate_Report', CommonHelper::getLangId()),
-        static::SECTION_ADVERTISERS_REPORT => Labels::getLabel('MSG_Advertiser_Report', CommonHelper::getLangId()),
-        /* static::SECTION_SELLER_DISCOUNT_COUPONS => Labels::getLabel('MSG_Seller_Discount_Coupons',CommonHelper::getLangId()), */
-        static::SECTION_THEME_COLOR => Labels::getLabel('MSG_Theme_Color', CommonHelper::getLangId()),
+            static::SECTION_BLOG_POST_CATEGORIES => Labels::getLabel('MSG_Blog_Categories', CommonHelper::getLangId()),
+            static::SECTION_BLOG_POSTS => Labels::getLabel('MSG_Blog_Posts', CommonHelper::getLangId()),
+            static::SECTION_BLOG_CONTRIBUTIONS => Labels::getLabel('MSG_Blog_Contributions', CommonHelper::getLangId()),
+            static::SECTION_BLOG_COMMENTS => Labels::getLabel('MSG_Blog_Comments', CommonHelper::getLangId()),
 
-        static::SECTION_ADMIN_USERS => Labels::getLabel('MSG_Admin_Users', CommonHelper::getLangId()),
-        static::SECTION_ADMIN_PERMISSIONS => Labels::getLabel('MSG_Admin_Roles', CommonHelper::getLangId()),
+            static::SECTION_SHOP_REPORTS => Labels::getLabel('MSG_Shop_Reports', CommonHelper::getLangId()),
+            static::SECTION_SHOPS_REPORT => Labels::getLabel('MSG_Shops_Report', CommonHelper::getLangId()),
+            static::SECTION_SALES_REPORT => Labels::getLabel('MSG_Sales_Report', CommonHelper::getLangId()),
+            static::SECTION_USERS_REPORT => Labels::getLabel('MSG_Users_Report', CommonHelper::getLangId()),
+            static::SECTION_PRODUCTS_REPORT => Labels::getLabel('MSG_Products_Report', CommonHelper::getLangId()),
+            static::SECTION_TAX_REPORT => Labels::getLabel('MSG_Tax_Report', CommonHelper::getLangId()),
+            static::SECTION_COMMISSION_REPORT => Labels::getLabel('MSG_Commission_Report', CommonHelper::getLangId()),
+            static::SECTION_CATALOG_REPORT => Labels::getLabel('MSG_Catalog_Report', CommonHelper::getLangId()),
+            static::SECTION_PERFORMANCE_REPORT => Labels::getLabel('MSG_Proformance_Report', CommonHelper::getLangId()),
+            static::SECTION_AFFILIATES_REPORT => Labels::getLabel('MSG_Affiliate_Report', CommonHelper::getLangId()),
+            static::SECTION_ADVERTISERS_REPORT => Labels::getLabel('MSG_Advertiser_Report', CommonHelper::getLangId()),
+            /* static::SECTION_SELLER_DISCOUNT_COUPONS => Labels::getLabel('MSG_Seller_Discount_Coupons',CommonHelper::getLangId()), */
+            static::SECTION_THEME_COLOR => Labels::getLabel('MSG_Theme_Color', CommonHelper::getLangId()),
 
-        //static::SECTION_TOOLS => Labels::getLabel('MSG_Tools', CommonHelper::getLangId()),
-        static::SECTION_MESSAGES => Labels::getLabel('MSG_Messages', CommonHelper::getLangId()),
-        // static::SECTION_NOTIFICATION => Labels::getLabel('MSG_Notifications',CommonHelper::getLangId()),
-        static::SECTION_DATABASE_BACKUP => Labels::getLabel('MSG_Database_Backup', CommonHelper::getLangId()),
-        static::SECTION_ORDER_STATUS => Labels::getLabel('MSG_Order_Status_Management', CommonHelper::getLangId()),
-        static::SECTION_USER_REQUESTS => Labels::getLabel('MSG_User_Requests', CommonHelper::getLangId()),
-        static::SECTION_PRODUCT_TEMP_IMAGES => Labels::getLabel('MSG_Products_Temp_Images', CommonHelper::getLangId()),
-        static::SECTION_IMPORT_INSTRUCTIONS => Labels::getLabel('MSG_Import_Instructions', CommonHelper::getLangId()),
-        static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('MSG_Bulk_Upload', CommonHelper::getLangId()),
-        static::SECTION_SITEMAP => Labels::getLabel('MSG_SITEMAP', CommonHelper::getLangId()),
-        static::SECTION_PUSH_NOTIFICATION => Labels::getLabel('MSG_PUSH_NOTIFICATION', CommonHelper::getLangId()),
-        static::SECTION_PRODUCT_ADVERTISEMENT => Labels::getLabel('MSG_PRODUCT_ADVERTISEMENT', CommonHelper::getLangId()),
-        static::SECTION_PLUGINS => Labels::getLabel('MSG_Plugins', CommonHelper::getLangId()),
-        static::SECTION_APP_THEME_SETTINGS => Labels::getLabel('MSG_APP_THEME_SETTINGS', CommonHelper::getLangId()),
-        static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()),
-        static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()),
-        static::SECTION_SMS_TEMPLATE => Labels::getLabel('MSG_SMS_TEMPLATE', CommonHelper::getLangId()),
-        
-        static::SECTION_ABUSIVE_WORDS => Labels::getLabel('MSG_Abusive_Words', CommonHelper::getLangId()),
-        static::SECTION_SUBSCRIPTION_ORDERS => Labels::getLabel('MSG_Subscription_Orders', CommonHelper::getLangId()),
-            
-        static::SECTION_PICKUP_ADDRESSES => Labels::getLabel('MSG_Pickup_Addresses', CommonHelper::getLangId()),
-		
-            
-        /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
+            static::SECTION_ADMIN_USERS => Labels::getLabel('MSG_Admin_Users', CommonHelper::getLangId()),
+            static::SECTION_ADMIN_PERMISSIONS => Labels::getLabel('MSG_Admin_Roles', CommonHelper::getLangId()),
+
+            //static::SECTION_TOOLS => Labels::getLabel('MSG_Tools', CommonHelper::getLangId()),
+            static::SECTION_MESSAGES => Labels::getLabel('MSG_Messages', CommonHelper::getLangId()),
+            // static::SECTION_NOTIFICATION => Labels::getLabel('MSG_Notifications',CommonHelper::getLangId()),
+            static::SECTION_DATABASE_BACKUP => Labels::getLabel('MSG_Database_Backup', CommonHelper::getLangId()),
+            static::SECTION_ORDER_STATUS => Labels::getLabel('MSG_Order_Status_Management', CommonHelper::getLangId()),
+            static::SECTION_USER_REQUESTS => Labels::getLabel('MSG_User_Requests', CommonHelper::getLangId()),
+            static::SECTION_PRODUCT_TEMP_IMAGES => Labels::getLabel('MSG_Products_Temp_Images', CommonHelper::getLangId()),
+            static::SECTION_IMPORT_INSTRUCTIONS => Labels::getLabel('MSG_Import_Instructions', CommonHelper::getLangId()),
+            static::SECTION_UPLOAD_BULK_IMAGES => Labels::getLabel('MSG_Bulk_Upload', CommonHelper::getLangId()),
+            static::SECTION_SITEMAP => Labels::getLabel('MSG_SITEMAP', CommonHelper::getLangId()),
+            static::SECTION_PUSH_NOTIFICATION => Labels::getLabel('MSG_PUSH_NOTIFICATION', CommonHelper::getLangId()),
+            static::SECTION_PRODUCT_ADVERTISEMENT => Labels::getLabel('MSG_PRODUCT_ADVERTISEMENT', CommonHelper::getLangId()),
+            static::SECTION_PLUGINS => Labels::getLabel('MSG_Plugins', CommonHelper::getLangId()),
+            static::SECTION_APP_THEME_SETTINGS => Labels::getLabel('MSG_APP_THEME_SETTINGS', CommonHelper::getLangId()),
+            static::SECTION_ABANDONED_CART => Labels::getLabel('MSG_ABANDONED_CART', CommonHelper::getLangId()),
+            static::SECTION_IMPORT_EXPORT => Labels::getLabel('MSG_IMPORT_EXPORT', CommonHelper::getLangId()),
+            static::SECTION_SMS_TEMPLATE => Labels::getLabel('MSG_SMS_TEMPLATE', CommonHelper::getLangId()),
+
+            static::SECTION_ABUSIVE_WORDS => Labels::getLabel('MSG_Abusive_Words', CommonHelper::getLangId()),
+            static::SECTION_SUBSCRIPTION_ORDERS => Labels::getLabel('MSG_Subscription_Orders', CommonHelper::getLangId()),
+
+            static::SECTION_PICKUP_ADDRESSES => Labels::getLabel('MSG_Pickup_Addresses', CommonHelper::getLangId()),
+
+
+            /* static::SECTION_Languages => Labels::getLabel('MSG_Languages',CommonHelper::getLangId()),
         static::SECTION_Languages => Labels::getLabel('MSG_Order_Status',CommonHelper::getLangId()), */
 
-        /*static::SECTION_SUCCESS_STORIES => Labels::getLabel('MSG_Success_stories',CommonHelper::getLangId()),
+            /*static::SECTION_SUCCESS_STORIES => Labels::getLabel('MSG_Success_stories',CommonHelper::getLangId()),
         static::SECTION_HOME_PAGE_ELEMENTS => Labels::getLabel('MSG_Home_Page_Elements',CommonHelper::getLangId()),
         static::SECTION_QUESTION_BANKS => Labels::getLabel('MSG_Question_Banks',CommonHelper::getLangId()),
 
         static::SECTION_QUESTIONS => Labels::getLabel('MSG_Questions',CommonHelper::getLangId()),
         static::SECTION_QUESTIONNAIRES => Labels::getLabel('MSG_Questionnaires',CommonHelper::getLangId()), */
 
-        /* static::SECTION_POLLING => Labels::getLabel('MSG_Polling',CommonHelper::getLangId()),
+            /* static::SECTION_POLLING => Labels::getLabel('MSG_Polling',CommonHelper::getLangId()),
         static::SECTION_FILTER_GROUPS => 'Filter Groups',
         static::SECTION_FILTERS => 'Filters',
         static::SECTION_EXTRA_ATTRIBUTES => 'Extra Attributes',	 */
-    );
+        );
         return $arr;
     }
 
@@ -303,7 +303,7 @@ class AdminPrivilege
                 $arrLevels[$sectionId] = static::PRIVILEGE_WRITE;
             } else {
                 for ($i = 0; $i <= 2; $i++) {
-                    $arrLevels [$i] = static::PRIVILEGE_WRITE;
+                    $arrLevels[$i] = static::PRIVILEGE_WRITE;
                 }
             }
             return $arrLevels;
@@ -923,8 +923,8 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_URL_REWRITE, static::PRIVILEGE_WRITE, $returnResult);
     }
-	
-	public function canViewImageAttributes($adminId = 0, $returnResult = false)
+
+    public function canViewImageAttributes($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_IMAGE_ATTRIBUTES, static::PRIVILEGE_READ, $returnResult);
     }
@@ -1425,22 +1425,22 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_PUSH_NOTIFICATION, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canViewPlugins($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PLUGINS, static::PRIVILEGE_READ, $returnResult);
     }
-    
+
     public function canEditPlugins($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PLUGINS, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canViewAbandonedCart($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_READ, $returnResult);
     }
-    
+
     public function canEditAbandonedCart($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_ABANDONED_CART, static::PRIVILEGE_WRITE, $returnResult);
@@ -1450,12 +1450,12 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_PRODUCT_ADVERTISEMENT, static::PRIVILEGE_READ, $returnResult);
     }
-    
+
     public function canEditAdvertisements($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PRODUCT_ADVERTISEMENT, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canViewAppThemeSettings($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_APP_THEME_SETTINGS, static::PRIVILEGE_READ, $returnResult);
@@ -1465,12 +1465,12 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_APP_THEME_SETTINGS, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canViewImportExport($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_READ, $returnResult);
     }
-    
+
     public function canEditImportExport($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_IMPORT_EXPORT, static::PRIVILEGE_WRITE, $returnResult);
@@ -1480,17 +1480,17 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_PATCH_UPDATE, static::PRIVILEGE_READ, $returnResult);
     }
-    
+
     public function canEditPatch($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PATCH_UPDATE, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canEditSmsTemplate($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canViewSmsTemplate($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_SMS_TEMPLATE, static::PRIVILEGE_READ, $returnResult);
@@ -1515,7 +1515,7 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_SHIPPING_MANAGEMENT, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canViewPickupAddresses($adminId = 0, $returnResult = false)
     {
         return $this->checkPermission($adminId, static::SECTION_PICKUP_ADDRESSES, static::PRIVILEGE_READ, $returnResult);
@@ -1525,17 +1525,15 @@ class AdminPrivilege
     {
         return $this->checkPermission($adminId, static::SECTION_PICKUP_ADDRESSES, static::PRIVILEGE_WRITE, $returnResult);
     }
-    
+
     public function canViewTrackingRelationCode()
     {
         $plugin = new Plugin();
-        $shipApiPluginKey = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);                    
+        $shipApiPluginKey = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPPING_SERVICES);
         $trackingApiPluginKey = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
-        if(Plugin::isActive($shipApiPluginKey) === true && Plugin::isActive($trackingApiPluginKey) === true){
+        if (Plugin::isActive($shipApiPluginKey) === true && Plugin::isActive($trackingApiPluginKey) === true) {
             return true;
         }
         return false;
     }
-    
-    
 }

@@ -2346,7 +2346,7 @@ class User extends MyAppModel
         }
         $db = FatApp::getDb();
 
-        $srch = self::getSearchObject(true, true);
+        $srch = self::getSearchObject(true);
         $srch->joinTable(UserAuthentication::DB_TBL_USER_AUTH, 'LEFT OUTER JOIN', 'uauth.uauth_user_id = u.user_id', 'uauth');
         $srch->addCondition('user_id', '=', $this->mainTableRecordId);
         $srch->addCondition('uc.' . static::DB_TBL_CRED_PREFIX . 'active', '=', 1);

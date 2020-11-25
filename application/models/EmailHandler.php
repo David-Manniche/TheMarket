@@ -1105,12 +1105,19 @@ class EmailHandler extends FatModel
                 self::sendMailTpl($val["op_shop_owner_email"], $tpl, $langId, $arrReplacements, '', 0, array(), $bccEmails);
 
                 if (!in_array(strtolower($paymentType), ['cashondelivery', 'payatstore', 'transferbank'])) {
+                    /*
                     $phoneNumbers = $receipentsInfo['phone'];
                     $userPhone = !empty($userInfo['user_phone']) ? $userInfo['user_dial_code'] . $userInfo['user_phone'] : '';
                     $phoneNumbers[] = $userPhone;
                     foreach ($phoneNumbers as $phone) {
                         $this->sendSms($tpl, $phone, $arrReplacements, $langId);
                     }
+                     * 
+                     */
+
+                    $sellerInfo = User::getAttributesById($val['op_selprod_user_id'], array('user_dial_code', 'user_phone'));
+                    $sellerPhone = !empty($sellerInfo['user_phone']) ? $sellerInfo['user_dial_code'] . $sellerInfo['user_phone'] : '';
+                    $this->sendSms($tpl, $sellerPhone, $arrReplacements, $langId);
                 }
                 $notiArrReplacements = array(
                     '{PRODUCT}' => $val["op_product_name"],
@@ -1348,12 +1355,11 @@ class EmailHandler extends FatModel
         $url = '<a href="' . $url . '">' . Labels::getLabel('Msg_click_here', $langId) . '</a>';
 
         $statusArr = Transactions::getWithdrawlStatusArr($langId);
-
         $tpl = new FatTemplate('', '');
         $tpl->set('siteLangId', $langId);
         $tpl->set('data', $withdrawalRequestData);
         $withdrawalDetailsTableFormatHtml = $tpl->render(false, false, '_partial/emails/withdrawal-request-details-email.php', true);
-
+        
         $arrReplacements = array(
             '{request_id}' => $formattedRequestValue,
             '{username}' => $withdrawalRequestData['user_username'],
@@ -2305,6 +2311,7 @@ class EmailHandler extends FatModel
             '{debit_credit_type}' => $row['urp_points'] > 0 ? Labels::getLabel('LBL_credited', $langId) : Labels::getLabel('LBL_debited', $langId),
             '{reward_points}' => abs($row['urp_points']),
             '{comments}' => $row["urp_comments"],
+            '{reward_point_balance}' => UserRewardBreakup::rewardPointBalance($row["urp_user_id"]),
         );
 
         $this->sendMailToAdminAndAdditionalEmails("reward_points_credited_debited", $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);

@@ -449,6 +449,19 @@ Bugs:
     => 045510 - Admin dashboard - Threshold products listing
     => 045517 - Price filter range and their search with options.
 ---------------TV-9.2.3.20201121-----------------------
+    => 045577 - guest user can't add digital item to cart 
+    => 045647 - on reward point sms variable coming of {reward_point_balance}
+    => 045648	On new order vendor not getting sms notification
+    => 045435 - android- wallet> add money> transfer bank and pay at store option are coming
+    => 045448 - android- during checkout> shipping is not listing on cart review screen
+    => 045426 - android- on clicking saved cart option > item removes from cart but not listing on app
+    => 045413 - android-under recommended products> product image listing is jittery
+    => 045670 - Export brand media files issue
+    => 045533 - Discount coupons > Link with one shop >> Add products from different shops in cart >> Coupon should get applied to only that particular shops products and not on whole order amount .
+--------------TV-9.2.3.20201124-------------------------
+    => 045578 If there is 100% discount and we have tax(avalara) on shipping only then there is some change in round off amount if we choose product price inclusive tax 
+    => 045691 - when adding product tag with special character then tags not coming
+    => 045709 - When we place withdrawal request then details are missing in email. 
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -480,3 +493,5 @@ Notes:
        
        To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles
        To Bind Zero Tax category as default if "Rest Of The World" country is not bind,Open <site-url>/admin/patch-update/update-tax-rules
+
+    Please replace tbl_countries, tbl_states from db_withdata.sql.

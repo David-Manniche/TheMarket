@@ -778,8 +778,10 @@ class CheckoutController extends MyAppController
         }
 
         $this->cartObj->setCartCheckoutType($fulfillmentType);
+        $this->cartObj->setFulfilmentType($fulfillmentType);
 
-        $cartProducts = $this->cartObj->getProducts($this->siteLangId);
+        // $cartProducts = $this->cartObj->getProducts($this->siteLangId);
+        $cartProducts = $this->cartObj->getBasketProducts($this->siteLangId);
         if (count($cartProducts) == 0) {
             $this->errMessage = Labels::getLabel('MSG_Your_Cart_is_empty', $this->siteLangId);
             FatUtility::dieJsonError($this->errMessage);
@@ -791,6 +793,7 @@ class CheckoutController extends MyAppController
             $this->cartObj->unSetShippingAddressSameAsBilling();
             $this->cartObj->unsetCartShippingAddress();
         }
+        $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
 
         $shippingRates = [];
 
@@ -814,8 +817,7 @@ class CheckoutController extends MyAppController
 
         $obj = new Extrapage();
         $headerData = $obj->getContentByPageType(Extrapage::CHECKOUT_PAGE_HEADER_BLOCK, $this->siteLangId);
-
-        $this->set('cartSummary', $this->cartObj->getCartFinancialSummary($this->siteLangId));
+        $this->set('cartSummary', $cartSummary);
         $this->set('fulfillmentType', $fulfillmentType);
         $this->set('addresses', $addresses);
         $this->set('products', $cartProducts);
@@ -2150,6 +2152,10 @@ class CheckoutController extends MyAppController
         $orderId = isset($_SESSION['order_id']) ? $_SESSION['order_id'] : '';
         $couponsList = DiscountCoupons::getValidCoupons($loggedUserId, $this->siteLangId, '', $orderId);
         $this->set('couponsList', $couponsList);
+        
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
 
         $PromoCouponsFrm = $this->getPromoCouponsForm($this->siteLangId);
         $this->set('PromoCouponsFrm', $PromoCouponsFrm);
