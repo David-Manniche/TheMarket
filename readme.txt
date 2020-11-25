@@ -461,7 +461,7 @@ Bugs:
 --------------TV-9.2.3.20201124-------------------------
     => 045578 If there is 100% discount and we have tax(avalara) on shipping only then there is some change in round off amount if we choose product price inclusive tax 
     => 045691 - when adding product tag with special character then tags not coming
-
+    => 045709 - When we place withdrawal request then details are missing in email. 
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
