@@ -459,6 +459,7 @@ Bugs:
     => 045670 - Export brand media files issue
     => 045533 - Discount coupons > Link with one shop >> Add products from different shops in cart >> Coupon should get applied to only that particular shops products and not on whole order amount .
 --------------TV-9.2.3.20201124-------------------------
+    => 045578 If there is 100% discount and we have tax(avalara) on shipping only then there is some change in round off amount if we choose product price inclusive tax 
 
 Enhancements:
     => Tax module upgrade

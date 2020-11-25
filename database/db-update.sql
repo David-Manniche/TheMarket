@@ -1210,3 +1210,4 @@ ALTER TABLE `tbl_coupon_to_brands`
 
 DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_Multi-vendor_Ecommerce_Marketplace_Solution';
 -- ---------------------TV-9.2.3.20201124------------------
+update `tbl_products` set `product_fulfillment_type` = 2 WHERE `product_fulfillment_type` = 0; 
