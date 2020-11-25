@@ -1926,7 +1926,7 @@ class Importexport extends ImportexportCommon
             }
 
             if (false === $errorInRow && count($prodDataArr)) {
-                $prodDataArr['product_added_on'] = date('Y-m-d H:i:s');;
+                $prodDataArr['product_added_on'] = date('Y-m-d H:i:s');
                 $prodDataArr['product_added_by_admin_id'] = (1 > $userId) ? applicationConstants::YES : applicationConstants::NO;
 
                 $shippro_shipprofile_id = 0;
@@ -1941,7 +1941,6 @@ class Importexport extends ImportexportCommon
                     $productId = $prodData['product_id'];
 
                     if ($sellerId) {
-                        $prodDataArr['product_featured'] = $prodData['product_featured'];
                         $prodDataArr['product_approved'] = $prodData['product_approved'];
                         unset($prodDataArr['product_added_on']);
                     }
@@ -1951,7 +1950,7 @@ class Importexport extends ImportexportCommon
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                         continue;
                     }
-
+                    
                     $where = array('smt' => 'product_id = ?', 'vals' => array($productId));
                     $this->db->updateFromArray(Product::DB_TBL, $prodDataArr, $where);
 

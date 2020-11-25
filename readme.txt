@@ -460,6 +460,7 @@ Bugs:
     => 045533 - Discount coupons > Link with one shop >> Add products from different shops in cart >> Coupon should get applied to only that particular shops products and not on whole order amount .
 --------------TV-9.2.3.20201124-------------------------
     => 045578 If there is 100% discount and we have tax(avalara) on shipping only then there is some change in round off amount if we choose product price inclusive tax 
+    => 045691 - when adding product tag with special character then tags not coming
 
 Enhancements:
     => Tax module upgrade
@@ -492,3 +493,5 @@ Notes:
        
        To Bind Products and Zones To Default Shipping Profile, Open <site-url>/admin/patch-update/update-shipping-profiles
        To Bind Zero Tax category as default if "Rest Of The World" country is not bind,Open <site-url>/admin/patch-update/update-tax-rules
+
+    Please replace tbl_countries, tbl_states from db_withdata.sql.
