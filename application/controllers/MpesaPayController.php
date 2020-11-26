@@ -158,6 +158,7 @@ class MpesaPayController extends PaymentController
                 $response = $this->plugin->getResponse();
                 if (array_key_exists('ResponseCode', $response) && 0 < $response['ResponseCode']) {
                     $error = ($response['ResultCode'] != $stkCallback['ResultCode']);
+                    $json = false == $error ? $json : json_encode(array_merge(['callback_response' => $post], ['verification_response' => $response]));
                 } else {
                     $error = true;
                     $json = json_encode(array_merge(['callback_response' => $post], ['verification_response' => $response]));
