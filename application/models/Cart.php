@@ -1641,6 +1641,7 @@ class Cart extends FatModel
         $this->SYSTEM_ARR['shopping_cart'] = array();
         unset($_SESSION['shopping_cart']["order_id"]);
         unset($_SESSION['wallet_recharge_cart']["order_id"]);
+        unset($_SESSION["order_id"]);
     }
 
     public static function setCartAttributes($userId = 0, $tempUserId = 0)
