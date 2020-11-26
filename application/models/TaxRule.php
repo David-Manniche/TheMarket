@@ -63,6 +63,7 @@ class TaxRule extends MyAppModel
     */
     public static function getRuleForm(int $langId): object
     {
+        
         $frm = new Form('frmTaxRule');
         $frm->addHiddenField('', 'taxcat_id', 0);
 
@@ -75,7 +76,8 @@ class TaxRule extends MyAppModel
         // $fld = $frm->addCheckBox(Labels::getLabel('LBL_Combined_Tax', $langId), 'taxrule_is_combined[]', 1);
 		
 		$taxStructures = TaxStructure::getAllAssoc($langId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Select_Tax', $langId), 'taxrule_taxstr_id[]', $taxStructures, '', array(), Labels::getLabel('LBL_Select_Tax', $langId));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Select_Tax', $langId), 'taxrule_taxstr_id[]', $taxStructures, '', array(), Labels::getLabel('LBL_Select_Tax', $langId));
+        $fld->requirements()->setRequired();
         /* ] */
 
         /* [ TAX CATEGORY RULE LOCATIONS FORM */
