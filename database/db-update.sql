@@ -1212,3 +1212,12 @@ DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_Multi-vendor_Ecommerce_
 
 
 update `tbl_products` set `product_fulfillment_type` = 2 WHERE `product_fulfillment_type` = 0; 
+
+
+-- --- Mpesa Payment Gateway--- --
+INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Mpesa', '13', 'Mpesa', '0', '9');
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
+("LBL_MPESA_ACCOUNT_REFERENCE_DESCRIPTION", 1, "This is an Alpha-Numeric parameter that is defined by your system as an Identifier of the transaction for CustomerPayBillOnline transaction type. Along with the business name, this value is also displayed to the customer in the STK Pin Prompt message. Maximum of 12 characters.", 1),
+("LBL_MSISDN_12_DIGITS_MOBILE_NUMBER", 1, "MSISDN (12 digits Mobile Number) e.g. 2547XXXXXXXX", 1)
+ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
+-- --- Mpesa Payment Gateway--- --
