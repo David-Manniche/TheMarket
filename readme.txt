@@ -465,7 +465,7 @@ Bugs:
     => 045725 - Admin >> collections >> layout images are not right for "Shop Layout1" and " Category Layout2" .
     => 045732 - Category image cropper not coming in admin side
     => 045747 - category layout 1 is not populating on front end
-
+    => 045769	Admin dashboard -subscription earning stats
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
