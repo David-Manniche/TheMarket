@@ -8242,15 +8242,17 @@ a.text-dark:hover, a.text-dark:focus {
   @media (max-width: 1199.98px) {
     .sublinks {
       flex-direction: column; } }
-  .sublinks .head > a {
+  .sublinks .head .level2 {
     color: #222;
-    text-transform: uppercase; }
-    .sublinks .head > a:hover {
+    text-transform: uppercase;
+    font-weight: 500; }
+    .sublinks .head .level2:hover {
       color: var(--brand-color); }
   .sublinks a {
     color: currentColor;
     display: inline-block;
-    font-weight: 300; }
+    font-weight: 300;
+    font-size: 0.8rem; }
   .sublinks > li {
     margin: 0;
     padding: 10px 0;
@@ -34320,6 +34322,23 @@ input.sp-input,
   .delivery-address .phone-txt, .delivery-address .time-txt {
     font-weight: 500;
     margin-top: 8px; }
+
+.product-list {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  .product-list li {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    border: solid 1px #dee2e6;
+    border-radius: 2px;
+    padding: 0.5rem; }
+    .product-list li .item__pic {
+      border: none; }
+    .product-list li .item__title {
+      white-space: normal;
+      margin-right: 22px; }
 
 .detail-page {
   position: relative; }

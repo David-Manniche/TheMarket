@@ -2060,3 +2060,24 @@ input.sp-input {
         margin-top: 8px;
     }
 }
+
+.product-list {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    li {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        border: $border;
+        border-radius: $radius2;
+        padding: 0.5rem;
+        .item__pic {
+            border: none;
+        }
+        .item__title {
+            white-space: normal;
+            margin-#{$end-direction}: 22px;
+        }
+    }
+}
