@@ -11546,8 +11546,7 @@ form.custom-form {
 
 .ft-products {
   display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(324px, 1fr)); }
+  grid-template-columns: repeat(auto-fill, minmax(335px, 1fr)); }
   @media (max-width: 767.98px) {
     .ft-products {
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }
@@ -14763,7 +14762,7 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
 
 .product-listing {
   display: grid;
-  grid-gap: 1rem; }
+  grid-gap: 0; }
   .product-listing[data-view="2"] {
     grid-template-columns: repeat(2, 1fr); }
   .product-listing[data-view="3"] {
@@ -14806,9 +14805,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   position: relative;
   text-align: center;
   background: #fff;
-  border-radius: 4px;
   overflow: hidden;
-  border: solid 1px #dee2e6;
+  outline: solid 1px #dee2e6;
   -webkit-transition: all 0.2s linear;
   transition: all 0.2s linear;
   -webkit-animation: slideRight 600ms ease both;
@@ -35596,6 +35594,7 @@ div.faqanswer {
 
 .collection-corner .products {
   border-color: #fff;
+  outline-color: #fff;
   margin: 0 1rem 1.5rem; }
   @media (max-width: 767.98px) {
     .collection-corner .products {
@@ -36153,11 +36152,12 @@ div.faqanswer {
 .sort-by select, .sort-by .custom-select {
   height: 30px; }
 
-.listing-products--list .product-listing[data-view="4"] {
-  grid-template-columns: repeat(2, 1fr); }
+.listing-products--list .product-listing[data-view="3"],
+.listing-products--list .product-listing[data-view="4"],
+.listing-products--list .product-listing[data-view="5"],
+.listing-products--list .product-listing[data-view="6"] {
+  grid-template-columns: repeat(3, 1fr); }
 .listing-products--list .products {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex; }
   .listing-products--list .products .products__title {
     margin: 0;
@@ -36165,8 +36165,7 @@ div.faqanswer {
     padding: 5px 0; }
   .listing-products--list .products .products__body {
     position: static;
-    width: 120px;
-    border-right: solid 1px #dee2e6; }
+    width: 120px; }
     .listing-products--list .products .products__body .products__img {
       margin-bottom: 0; }
   .listing-products--list .products .products__footer {

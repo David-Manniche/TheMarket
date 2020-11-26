@@ -40,7 +40,8 @@
 
 .product-listing {
     display: grid;
-    grid-gap: 1rem;
+    //grid-gap: 1rem;
+    grid-gap: 0;
     &[data-view="2"] {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -102,9 +103,10 @@
     position: relative;
     text-align: center;
     background: #fff;
-    border-radius: $radius4;
+    //border-radius: $radius4;
     overflow: hidden;
-    border: $border;
+    //border: $border;
+    outline: $border;
     -webkit-transition: all 0.2s linear;
     transition: all 0.2s linear;
     -webkit-animation: slideRight 600ms ease both;

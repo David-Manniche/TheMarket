@@ -10,6 +10,7 @@ class Cart extends FatModel
     private $fulfilmentType = 0;
     private $includeTax = true;
     private $pageType = 0;
+    private $discounts = 0;
 
     public const DB_TBL = 'tbl_user_cart';
     public const DB_TBL_PREFIX = 'usercart_';
@@ -84,6 +85,7 @@ class Cart extends FatModel
         }
         $this->cartCache = true;
         $this->pageType = $pageType;
+        $this->discounts = [];
     }
 
     public static function getCartKeyPrefixArr()
@@ -431,10 +433,10 @@ class Cart extends FatModel
                     }
                     /*]*/
                     if ($this->products[$key]['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
-                        if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {    
+                        if (UserAuthentication::isUserLogged() || UserAuthentication::isGuestUserLogged()) {
                             $addressBilling = new Address($this->getCartBillingAddress(), $siteLangId);
                             $this->products[$key]['billing_address'] = $addressBilling->getData(Address::TYPE_USER, UserAuthentication::getLoggedUserId());
-                        }    
+                        }
                         $shipingAddress = isset($this->products[$key]['billing_address']) ? $this->products[$key]['billing_address'] : '';
                     } else {
                         $shipingAddress = isset($this->products[$key]['shipping_address']) ? $this->products[$key]['shipping_address'] : '';
@@ -572,7 +574,7 @@ class Cart extends FatModel
 
         if ($siteLangId) {
             $prodSrch->joinBrands();
-            $prodSrch->addFld(array('IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(shop_name, shop_identifier) as shop_name','brand_id'));
+            $prodSrch->addFld(array('IFNULL(product_name, product_identifier) as product_name', 'IFNULL(selprod_title  ,IFNULL(product_name, product_identifier)) as selprod_title', 'IFNULL(brand_name, brand_identifier) as brand_name', 'IFNULL(shop_name, shop_identifier) as shop_name', 'brand_id'));
         }
 
         if (0 < $loggedUserId) {
@@ -696,9 +698,14 @@ class Cart extends FatModel
 
         $totalPrice = $sellerProductRow['theprice'] * $quantity;
         $taxableProdPrice = $sellerProductRow['theprice'] - $sellerProductRow['volume_discount'];
-
+        $discountedPrice = 0;
+        if (FatApp::getConfig('CONF_TAX_AFTER_DISOCUNT', FatUtility::VAR_INT, 0) && FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
+            if (!empty($this->discounts) && isset($this->discounts['discountedSelProdIds'][$sellerProductRow['selprod_id']])) {
+                $discountedPrice = $this->discounts['discountedSelProdIds'][$sellerProductRow['selprod_id']];
+                $taxableProdPrice = $taxableProdPrice - $discountedPrice;
+            }
+        }
         $taxObj = new Tax();
-
         $taxData = $taxObj->calculateTaxRates($sellerProductRow['product_id'], $taxableProdPrice, $sellerProductRow['selprod_user_id'], $siteLangId, $quantity, $extraData);
         // CommonHelper::printArray($taxData);
         if (false == $taxData['status'] && $taxData['msg'] != '') {
@@ -706,7 +713,6 @@ class Cart extends FatModel
         }
 
         $tax = $taxData['tax'];
-
         $roundingOff = 0;
         if (FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0)) {
             $originalTotalPrice = ($sellerProductRow['actualPrice'] * $quantity);
@@ -714,7 +720,12 @@ class Cart extends FatModel
             if (0 < $sellerProductRow['volume_discount_total'] && array_key_exists('rate', $taxData)) {
                 $thePriceincludingTax = $thePriceincludingTax + (($sellerProductRow['volume_discount_total'] * $taxData['rate']) / 100);
             }
-            if ($originalTotalPrice != $thePriceincludingTax) {
+
+            if (0 < $discountedPrice) {
+                $thePriceincludingTax = $thePriceincludingTax + (($discountedPrice * $taxData['rate']) / 100);
+            }
+
+            if ($originalTotalPrice != $thePriceincludingTax && 0 < $taxableProdPrice && 0 < $taxData['rate']) {
                 $roundingOff = round($originalTotalPrice - $thePriceincludingTax, 2);
             }
         } else {
@@ -1265,16 +1276,16 @@ class Cart extends FatModel
             $prodObj = new Product();
 
             /* binded product_ids are not in array, are in string, so converting the same to array[ */
-            
+
             if (!empty($couponInfo['grouped_coupon_products'])) {
                 $couponInfo['grouped_coupon_products'] = explode(",", $couponInfo['grouped_coupon_products']);
-            }else{
+            } else {
                 $couponInfo['grouped_coupon_products'] = array();
             }
-            
+
             if (!empty($couponInfo['grouped_coupon_users'])) {
                 $couponInfo['grouped_coupon_users'] = explode(",", $couponInfo['grouped_coupon_users']);
-            }else{
+            } else {
                 $couponInfo['grouped_coupon_users'] = array();
             }
 
@@ -1307,15 +1318,15 @@ class Cart extends FatModel
                      */
                 }
             }
-            /* ] */            
-            
+            /* ] */
+
             if (!empty($couponInfo['grouped_coupon_shops'])) {
                 $couponInfo['grouped_coupon_shops'] = explode(",", $couponInfo['grouped_coupon_shops']);
                 $productIdsArr = array();
                 foreach ($cartProducts as $cartProduct) {
                     if (in_array($cartProduct['shop_id'], $couponInfo['grouped_coupon_shops'])) {
                         $productIdsArr[] = $cartProduct['product_id'];
-                    }                    
+                    }
                 }
                 if (!empty($productIdsArr)) {
                     $couponInfo['grouped_coupon_products'] = array_merge($couponInfo['grouped_coupon_products'], $productIdsArr);
@@ -1323,20 +1334,20 @@ class Cart extends FatModel
             }
             if (!empty($couponInfo['grouped_coupon_brands'])) {
                 $couponInfo['grouped_coupon_brands'] = explode(",", $couponInfo['grouped_coupon_brands']);
-               
+
                 $productIdsArr = array();
-                foreach ($cartProducts as $cartProduct) {  
-                        if (in_array($cartProduct['brand_id'], $couponInfo['grouped_coupon_brands'])) {
-                            $productIdsArr[] = $cartProduct['product_id'];
-                        }
+                foreach ($cartProducts as $cartProduct) {
+                    if (in_array($cartProduct['brand_id'], $couponInfo['grouped_coupon_brands'])) {
+                        $productIdsArr[] = $cartProduct['product_id'];
+                    }
                 }
                 if (!empty($productIdsArr)) {
                     $couponInfo['grouped_coupon_products'] = array_merge($couponInfo['grouped_coupon_products'], $productIdsArr);
                 }
-            }         
-            
-            if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id ,$couponInfo['grouped_coupon_users'])) OR empty($couponInfo['grouped_coupon_products']) ) {
-                $subTotal = $cartSubTotal;            
+            }
+
+            if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id, $couponInfo['grouped_coupon_users'])) or empty($couponInfo['grouped_coupon_products'])) {
+                $subTotal = $cartSubTotal;
             } else {
                 $subTotal = 0;
                 foreach ($cartProducts as $cartProduct) {
@@ -1350,7 +1361,7 @@ class Cart extends FatModel
                         }
                     }
                 }
-            } 
+            }
 
             if ($couponInfo['coupon_discount_in_percent'] == applicationConstants::FLAT) {
                 $couponInfo['coupon_discount_value'] = min($couponInfo['coupon_discount_value'], $subTotal);
@@ -1360,7 +1371,7 @@ class Cart extends FatModel
             foreach ($cartProducts as $cartProduct) {
                 $discount = 0;
                 $cartVolumeDiscount += $cartProduct['volume_discount_total'];
-                if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id ,$couponInfo['grouped_coupon_users'])) || empty($couponInfo['grouped_coupon_products'])) {
+                if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id, $couponInfo['grouped_coupon_users'])) || empty($couponInfo['grouped_coupon_products'])) {
                     $status = true;
                 } else {
                     if ($cartProduct['is_batch']) {
@@ -1406,7 +1417,7 @@ class Cart extends FatModel
             /*[ Calculate discounts for each Seller Products*/
             $discountedSelProdIds = array();
             $discountedProdGroupIds = array();
-            if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id ,$couponInfo['grouped_coupon_users'])) OR empty($couponInfo['grouped_coupon_products'])) {
+            if ((empty($couponInfo['grouped_coupon_products']) && in_array($this->cart_user_id, $couponInfo['grouped_coupon_users'])) or empty($couponInfo['grouped_coupon_products'])) {
                 foreach ($cartProducts as $cartProduct) {
                     if ($cartProduct['is_batch']) {
                         /* $totalSelProdDiscount = round(($discountTotal*$cartProduct['prodgroup_total'])/$subTotal,2);
@@ -1475,6 +1486,7 @@ class Cart extends FatModel
         if (empty($couponData)) {
             return false;
         }
+        $this->discounts = $couponData;
         return $couponData;
     }
 

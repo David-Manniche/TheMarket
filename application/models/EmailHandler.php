@@ -1114,9 +1114,9 @@ class EmailHandler extends FatModel
                     }
                      * 
                      */
-                    
+
                     $sellerInfo = User::getAttributesById($val['op_selprod_user_id'], array('user_dial_code', 'user_phone'));
-                    $sellerPhone = !empty($sellerInfo['user_phone']) ? $sellerInfo['user_dial_code'] . $sellerInfo['user_phone'] : '';                    
+                    $sellerPhone = !empty($sellerInfo['user_phone']) ? $sellerInfo['user_dial_code'] . $sellerInfo['user_phone'] : '';
                     $this->sendSms($tpl, $sellerPhone, $arrReplacements, $langId);
                 }
                 $notiArrReplacements = array(
@@ -1355,12 +1355,11 @@ class EmailHandler extends FatModel
         $url = '<a href="' . $url . '">' . Labels::getLabel('Msg_click_here', $langId) . '</a>';
 
         $statusArr = Transactions::getWithdrawlStatusArr($langId);
-
         $tpl = new FatTemplate('', '');
         $tpl->set('siteLangId', $langId);
         $tpl->set('data', $withdrawalRequestData);
         $withdrawalDetailsTableFormatHtml = $tpl->render(false, false, '_partial/emails/withdrawal-request-details-email.php', true);
-
+        
         $arrReplacements = array(
             '{request_id}' => $formattedRequestValue,
             '{username}' => $withdrawalRequestData['user_username'],
