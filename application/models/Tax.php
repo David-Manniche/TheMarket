@@ -354,6 +354,7 @@ class Tax extends MyAppModel
                 'status' => false,
                 'msg' => $message,
                 'tax' => $tax,
+                'rate' => 0,
                 'optionsSum' => $tax,
                 'taxCode' => '',
                 'options' => []
@@ -397,6 +398,7 @@ class Tax extends MyAppModel
                     'status' => false,
                     'msg' => $error,
                     'tax' => $tax,
+                    'rate' => 0,
                     'optionsSum' => $tax,
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
@@ -442,6 +444,7 @@ class Tax extends MyAppModel
                     'status' => false,
                     'msg' => $taxApi->getError(),
                     'tax' => $tax,
+                    'rate' => 0,
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
                 ];
@@ -456,6 +459,7 @@ class Tax extends MyAppModel
                     'status' => false,
                     'msg' => $taxRates['msg'],
                     'tax' => $tax,
+                    'rate' => 0,
                     'optionsSum' => $tax,
                     'taxCode' => $taxCategoryRow['taxcat_code'],
                     'options' => []
@@ -500,6 +504,7 @@ class Tax extends MyAppModel
                 'status' => false,
                 'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
                 'tax' => $tax,
+                'rate' => 0,
                 'optionsSum' => $tax,
                 'taxCode' => '',
                 'options' => []

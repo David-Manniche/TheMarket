@@ -458,8 +458,11 @@ Bugs:
     => 045413 - android-under recommended products> product image listing is jittery
     => 045670 - Export brand media files issue
     => 045533 - Discount coupons > Link with one shop >> Add products from different shops in cart >> Coupon should get applied to only that particular shops products and not on whole order amount .
+--------------TV-9.2.3.20201124-------------------------
+    => 045578 If there is 100% discount and we have tax(avalara) on shipping only then there is some change in round off amount if we choose product price inclusive tax 
     => 045691 - when adding product tag with special character then tags not coming
-
+    => 045709 - When we place withdrawal request then details are missing in email. 
+    => 045725 - Admin >> collections >> layout images are not right for "Shop Layout1" and " Category Layout2" .
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
