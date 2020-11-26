@@ -71,12 +71,15 @@ class MpesaPayController extends PaymentController
             $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
             $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
         }
-
-        $userObj = new User($this->userId);
-        $userData = $userObj->getUserInfo(['user_dial_code', 'user_phone']);
-        $dialCode = !empty($userData["user_dial_code"]) ? FatUtility::int($userData["user_dial_code"]) : '';
-        $phone = !empty($userData["user_phone"]) ? FatUtility::int($userData["user_phone"]) : '';
-        $customerPhone = $dialCode . $phone;
+        
+        $customerPhone =  '';
+        if (0 < $this->userId) {
+            $userObj = new User($this->userId);
+            $userData = $userObj->getUserInfo(['user_dial_code', 'user_phone']);
+            $dialCode = !empty($userData["user_dial_code"]) ? FatUtility::int($userData["user_dial_code"]) : '';
+            $phone = !empty($userData["user_phone"]) ? FatUtility::int($userData["user_phone"]) : '';
+            $customerPhone = $dialCode . $phone;
+        }
 
         $frm = $this->getPaymentForm($orderId);
         if (!empty($customerPhone)) {
@@ -125,7 +128,13 @@ class MpesaPayController extends PaymentController
         }
         $this->_template->render(true, false);
     }
-
+    
+    /**
+     * callback
+     *
+     * @param  string $orderId
+     * @return void
+     */
     public function callback(string $orderId)
     {
         $json = file_get_contents('php://input');
