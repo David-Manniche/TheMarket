@@ -388,6 +388,9 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
 
                                 $fld = $frm->getField('opship_tracking_url');
                                 $fld->developerTags['col'] = 6;
+                                
+                                $fld = $frm->getField('oshistory_courier');
+                                $fld->developerTags['col'] = 6;
                             }
 
                             $fldBtn = $frm->getField('btn_submit');

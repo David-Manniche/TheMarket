@@ -851,12 +851,21 @@ class SellerController extends SellerBaseController
         if (in_array($orderDetail["op_status_id"], $processingStatuses) && in_array($post["op_status_id"], $processingStatuses)) {
             $trackingCourierCode = '';
             if ($post["op_status_id"] == OrderStatus::ORDER_SHIPPED) {
-                if (array_key_exists('manual_shipping', $post) && 0 < $post['manual_shipping'] && array_key_exists('opship_tracking_url', $post)) {
+                //if (array_key_exists('manual_shipping', $post) && 0 < $post['manual_shipping'] && array_key_exists('opship_tracking_url', $post)) {
+                if (array_key_exists('manual_shipping', $post) && 0 < $post['manual_shipping']) {
                     $updateData = [
                         'opship_op_id' => $post['op_id'],
                         "opship_tracking_number" => $post['tracking_number'],
-                        "opship_tracking_url" => $post['opship_tracking_url'],
+                        //"opship_tracking_url" => $post['opship_tracking_url'],
                     ];
+                    
+                    if(array_key_exists('opship_tracking_url', $post)){
+                        $updateData['opship_tracking_url'] =  $post['opship_tracking_url'];
+                    }
+                    if(array_key_exists('oshistory_courier', $post)){
+                        $trackingCourierCode = $post['oshistory_courier'];
+                    }
+                    
                     if (!FatApp::getDb()->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
                         LibHelper::dieJsonError(FatApp::getDb()->getError());
                     }
@@ -3747,17 +3756,37 @@ class SellerController extends SellerBaseController
 
             $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'tracking_number', $trackingReqObj);
             $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'tracking_number', $trackingUnReqObj);
+            
+            $plugin = new Plugin();
+            $afterShipData = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
+            if($afterShipData != false){ 
+                $shipmentTracking = new ShipmentTracking(); 
+                $shipmentTracking->init($this->siteLangId);
+                $shipmentTracking->getTrackingCouriers();
+                $trackCarriers = $shipmentTracking->getResponse();
+                
+                $trackCarrierFld = $frm->addSelectBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'oshistory_courier', $trackCarriers, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
+               
+                $trackCarrierFldUnReqObj = new FormFieldRequirement('oshistory_courier', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
+                $trackCarrierFldUnReqObj->setRequired(false);
 
-            $trackUrlFld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'opship_tracking_url', '', $attr);
-            $trackUrlFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->siteLangId) . '</small>';
+                $trackCarrierFldReqObj = new FormFieldRequirement('oshistory_courier', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
+                $trackCarrierFldReqObj->setRequired(true);
 
-            $trackingUrlUnReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
-            $trackingUrlUnReqObj->setRequired(false);
-            $trackingurlReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
-            $trackingurlReqObj->setRequired(true);
+                $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'oshistory_courier', $trackCarrierFldReqObj);
+                $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'oshistory_courier', $trackCarrierFldUnReqObj);        
+            }else{ 
+                $trackUrlFld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'opship_tracking_url', '', $attr);
+                $trackUrlFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->siteLangId) . '</small>';
 
-            $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'opship_tracking_url', $trackingurlReqObj);
-            $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'opship_tracking_url', $trackingUrlUnReqObj);
+                $trackingUrlUnReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
+                $trackingUrlUnReqObj->setRequired(false);
+                $trackingurlReqObj = new FormFieldRequirement('opship_tracking_url', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
+                $trackingurlReqObj->setRequired(true);
+
+                $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'opship_tracking_url', $trackingurlReqObj);
+                $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'opship_tracking_url', $trackingUrlUnReqObj);
+            }            
         }
 
         $frm->addHiddenField('', 'op_id', 0);
