@@ -416,13 +416,13 @@ class Statistics extends MyAppModel
                 break;
 
             case 'total_subscription_earnings':
-                $sql = "SELECT 1 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE DATE(ossubs_till_date)=DATE(NOW())
+                $sql = "SELECT 1 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE DATE(ossubs_from_date)=DATE(NOW())
 				UNION ALL
-				SELECT 7 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub  WHERE YEARWEEK(ossubs_till_date) = YEARWEEK(NOW())
+				SELECT 7 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub  WHERE YEARWEEK(ossubs_from_date) = YEARWEEK(NOW())
 				UNION ALL
-				SELECT 30 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE MONTH(ossubs_till_date)=MONTH(NOW())
+				SELECT 30 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE MONTH(ossubs_from_date)=MONTH(NOW())
 				UNION ALL
-				SELECT 90 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE ossubs_till_date>date_sub(date_add(date_add(LAST_DAY(now()),interval 1 DAY),interval -1 MONTH), INTERVAL 3 MONTH)
+				SELECT 90 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE ossubs_from_date>date_sub(date_add(date_add(LAST_DAY(now()),interval 1 DAY),interval -1 MONTH), INTERVAL 3 MONTH)
 				UNION ALL
 				SELECT -1 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub ";
                 $rs = $this->db->query($sql);
