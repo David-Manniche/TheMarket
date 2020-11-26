@@ -94,7 +94,7 @@ if (0 < $shippingTotal) {
     );
 }
 
-if (array_key_exists('roundingOff', $cartSummary) && $cartSummary['roundingOff'] != 0) {
+if (array_key_exists('roundingOff', $cartSummary) && $cartSummary['roundingOff'] != 0 && !isset($cartPage)) {
     $priceDetail['priceDetail'][] = array(
         'key' => (0 < $cartSummary['roundingOff']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId),
         'value' => CommonHelper::displayMoneyFormat($cartSummary['roundingOff'])
