@@ -131,7 +131,7 @@ class Mpesa extends PaymentMethodBase
      */
     public function callbackUrl(string $orderId): string
     {
-        return UrlHelper::generateFullUrl(self::KEY_NAME, "callback", [$orderId]);
+        return UrlHelper::generateFullUrl(self::KEY_NAME . 'Pay', "callback", [$orderId]);
     }
 
     /**
@@ -204,7 +204,7 @@ class Mpesa extends PaymentMethodBase
             'AccountReference' => $this->settings['account_reference'],
             'TransactionDesc' => $transactionDesc
         );
-
+        
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->STKPushSimulationUrl());
         curl_setopt($curl, CURLOPT_HTTPHEADER, [

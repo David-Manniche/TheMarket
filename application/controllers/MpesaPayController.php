@@ -1,7 +1,4 @@
 <?php
-
-use function GuzzleHttp\json_decode;
-
 /**
  * MpesaPayController - M-Pesa services in 10 countries: Albania, the Democratic Republic of Congo, Egypt, Ghana, India, Kenya, Lesotho, Mozambique, Romania and Tanzania. 
  */
