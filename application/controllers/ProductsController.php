@@ -15,7 +15,8 @@ class ProductsController extends MyAppController
 
     public function search()
     {
-        $this->productsData(__FUNCTION__, true);
+        $post = (MOBILE_APP_API_CALL) ? FatApp::getPostedData() : [];
+        $this->productsData(__FUNCTION__, true, $post);
     }
 
     public function featured()
@@ -23,9 +24,16 @@ class ProductsController extends MyAppController
         $this->productsData(__FUNCTION__);
     }
 
-    private function productsData($method, $validateBrand = false)
+    private function productsData($method, $validateBrand = false, $post = [])
     {
-        $get = Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
+        $get = (!empty($post)) ? $post : Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
+        
+        $postBrands = [];
+        if (MOBILE_APP_API_CALL) {
+            $postBrands = FatApp::getPostedData('brand', FatUtility::VAR_STRING, '[]');
+            $postBrands = json_decode($postBrands, true);
+        }
+
         $includeKeywordRelevancy = false;
         $keyword = '';
         if (array_key_exists('keyword', $get)) {
@@ -48,14 +56,14 @@ class ProductsController extends MyAppController
             $prodSrchObj->setPageSize(1);
             $prodSrchObj->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name'));
             $prodSrchObj->doNotCalculateRecords();
-            $prodSrchObj->addHaving('brand_name', 'like', $get['keyword']);
+            $prodSrchObj->addHaving('brand_name', 'like', trim($get['keyword']));
             $brandRs = $prodSrchObj->getResultSet();
             $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
             if (!empty($brandArr)) {
-                $get['brand'] = array_keys($brandArr);
+                $brands = array_keys($brandArr);
+                $get['brand'] = !empty($postBrands) ? array_merge($brands, $postBrands) : $brands;
             }
         }
-
         $frm = $this->getProductSearchForm($includeKeywordRelevancy);
 
         $get['join_price'] = 1;
@@ -99,12 +107,15 @@ class ProductsController extends MyAppController
             $searchData = array('keyword' => $get['keyword']);
             $searchItemObj->addSearchResult($searchData);
         }
-
-        $common = array(
-            'frmProductSearch' => $frm,
-            'recordId' => 0,
-            'showBreadcrumb' => false
-        );
+        
+        $common = [];
+        if (false === MOBILE_APP_API_CALL) {
+            $common = array(
+                'frmProductSearch' => $frm,
+                'recordId' => 0,
+                'showBreadcrumb' => false
+            );
+        }
 
         $data = array_merge($data, $common, $arr);
 
@@ -119,7 +130,7 @@ class ProductsController extends MyAppController
             exit;
         }
         $this->set('data', $data);
-
+        
         $this->includeProductPageJsCss();
         $this->_template->addJs('js/slick.min.js');
         $this->_template->render(true, true, 'products/index.php');
@@ -552,7 +563,7 @@ class ProductsController extends MyAppController
         if ($product['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $fulfillmentType = Shipping::FULFILMENT_ALL;
         }
-        
+
         $this->set('fulfillmentType', $fulfillmentType);
         $this->set('codEnabled', $codEnabled);
         $this->set('shippingRates', $shippingRates);
@@ -1119,7 +1130,7 @@ class ProductsController extends MyAppController
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError(Labels::getLabel('MSG_PLEASE_ENTER_ATLEAST_3_CHARACTERS', $this->siteLangId));
             }
-            
+
             $this->set('keyword', $keyword);
             $this->set('recentSearchArr', $recentSearchArr);
             $html = '';

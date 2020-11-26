@@ -1441,7 +1441,7 @@ END,   special_price_found ) as special_price_found'
 
         if (array_key_exists('brand', $criteria)) {
             if (!empty($criteria['brand'])) {
-                if (true === MOBILE_APP_API_CALL) {
+                if (true === MOBILE_APP_API_CALL && !is_array($criteria['brand'])) {
                     $criteria['brand'] = json_decode($criteria['brand'], true);
                 }
                 $srch->addBrandCondition($criteria['brand']);
