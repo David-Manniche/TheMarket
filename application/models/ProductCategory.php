@@ -531,6 +531,9 @@ class ProductCategory extends MyAppModel
         if ($ignoreCategoryId > 0) {
             $srch->addHaving('prodcat_code', 'NOT LIKE', '%' . str_pad($ignoreCategoryId, 6, '0', STR_PAD_LEFT) . '%');
         }
+        
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
         /* echo $srch->getQuery(); die; */
         $rs = $srch->getResultSet();
 

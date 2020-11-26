@@ -76,7 +76,7 @@ if(count($headerNavigation)) {
                                                 $subCatUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']));
                                                 $subCatOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
                                                 ?>
-                                            <li class="head"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
+                                            <li class="head"><a class="level2" data-org-url="<?php echo $subCatOrgUrl; ?>"
                                                     href="<?php echo $subCatUrl;?>"><?php echo $children['prodcat_name'];?></a>
                                                 <?php if (isset($children['children']) && count($children['children'])>0) { ?>
                                                 <ul>
@@ -154,7 +154,7 @@ if(count($headerNavigation)) {
                                                 $subCatUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']));
                                                 $subCatOrgUrl = UrlHelper::generateUrl('category', 'view', array($children['prodcat_id']), '', null, false, $getOrgUrl);
                                                 ?>
-                                            <li class="head"><a data-org-url="<?php echo $subCatOrgUrl; ?>"
+                                            <li class="head"><a class="level2" data-org-url="<?php echo $subCatOrgUrl; ?>"
                                                     href="<?php echo $subCatUrl;?>"><?php echo $children['prodcat_name'];?></a>
                                                 <?php if (isset($children['children']) && count($children['children'])>0) { ?>
                                                 <ul>

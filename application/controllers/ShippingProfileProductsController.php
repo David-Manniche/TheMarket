@@ -16,7 +16,8 @@ class ShippingProfileProductsController extends SellerBaseController
     
     public function search($profileId)
     {
-        $pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        // $pageSize = FatApp::getConfig('conf_page_size', FatUtility::VAR_INT, 10);
+        $pageSize = 12;
         $post = FatApp::getPostedData();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         
@@ -110,6 +111,8 @@ class ShippingProfileProductsController extends SellerBaseController
         $srch->joinProductShippedBySeller($this->userParentId);
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
         $srch->joinTable(UpcCode::DB_TBL, 'LEFT OUTER JOIN', 'upc_product_id = product_id', 'upc');
+        //$srch->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'product_id = sppro.shippro_product_id', 'sppro');
+        
        
         if (User::canAddCustomProduct()) {
             $srch->addDirectCondition('((product_seller_id = 0 and psbs.psbs_user_id = ' . $this->userParentId . ') OR product_seller_id = ' . $this->userParentId . ')');
@@ -119,7 +122,8 @@ class ShippingProfileProductsController extends SellerBaseController
         }
         
         $srch->addCondition('product_deleted', '=', applicationConstants::NO);
-
+        //$srch->addDirectCondition('sppro.shippro_product_id is null');
+        
         $keyword = FatApp::getPostedData('keyword', null, '');
         if (!empty($keyword)) {
             $cnd = $srch->addCondition('product_name', 'like', '%' . $keyword . '%');

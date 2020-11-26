@@ -305,9 +305,10 @@
         }
     }
     .head {
-        >a {
+        .level2 {
             color: #222;
             text-transform: uppercase;
+            font-weight: 500;
             &:hover {
                 color: $brand-color;
             }
@@ -317,6 +318,7 @@
         color: currentColor;
         display: inline-block;
         font-weight: 300;
+        font-size: 0.8rem;
     }
     >li {
         margin: 0;

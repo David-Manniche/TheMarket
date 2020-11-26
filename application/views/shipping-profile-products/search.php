@@ -1,51 +1,31 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 if (!empty($productsData)) { ?>
-<div class="js-scrollable table-wrap">
-<?php } ?>
-<?php $arr_flds = array(
-    'listserial' => Labels::getLabel('LBL_#', $siteLangId),
-    'image' => '',
-    'product_name' => Labels::getLabel('LBL_Name', $siteLangId),
-    'actions' => ''
-);
+ 
+    <ul class="product-list">
+        <?php foreach ($productsData as $sn => $row) { ?>
+        <li>
+            <div class="item">
+                <figure class="item__pic">
+                    <a href="javascript:void(0)"><img class="" src="<?php echo  UrlHelper::generateUrl(" Image", "product" ,
+                            array($row['product_id'], "SMALL" , 0, 0, 1)); ?>" alt="" width="50"></a>
+                </figure>
+                <div class="item__description">
+                    <div class="item__title">
+                        <?php echo $row['product_name']?>
+                    </div>
+                </div>
+            </div>
+            <?php if ($canEdit && isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1) { ?>
+            <a class="close-layer close-layer--sm" href="javascript:void(0)" onclick="removeProductFromProfile(<?php echo $row['product_id']; ?>)"
+                title="<?php echo Labels::getLabel('LBL_Remove_Product_from_profile', $siteLangId);?>"></a>
+            <?php }?>
+        </li>
+        <?php }?>
+    </ul>
+ 
+<?php }?>
+<?php 
 
-$tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-justified'));
-$th = $tbl->appendElement('thead')->appendElement('tr', array('class' => ''));
-foreach ($arr_flds as $key => $val) {
-    $th->appendElement('th', array(), $val);
-}
-if ($page == 1) {
-    $sr_no = 0;
-} else {
-    $sr_no = ($page - 1) * $pageSize;
-}
-foreach ($productsData as $sn => $row) {
-    $sr_no++;
-    $tr = $tbl->appendElement('tr', array());
-
-    foreach ($arr_flds as $key => $val) {
-        $td = $tr->appendElement('td');
-        switch ($key) {
-            case 'listserial':
-                $td->appendElement('plaintext', array(), $sr_no, true);
-                break;
-            case 'image':
-                $imgData = '<figure class="item__pic"><a href="javascript:void(0)"><img class="mr-2" src="' . UrlHelper::generateUrl("Image", "product", array($row['product_id'], "SMALL", 0, 0, 1)) . '" alt="" width="50"></a></figure>';
-                $td->appendElement('plaintext', array(), $imgData, true);
-                break;
-            case 'actions':
-                if ($canEdit && isset($profileData['shipprofile_default']) && $profileData['shipprofile_default'] != 1) {
-                    $ul = $td->appendElement("ul", array('class' => 'actions'), '', true);
-                    $li = $ul->appendElement("li");
-                    $li->appendElement('a', array('href' => 'javascript:void(0)', 'onClick' => 'removeProductFromProfile(' . $row['product_id'] . ')', 'title' => Labels::getLabel('LBL_Remove_Product_from_profile', $siteLangId), true), '<i class="fa fa-trash"></i>', true);
-                }
-                break;
-            default:
-                $td->appendElement('plaintext', array(), $row[$key], true);
-                break;
-        }
-    }
-}
 if (empty($productsData)) {
     //echo $tbl->getHtml();
     $message = Labels::getLabel('LBL_No_Records_Found', $siteLangId);
@@ -55,9 +35,9 @@ if (empty($productsData)) {
     $frm->setFormTagAttribute('class', 'web_form last_td_nowrap');
     $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadListProduct); return(false);');
     echo $frm->getFormTag();
-    echo $tbl->getHtml(); ?>
+    ?>
     </form>
-	</div>
+</div>
 <?php $postedData['page'] = $page;
 	echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmProductSearchPaging'));
 	$pagingArr = array('pageCount' => $pageCount, 'page' => $page, 'recordCount' => $recordCount, 'siteLangId' => $siteLangId);
