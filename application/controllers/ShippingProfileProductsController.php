@@ -106,7 +106,7 @@ class ShippingProfileProductsController extends SellerBaseController
     {
         $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
         $post = FatApp::getPostedData();
-        
+        $shipProfileId = FatApp::getPostedData('shipProfileId', FatUtility::VAR_INT, 0);        
         $srch = new ProductSearch($this->siteLangId, null, null, false, false);
         $srch->joinProductShippedBySeller($this->userParentId);
         $srch->joinTable(AttributeGroup::DB_TBL, 'LEFT OUTER JOIN', 'product_attrgrp_id = attrgrp_id', 'attrgrp');
@@ -132,9 +132,15 @@ class ShippingProfileProductsController extends SellerBaseController
             $cnd->attachCondition('product_model', 'like', '%' . $keyword . '%');
             $cnd->attachCondition('upc_code', 'like', '%' . $keyword . '%');
             $cnd->attachCondition('product_upc', 'like', '%' . $keyword . '%');
-        }
+        }        
+    
+        if(0 < $shipProfileId ){            
+            $srch->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'p.product_id = sppro.shippro_product_id and shippro_user_id = '. $this->userParentId, 'sppro');
+            $srch->addCondition(ShippingProfileProduct::DB_TBL_PREFIX . 'shipprofile_id', '!=', $shipProfileId);
+        }  
 
         $srch->addGroupBy('product_id');
+        //echo $srch->getQuery();
         $srch->addMultipleFields(
             array(
             'product_id as id', 'IFNULL(product_name, product_identifier) as product_name', 'product_identifier')

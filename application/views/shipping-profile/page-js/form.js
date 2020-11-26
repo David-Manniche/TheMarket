@@ -387,13 +387,14 @@ $(document).ready(function () {
 $(document).on('keyup', "input[name='product_name']", function () {
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
+    var shipProfileId = $("#" + parentForm + " input[name='shippro_shipprofile_id']").val();
     if ('' != currObj.val()) {
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('ShippingProfileProducts', 'autoCompleteProducts'),
-                    data: { keyword: request, fIsAjax: 1, keyword: currObj.val() },
+                    data: { keyword: request, fIsAjax: 1, keyword: currObj.val(), shipProfileId: shipProfileId },
                     dataType: 'json',
                     type: 'post',
                     success: function (json) {
