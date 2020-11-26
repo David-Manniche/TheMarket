@@ -537,8 +537,7 @@ class HomeController extends MyAppController
         }
         $collections = array();
 
-        $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);
-        $productCatSrchObj->doNotCalculateRecords();
+        $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);        
         $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));
 
         $collectionObj = new CollectionSearch();
@@ -675,6 +674,7 @@ class HomeController extends MyAppController
                         while ($catData = $db->fetch($rs)) {
                             /* fetch Sub-Categories[ */
                             $subCategorySrch = clone $productCatSrchObj;
+                            $subCategorySrch->doNotCalculateRecords();
                             $subCategorySrch->joinTable('(' . $tempObj->getQuery() . ')', 'INNER JOIN', 'prodcat_id = ctr.ctr_record_id', 'ctr');
                             $subCategorySrch->addCondition('prodcat_id', '=', $catData['prodcat_id']);
                             $subCategorySrch->addCondition('prodcat_parent', '=', $catData['prodcat_id']);
