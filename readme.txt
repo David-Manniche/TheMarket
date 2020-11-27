@@ -467,7 +467,7 @@ Bugs:
     => 045747 - category layout 1 is not populating on front end
     => 045709 - When we place withdrawal request then details are missing in email.
     => 045769	Admin dashboard -subscription earning stats
-    => 045799 - Import export issues
+    => 045799 - Import export issues catalog media for seller products from admin
 
 Enhancements:
     => Tax module upgrade
