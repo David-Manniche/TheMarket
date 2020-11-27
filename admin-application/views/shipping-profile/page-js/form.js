@@ -369,7 +369,8 @@ $(document).ready(function () {
 
 $(document).on('keyup', "input[name='product_name']", function () {
     var currObj = $(this);
-    var parentForm = currObj.closest('form').attr('id');
+    var parentForm = currObj.closest('form').attr('id');    
+    var shipProfileId = $("#" + parentForm + " input[name='shippro_shipprofile_id']").val();
     if ('' != currObj.val()) {
         currObj.siblings('ul.dropdown-menu').remove();
         currObj.autocomplete({
@@ -379,7 +380,7 @@ $(document).on('keyup', "input[name='product_name']", function () {
             'source': function (request, response) {
                 $.ajax({
                     url: fcom.makeUrl('shippingProfileProducts', 'autoComplete'),
-                    data: { fIsAjax: 1, keyword: currObj.val() },
+                    data: { fIsAjax: 1, keyword: currObj.val(), shipProfileId: shipProfileId },
                     dataType: 'json',
                     type: 'post',
                     success: function (json) {
@@ -389,8 +390,7 @@ $(document).on('keyup', "input[name='product_name']", function () {
                     },
                 });
             },
-            select: function (event, ui) {
-                console.log(ui);
+            select: function (event, ui) {             
                 $("#" + parentForm + " input[name='shippro_product_id']").val(ui.item.id);
             }
         });

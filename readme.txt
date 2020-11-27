@@ -466,7 +466,8 @@ Bugs:
     => 045732 - Category image cropper not coming in admin side
     => 045747 - category layout 1 is not populating on front end
     => 045709 - When we place withdrawal request then details are missing in email.
-
+    => 045769	Admin dashboard -subscription earning stats
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

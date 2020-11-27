@@ -44,7 +44,8 @@ class ShippingProfileProductsController extends AdminBaseController
     public function autoComplete()
     {
         $post = FatApp::getPostedData();
-        $srch = new ProductSearch($this->adminLangId);
+        $shipProfileId = FatApp::getPostedData('shipProfileId', FatUtility::VAR_INT, 0);
+        $srch = new ProductSearch($this->adminLangId);        
         $srch->addOrder('product_name');
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
@@ -55,7 +56,13 @@ class ShippingProfileProductsController extends AdminBaseController
         $srch->addCondition(Product::DB_TBL_PREFIX . 'deleted', '=', applicationConstants::NO);
         
         $srch->addMultipleFields(array('product_id as id', 'product_name','product_identifier'));
-
+        
+        if(0 < $shipProfileId ){            
+            $srch->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'p.product_id = sppro.shippro_product_id and sppro.shippro_user_id = '.applicationConstants::NO, 'sppro');
+            $cnd = $srch->addCondition(ShippingProfileProduct::DB_TBL_PREFIX . 'shipprofile_id', '!=', $shipProfileId);
+            
+        }          
+        $srch->addGroupBy('product_id');
         $db = FatApp::getDb();
         $rs = $srch->getResultSet();
 

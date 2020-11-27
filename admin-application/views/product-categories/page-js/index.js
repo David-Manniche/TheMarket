@@ -95,7 +95,7 @@ $(document).ready(function(){
                 searchProductCategories();
                 getTotalBlock();
 			} else {
-				fcom.displa(ans.msg);
+				fcom.displayErrorMessage(ans.msg);
 			}
 		});
 		$.systemMessage.close();
