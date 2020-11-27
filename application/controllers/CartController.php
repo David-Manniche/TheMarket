@@ -129,7 +129,10 @@ class CartController extends MyAppController
                     $address = new Address($shippingAddressId);
                     $shippingddressDetail = $address->getData(Address::TYPE_USER, $loggedUserId);
                 }
-
+                
+                $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id'], Cart::PAGE_TYPE_CART);
+                $cartObj->setFulfilmentType($fulfilmentType);
+                $cartObj->setCartCheckoutType($fulfilmentType);
                 $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
 
                 $this->set('cartSummary', $cartSummary);
@@ -497,6 +500,7 @@ class CartController extends MyAppController
         $this->set('msg', Labels::getLabel("MSG_Item_removed_from_cart", $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
             $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
+            $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id'], Cart::PAGE_TYPE_CART);
             $cartObj->setFulfilmentType($fulfilmentType);
             $cartObj->setCartCheckoutType($fulfilmentType);
             $productsArr = $cartObj->getProducts($this->siteLangId);
