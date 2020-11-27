@@ -675,13 +675,14 @@ class HomeController extends MyAppController
                             /* fetch Sub-Categories[ */
                             $subCategorySrch = clone $productCatSrchObj;
                             $subCategorySrch->doNotCalculateRecords();
-                            $subCategorySrch->joinTable('(' . $tempObj->getQuery() . ')', 'INNER JOIN', 'prodcat_id = ctr.ctr_record_id', 'ctr');
-                            $subCategorySrch->addCondition('prodcat_id', '=', $catData['prodcat_id']);
+                            //$subCategorySrch->joinTable('(' . $tempObj->getQuery() . ')', 'INNER JOIN', 'prodcat_id = ctr.ctr_record_id', 'ctr');
+                            //$subCategorySrch->addCondition('prodcat_id', '=', $catData['prodcat_id']);
                             $subCategorySrch->addCondition('prodcat_parent', '=', $catData['prodcat_id']);
                             $subCategorySrch->addCondition('prodcat_deleted', '=', applicationConstants::NO);
-                            $subCategorySrch->addOrder('ctr.ctr_record_id', 'ASC');
+                            //$subCategorySrch->addOrder('ctr.ctr_record_id', 'ASC');
+                            $subCategorySrch->setPageSize(5);
                             $Catrs = $subCategorySrch->getResultSet();
-
+                            
                             if (true === MOBILE_APP_API_CALL) {
                                 $collections[$i]['categories'][$counter] = $catData;
                                 // $collections[$i]['categories'][$counter]['subCategories'] = $db->fetchAll($Catrs);
