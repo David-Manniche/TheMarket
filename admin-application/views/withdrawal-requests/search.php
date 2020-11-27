@@ -97,7 +97,9 @@ foreach ($arr_listing as $sn => $row) {
                 if (!empty($row['payout_detail'])) {
                     foreach (explode(',', $row["payout_detail"]) as $data) {
                         $data = explode(':', $data);
-                        $txt .= '<strong>' . ucwords(str_replace('_', ' ', $data[0])) . ': </strong>' . $data[1] . '<br>';
+						if (!empty($data) && isset($data[1]) && !empty($data[1])) {
+							$txt .= '<strong>' . ucwords(str_replace('_', ' ', $data[0])) . ': </strong>' . $data[1] . '<br>';
+						}
                     }
                 }
 
