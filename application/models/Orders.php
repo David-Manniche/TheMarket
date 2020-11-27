@@ -2580,4 +2580,14 @@ class Orders extends MyAppModel
         $records = FatApp::getDb()->fetchAll($rs);
         return $records;
     }
+
+    public static function isExistTransactionId($gatewayTxnId)
+    {
+        $srch = new SearchBase(static::DB_TBL_ORDER_PAYMENTS);
+        $srch->addCondition('opayment_gateway_txn_id', '=', $gatewayTxnId);
+        $srch->addFld('opayment_gateway_txn_id');
+        $srch->doNotLimitRecords();
+        $srch->doNotCalculateRecords();
+        return FatApp::getDb()->fetchAll($srch->getResultSet());
+    }
 }

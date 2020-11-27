@@ -5,6 +5,7 @@ use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
+use PayPalCheckoutSdk\Orders\OrdersGetRequest;
 
 class Paypal extends PaymentMethodBase
 {
@@ -206,6 +207,74 @@ class Paypal extends PaymentMethodBase
         ];
 
         return $request_body;
+    }
+    
+    /**
+     * validatePaymentRequest
+     *
+     * @param  string $paypalOrderId
+     * @param  string $orderId
+     * @param  string $currencyCode
+     * @param  float $totalAmount
+     * @return bool
+     */
+    public function validatePaymentRequest(string $paypalOrderId, string $orderId, string $currencyCode, float $totalAmount): bool
+    {
+        if (!empty(Orders::isExistTransactionId($paypalOrderId))) {
+            $this->error = Labels::getLabel('MSG_INVALID_TXN_REQUEST._THIS_TRANSACTION_ALREADY_PROCESSED', $this->langId);
+            return false;
+        }
+
+        $request = new OrdersGetRequest($paypalOrderId);
+        //=== Call PayPal to get the transaction details
+        if (false === $this->executeRequest($request)) {
+            return false;
+        }
+        $response = $this->getResponse();
+
+        if (200 != $response->statusCode) {
+            $this->error = Labels::getLabel('MSG_SOMETHING_WENT_WRONG._INVALID_RESPONSE.', $this->langId);
+            return false;
+        }
+
+        $result = $response->result;
+        if ('COMPLETED' != $result->status || 'CAPTURE' != $result->intent) {
+            $this->error = Labels::getLabel('MSG_THIS_TXN_NOT_YET_CAPTURED/_COMPLETED', $this->langId);
+            return false;
+        }
+        
+        $purchaseUnit = isset($result->purchase_units) ? current($result->purchase_units) : [];
+        $capturePayment = isset($purchaseUnit->payments->captures) ? current($purchaseUnit->payments->captures) : [];
+        if (empty($capturePayment)) {
+            $this->error = Labels::getLabel('MSG_SOMETHING_WENT_WRONG._INVALID_CAPTURE_RESPONSE.', $this->langId);
+            return false;
+        }
+
+        if ($purchaseUnit->reference_id != $orderId) {
+            $this->error = Labels::getLabel('MSG_INVALID_ORDER.', $this->langId);
+            return false;
+        }
+
+        $paidCurrency = isset($capturePayment->amount->currency_code) ? $capturePayment->amount->currency_code : '';
+        $paidAmount = isset($capturePayment->amount->value) ? $capturePayment->amount->value : [];
+        $payeeEmail = $purchaseUnit->payee->email_address;
+
+        if ($currencyCode != $paidCurrency) {
+            $this->error = Labels::getLabel('MSG_INVALID_CURRENCY.', $this->langId);
+            return false;
+        }
+
+        if ($totalAmount != $paidAmount) {
+            $this->error = Labels::getLabel('MSG_INVALID_PAID_AMOUNT.', $this->langId);
+            return false;
+        }
+
+        if ($this->settings['payee_email'] != $payeeEmail) {
+            $this->error = Labels::getLabel('MSG_INVALID_MERCHANT.', $this->langId);
+            return false;
+        }
+
+        return true;
     }
 
 

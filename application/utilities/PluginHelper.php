@@ -14,7 +14,9 @@ trait PluginHelper
      */
     public function getError()
     {
-        return $this->error;
+        $msg = Labels::getLabel('MSG_SOMETHING_WENT_WRONG!', $this->langId);
+        $error = CONF_DEVELOPMENT_MODE ? $this->error : $msg;
+        return $error;
     }
 
     /**
