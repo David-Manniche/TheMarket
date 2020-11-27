@@ -616,6 +616,7 @@ class Importexport extends ImportexportCommon
                 $this->importCategoryMedia($csvFilePointer, $post, $langId);
                 break;
             case Importexport::TYPE_PRODUCTS:
+            case Importexport::TYPE_SELLER_PRODUCTS:
                 $sheetName = Labels::getLabel('LBL_Product_Catalog_Media_Error', $langId);
                 $this->CSVfileObj = $this->openCSVfileToWrite($sheetName, $langId, true);
                 $this->importProductCatalogMedia($csvFilePointer, $post, $langId, $userId);
