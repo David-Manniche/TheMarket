@@ -192,7 +192,7 @@ class Importexport extends ImportexportCommon
                 $i++;
             }
         );
-        
+
         if (!$this->isValidColumns($headingRow, $coloumArr)) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Coloum_CSV_File", $langId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -1608,7 +1608,7 @@ class Importexport extends ImportexportCommon
             foreach ($coloumArr as $columnKey => $columnTitle) {
                 $colIndex = $this->headingIndexArr[$columnTitle];
                 $colValue = $this->getCell($row, $colIndex, '');
-                
+
                 if ($this->isDefaultSheetData($langId)) {
                     if ($this->settings['CONF_USE_PRODUCT_TYPE_ID']) {
                         $productTypeTitle = $coloumArr['product_type'];
@@ -1950,7 +1950,7 @@ class Importexport extends ImportexportCommon
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                         continue;
                     }
-                    
+
                     $where = array('smt' => 'product_id = ?', 'vals' => array($productId));
                     $this->db->updateFromArray(Product::DB_TBL, $prodDataArr, $where);
 
@@ -3497,9 +3497,31 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow && count($selProdGenArr)) {
                 $prodData = Product::getAttributesById($productId, array('product_min_selling_price'));
 
-                if (array_key_exists('selprod_price', $selProdGenArr) && $selProdGenArr['selprod_price'] < $prodData['product_min_selling_price']) {
-                    $selProdGenArr['selprod_price'] = $prodData['product_min_selling_price'];
+                if (array_key_exists('selprod_price', $selProdGenArr)) {
+                    if ($selProdGenArr['selprod_price'] < $prodData['product_min_selling_price']) {
+                        $selProdGenArr['selprod_price'] = $prodData['product_min_selling_price'];
+                    }
+
+                    $srch = new SearchBase(SellerProductSpecialPrice::DB_TBL);
+                    $srch->addCondition('splprice_selprod_id', '=', $selprodId);
+                    $srch->addCondition('splprice_price', '>=', $selProdGenArr['selprod_price']);
+                    $srch->addCondition('splprice_end_date', '>=', date('Y-m-d H:i:s'));
+                    $srch->addFld('splprice_price');
+                    $srch->addOrder('splprice_price', 'DESC');
+                    $srch->doNotCalculateRecords();
+                    $db = FatApp::getDb();
+                    $rs = $srch->getResultSet();
+                    $result = $db->fetch($rs);
+                    if (is_array($result) && !empty($result)) {
+                        $price =  CommonHelper::displayMoneyFormat($result['splprice_price']);
+                        $errMsg = Labels::getLabel('MSG_SELLING_PRICE_MUST_BE_GREATER_THAN_SPECIAL_PRICE_{SPECIAL-PRICE}', $langId);
+                        $errMsg = CommonHelper::replaceStringData($errMsg, ['{SPECIAL-PRICE}' => $price]);
+                        CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
+                        $errInSheet = true;
+                        continue;
+                    }
                 }
+
                 $selProdGenArr['selprod_added_on'] = date('Y-m-d H:i:s');
 
                 $selProdData = SellerProduct::getAttributesById($selprodId, array('selprod_id', 'selprod_sold_count', 'selprod_user_id'));
@@ -3515,6 +3537,7 @@ class Importexport extends ImportexportCommon
                     if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && 0 < $userId && SellerProduct::getActiveCount($userId, $selprodId) >= $userProdUploadLimit[$userId]) {
                         $errMsg = Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $langId);
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
+                        $errInSheet = true;
                         continue;
                     }
                     $this->db->updateFromArray(SellerProduct::DB_TBL, $selProdGenArr, $where);
@@ -3538,6 +3561,7 @@ class Importexport extends ImportexportCommon
                         if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && 0 < $userId && SellerProduct::getActiveCount($userId) >= $userProdUploadLimit[$userId]) {
                             $errMsg = Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $langId);
                             CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
+                            $errInSheet = true;
                             continue;
                         }
                         $this->db->insertFromArray(SellerProduct::DB_TBL, $selProdGenArr);
@@ -3561,6 +3585,7 @@ class Importexport extends ImportexportCommon
                         if (!$selProdSpecificsObj->addNew(array(), $selProdSepc)) {
                             $errMsg = $selProdSpecificsObj->getError();
                             CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
+                            $errInSheet = true;
                             continue;
                         }
                     }
