@@ -30,7 +30,3 @@ if (0 < $productsCount) {
 $products = $productsArr['available'];
 
 require_once(CONF_THEME_PATH . 'cart/price-detail.php');
-
-if (empty(array_filter($productsArr))) {
-    $status = applicationConstants::OFF;
-}
