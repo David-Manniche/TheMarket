@@ -123,21 +123,7 @@ class PaypalPayController extends PaymentController
     public function callback(string $orderId)
     {
         $post = FatApp::getPostedData();
-        $purchaseUnit = isset($post['purchase_units']) ? current($post['purchase_units']) : [];
-
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
-        $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
-
-        $capturePayment = isset($purchaseUnit['payments']['captures']) ? current($purchaseUnit['payments']['captures']) : [];
-
-        $paidAmountCurrency = isset($capturePayment['amount']['currency_code']) ? $capturePayment['amount']['currency_code'] : '';
-        $paidAmount = isset($capturePayment['amount']['value']) ? $capturePayment['amount']['value'] : [];
-
-        if (empty($purchaseUnit) || $purchaseUnit['reference_id'] != $orderId || empty($capturePayment) || $paidAmountCurrency != $this->systemCurrencyCode || $paidAmount != $paymentAmount) {
-            $msg = Labels::getLabel("MSG_INVALID_PAYMENT", $this->siteLangId);
-            $this->setErrorAndRedirect($msg, true);
-        }
-
         if ('COMPLETED' != $post['status']) {
             TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($post));
             $msg = Labels::getLabel("MSG_PAYMENT_FAILED_:_{STATUS}", $this->siteLangId);
@@ -145,17 +131,18 @@ class PaypalPayController extends PaymentController
             $orderPaymentObj->addOrderPaymentComments($msg);
             $this->setErrorAndRedirect($msg, true);
         }
+        
+        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+        $paypalOrderId = $post['id'];
+        $currencyCode = $orderInfo["order_currency_code"];
+        $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
-        if (isset($purchaseUnit['payee']) && strtolower($purchaseUnit['payee']) != strtolower($this->settings['payee_email'])) {
-            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($post));
-            $msg = Labels::getLabel("MSG_PAYMENT_FAILED_:_{STATUS}", $this->siteLangId);
-            $statusMsg = Labels::getLabel("MSG_INVALID_PAYEE(MERCHANT_EMAIL)", $this->siteLangId);
-            $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $statusMsg]);
-            $orderPaymentObj->addOrderPaymentComments($msg);
-            $this->setErrorAndRedirect($msg, true);
+        if (false === $this->plugin->validatePaymentRequest($paypalOrderId, $orderId, $currencyCode, $paymentAmount)) {
+            FatUtility::dieJsonError($this->plugin->getError());
         }
+
         /* Recording Payment in DB */
-        $orderPaymentObj->addOrderPayment(self::KEY_NAME, $post['id'], $paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), json_encode($post));
+        $orderPaymentObj->addOrderPayment(self::KEY_NAME, $paypalOrderId, $paymentAmount, Labels::getLabel("MSG_RECEIVED_PAYMENT", $this->siteLangId), json_encode($post));
         /* End Recording Payment in DB */
         $json['redirecUrl'] = UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId));
         FatUtility::dieJsonSuccess($json);

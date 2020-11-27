@@ -1337,7 +1337,13 @@ class EmailHandler extends FatModel
 
         $srch = new WithdrawalRequestsSearch();
         $srch->joinUsers(true);
-        $srch->addMultipleFields(array('tuwr.*', 'user_name', 'user_dial_code', 'user_phone', 'credential_email as user_email', 'credential_username as user_username'));
+        $srch->joinForUserBalance();
+        $srch->joinTable(User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC, 'LEFT JOIN', User::DB_TBL_USR_WITHDRAWAL_REQ_SPEC_PREFIX . 'withdrawal_id = tuwr.withdrawal_id');
+        $srch->addMultipleFields(
+            array(
+                'tuwr.*', 'GROUP_CONCAT(CONCAT(`uwrs_key`, ":", `uwrs_value`)) as payout_detail', 'user_name', 'credential_email as user_email', 'credential_username as user_username', 'user_dial_code', 'user_phone'
+            )
+        );
         $srch->addCondition('tuwr.withdrawal_id', '=', $requestId);
 
         $rs = $srch->getResultSet();
@@ -1355,6 +1361,7 @@ class EmailHandler extends FatModel
         $url = '<a href="' . $url . '">' . Labels::getLabel('Msg_click_here', $langId) . '</a>';
 
         $statusArr = Transactions::getWithdrawlStatusArr($langId);
+        
         $tpl = new FatTemplate('', '');
         $tpl->set('siteLangId', $langId);
         $tpl->set('data', $withdrawalRequestData);

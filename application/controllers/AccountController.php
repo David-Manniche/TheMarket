@@ -1353,6 +1353,14 @@ class AccountController extends LoggedUserController
         }
 
         if (true === MOBILE_APP_API_CALL) {
+            $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
+            $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id'], Cart::PAGE_TYPE_CART);
+            $cartObj->setFulfilmentType($fulfilmentType);
+            $cartObj->setCartCheckoutType($fulfilmentType);
+            $productsArr = $cartObj->getProducts($this->siteLangId);
+            $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
+            $this->set('products', $productsArr);
+            $this->set('cartSummary', $cartSummary);
             $this->_template->render();
         }
 
@@ -1539,6 +1547,7 @@ class AccountController extends LoggedUserController
 
             if (true === MOBILE_APP_API_CALL) {
                 $fulfilmentType = FatApp::getPostedData('fulfilmentType', FatUtility::VAR_INT, Shipping::FULFILMENT_SHIP);
+                $cartObj = new Cart(UserAuthentication::getLoggedUserId(true), $this->siteLangId, $this->app_user['temp_user_id'], Cart::PAGE_TYPE_CART);
                 $cartObj->setFulfilmentType($fulfilmentType);
                 $cartObj->setCartCheckoutType($fulfilmentType);
                 $productsArr = $cartObj->getProducts($this->siteLangId);

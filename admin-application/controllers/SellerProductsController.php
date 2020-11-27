@@ -268,6 +268,25 @@ class SellerProductsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
+
+        $srch = new SearchBase(SellerProductSpecialPrice::DB_TBL);
+        $srch->addCondition('splprice_selprod_id', '=', $selprod_id);
+        $srch->addCondition('splprice_price', '>=', $post['selprod_price']);
+        $srch->addCondition('splprice_end_date', '>=', date('Y-m-d H:i:s'));
+        $srch->addFld('splprice_price');
+        $srch->addOrder('splprice_price', 'DESC');
+        $srch->doNotCalculateRecords();
+        $db = FatApp::getDb();
+        $rs = $srch->getResultSet();
+        $result = $db->fetch($rs);
+        if (is_array($result) && !empty($result)) {
+            $price =  CommonHelper::displayMoneyFormat($result['splprice_price']);
+            $msg = Labels::getLabel('MSG_SELLING_PRICE_MUST_BE_GREATER_THAN_SPECIAL_PRICE_{SPECIAL-PRICE}', $this->adminLangId);
+            $msg = CommonHelper::replaceStringData($msg, ['{SPECIAL-PRICE}' => $price]);
+            Message::addErrorMessage($msg);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
         if (isset($post['selprod_track_inventory']) && $post['selprod_track_inventory'] == Product::INVENTORY_NOT_TRACK) {
             $post['selprod_threshold_stock_level'] = 0;
         }

@@ -46,6 +46,8 @@ $data = array(
     'pickUpProductsCount' => $pickUpProductsCount,
 );
 
+$products = $productsArr['available'];
+
 require_once(CONF_THEME_PATH . 'cart/price-detail.php');
 
 if (empty(array_filter($productsArr))) {

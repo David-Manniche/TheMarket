@@ -38,6 +38,17 @@ switch ($data['withdrawal_payment_method']) {
     case User::AFFILIATE_PAYMENT_METHOD_PAYPAL:
         $txt .= '<strong>' . Labels::getLabel('LBL_Paypal_Email_Account', $siteLangId) . ': </strong>' . $data['withdrawal_paypal_email_id'];
         break;
+
+    default:
+        if (isset($data['payout_detail']) && !empty($data['payout_detail'])) {
+            foreach (explode(',', $data["payout_detail"]) as $detail) {
+                $field = explode(':', $detail);
+                if (!empty($field) && 'amount' != $field[0] && isset($field[1]) && !empty($field[1])) {
+                    $txt .= '<strong>' . ucwords(str_replace('_', ' ', $field[0])) . ': </strong>' . $field[1] . '<br>';
+                }
+            }
+        }
+        break;
 }
 
 if (!empty($data["withdrawal_comments"])) {
