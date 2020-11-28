@@ -50,7 +50,7 @@
                                             ?> <?php
                                             } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_SHOP) {
                                                 ?> <?php
-                                                    } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
+                                                } elseif ($threadDetails["thread_type"] == THREAD::THREAD_TYPE_PRODUCT) { ?>
                                                 <p><?php echo CommonHelper::displayMoneyFormat($threadDetails['selprod_price']); ?></p>
                                             <?php } ?>
                                         </span>
@@ -80,15 +80,15 @@
                                 <li>
                                     <div class="msg_db">
                                         <?php
-                                        if ($shopDetails['shop_name'] != '' && $shopDetails['shop_id'] > 0) { 
+                                        if (is_array($shopDetails) && !empty($shopDetails) && $shopDetails['shop_name'] != '' && $shopDetails['shop_id'] > 0) {
                                             $userImgUpdatedOn = $shopDetails['shop_updated_on'];
                                             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-                                            ?>
+                                        ?>
                                             <img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'shopLogo', array($shopDetails['shop_id'], $siteLangId, 'thumb')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $shopDetails['shop_name']; ?>">
-                                        <?php } else { 
+                                        <?php } else {
                                             $userImgUpdatedOn = User::getAttributesById($loggedUserId, 'user_updated_on');
                                             $uploadedTime = AttachedFile::setTimeParam($userImgUpdatedOn);
-                                            ?>
+                                        ?>
                                             <img src="<?php echo UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('Image', 'user', array($loggedUserId, 'thumb', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $loggedUserName; ?>">
                                         <?php } ?>
                                     </div>
