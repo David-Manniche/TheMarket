@@ -468,7 +468,7 @@ Bugs:
     => 045709 - When we place withdrawal request then details are missing in email.
     => 045769	Admin dashboard -subscription earning stats
     => 045799 - Import export issues catalog media for seller products from admin
-
+    => 045828	In case of admin shipping only rates are not fetching from admin shipping profiles
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
