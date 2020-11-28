@@ -1091,7 +1091,12 @@ class ProductSearch extends SearchBase
             trigger_error(Labels::getLabel('ERR_joinProductShippedBy_function_not_joined.', $this->commonLangId), E_USER_ERROR);
         }
 
-        $this->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'spprod.shippro_product_id = selprod_product_id and if(product_seller_id = 0, (if(psbs.psbs_user_id > 0, spprod.shippro_user_id = psbs.psbs_user_id, spprod.shippro_user_id = 0)), (spprod.shippro_user_id = selprod_user_id))', 'spprod');
+        $joinCondition = 'if(product_seller_id = 0, (if(psbs.psbs_user_id > 0, spprod.shippro_user_id = psbs.psbs_user_id, spprod.shippro_user_id = 0)), (spprod.shippro_user_id = selprod_user_id))';
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $joinCondition = 'spprod.shippro_user_id = 0';
+        }
+
+        $this->joinTable(ShippingProfileProduct::DB_TBL, 'LEFT OUTER JOIN', 'spprod.shippro_product_id = selprod_product_id and ' . $joinCondition, 'spprod');
     }
 
     public function joinShippingProfile()
