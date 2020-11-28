@@ -10,12 +10,13 @@ trait PluginHelper
     /**
      * getError
      *
+     * @param  bool $showOrignal
      * @return string
      */
-    public function getError()
+    public function getError(bool $showOrignal = true)
     {
         $msg = Labels::getLabel('MSG_SOMETHING_WENT_WRONG!', $this->langId);
-        $error = CONF_DEVELOPMENT_MODE ? $this->error : $msg;
+        $error = $showOrignal ? $this->error : $msg;
         return $error;
     }
 
