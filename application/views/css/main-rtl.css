@@ -34470,20 +34470,22 @@ input.sp-input,
 
 .dropdown-options .dropdown-toggle {
   width: 100%;
-  text-align: right; }
+  text-align: right;
+  display: flex;
+  align-items: center; }
   .dropdown-options .dropdown-toggle:after {
-    float: left;
-    margin-top: 12px; }
+    float: left; }
 .dropdown-options span {
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden; }
+  overflow: hidden;
+  display: block; }
 .dropdown-options .colors {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   display: inline-block;
-  margin-left: 5px;
+  margin-left: 8px;
   -webkit-box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.3);
   box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.3); }
 .dropdown-options .is-active {
