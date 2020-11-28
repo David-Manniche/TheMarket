@@ -1,4 +1,4 @@
 <?php
-class ShipmentTrackingBase extends pluginBase
+class ShipmentTrackingBase extends PluginBase
 {
 }
