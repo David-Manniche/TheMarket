@@ -203,7 +203,7 @@ class Paypal extends PaymentMethodBase
         $request_body["purchase_units"][] = $purchase_units;
         $request_body["application_context"] = [
             "cancel_url" => $cancelBtnUrl,
-            "return_url" => UrlHelper::generateFullUrl(self::KEY_NAME, "callback")
+            "return_url" => UrlHelper::generateFullUrl(self::KEY_NAME, "callback", [$orderId])
         ];
 
         return $request_body;
