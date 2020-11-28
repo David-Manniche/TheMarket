@@ -370,7 +370,9 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             $manualFld = $frm->getField('manual_shipping');
 
                             $fld = $frm->getField('op_status_id');
-                            $fld->developerTags['col'] = (null != $manualFld) ? 4 : 6;
+                            if (null != $fld) {
+                                $fld->developerTags['col'] = (null != $manualFld) ? 4 : 6;
+                            }
 
                             $statusFld = $frm->getField('op_status_id');
                             $statusFld->setFieldTagAttribute('class', 'status-js fieldsVisibility-js');
@@ -380,17 +382,23 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                             $fld1->developerTags['col'] = (null != $manualFld) ? 4 : 6;
 
                             $fld = $frm->getField('tracking_number');
-                            $fld->developerTags['col'] = 6;
+                            if (null != $fld) {
+                                $fld->developerTags['col'] = 6;
+                            }
 
                             if (null != $manualFld) {
                                 $manualFld->setFieldTagAttribute('class', 'manualShipping-js fieldsVisibility-js');
                                 $manualFld->developerTags['col'] = 4;
 
                                 $fld = $frm->getField('opship_tracking_url');
-                                $fld->developerTags['col'] = 6;
+                                if (null != $fld) {
+                                    $fld->developerTags['col'] = 6;
+                                }
                                 
                                 $fld = $frm->getField('oshistory_courier');
-                                $fld->developerTags['col'] = 6;
+                                if (null != $fld) {
+                                    $fld->developerTags['col'] = 6;
+                                }
                             }
 
                             $fldBtn = $frm->getField('btn_submit');
