@@ -621,41 +621,51 @@ AND couponlang_lang_id = ' . $langId,
 
         /* or current coupon is valid for current cart products categories[ */
         $prodObj = new Product();
-        $directCondition4 = '';
         foreach ($cartProducts as $cartProduct) {
             if (!$cartProduct['is_batch']) {
                 $prodCategories = $prodObj->getProductCategories($cartProduct['product_id']);
                 if ($prodCategories) {
+                    
                     foreach ($prodCategories as $prodcat_id => $prodCategory) {
-                        $directCondition4 .= ' OR (grouped_coupon_categories IS NOT NULL AND ( FIND_IN_SET(' . $prodcat_id . ', grouped_coupon_categories) ) ) ';
+                        if(!empty($directCondtion3)){
+                            $directCondtion3 .='OR ';  
+                        }
+                        $directCondtion3 .= ' (grouped_coupon_categories IS NOT NULL AND ( FIND_IN_SET(' . $prodcat_id . ', grouped_coupon_categories) ) ) ';
                     }
                 }
             }
         }
         /* ] */
 
-        $directCondtion5 = '';
         foreach ($cartProducts as $cartProduct) {
             if (!$cartProduct['is_batch']) {
-                $directCondtion5 .= ' OR ( grouped_coupon_shops IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['shop_id'] . ', grouped_coupon_shops) ) ) ';
+                if(!empty($directCondtion3)){
+                    $directCondtion3 .='OR ';  
+                }
+                $directCondtion3 .= ' ( grouped_coupon_shops IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['shop_id'] . ', grouped_coupon_shops) ) ) ';
             }
         }
 
-        $directCondtion6 = '';
         foreach ($cartProducts as $cartProduct) {
             if (!$cartProduct['is_batch']) {
-                $directCondtion6 .= ' OR ( grouped_coupon_brands IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['brand_id'] . ', grouped_coupon_brands) ) ) ';
+                if(!empty($directCondtion3)){
+                    $directCondtion3 .='OR ';  
+                }
+                $directCondtion3 .= ' (grouped_coupon_brands IS NOT NULL AND ( FIND_IN_SET( ' . $cartProduct['brand_id'] . ', grouped_coupon_brands) ) ) ';
             }
         }
         
-        $directCondtion7 = 'grouped_coupon_users IS NOT NULL AND ( FIND_IN_SET(' . $userId . ', grouped_coupon_users) )  AND';
-        $directCondtion8 = ' grouped_coupon_users IS NULL AND';
+        $directCondtion4 = 'grouped_coupon_users IS NOT NULL AND ( FIND_IN_SET(' . $userId . ', grouped_coupon_users) )';
+        $directCondtion5 = 'grouped_coupon_users IS NULL';        
+        
+        $directCondtion6 = !empty($directCondtion3) ? ' AND (' . $directCondtion3 . ')' : '';
 
-        $srch->addDirectCondition("(" . $directCondtion1 . "OR ".$directCondtion2."OR (". $directCondtion7 ."(" .$directCondtion3 . $directCondition4 . $directCondtion5 . $directCondtion6. ")) OR ( " . $directCondtion8 ."(". $directCondtion3 . $directCondition4 . $directCondtion5 . $directCondtion6 . ")))", 'AND');
+        $srch->addDirectCondition("(" . $directCondtion1 . "OR " . $directCondtion2 . "OR (" . $directCondtion4 . $directCondtion6 . ") OR ( " . $directCondtion5 . $directCondtion6 . "))", 'AND');
 
         $srch->addGroupBy('dc.coupon_id');
         $srch->addHaving('coupon_uses_count', '>', 'mysql_func_coupon_used_count + coupon_hold_count + pending_order_hold_count', 'AND', true);
         $srch->addHaving('coupon_uses_coustomer', '>', 'mysql_func_user_coupon_used_count', 'AND', true);
+       
         // if ($orderId !='') {
         //     $srch->addHaving('coupon_uses_count', '>', 'mysql_func_coupon_used_count + coupon_hold_count + pending_order_hold_count', 'AND', true);
         //     $srch->addHaving('coupon_uses_coustomer', '>', 'mysql_func_user_coupon_used_count', 'AND', true);
