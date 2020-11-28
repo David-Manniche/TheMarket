@@ -160,22 +160,25 @@
     .dropdown-toggle {
         width: 100%;
         text-align:#{$start-direction};
+        display: flex;
+        align-items: center;
         &:after {
             float: #{$end-direction};
-            margin-top: 12px;
+            //margin-top: 12px;
         }
     }
     span {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        display: block;
     }
     .colors {
         width: 10px;
         height: 10px;
         border-radius: 50%;
         display: inline-block;
-        margin-#{$end-direction}: 5px;
+        margin-#{$end-direction}: 8px;
         -webkit-box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
         box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.30);
     }
