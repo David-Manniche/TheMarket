@@ -462,7 +462,8 @@ class AttachedFile extends MyAppModel
     /* always call this function using image controller and pass relavant arguments. */
     public static function displayImage($image_name, $w, $h, $no_image = '', $uploadedFilePath = '', $resizeType = ImageResize::IMG_RESIZE_EXTRA_ADDSPACE, $apply_watermark = false, $cache = true, $imageCompression = true)
     {
-        ob_end_clean();
+        ob_end_clean();        
+        ini_set('memory_limit', '-1');
         if ($no_image == '') {
             $no_image = 'images/defaults/no_image.jpg';
         } else {
@@ -561,7 +562,8 @@ class AttachedFile extends MyAppModel
 
         if (CONF_USE_FAT_CACHE && $cache) {
             ob_end_clean();
-            ob_start();
+            ob_start();            
+            ini_set('memory_limit', '-1');
             static::setContentType($imagePath, $fileMimeType);
             if ($imageCompression) {
                 $img->displayImage(80, false);
