@@ -1,6 +1,6 @@
 <?php
 
-class ShippingServicesBase extends pluginBase
+class ShippingServicesBase extends PluginBase
 {
     /**
      * getSystemOrder

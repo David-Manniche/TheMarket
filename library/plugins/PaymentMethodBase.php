@@ -1,6 +1,6 @@
 <?php
 
-class PaymentMethodBase extends pluginBase
+class PaymentMethodBase extends PluginBase
 {
     public $userData;
     public $userMeta;
