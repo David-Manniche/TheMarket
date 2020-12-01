@@ -25,6 +25,19 @@ if ($primaryOrder) {
 } else {
     $childArr = $childOrderDetail;
 }
+
+$orderDetail['pickupDetail'] = (object)array();
+if (0 < $opId) {
+    $opDetail = current($childArr);
+    if (Shipping::FULFILMENT_PICKUP == $opDetail['opshipping_fulfillment_type']) {
+        $orderDetail['pickupDetail'] =  [
+            'opshipping_date' => $opDetail['opshipping_date'],
+            'opshipping_time_slot_from' => $opDetail['opshipping_time_slot_from'],
+            'opshipping_time_slot_to' => $opDetail['opshipping_time_slot_to'],
+        ];
+    }
+}
+
 $cartTotal = $shippingCharges = $totalVolumeDiscount = $totalRewardPointDiscount = $totalOrderDiscountTotal = $totalTax = 0;
 
 $taxOptionsTotal = array();
