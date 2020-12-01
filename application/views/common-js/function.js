@@ -98,7 +98,7 @@ $(document).ready(function () {
         setSlider();
     });
 
-    if (CONF_ENABLE_GEO_LOCATION && isUserDashboard == 0) {
+    if (CONF_ENABLE_GEO_LOCATION && isUserDashboard == 0 && CONF_MAINTENANCE == 0) {
         accessLocation();
     }
 });
@@ -606,8 +606,17 @@ function accessLocation(force = false) {
     if ("" == location.lat || "" == location.lng || "" == location.countryCode || force) {
         $.facebox(function () {
             fcom.ajax(fcom.makeUrl('Home', 'accessLocation'), '', function (t) {
-                $.facebox(t, 'location-popup-width');
-                googleAddressAutocomplete();
+                try {
+                    var json = $.parseJSON(t);
+                    if (1 > json.status) {
+                        $(document).trigger('close.facebox');
+                        $.mbsmessage(json.msg, false, 'alert--danger');
+                        return false;
+                    }
+                } catch (exc) {
+                    $.facebox(t, 'location-popup-width');
+                    googleAddressAutocomplete();
+                }
             });
         });
     }
