@@ -14,10 +14,6 @@ if ($controllerName == 'Checkout' ||$controllerName == 'SubscriptionCheckout') {
     $bodyClass = 'is-checkout';
 }
 
-if (!array_key_exists('screenWidth', $_COOKIE)) {
-    setcookie('screenWidth', 769, 0, CONF_WEBROOT_URL);
-}
-
 if (isset($isUserDashboard) && $isUserDashboard && strtolower($controllerName) != 'subscriptioncheckout') {
     $bodyClass = 'is-dashboard my-dashboard';
     $expanded = 'sidebar-is-reduced';
