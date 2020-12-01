@@ -472,7 +472,8 @@ Bugs:
 
     => 045820 - when last message is large then in listing UI distorts
     => 045815 - when new order is placed then in admin> seller order detail page> error is there
-    
+    => 045818 - when wrong url is hit then getting error above header and gets clear on hard refresh
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

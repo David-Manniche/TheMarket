@@ -581,6 +581,7 @@ function googleCaptcha() {
                     });
                 }
                 catch (error) {
+                    submitBtn.val(submitLbl);
                     $.mbsmessage(error, true, 'alert--danger');
                     return;
                 }
