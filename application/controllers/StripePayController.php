@@ -275,7 +275,7 @@ class StripePayController extends PaymentController
             $payableAmount = $this->formatPayableAmount($paymentAmount); */
             $payment_amount = $charge['charges']['data'][0]['amount'];            
             if (!in_array($this->systemCurrencyCode, $this->zeroDecimalCurrencies())){         
-                $payment_amount / 100;
+                $payment_amount = $payment_amount / 100;
             }            
             $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['id'], ($payment_amount), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), json_encode($charge));
             /* End Recording Payment in DB */
