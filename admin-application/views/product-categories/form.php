@@ -341,7 +341,7 @@ foreach ($categories as $catId => $catName) {
        
     
     $(document).ready(function(){
-        var catAutocompleteArr = '<?php echo htmlspecialchars(json_encode($catAutocompleteArr), ENT_QUOTES, 'UTF-8');  ?>';    
+        var catAutocompleteArr = <?php echo json_encode($catAutocompleteArr);  ?>;    
         $('input[name=\'parent_category_name\']').autocomplete({
             minLength: 0,
             'classes': {

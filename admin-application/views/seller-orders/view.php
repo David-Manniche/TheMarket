@@ -621,10 +621,15 @@ if (!empty($order['opship_tracking_url'])) {
                                 $manualFld->developerTags['col'] = 4;
 
                                 $fld = $frm->getField('opship_tracking_url');
-                                $fld->developerTags['col'] = 6;
+                                if(null != $fld){
+                                   $fld->developerTags['col'] = 6; 
+                                }
                                 
                                 $fld = $frm->getField('oshistory_courier');
-                                $fld->developerTags['col'] = 6;
+                                if(null != $fld){
+                                   $fld->developerTags['col'] = 6; 
+                                }
+                                
                                 
                             }
 
