@@ -470,6 +470,7 @@ Bugs:
     => 045799 - Import export issues catalog media for seller products from admin
     => 045828	In case of admin shipping only rates are not fetching from admin shipping profiles
     => 045815 - when new order is placed then in admin> seller order detail page> error is there
+    => 045812 - when digital order is placed then buyer gets email with blank info
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
