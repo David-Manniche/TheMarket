@@ -510,3 +510,5 @@ Notes:
        To Update state code which for only state which is present in old database state table, execute update_state_codes.sql  (Mostly done when upgrading form V9.2 to 9.3 )       
 
     Please replace tbl_countries, tbl_states from db_withdata.sql.
+
+    Please hit <site-url>/admin/patch-update/update-category-relations to update all parent to child level relations in case of updating db.
