@@ -469,6 +469,9 @@ Bugs:
     => 045769	Admin dashboard -subscription earning stats
     => 045799 - Import export issues catalog media for seller products from admin
     => 045828	In case of admin shipping only rates are not fetching from admin shipping profiles
+
+    => 045820 - when last message is large then in listing UI distorts
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
@@ -482,6 +485,7 @@ Enhancements:
     ------------TV-9.2.1.20200925------------------------
     => Enhance discount module added brand and shop discounts    
     ---------------TV-9.2.3.20201121--------------------
+
 Notes:
     
     Composer :
