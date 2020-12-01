@@ -1225,3 +1225,5 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("MSG_THIS_TXN_NOT_YET_CAPTURED/_COMPLETED", 1, "This Txn Not Yet Captured/Completed", 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 ALTER TABLE `tbl_countries` CHANGE `country_id` `country_id` INT(11) NOT NULL AUTO_INCREMENT;
+
+UPDATE `tbl_plugins` SET `plugin_identifier` = '2Checkout' WHERE `plugin_code` = 'Twocheckout';

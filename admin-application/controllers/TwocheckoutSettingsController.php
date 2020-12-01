@@ -16,7 +16,7 @@ class TwocheckoutSettingsController extends PaymentMethodSettingsController
             'API' => 'Payment API'
         );
         $frm->addRadioButtons(Labels::getLabel('LBL_Payment_Type', $langId), 'payment_type', $paymentTypesArr, 'HOSTED', array('class' => 'list-inline')); */
-        $frm->addRequiredField(Labels::getLabel('LBL_Seller_ID', $langId), 'sellerId');
+        $frm->addRequiredField(Labels::getLabel('LBL_MERCHANT_CODE', $langId), 'sellerId');
         $frm->addRequiredField(Labels::getLabel('LBL_Publishable_Key', $langId), 'publishableKey');
         $frm->addRequiredField(Labels::getLabel('LBL_Private_Key', $langId), 'privateKey');
         $frm->addRequiredField(Labels::getLabel('LBL_Secret_Word', $langId), 'hashSecretWord');

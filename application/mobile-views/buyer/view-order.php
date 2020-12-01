@@ -25,6 +25,19 @@ if ($primaryOrder) {
 } else {
     $childArr = $childOrderDetail;
 }
+
+$orderDetail['pickupDetail'] = (object)array();
+if (0 < $opId) {
+    $opDetail = current($childArr);
+    if (Shipping::FULFILMENT_PICKUP == $opDetail['opshipping_fulfillment_type']) {
+        $orderDetail['pickupDetail'] =  [
+            'opshipping_date' => $opDetail['opshipping_date'],
+            'opshipping_time_slot_from' => $opDetail['opshipping_time_slot_from'],
+            'opshipping_time_slot_to' => $opDetail['opshipping_time_slot_to'],
+        ];
+    }
+}
+
 $cartTotal = $shippingCharges = $totalVolumeDiscount = $totalRewardPointDiscount = $totalOrderDiscountTotal = $totalTax = 0;
 
 $taxOptionsTotal = array();
@@ -78,16 +91,23 @@ foreach ($childArr as $index => $childOrder) {
         array(
             'key' => Labels::getLabel('LBL_Price', $siteLangId),
             'value' => CommonHelper::displayMoneyFormat($childOrder['op_unit_price']),
-        ),
-        array(
-            'key' => Labels::getLabel('LBL_Shipping_Charges', $siteLangId),
-            'value' => CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping')),
-        ),
-        array(
-            'key' => Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId),
-            'value' => CommonHelper::displayMoneyFormat($volumeDiscount),
         )
     );
+
+    if (0 < CommonHelper::orderProductAmount($childOrder, 'shipping')) {
+        $childArr[$index]['priceDetail'][] = array(
+            'key' => Labels::getLabel('LBL_Shipping_Charges', $siteLangId),
+            'value' => CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping')),
+        );
+    }
+
+    if (0 < $volumeDiscount) {
+        $childArr[$index]['priceDetail'][] = array(
+            'key' => Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId),
+            'value' => CommonHelper::displayMoneyFormat($volumeDiscount),
+        );
+    }
+
 
     $taxCharges = [];
     if (empty($childOrder['taxOptions'])) {
@@ -98,6 +118,10 @@ foreach ($childArr as $index => $childOrder) {
         );
     } else {
         foreach ($childOrder['taxOptions'] as $key => $val) {
+            if (0 >= $val['value']) {
+                continue;
+            }
+
             $taxCharges[] = [
                 'key' => CommonHelper::displayTaxPercantage($val, true),
                 'value' => CommonHelper::displayMoneyFormat($val['value']),
@@ -113,18 +137,27 @@ foreach ($childArr as $index => $childOrder) {
         $childArr[$index]['priceDetail'] = array_merge($childArr[$index]['priceDetail'], $taxCharges);
     }
 
-
-    $disAndRewArr = [
-        array(
+    if (0 < $orderDiscountTotal) {
+        $childArr[$index]['priceDetail'][] = array(
             'key' => Labels::getLabel('LBL_Discount', $siteLangId),
             'value' => CommonHelper::displayMoneyFormat($orderDiscountTotal),
-        ),
-        array(
+        );
+    }
+
+    if (0 < $rewardPointDiscount) {
+        $childArr[$index]['priceDetail'][] = array(
             'key' => Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId),
             'value' => CommonHelper::displayMoneyFormat($rewardPointDiscount),
-        )
-    ];
-    $childArr[$index]['priceDetail'] = array_merge($childArr[$index]['priceDetail'], $disAndRewArr);
+        );
+    }
+
+    
+    if (0 != $orderDetail['order_rounding_off']) {
+        $childArr[$index]['priceDetail'][] = array(
+            'key' => (0 < $orderDetail['order_rounding_off']) ? Labels::getLabel('LBL_Rounding_Up', $siteLangId) : Labels::getLabel('LBL_Rounding_Down', $siteLangId),
+            'value' => CommonHelper::displayMoneyFormat($orderDetail['order_rounding_off'])
+        );
+    }
 
     $childArr[$index]['totalAmount'] = array(
         'key' => Labels::getLabel('LBL_Total', $siteLangId),
