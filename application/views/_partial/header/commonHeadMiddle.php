@@ -19,42 +19,42 @@ if ($canonicalUrl == '') {
     $canonicalUrl = UrlHelper::generateFullUrl($controllerName, FatApp::getAction(), !empty(FatApp::getParameters()) ? FatApp::getParameters() : array());
 }
 ?>
-<link rel="canonical" href="<?php echo $canonicalUrl;?>" />
+<link rel="canonical" href="<?php echo $canonicalUrl; ?>" />
 <style>
     :root {
-        --brand-color:#<?php echo $themeDetail[ThemeColor::TYPE_BRAND]; ?>;
-        --brand-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_BRAND_INVERSE]; ?>;
+        --brand-color: #<?php echo $themeDetail[ThemeColor::TYPE_BRAND]; ?>;
+        --brand-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_BRAND_INVERSE]; ?>;
 
         --primary-color: #<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>;
-        --primary-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY_INVERSE]; ?>;
+        --primary-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY_INVERSE]; ?>;
 
-        --secondary-color:#<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY]; ?>;
-        --secondary-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY_INVERSE]; ?>;
+        --secondary-color: #<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY]; ?>;
+        --secondary-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY_INVERSE]; ?>;
 
         --third-color: #<?php echo $themeDetail[ThemeColor::TYPE_THIRD]; ?>;
-        --third-color-inverse:#<?php echo $themeDetail[ThemeColor::TYPE_THIRD_INVERSE]; ?>;
+        --third-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_THIRD_INVERSE]; ?>;
 
-        --body-color:#<?php echo $themeDetail[ThemeColor::TYPE_BODY]; ?>;
+        --body-color: #<?php echo $themeDetail[ThemeColor::TYPE_BODY]; ?>;
 
         --dark-color: ;
         --light-color: ;
 
-        --gray-color:#<?php echo $themeDetail[ThemeColor::TYPE_GREY]; ?>;
-        --gray-light:#<?php echo $themeDetail[ThemeColor::TYPE_GREY_LIGHT]; ?>;
+        --gray-color: #<?php echo $themeDetail[ThemeColor::TYPE_GREY]; ?>;
+        --gray-light: #<?php echo $themeDetail[ThemeColor::TYPE_GREY_LIGHT]; ?>;
 
-        --border-color:#<?php echo $themeDetail[ThemeColor::TYPE_BORDER]; ?>;
-        --border-dark-color:#<?php echo $themeDetail[ThemeColor::TYPE_BORDER_DARK];?>;
-        --border-light-color:#<?php echo $themeDetail[ThemeColor::TYPE_BORDER_LIGHT];?>;
+        --border-color: #<?php echo $themeDetail[ThemeColor::TYPE_BORDER]; ?>;
+        --border-dark-color: #<?php echo $themeDetail[ThemeColor::TYPE_BORDER_DARK]; ?>;
+        --border-light-color: #<?php echo $themeDetail[ThemeColor::TYPE_BORDER_LIGHT]; ?>;
 
-        --font-color:#<?php echo $themeDetail[ThemeColor::TYPE_FONT]; ?>;
-        --font-color2:#<?php echo $themeDetail[ThemeColor::TYPE_FONT_SECONDARY]; ?>;
+        --font-color: #<?php echo $themeDetail[ThemeColor::TYPE_FONT]; ?>;
+        --font-color2: #<?php echo $themeDetail[ThemeColor::TYPE_FONT_SECONDARY]; ?>;
     }
 </style>
 <script type="text/javascript">
-<?php
+    <?php
 
-$isUserDashboard = ($isUserDashboard) ? 1 : 0;
-echo $str = 'var langLbl = ' . FatUtility::convertToJson($jsVariables, JSON_UNESCAPED_UNICODE) . ';
+    $isUserDashboard = ($isUserDashboard) ? 1 : 0;
+    echo $str = 'var langLbl = ' . FatUtility::convertToJson($jsVariables, JSON_UNESCAPED_UNICODE) . ';
     var CONF_AUTO_CLOSE_SYSTEM_MESSAGES = ' . FatApp::getConfig("CONF_AUTO_CLOSE_SYSTEM_MESSAGES", FatUtility::VAR_INT, 0) . ';
     var CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES = ' . FatApp::getConfig("CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES", FatUtility::VAR_INT, 3) . ';
     var CONF_ENABLE_GEO_LOCATION = ' . FatApp::getConfig("CONF_ENABLE_GEO_LOCATION", FatUtility::VAR_INT, 0) . ';
@@ -67,43 +67,53 @@ echo $str = 'var langLbl = ' . FatUtility::convertToJson($jsVariables, JSON_UNES
     if( CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES <= 0  ){
         CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES = 3;
     }';
-if (FatApp::getConfig("CONF_ENABLE_ENGAGESPOT_PUSH_NOTIFICATION", FatUtility::VAR_STRING, '')) {
-    echo FatApp::getConfig("CONF_ENGAGESPOT_PUSH_NOTIFICATION_CODE", FatUtility::VAR_STRING, '');
-    if (UserAuthentication::getLoggedUserId(true) > 0) { ?>
-    Engagespot.init()
-    Engagespot.identifyUser('YT_<?php echo UserAuthentication::getLoggedUserId(); ?>');
+    if (FatApp::getConfig("CONF_ENABLE_ENGAGESPOT_PUSH_NOTIFICATION", FatUtility::VAR_STRING, '')) {
+        echo FatApp::getConfig("CONF_ENGAGESPOT_PUSH_NOTIFICATION_CODE", FatUtility::VAR_STRING, '');
+        if (UserAuthentication::getLoggedUserId(true) > 0) { ?>
+            Engagespot.init()
+            Engagespot.identifyUser('YT_<?php echo UserAuthentication::getLoggedUserId(); ?>');
+        <?php }
+    }
+
+    if (Message::getMessageCount() || Message::getErrorCount() || Message::getDialogCount() || Message::getInfoCount()) { ?>
+            (function() {
+                if (CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
+                    var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 1000;
+                    setTimeout(function() {
+                        $.systemMessage.close();
+                    }, time);
+                }
+            })();
     <?php }
-}
 
-if (Message::getMessageCount() || Message::getErrorCount() || Message::getDialogCount() || Message::getInfoCount()) { ?>
-    (function() {
-        if (CONF_AUTO_CLOSE_SYSTEM_MESSAGES == 1) {
-            var time = CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES * 1000;
-            setTimeout(function() {
-                $.systemMessage.close();
-            }, time);
-        }
-    })();
-<?php }
-
-$pixelId = FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '');
-if ('' != $pixelId) { ?>
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '<?php echo $pixelId;?>');
+    $pixelId = FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '');
+    if ('' != $pixelId) { ?>
+            ! function(f, b, e, v, n, t, s) {
+                if (f.fbq) return;
+                n = f.fbq = function() {
+                    n.callMethod ?
+                        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n;
+                n.push = n;
+                n.loaded = !0;
+                n.version = '2.0';
+                n.queue = [];
+                t = b.createElement(e);
+                t.async = !0;
+                t.src = v;
+                s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '<?php echo $pixelId; ?>');
         fbq('track', 'PageView');
         var fbPixel = true;
-<?php } ?>
+    <?php } ?>
 </script>
 <?php if ('' !=  $pixelId) {  ?>
     <noscript>
-        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo $pixelId; ?>&ev=PageView&noscript=1"/>
+        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo $pixelId; ?>&ev=PageView&noscript=1" />
     </noscript>
 <?php }
 
@@ -111,12 +121,11 @@ if (FatApp::getConfig("CONF_GOOGLE_TAG_MANAGER_HEAD_SCRIPT", FatUtility::VAR_STR
     echo FatApp::getConfig("CONF_GOOGLE_TAG_MANAGER_HEAD_SCRIPT", FatUtility::VAR_STRING, '');
 }
 if (FatApp::getConfig("CONF_HOTJAR_HEAD_SCRIPT", FatUtility::VAR_STRING, '')) {
-   echo FatApp::getConfig("CONF_HOTJAR_HEAD_SCRIPT", FatUtility::VAR_STRING, '');
+    echo FatApp::getConfig("CONF_HOTJAR_HEAD_SCRIPT", FatUtility::VAR_STRING, '');
 }
 if (FatApp::getConfig("CONF_DEFAULT_SCHEMA_CODES_SCRIPT", FatUtility::VAR_STRING, '')) {
-   echo FatApp::getConfig("CONF_DEFAULT_SCHEMA_CODES_SCRIPT", FatUtility::VAR_STRING, '');
+    echo FatApp::getConfig("CONF_DEFAULT_SCHEMA_CODES_SCRIPT", FatUtility::VAR_STRING, '');
 }
 if (isset($layoutTemplate) && $layoutTemplate != '') { ?>
-<link rel="stylesheet"
-    href="<?php echo UrlHelper::generateUrl('ThemeColor', $layoutTemplate, array($layoutRecordId));?>">
+    <link rel="stylesheet" href="<?php echo UrlHelper::generateUrl('ThemeColor', $layoutTemplate, array($layoutRecordId)); ?>">
 <?php }
