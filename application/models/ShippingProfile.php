@@ -155,6 +155,13 @@ class ShippingProfile extends MyAppModel
                         }
                     }
                 }
+                
+                if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+                    $shipProfileArr = ShippingProfile::getProfileArr(0, true, true, true);
+                    $shippingProfileId = array_key_first($shipProfileArr);
+                    $userId = 0;
+                }
+                
                 $srch->addMultipleFields(array($userId . ' as user_id', $shippingProfileId . ' as shipprofile_id', 'product_id'));
                 $srch->doNotCalculateRecords();
                 $srch->doNotLimitRecords();
