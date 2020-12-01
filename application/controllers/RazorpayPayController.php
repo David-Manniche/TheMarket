@@ -61,9 +61,7 @@ class RazorpayPayController extends PaymentController
     public function callback()
     {
         $post = FatApp::getPostedData();
-        foreach ($post as $key => $value) {
-            $request .= '&' . $key . '=' . urlencode(FatUtility::decodeHtmlEntities($value, ENT_QUOTES, 'UTF-8'));
-        }
+       
         $razorpay_payment_id = $post['razorpay_payment_id'];
         $merchant_order_id = (isset($post['merchant_order_id'])) ? $post['merchant_order_id'] : 0;
         $orderPaymentObj = new OrderPayment($merchant_order_id, $this->siteLangId);

@@ -6,7 +6,7 @@ class StripePayController extends PaymentController
     public const KEY_NAME = 'Stripe';
 
     private $error = false;
-   
+
     public function __construct($action)
     {
         parent::__construct($action);
@@ -27,7 +27,7 @@ class StripePayController extends PaymentController
             'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW'
         ];
     }
-    
+
     protected function minChargeAmountCurrencies()
     {
         return [
@@ -83,9 +83,9 @@ class StripePayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $payableAmount = $this->formatPayableAmount($paymentAmount);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-               
+
         if (array_key_exists($this->systemCurrencyCode, $this->minChargeAmountCurrencies())) {
-            $stripeMinAmount = $this->minChargeAmountCurrencies()[$this->systemCurrencyCode];           
+            $stripeMinAmount = $this->minChargeAmountCurrencies()[$this->systemCurrencyCode];
             if ($stripeMinAmount > $paymentAmount) {
                 $this->error = CommonHelper::replaceStringData(Labels::getLabel('MSG_MINIMUM_STRIPE_CHARGE_AMOUNT_IS_{MIN-AMOUNT}', $this->siteLangId), ['{MIN-AMOUNT}' => $stripeMinAmount]);
             }
@@ -98,21 +98,21 @@ class StripePayController extends PaymentController
             /* $checkPayment = $this->doPayment($payableAmount, $orderInfo); */
             $frm = $this->getPaymentForm($orderId);
             $this->set('frm', $frm);
-            
+
             if (!empty($_POST['cc_number']) && 1 < count($_POST)) {
                 $charge = $this->stripeAuthentication($orderId);
                 if (isset($charge['id']) && $charge['id']) {
                     $payment_method = \Stripe\PaymentMethod::create([
                         'type' => 'card',
-                          'card' => [
+                        'card' => [
                             'number' => $_POST['cc_number'],
                             'exp_month' => $_POST['cc_expire_date_month'],
                             'exp_year' => $_POST['cc_expire_date_year'],
                             'cvc' => $_POST['cc_cvv'],
-                          ],
-                        ]);
+                        ],
+                    ]);
                     $payment_method = $payment_method->__toArray();
-                    
+
                     $this->set('order_id', $orderId);
                     $this->set('payment_intent_id', $charge['id']);
                     $this->set('payment_method_id', $payment_method['id']);
@@ -138,7 +138,7 @@ class StripePayController extends PaymentController
         if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
             $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
         }
-        
+
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
@@ -161,11 +161,11 @@ class StripePayController extends PaymentController
         if ($amount == null) {
             return false;
         }
-        
-        if (in_array($this->systemCurrencyCode, $this->zeroDecimalCurrencies())){         
+
+        if (in_array($this->systemCurrencyCode, $this->zeroDecimalCurrencies())) {
             return $amount;
         }
-        
+
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
     }
@@ -189,11 +189,11 @@ class StripePayController extends PaymentController
 
         return $frm;
     }
-    
+
     public function stripeAuthentication($orderId = 0)
-    {        
+    {
         $stripeToken = FatApp::getPostedData('stripeToken', FatUtility::VAR_STRING, '');
-        
+
         if (empty($stripeToken)) {
             $message = Labels::getLabel('MSG_The_Stripe_Token_was_not_generated_correctly', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL || FatUtility::isAjaxCall()) {
@@ -201,82 +201,82 @@ class StripePayController extends PaymentController
             }
             throw new Exception($message);
         }
-        
+
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $paymentAmount = $this->formatPayableAmount($paymentAmount);
-        
+
         $stripe = array(
             'secret_key' => $this->settings['privateKey'],
             'publishable_key' => $this->settings['publishableKey']
         );
-        
+
         $this->set('stripe', $stripe);
-        
+
         if (!empty(trim($this->settings['privateKey'])) && !empty(trim($this->settings['publishableKey']))) {
             \Stripe\Stripe::setApiKey($stripe['secret_key']);
         }
-        
+
         try {
             if (!empty(trim($this->settings['privateKey'])) && !empty(trim($this->settings['publishableKey']))) {
                 \Stripe\Stripe::setApiKey($stripe['secret_key']);
-                
+
                 $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-                
+
                 $customer = \Stripe\Customer::create([
-                            "email" => $orderInfo['customer_email'],
-                            "source" => $_POST['stripeToken'],
+                    "email" => $orderInfo['customer_email'],
+                    "source" => $_POST['stripeToken'],
                 ]);
                 $charge = \Stripe\PaymentIntent::create([
-                            "customer" => $customer->id,
-                            'amount' => $paymentAmount,
-                            'currency' => $this->systemCurrencyCode,
-                            'payment_method_types' => ['card'],
-                            'payment_method_options' => array('card' => array('installments' => null,'request_three_d_secure' => 'any')),
-                            'metadata'=>array('order_id'=>$orderId)
-                            
+                    "customer" => $customer->id,
+                    'amount' => $paymentAmount,
+                    'currency' => $this->systemCurrencyCode,
+                    'payment_method_types' => ['card'],
+                    'payment_method_options' => array('card' => array('installments' => null, 'request_three_d_secure' => 'any')),
+                    'metadata' => array('order_id' => $orderId)
+
 
                 ]);
-               
+
                 $charge = $charge->__toArray();
                 return $charge;
             }
         } catch (Exception $e) {
             $this->error = $e->getMessage();
         }
-        
+
         if ($this->error) {
             $this->setErrorAndRedirect($this->error, FatUtility::isAjaxCall());
         }
     }
-    
+
     public function stripeSuccess()
     {
         $stripe = [
             'secret_key' => $this->settings['privateKey'],
             'publishable_key' => $this->settings['publishableKey']
         ];
-       
+
         \Stripe\Stripe::setApiKey($stripe['secret_key']);
 
         $charge = \Stripe\PaymentIntent::retrieve(
             $_POST['payment_intent_id']
         );
-        
+
         $charge = $charge->__toArray();
-        
+
         $orderPaymentObj = new OrderPayment($_POST['order_id']);
-       
+
         $message = Labels::getLabel("MSG_PAYMENT_FAILED", $this->siteLangId);
         if (strtolower($charge['status']) == 'succeeded') {
-           
+
             /* Recording Payment in DB */
             /* $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
             $payableAmount = $this->formatPayableAmount($paymentAmount); */
-            $payment_amount = $charge['charges']['data'][0]['amount'];            
-            if (!in_array($this->systemCurrencyCode, $this->zeroDecimalCurrencies())){         
+            $payment_amount = $charge['charges']['data'][0]['amount'];
+            if (!in_array($this->systemCurrencyCode, $this->zeroDecimalCurrencies())) {
                 $payment_amount = $payment_amount / 100;
-            }            
+            }
             $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $charge['id'], ($payment_amount), Labels::getLabel("MSG_Received_Payment", $this->siteLangId), json_encode($charge));
             /* End Recording Payment in DB */
             if (false === MOBILE_APP_API_CALL) {
