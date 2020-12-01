@@ -26,7 +26,9 @@ foreach ($slides as $index => $slideDetail) {
         }
     }
 }
-/* foreach ($sponsoredProds as $index => $product) {
+/* 
+// Moved to collections.
+foreach ($sponsoredProds as $index => $product) {
     $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']);
     $sponsoredProds[$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $sponsoredProds[$index]['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
@@ -75,7 +77,34 @@ foreach ($collections as $collectionIndex => $collectionData) {
     } elseif (array_key_exists('banners', $collectionData) && isset($collectionData['banners']['banners'])) {
         foreach ($collectionData['banners']['banners'] as $index => $banner) {
             $uploadedTime = AttachedFile::setTimeParam($banner['banner_updated_on']);
+            $urlTypeData = CommonHelper::getUrlTypeData($banner['banner_url']);
+            if (false === $urlTypeData) {
+                $urlTypeData = array(
+                    'url' => $banner['banner_url'],
+                    'recordId' => 0,
+                    'urlType' => applicationConstants::URL_TYPE_EXTERNAL
+                );
+            }
+            
             $collections[$collectionIndex]['banners']['banners'][$index]['banner_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($banner['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+
+            $collections[$collectionIndex]['banners']['banners'][$index]['banner_url'] = ($urlTypeData['urlType'] == applicationConstants::URL_TYPE_EXTERNAL ? $banner['banner_url'] : $urlTypeData['recordId']);
+            $collections[$collectionIndex]['banners']['banners'][$index]['banner_url_type'] = $urlTypeData['urlType'];
+
+            switch ($urlTypeData['urlType']) {
+                case applicationConstants::URL_TYPE_SHOP:
+                    $collections[$collectionIndex]['banners']['banners'][$index]['banner_url_title'] = Shop::getName($urlTypeData['recordId'], $siteLangId);
+                    break;
+                case applicationConstants::URL_TYPE_PRODUCT:
+                    $collections[$collectionIndex]['banners']['banners'][$index]['banner_url_title'] = SellerProduct::getProductDisplayTitle($urlTypeData['recordId'], $siteLangId);
+                    break;
+                case applicationConstants::URL_TYPE_CATEGORY:
+                    $collections[$collectionIndex]['banners']['banners'][$index]['banner_url_title'] = ProductCategory::getProductCategoryName($urlTypeData['recordId'], $siteLangId);
+                    break;
+                case applicationConstants::URL_TYPE_BRAND:
+                    $collections[$collectionIndex]['banners']['banners'][$index]['banner_url_title'] = Brand::getBrandName($urlTypeData['recordId'], $siteLangId);
+                    break;
+            }
         }
     }
 }
@@ -86,50 +115,6 @@ $data = array(
     'collections' => array_values($collections),
 );
 
-/* foreach ($banners as $location => $bannerLocationDetail) {
-    foreach ($bannerLocationDetail['banners'] as $index => $bannerDetail) {
-        $uploadedTime = AttachedFile::setTimeParam($bannerDetail['banner_updated_on']);
-
-        switch ($bannerDetail['banner_blocation_id']) {
-            case BannerLocation::HOME_PAGE_BANNER_LAYOUT_1:
-                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                break;
-            case BannerLocation::HOME_PAGE_MOBILE_BANNER:
-                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerMiddleLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                break;
-            case BannerLocation::HOME_PAGE_BANNER_LAYOUT_2:
-                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerBottomLayout', array($bannerDetail['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                break;
-            default:
-                $bannerUrl = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'showOriginalBanner', array($bannerDetail['banner_id'], $siteLangId)).$uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-                break;
-        }
-
-        $banners[$location]['banners'][$index]['banner_image_url'] = $bannerUrl;
-
-        $urlTypeData = CommonHelper::getUrlTypeData($bannerDetail['banner_url']);
-        $banners[$location]['banners'][$index]['banner_url'] = ($urlTypeData['urlType'] == applicationConstants::URL_TYPE_EXTERNAL ? $bannerDetail['banner_url'] : $urlTypeData['recordId']);
-        $banners[$location]['banners'][$index]['banner_url_type'] = $urlTypeData['urlType'];
-
-        switch ($urlTypeData['urlType']) {
-            case applicationConstants::URL_TYPE_SHOP:
-                $banners[$location]['banners'][$index]['banner_url_title'] = Shop::getName($urlTypeData['recordId'], $siteLangId);
-                break;
-            case applicationConstants::URL_TYPE_PRODUCT:
-                $banners[$location]['banners'][$index]['banner_url_title'] = SellerProduct::getProductDisplayTitle($urlTypeData['recordId'], $siteLangId);
-                break;
-            case applicationConstants::URL_TYPE_CATEGORY:
-                $banners[$location]['banners'][$index]['banner_url_title'] = ProductCategory::getProductCategoryName($urlTypeData['recordId'], $siteLangId);
-                break;
-            case applicationConstants::URL_TYPE_BRAND:
-                $banners[$location]['banners'][$index]['banner_url_title'] = Brand::getBrandName($urlTypeData['recordId'], $siteLangId);
-                break;
-        }
-    }
-} 
-$data = array_merge($data, $banners); */
-
-
-if (empty($sponsoredProds) && empty($sponsoredShops) && empty($slides) && empty($collections) && empty($banners)) {
+if (empty($sponsoredProds) && empty($sponsoredShops) && empty($slides) && empty($collections)) {
     $status = applicationConstants::OFF;
 }
