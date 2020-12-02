@@ -216,7 +216,7 @@ class ConfigurationsController extends AdminBaseController
         }
 
         if (isset($post['CONF_SITE_ROBOTS_TXT'])) {
-            $filePath = CONF_INSTALLATION_PATH . 'public/robots.txt';
+            $filePath = CONF_UPLOADS_PATH . 'robots.txt';
             $robotfile = fopen($filePath, "w");
             fwrite($robotfile, $post['CONF_SITE_ROBOTS_TXT']);
             fclose($robotfile);
@@ -1921,16 +1921,24 @@ class ConfigurationsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $target_dir = CONF_INSTALLATION_PATH . 'public/';
+        $target_dir = CONF_UPLOADS_PATH;
         $file = $_FILES['verification_file']['name'];
         $temp_name = $_FILES['verification_file']['tmp_name'];
+        $path = pathinfo($file);
+        $ext = $path['extension'];
+        if (!in_array(strtoupper($ext), ['XML', 'HTML'])) {
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request_Or_File_not_supported', $this->adminLangId));
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         if ($fileType == 'bing') {
+            /*If we change file name then we also need to update in htacces file */
             $path_filename = $target_dir . 'BingSiteAuth.xml';
-        } else {
-            $path = pathinfo($file);
-            $filename = $path['filename'];
+        } else if ($fileType == 'google') {
+            $path_filename = $target_dir . 'google-site-verification.html';
+            /* $filename = $path['filename'];
             $ext = $path['extension'];
-            $path_filename = $filename . '.' . $ext;
+            $path_filename = $filename . '.' . $ext; */
         }
         // Check if file already exists
         if (file_exists($path_filename)) {
@@ -1947,13 +1955,14 @@ class ConfigurationsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $target_dir = CONF_INSTALLATION_PATH . 'public/';
+        $target_dir = CONF_UPLOADS_PATH;
         if ($fileType == 'bing') {
             $path_filename = $target_dir . 'BingSiteAuth.xml';
         } else {
-            $files = preg_grep('~^google.*\.html$~', scandir($target_dir));
+            $path_filename = $target_dir . 'google-site-verification.html';
+            /* $files = preg_grep('~^google.*\.html$~', scandir($target_dir));
             $file = current($files);
-            $path_filename = $target_dir . $file;
+            $path_filename = $target_dir . $file; */
         }
         if (file_exists($path_filename)) {
             unlink($path_filename);

@@ -469,12 +469,14 @@ Bugs:
     => 045769	Admin dashboard -subscription earning stats
     => 045799 - Import export issues catalog media for seller products from admin
     => 045828	In case of admin shipping only rates are not fetching from admin shipping profiles
-
     => 045820 - when last message is large then in listing UI distorts
     => 045815 - when new order is placed then in admin> seller order detail page> error is there
     => 045818 - when wrong url is hit then getting error above header and gets clear on hard refresh
     => 045818 - when wrong url is hit then getting error above header and gets clear on hard refresh
-
+    => 045812 - when digital order is placed then buyer gets email with blank info
+    => 045915	Google webmaster and bing file upload for verification
+    => 045924 - Footer Trust Banners image fill color issue
+----------------------TV-9.2.3.20201201------------------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
