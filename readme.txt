@@ -474,7 +474,7 @@ Bugs:
     => 045818 - when wrong url is hit then getting error above header and gets clear on hard refresh
     => 045818 - when wrong url is hit then getting error above header and gets clear on hard refresh
     => 045812 - when digital order is placed then buyer gets email with blank info
-
+    => 045915	Google webmaster and bing file upload for verification
 
 Enhancements:
     => Tax module upgrade
