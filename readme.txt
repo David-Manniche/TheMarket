@@ -475,6 +475,7 @@ Bugs:
     => 045818 - when wrong url is hit then getting error above header and gets clear on hard refresh
     => 045812 - when digital order is placed then buyer gets email with blank info
     => 045915	Google webmaster and bing file upload for verification
+    => 045924 - Footer Trust Banners image fill color issue
 ----------------------TV-9.2.3.20201201------------------------------
 Enhancements:
     => Tax module upgrade
