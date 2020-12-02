@@ -1227,3 +1227,5 @@ ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 ALTER TABLE `tbl_countries` CHANGE `country_id` `country_id` INT(11) NOT NULL AUTO_INCREMENT;
 
 UPDATE `tbl_plugins` SET `plugin_identifier` = '2Checkout' WHERE `plugin_code` = 'Twocheckout';
+ALTER TABLE `tbl_coupons_hold_pending_order` CHANGE `ochold_order_id` `ochold_order_id` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `tbl_notifications` CHANGE `notification_user_id` `notification_user_id` INT(11) NOT NULL;
