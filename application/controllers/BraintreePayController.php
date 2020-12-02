@@ -144,8 +144,8 @@ class BraintreePayController extends PaymentController
 
                     $charge = (array) $charge;
                     $message = Labels::getLabel("MSG_PAYMENT_FAILED", $this->siteLangId);
+                    $orderPaymentObj = new OrderPayment($orderInfo['id']);
                     if (!empty($charge) && 0 < count($charge)) {
-                        $orderPaymentObj = new OrderPayment($orderInfo['id']);
                         if (isset($charge['success']) && 0 < $charge['success'] || (isset($charge['transaction']) && !is_null($charge['transaction']))) {
                             
                             /* Recording Payment in DB */
