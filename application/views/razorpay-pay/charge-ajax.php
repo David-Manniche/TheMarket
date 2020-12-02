@@ -7,10 +7,10 @@ if (!isset($error)) { ?>
     <div class="gap"></div>
     <input type="submit" onclick="razorpaySubmit(this);" value="<?php echo $button_confirm; ?>" data-processing-text='<?php echo Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId); ?>' class="btn btn-brand" />
     <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
-    <?php
+<?php
 } else { ?>
     <div class="alert alert--danger"><?php echo $error; ?></div>
-<?php } 
+<?php }
 
 if (!FatUtility::isAjaxCall()) { ?>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -29,7 +29,7 @@ if (!FatUtility::isAjaxCall()) { ?>
             contact: "<?php echo $orderInfo["customer_phone"]; ?>"
         },
         notes: {
-            system_order_id: "<?php echo $orderInfo["id"];; ?>"
+            system_order_id: "<?php echo $orderInfo["id"]; ?>"
         },
         handler: function(transaction) {
             document.getElementById('razorpay_payment_id').value = transaction.razorpay_payment_id;

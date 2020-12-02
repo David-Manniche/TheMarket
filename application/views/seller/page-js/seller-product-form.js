@@ -174,6 +174,7 @@ $(document).on('change','.selprodoption_optionvalue_id',function(){
                         sellerProductDownloadFrm(t.product_id, 0);
                         return;
                     }
+                    setTimeout(function() {  location.reload(); }, 1000);
                 }
             });
             var counterString = langLbl.processing_counter.replace("{counter}", (i+1));

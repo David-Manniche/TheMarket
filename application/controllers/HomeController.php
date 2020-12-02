@@ -1,7 +1,5 @@
 <?php
 
-use Braintree\Collection;
-
 class HomeController extends MyAppController
 {
     public function index()

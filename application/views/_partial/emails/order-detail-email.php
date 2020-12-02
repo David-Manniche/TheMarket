@@ -30,8 +30,8 @@ $roundingOff = 0;
 foreach ($orderProductsData as $addrKey => $orderProducts) {
     $productHtml = '';
     $pickupHtml = '';
-    foreach ($orderProducts as $prodkey => $val) {
-        if (isset($val["opshipping_fulfillment_type"])) {
+    foreach ($orderProducts as $prodkey => $val) {       
+        if (isset($val["opshipping_fulfillment_type"]) || (isset($val["op_product_type"]) && $val["op_product_type"] == Product::PRODUCT_TYPE_DIGITAL)) {
             $opCustomerBuyingPrice = CommonHelper::orderProductAmount($val, 'CART_TOTAL');
             $shippingPrice = CommonHelper::orderProductAmount($val, 'SHIPPING');
             $discountedPrice = CommonHelper::orderProductAmount($val, 'DISCOUNT');
