@@ -535,7 +535,7 @@ class Orders extends MyAppModel
                 /* saving of products Charges log & log lang data[ */
                 $prodChargeslogData = $product['productChargesLogData'];
                 if (!empty($prodChargeslogData)) {
-                    foreach ($prodChargeslogData as $id => $prodChargeslog) {
+                    foreach ($prodChargeslogData as $op_id => $prodChargeslog) {
                         $opChargeLog = new OrderProductChargeLog($op_id);
                         $prodChargeslog['opchargelog_op_id'] = $op_id;
                         $opChargeLog->assignValues($prodChargeslog);
