@@ -535,7 +535,9 @@ class Orders extends MyAppModel
                 /* saving of products Charges log & log lang data[ */
                 $prodChargeslogData = $product['productChargesLogData'];
                 if (!empty($prodChargeslogData)) {
-                    foreach ($prodChargeslogData as $op_id => $prodChargeslog) {
+                    $db->deleteRecords(OrderProductChargeLog::DB_TBL, array('smt' => 'opchargelog_op_id = ?', 'vals' => array($op_id)));
+                    $db->deleteRecords(OrderProductChargeLog::DB_TBL_LANG, array('smt' => 'opchargeloglang_op_id = ?', 'vals' => array($op_id)));
+                    foreach ($prodChargeslogData as $id => $prodChargeslog) {
                         $opChargeLog = new OrderProductChargeLog($op_id);
                         $prodChargeslog['opchargelog_op_id'] = $op_id;
                         $opChargeLog->assignValues($prodChargeslog);
