@@ -1894,6 +1894,7 @@ class Importexport extends ImportexportCommon
                                     $colValue = Shipping::FULFILMENT_SHIP;
                                     break;
                             }
+                            $productId = FatUtility::int($productId);
                             $colValue = Product::setProductFulfillmentType($productId, $sellerId, $colValue);
                             break;
                     }
