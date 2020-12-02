@@ -3,7 +3,7 @@ RewriteRule ^sitemap/list_([0-9]+).xml$ user-uploads/sitemap/list_$1.xml [L]
 
 RewriteRule ^sitemap.xml$ user-uploads/sitemap.xml [L]
 RewriteRule ^robots.txt$ user-uploads/robots.txt [L]
-RewriteRule ^google(.*).html$ user-uploads/googlewebmaster.html [L]
+RewriteRule ^google(.*).html$ user-uploads/google-site-verification.html [L]
 RewriteRule ^favicon.ico image/favicon/1 [NC,L]
 
 <IfModule mod_headers.c>
@@ -22,7 +22,7 @@ FileETag None
     RewriteBase /
 	RewriteRule ^cache/(.*)/images/(.*) /images/$2 [L]
 	RewriteRule ^cache/(.*)/fonts/(.*) /fonts/$2 [L]
-	RewriteRule ^(scripts|user-uploads/text-editor|user-uploads/sitemap.xml|user-uploads/sitemap|user-uploads/robots.txt|user-uploads/BingSiteAuth.xml|user-uploads/googlewebmaster.html) - [L]
+	RewriteRule ^(scripts|user-uploads/text-editor|user-uploads/sitemap.xml|user-uploads/sitemap|user-uploads/robots.txt|user-uploads/BingSiteAuth.xml|user-uploads/google-site-verification.html) - [L]
     RewriteRule    ^$ public/    [L]
     RewriteRule    (.*) public/$1    [L]
 </IfModule>
