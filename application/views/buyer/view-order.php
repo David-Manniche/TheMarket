@@ -176,7 +176,7 @@ if (!$print) { ?>
                                     <?php }
 
                                     $volumeDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'VOLUME_DISCOUNT');
-                                    if (!empty($volumeDiscount)) { ?>
+                                    if (!empty($volumeDiscount) && 0 < $volumeDiscount) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>:
@@ -185,7 +185,7 @@ if (!$print) { ?>
                                         </p>
                                     <?php } ?>
                                     <?php $rewardPointDiscount = CommonHelper::orderProductAmount($childOrderDetail, 'REWARDPOINT');
-                                    if (!empty($rewardPointDiscount)) { ?>
+                                    if (!empty($rewardPointDiscount) && 0 < $rewardPointDiscount) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId); ?>:
@@ -223,15 +223,17 @@ if (!$print) { ?>
                                         </strong>
                                         <?php echo FatDate::format($childOrderDetail['order_date_added']); ?>
                                     </p>
-                                    <?php if ($childOrderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
+                                    <?php 
+                                    if ($childOrderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) { ?>
                                         <p>
                                             <strong>
                                                 <?php echo Labels::getLabel('LBL_Pickup_Date', $siteLangId); ?>:
                                             </strong>
                                             <?php
-                                            $fromTime = date('H:i', strtotime($childOrderDetail["opshipping_time_slot_from"]));
-                                            $toTime = date('H:i', strtotime($childOrderDetail["opshipping_time_slot_to"]));
-                                            echo FatDate::format($childOrderDetail["opshipping_date"]) . ' ' . $fromTime . ' - ' . $toTime;
+                                            $fromTime = isset($childOrderDetail["opshipping_time_slot_from"]) ? date('H:i', strtotime($childOrderDetail["opshipping_time_slot_from"])) : '';
+                                            $toTime = isset($childOrderDetail["opshipping_time_slot_to"]) ? date('H:i', strtotime($childOrderDetail["opshipping_time_slot_to"])) : '';
+                                            $date = isset($childOrderDetail["opshipping_date"]) ? FatDate::format($childOrderDetail["opshipping_date"]) : '';
+                                            echo  $date . ' ' . $fromTime . ' - ' . $toTime;
                                             ?>
                                         </p>
                                     <?php } ?>
@@ -492,7 +494,11 @@ if (!$print) { ?>
                                             </td>
                                         </tr>
                                         <?php } else {
-                                        foreach ($taxOptionsTotal as $key => $val) { ?>
+                                        foreach ($taxOptionsTotal as $key => $val) {
+                                            if (0 != $val['value']) {
+                                                continue;
+                                            }
+                                        ?>
                                             <tr>
                                                 <td colspan="8">
                                                     <?php echo $val['title']; ?>
@@ -517,7 +523,7 @@ if (!$print) { ?>
                                     <?php if (0 < $orderDetail['order_volume_discount_total']) { ?>
                                         <tr>
                                             <td colspan="8">
-                                                <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId) ?>
+                                                <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId);  ?>
                                             </td>
                                             <td>-
                                                 <?php echo CommonHelper::displayMoneyFormat($orderDetail['order_volume_discount_total'], true, false, true, false, true); ?>

@@ -28,7 +28,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
         <div class="content-header row">
             <div class="col">
                 <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>
-                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Messages', $siteLangId);?></h2>
+                <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Messages', $siteLangId); ?></h2>
             </div>
         </div>
         <div class="content-body">
@@ -44,7 +44,7 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                         $submitFld = $frmSrch->getField('btn_submit');
                                         $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block ');
 
-                                        $fldClear= $frmSrch->getField('btn_clear');
+                                        $fldClear = $frmSrch->getField('btn_clear');
                                         $fldClear->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
                                         echo $frmSrch->getFormHtml();
                                         ?>
