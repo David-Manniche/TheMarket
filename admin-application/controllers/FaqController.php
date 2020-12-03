@@ -374,6 +374,12 @@ class FaqController extends AdminBaseController
             $cond->attachCondition('faq_identifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
 
+        $collectionId = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
+        $alreadyAdded = Collections::getRecords($collectionId);
+        if (!empty($alreadyAdded) && 0 < count($alreadyAdded)) {
+            $srch->addCondition('faq_id', 'NOT IN', array_keys($alreadyAdded));
+        }
+
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();

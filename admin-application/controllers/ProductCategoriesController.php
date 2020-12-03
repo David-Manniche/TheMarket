@@ -422,12 +422,12 @@ class ProductCategoriesController extends AdminBaseController
     public function autocomplete()
     {
         $search_keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $collectionId = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
         $search_keyword = urldecode($search_keyword);
         $prodCateObj = new ProductCategory();
-        $categories = $prodCateObj->getProdCatAutoSuggest($search_keyword, 10, $this->adminLangId);
+        $categories = $prodCateObj->getProdCatAutoSuggest($search_keyword, 10, $this->adminLangId, $collectionId);
         $json = array();
-        $matches = $categories;
-        foreach ($matches as $key => $val) {
+        foreach ($categories as $key => $val) {
             $json[] = array(
             'id' => $key,
             'name' => strip_tags(html_entity_decode($val, ENT_QUOTES, 'UTF-8'))

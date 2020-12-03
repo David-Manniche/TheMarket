@@ -280,4 +280,43 @@ class Address extends MyAppModel
 
         return $address;
     }
+
+    /**
+     * formatUserAddress
+     *
+     * @param  int $type
+     * @param  int $orderId
+     * @param  int $addrArr
+     * @return array
+     */
+    public static function formatUserAddress(int $type, string $orderId, array $addrArr): array
+    {
+        $default = [
+            'addr_name' => '',
+            'addr_address1' => '',
+            'addr_address2' => '',
+            'addr_city' => '',
+            'state_name' => '',
+            'country_name' => '',
+            'country_code' => '',
+            'state_code' => '',
+            'addr_phone' => '',
+            'addr_zip' => '',
+        ];
+        $addrArr = array_merge($default, $addrArr);
+        return [
+            'oua_order_id' => $orderId,
+            'oua_type' => $type,
+            'oua_name' => $addrArr['addr_name'],
+            'oua_address1' => $addrArr['addr_address1'],
+            'oua_address2' => $addrArr['addr_address2'],
+            'oua_city' => $addrArr['addr_city'],
+            'oua_state' => $addrArr['state_name'],
+            'oua_country' => $addrArr['country_name'],
+            'oua_country_code' => $addrArr['country_code'],
+            'oua_state_code' => $addrArr['state_code'],
+            'oua_phone' => $addrArr['addr_phone'],
+            'oua_zip' => $addrArr['addr_zip'],
+        ];
+    }
 }
