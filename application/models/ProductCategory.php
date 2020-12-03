@@ -431,7 +431,7 @@ class ProductCategory extends MyAppModel
         return false;
     }
 
-    public function getProdCatAutoSuggest($keywords = '', $limit = 10, $langId = 0)
+    public function getProdCatAutoSuggest($keywords = '', $limit = 10, $langId = 0, $collectionId = 0)
     {
         $srch = static::getSearchObject(false, $langId);
         $srch->addFld('m.prodcat_id,m.prodcat_identifier,m.prodcat_parent');
@@ -440,6 +440,12 @@ class ProductCategory extends MyAppModel
         if (!empty($keywords)) {
             $srch->addCondition('m.prodcat_identifier', 'like', '%' . $keywords . '%');
         }
+
+        $alreadyAdded = Collections::getRecords($collectionId);
+        if (!empty($alreadyAdded) && 0 < count($alreadyAdded)) {
+            $srch->addCondition('prodcat_id', 'NOT IN', array_keys($alreadyAdded));
+        }
+
         $srch->addOrder('m.prodcat_parent', 'asc');
         $srch->addOrder('m.prodcat_display_order', 'asc');
         $srch->addOrder('m.prodcat_identifier', 'asc');
