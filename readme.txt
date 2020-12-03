@@ -490,6 +490,7 @@ Enhancements:
     ------------TV-9.2.1.20200925------------------------
     => Enhance discount module added brand and shop discounts    
     ---------------TV-9.2.3.20201121--------------------
+    => Labels management seperated in files for better Performance.
 
 Notes:
     

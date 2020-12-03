@@ -4,7 +4,16 @@ class DummyController extends AdminBaseController
 {
     public function index()
     {
-          
+       /*  $langId = 1;
+        $type = 1;
+        $srch = Labels::getSearchObject($langId, ['LEFT(label_key, 3) as keyfilename']);
+        $srch->addCondition('label_type', '=', $type);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $srch->addGroupBy('keyfilename');
+        $rs = $srch->getResultSet();
+        echo $srch->getQuery(); exit; */
+
         $orderObj = new Orders();
         $orderDetail = $orderObj->getOrderById('O1605086396', 1);
         CommonHelper::printArray($orderDetail, true); exit;
