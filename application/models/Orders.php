@@ -294,26 +294,40 @@ class Orders extends MyAppModel
     {
         $db = FatApp::getDb();
 
-        $ordersLangData = $data['orderLangData'];
+        $ordersLangData = [];
+        if (array_key_exists('orderLangData', $data)) {
+            $ordersLangData = $data['orderLangData'];
+            unset($data['orderLangData']);
+        }
 
-        unset($data['orderLangData']);
-
-        $discountInfo = array();
+        $discountInfo = [];
         if (array_key_exists('order_discount_info', $data)) {
             $discountInfo = json_decode($data['order_discount_info'], true);
         }
 
-        $products = $data['products'];
-        unset($data['products']);
+        $products = [];
+        if (array_key_exists('products', $data)) {
+            $products = $data['products'];
+            unset($data['products']);
+        }
 
-        $addresses = $data['userAddresses'];
-        unset($data['userAddresses']);
+        $addresses = [];
+        if (array_key_exists('userAddresses', $data)) {
+            $addresses = $data['userAddresses'];
+            unset($data['userAddresses']);
+        }
 
-        $extras = $data['extra'];
-        unset($data['extra']);
+        $extras = [];
+        if (array_key_exists('extra', $data)) {
+            $extras = $data['extra'];
+            unset($data['extra']);
+        }
 
-        $prodCharges = $data['prodCharges'];
-        unset($data['prodCharges']);
+        $prodCharges = [];
+        if (array_key_exists('prodCharges', $data)) {
+            $prodCharges = $data['prodCharges'];
+            unset($data['prodCharges']);
+        }
 
         if (!$data['order_id']) {
             $order_id = $this->generateOrderId();
@@ -355,8 +369,8 @@ class Orders extends MyAppModel
 
         $_SESSION['shopping_cart']["order_id"] = $this->getOrderId();
 
-        $db->deleteRecords(static::DB_TBL_LANG, array('smt' => 'orderlang_order_id = ?', 'vals' => array($this->getOrderId())));
         if (!empty($ordersLangData)) {
+            $db->deleteRecords(static::DB_TBL_LANG, array('smt' => 'orderlang_order_id = ?', 'vals' => array($this->getOrderId())));
             $recordObj = new TableRecord(static::DB_TBL_LANG);
             foreach ($ordersLangData as $orderLangData) {
                 $orderLangData['orderlang_order_id'] = $this->getOrderId();
@@ -608,9 +622,8 @@ class Orders extends MyAppModel
             }
         }
         /* CommonHelper::printArray($addresses);die; */
-        // $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ?', 'vals' => array($this->getOrderId())));
-        $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ? and oua_op_id = ?', 'vals' => array($this->getOrderId(), 0)));
         if (!empty($addresses)) {
+            $db->deleteRecords(static::DB_TBL_ORDER_USER_ADDRESS, array('smt' => 'oua_order_id = ? and oua_op_id = ?', 'vals' => array($this->getOrderId(), 0)));
             $ouaRecordObj = new TableRecord(static::DB_TBL_ORDER_USER_ADDRESS);
             foreach ($addresses as $address) {
                 $address['oua_order_id'] = $this->getOrderId();
