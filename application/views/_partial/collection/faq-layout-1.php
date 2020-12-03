@@ -8,7 +8,9 @@
         <div class="container">
             <div class="section-head  section--head--center">
                 <div class="section__heading">
-                    <h2><?php echo Labels::getLabel('LBL_Frequently_Asked_Questions', $siteLangId); ?></h2>
+                    <h2>
+                        <?php echo $collection['collection_name']; ?>
+                    </h2>
                 </div>
             </div>
             <div id="" class="tabs faqTabs--flat-js tabs-faqs justify-content-md-center">
