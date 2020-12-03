@@ -2809,10 +2809,10 @@ class AccountController extends LoggedUserController
         }
         $parent = User::getAttributesById(UserAuthentication::getLoggedUserId(true), 'user_parent');
         if (User::isAdvertiser() && $parent == 0) {
-            $fld = $frm->addTextBox(Labels::getLabel('L_Company', $this->siteLangId), 'user_company');
-            $fld = $frm->addTextArea(Labels::getLabel('L_Brief_Profile', $this->siteLangId), 'user_profile_info');
-            $fld->html_after_field = '<small>' . Labels::getLabel('L_Please_tell_us_something_about_yourself', $this->siteLangId) . '</small>';
-            $frm->addTextArea(Labels::getLabel('L_What_kind_products_services_advertise', $this->siteLangId), 'user_products_services');
+            $fld = $frm->addTextBox(Labels::getLabel('LBL_COMPANY', $this->siteLangId), 'user_company');
+            $fld = $frm->addTextArea(Labels::getLabel('LBL_BRIEF_PROFILE', $this->siteLangId), 'user_profile_info');
+            $fld->html_after_field = '<small>' . Labels::getLabel('LBL_PLEASE_TELL_US_SOMETHING_ABOUT_YOURSELF', $this->siteLangId) . '</small>';
+            $frm->addTextArea(Labels::getLabel('LBL_WHAT_KIND_PRODUCTS_SERVICES_ADVERTISE', $this->siteLangId), 'user_products_services');
         }
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE_CHANGES', $this->siteLangId));

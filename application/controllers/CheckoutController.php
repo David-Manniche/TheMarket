@@ -1694,8 +1694,20 @@ class CheckoutController extends MyAppController
 
         $this->set('msg', Labels::getLabel("MSG_Used_Reward_point", $this->siteLangId) . '-' . $rewardPoints);
         if (true === MOBILE_APP_API_CALL) {
+            $orderObj = new Orders();
+            $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
+            $financialSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
             $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
             $cartProducts = $cartObj->getProducts($this->siteLangId);
+
+            $orderData['order_id'] = $orderId;
+            $orderData['order_type'] = $orderInfo["order_type"];
+            $orderData['order_net_amount'] = $financialSummary["orderNetAmount"];
+            $orderData['order_reward_point_used'] = $financialSummary["cartRewardPoints"];
+            $orderData['order_reward_point_value'] = CommonHelper::convertRewardPointToCurrency($financialSummary["cartRewardPoints"]);
+            if (!$orderObj->addUpdateOrder($orderData, $this->siteLangId)) {
+                FatUtility::dieJsonError($orderObj->getError());
+            }
 
             $this->set('cartSummary', $cartSummary);
             $this->set('products', $cartProducts);
@@ -1718,8 +1730,25 @@ class CheckoutController extends MyAppController
         }
         $this->set('msg', Labels::getLabel("MSG_used_reward_point_removed", $this->siteLangId));
         if (true === MOBILE_APP_API_CALL) {
+            $orderId = FatApp::getPostedData('orderId', FatUtility::VAR_STRING, '');
+            if (empty($orderId)) {
+                FatUtility::dieJsonError(Labels::getLabel('LBL_ORDER_ID_IS_REQUIRED', $this->siteLangId));
+            }
+
+            $orderObj = new Orders();
+            $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
+            $financialSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
             $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
             $cartProducts = $cartObj->getProducts($this->siteLangId);
+
+            $orderData['order_id'] = $orderId;
+            $orderData['order_type'] = $orderInfo["order_type"];
+            $orderData['order_net_amount'] = $financialSummary["orderNetAmount"];
+            $orderData['order_reward_point_used'] = $financialSummary["cartRewardPoints"];
+            $orderData['order_reward_point_value'] = CommonHelper::convertRewardPointToCurrency($financialSummary["cartRewardPoints"]);
+            if (!$orderObj->addUpdateOrder($orderData, $this->siteLangId)) {
+                FatUtility::dieJsonError($orderObj->getError());
+            }
 
             $this->set('cartSummary', $cartSummary);
             $this->set('products', $cartProducts);
@@ -2152,7 +2181,7 @@ class CheckoutController extends MyAppController
         $orderId = isset($_SESSION['order_id']) ? $_SESSION['order_id'] : '';
         $couponsList = DiscountCoupons::getValidCoupons($loggedUserId, $this->siteLangId, '', $orderId);
         $this->set('couponsList', $couponsList);
-        
+
         if (true === MOBILE_APP_API_CALL) {
             $this->_template->render();
         }

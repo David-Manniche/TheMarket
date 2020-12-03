@@ -968,7 +968,13 @@ class CollectionsController extends AdminBaseController
         $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
 
         $srch->addMultipleFields(array('selprod_id', 'IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title'));
-        /* echo $srch->getQuery(); */
+        
+        $collectionId = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
+        $alreadyAdded = Collections::getRecords($collectionId);
+        if (!empty($alreadyAdded) && 0 < count($alreadyAdded)) {
+            $srch->addCondition('selprod_id', 'NOT IN', array_keys($alreadyAdded));
+        }
+
         $rs = $srch->getResultSet();
 
         $products = $db->fetchAll($rs, 'selprod_id');

@@ -32,7 +32,8 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                         $product['shopUrl'] = UrlHelper::generateFullUrl('Shops', 'View', array($product['shop_id']));
                         $product['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
 
-                        $data['rates']['data'][] = isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : (object)[];
+                        $selectedRates = isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : (object)[];
+                        $data['rates']['data'] = [$selectedRates];
 
                         $data['products'][] = $product;
                     }
@@ -49,14 +50,13 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                             $productItems[$shippedBy]['title'] = $product['shop_name'];
                         }
 
-                        $priceListCount = isset($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) ? count($shippedByItemArr[$shipLevel]['rates'][$product['selprod_id']]) : 0;
-
                         $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
                         $product['shopUrl'] = UrlHelper::generateFullUrl('Shops', 'View', array($product['shop_id']));
                         $product['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
                         $data['products'] = [$product];
                         $data['shipLevel'] = $shipLevel;
-                        $data['rates']['data'][] = isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : (object)[];
+                        $selectedRates = isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : (object)[];
+                        $data['rates']['data'] = [$selectedRates];
                         $productItems[$shippedBy]['data'][] = $data;
                     }
                 }

@@ -767,4 +767,25 @@ class Collections extends MyAppModel
         }
         return true;
     }
+    
+    /**
+     * getRecords
+     *
+     * @param  int $collectionId
+     * @return array
+     */
+    public static function getRecords(int $collectionId): array
+    {
+        if (1 > $collectionId) {
+            return [];
+        }
+        
+        $srch = new SearchBase(self::DB_TBL_COLLECTION_TO_RECORDS);
+        $srch->addCondition(Collections::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
+        $srch->addMultipleFields(array('ctr_record_id', 'ctr_collection_id'));
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $res = $srch->getResultSet();
+        return (array) FatApp::getDb()->fetchAllAssoc($res);
+    }
 }

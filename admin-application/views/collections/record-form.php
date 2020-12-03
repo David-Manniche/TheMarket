@@ -81,6 +81,7 @@ switch ($collection_type) {
     $("document").ready(function() {
         var controllerName = '<?php echo $controllerName; ?>';
         var actionName = '<?php echo $actionName; ?>';
+		var collectionId = $("input[name='collection_id']").val();
         $('input[name=\'collection_records\']').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
@@ -90,7 +91,8 @@ switch ($collection_type) {
                     url: fcom.makeUrl(controllerName, actionName),
                     data: {
                         keyword: request['term'],
-                        fIsAjax: 1
+                        fIsAjax: 1,
+                        collection_id: collectionId,
                     },
                     dataType: 'json',
                     type: 'post',

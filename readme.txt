@@ -476,7 +476,9 @@ Bugs:
     => 045812 - when digital order is placed then buyer gets email with blank info
     => 045915	Google webmaster and bing file upload for verification
     => 045924 - Footer Trust Banners image fill color issue
+    => 045923 - android- rewards applied are getting removed from payment screen
     => 046046 - Phone no with 15 number not accepting
+
 ----------------------TV-9.2.3.20201201------------------------------
 Enhancements:
     => Tax module upgrade
@@ -491,6 +493,7 @@ Enhancements:
     ------------TV-9.2.1.20200925------------------------
     => Enhance discount module added brand and shop discounts    
     ---------------TV-9.2.3.20201121--------------------
+    => Labels management seperated in files for better Performance.
 
 Notes:
     
