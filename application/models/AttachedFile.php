@@ -279,10 +279,12 @@ class AttachedFile extends MyAppModel
                 return false;
             }
 
-            $fileMimeType = mime_content_type($file);
-            if (false === in_array($fileMimeType, applicationConstants::allowedMimeTypes())) {
-                $this->error = Labels::getLabel('MSG_INVALID_FILE_MIME_TYPE', $defaultLangIdForErrors);
-                return false;
+            if (strpos(CONF_UPLOADS_PATH, 's3://') === false) {
+                $fileMimeType = mime_content_type($file);
+                if (false === in_array($fileMimeType, applicationConstants::allowedMimeTypes())) {
+                    $this->error = Labels::getLabel('MSG_INVALID_FILE_MIME_TYPE', $defaultLangIdForErrors);
+                    return false;
+                }
             }
         } else {
             $this->error = Labels::getLabel('MSG_NO_FILE_UPLOADED', $defaultLangIdForErrors);
@@ -307,7 +309,15 @@ class AttachedFile extends MyAppModel
         /* ] */
         $path = $path . $date_wise_path;
 
-        $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9]/', '', $name);
+        if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
+            $fileExt = pathinfo($name, PATHINFO_EXTENSION);
+            $fileExt = strtolower($fileExt);
+            if ('zip' == $fileExt) {
+                $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9.]/', '', $name);
+            }
+        } else {
+            $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9]/', '', $name);
+        }
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -322,6 +332,9 @@ class AttachedFile extends MyAppModel
             return false;
         }
 
+        if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
+            $saveName = preg_replace('/[^a-zA-Z0-9-]/', '', $saveName);
+        }
         $fileLoc = $date_wise_path . $saveName;
 
         return $this->updateFileToDb($fileType, $recordId, $recordSubid, $fileLoc, $name, $langId, $screen, $displayOrder, $uniqueRecord, $aspectRatio);
@@ -462,7 +475,7 @@ class AttachedFile extends MyAppModel
     /* always call this function using image controller and pass relavant arguments. */
     public static function displayImage($image_name, $w, $h, $no_image = '', $uploadedFilePath = '', $resizeType = ImageResize::IMG_RESIZE_EXTRA_ADDSPACE, $apply_watermark = false, $cache = true, $imageCompression = true)
     {
-        ob_end_clean();        
+        ob_end_clean();
         ini_set('memory_limit', '-1');
         if ($no_image == '') {
             $no_image = 'images/defaults/no_image.jpg';
@@ -562,7 +575,7 @@ class AttachedFile extends MyAppModel
 
         if (CONF_USE_FAT_CACHE && $cache) {
             ob_end_clean();
-            ob_start();            
+            ob_start();
             ini_set('memory_limit', '-1');
             static::setContentType($imagePath, $fileMimeType);
             if ($imageCompression) {

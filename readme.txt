@@ -478,6 +478,7 @@ Bugs:
     => 045924 - Footer Trust Banners image fill color issue
     => 045923 - android- rewards applied are getting removed from payment screen
     => 046046 - Phone no with 15 number not accepting
+    => 046113	S3 bucket bulk media issue
 
 ----------------------TV-9.2.3.20201201------------------------------
 Enhancements:
@@ -518,3 +519,37 @@ Notes:
     Please replace tbl_countries, tbl_states from db_withdata.sql.
 
     Please hit <site-url>/admin/patch-update/update-category-relations to update all parent to child level relations in case of updating db.
+
+    s3 bucket notes for bulk media:
+        => Create a Lambda function.
+        => Add trigers and upload zip file from  git-ignored-files/user-uploads/lib-files/fatbit-s3-zip-extractor.zip
+        => Set permission and update Resource based on function created by you.
+        {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": "logs:CreateLogGroup",
+                "Resource": "arn:aws:logs:us-east-2:765751105868:*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ],
+                "Resource": "arn:aws:logs:*:*:*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:DeleteObject"
+                ],
+                "Resource": [
+                    "*"
+                ]
+            }
+        ]
+        }

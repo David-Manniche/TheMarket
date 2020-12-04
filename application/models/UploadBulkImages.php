@@ -28,7 +28,7 @@ class UploadBulkImages extends FatModel
         }
 
         $srch->addMultipleFields(
-            array( 'afile_physical_path', 'afile_name', 'afile_record_id', 'credential_username', 'credential_email' )
+            array('afile_physical_path', 'afile_name', 'afile_record_id', 'credential_username', 'credential_email')
         );
 
         $srch->addOrder('afile_id', 'DESC');
@@ -46,7 +46,7 @@ class UploadBulkImages extends FatModel
             return Labels::getLabel('LBL_Invalid_Directory.', $this->langId);
         }
 
-        $files = array_diff(scandir($dirPath), array( '..', '.' ));
+        $files = array_diff(scandir($dirPath), array('..', '.'));
 
         if (0 < count($files)) {
             foreach ($files as $file) {
@@ -80,7 +80,7 @@ class UploadBulkImages extends FatModel
         }
 
         if (is_dir($dirPath)) {
-            $directories = array_diff(scandir($dirPath), array( '..', '.' ));
+            $directories = array_diff(scandir($dirPath), array('..', '.'));
 
             if (0 < count($directories)) {
                 foreach ($directories as $dir) {
@@ -118,8 +118,8 @@ class UploadBulkImages extends FatModel
     {
         $afile_physical_path = rtrim(str_replace($this->bulkRoot, '', $dirPath), '/');
         $this->db->deleteRecords(AttachedFile::DB_TBL, array(
-                'smt' => 'afile_type = ? AND afile_physical_path = ?',
-                'vals' => array( AttachedFile::FILETYPE_BULK_IMAGES, $afile_physical_path )
+            'smt' => 'afile_type = ? AND afile_physical_path = ?',
+            'vals' => array(AttachedFile::FILETYPE_BULK_IMAGES, $afile_physical_path)
         ));
     }
 
@@ -143,6 +143,11 @@ class UploadBulkImages extends FatModel
             return false;
         }
 
+        /* In case of s3 bucket unzip handled via lambda function for bulk upload */
+        if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
+            return $savedFile;
+        }
+
         if (false === $fileHandlerObj->extractZip($path . $savedFile)) {
             $this->error = Labels::getLabel('MSG_COULD_NOT_SAVE_FILE', $this->langId);
             return false;
@@ -157,18 +162,18 @@ class UploadBulkImages extends FatModel
             return false;
         }
         $locations = [];
-        if (file_exists($path)) {
+        if (is_dir($path)) {
             $allFiles = scandir($path);
-            $files = array_diff($allFiles, array( '..', '.' ));
+            $files = array_diff($allFiles, array('..', '.'));
             foreach ($files as $fileName) {
                 if (is_dir($path . '/' . $fileName)) {
                     $subLocations = static::getAllFilesPath($path . '/' . $fileName);
                     $locations = array_merge($locations, $subLocations);
                 } else {
                     $locations[] = array(
-                                        str_replace(CONF_UPLOADS_PATH, '', $path . '/' . $fileName),
-                                        $fileName
-                                    );
+                        str_replace(CONF_UPLOADS_PATH, '', $path . '/' . $fileName),
+                        $fileName
+                    );
                 }
             }
             return $locations;
