@@ -9,6 +9,8 @@ class Labels extends MyAppModel
     public const TYPE_WEB = 1;
     public const TYPE_APP = 2;
 
+    private const DIR_LENGTH = 2;
+
     public function __construct($labelId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $labelId);
@@ -25,9 +27,28 @@ class Labels extends MyAppModel
     public static function getTypeArr($langId)
     {
         return array(
-            static::TYPE_WEB => Labels::getLabel('LBL_Web', $langId),
-            static::TYPE_APP => Labels::getLabel('LBL_App', $langId)
+            static::TYPE_WEB => self::getLabel('LBL_Web', $langId),
+            static::TYPE_APP => self::getLabel('LBL_App', $langId)
         );
+    }
+
+    public static function getPrefixTypes($langId)
+    {
+        return
+            [
+                'GEN' => self::getLabel('GEN_GENERAL', $langId),
+                'TXT' => self::getLabel('GEN_TEXT', $langId),
+                'LBL' => self::getLabel('GEN_LABELS', $langId),
+                'MSG' => self::getLabel('GEN_SYSTEM_MESSAGES', $langId),
+                'APP' => self::getLabel('GEN_APP', $langId),
+                'API' => self::getLabel('GEN_THIRD_PARTY_API', $langId),
+                'BTN' => self::getLabel('GEN_BUTTONS', $langId),
+                'INV' => self::getLabel('GEN_ORDER_OR_INVOICES', $langId),
+                'VLBL' => self::getLabel('GEN_VALIDATION_LABELS', $langId),
+                'USER' => self::getLabel('GEN_USER_NOTIFICATION', $langId),
+                'L' => self::getLabel('GEN_LABELS', $langId),
+                'M' => self::getLabel('GEN_SYSTEM_MESSAGES', $langId),
+            ];
     }
 
     public static function getSearchObject($langId = 0, $attr = '')
@@ -157,15 +178,16 @@ class Labels extends MyAppModel
         if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
             return;
         }
+        $keyFileName = strtoupper(substr($key, 0, self::DIR_LENGTH));
 
         global $languages;
         if (!isset($languages[$langId])) {
             $languages[$langId] = Language::getAttributesById($langId, 'language_code', false);
         }
 
-        $jsonfile = CONF_UPLOADS_PATH . static::JSON_FILE_DIR_NAME . '/' . $type . '/' . $languages[$langId] . '.json';
+        $jsonfile = CONF_UPLOADS_PATH . static::JSON_FILE_DIR_NAME . '/' . $type . '/' . $keyFileName . '/' . $languages[$langId] . '.json';
         if (!file_exists($jsonfile)) {
-            Labels::updateDataToFile($langId, $languages[$langId], $type);
+            Labels::updateDataToFile($langId, $languages[$langId], $type, false, $key);
         }
 
         if ($returnArr === true) {
@@ -209,25 +231,64 @@ class Labels extends MyAppModel
         return $cacheKey = $_SERVER['SERVER_NAME'] . '_' . $key . '_' . $langId;
     }
 
-    public static function updateDataToFile($langId, $langCode = '', $type = Labels::TYPE_WEB, $updateForceFully = false)
+    public static function updateDataToFile($langId, $langCode = '', $type = Labels::TYPE_WEB, $updateForceFully = false, $key = '')
     {
         if (empty($langCode)) {
             $langCode = Language::getAttributesById($langId, 'language_code', false);
         }
-        
+
         $lastLabelsUpdatedAt = FatApp::getConfig('CONF_LANG_LABELS_UPDATED_AT', FatUtility::VAR_INT, time());
 
         $path = CONF_UPLOADS_PATH . static::JSON_FILE_DIR_NAME . '/' . $type . '/';
+        $keyFileName = '';
+        if (!empty($key) && false == $updateForceFully) {
+            $keyFileName = strtoupper(substr($key, 0, self::DIR_LENGTH));
+            $path .=  $keyFileName . '/';
+        }
+
         if (!file_exists($path)) {
             if (!mkdir($path, 0777, true)) {
                 return false;
             }
         }
 
+
+        if (true == $updateForceFully) {
+            $fld = [
+                'LEFT(label_key, ' . self::DIR_LENGTH  . ') as keyfilename'
+            ];
+            $srch = static::getSearchObject($langId, [$fld]);
+            $srch->addCondition('label_type', '=', $type);
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
+            $srch->addGroupBy('keyfilename');
+            $rs = $srch->getResultSet();
+            while ($row = FatApp::getDb()->fetch($rs)) {
+                $langFile = $path . $row['keyfilename'] . '/' . $langCode . '.json';
+
+                if (!file_exists($path . $row['keyfilename'] . '/')) {
+                    if (!mkdir($path . $row['keyfilename'] . '/', 0777, true)) {
+                        continue;
+                    }
+                }
+
+                $records = static::fetchAllAssoc($langId, array('label_key', 'label_caption'), $type, $row['keyfilename']);
+                $records = empty($records) ? (object) array() : $records;
+                if (!FatUtility::convertToJson($records, JSON_UNESCAPED_UNICODE)) {
+                    continue;
+                }
+
+                if (!file_put_contents($langFile, FatUtility::convertToJson($records, JSON_UNESCAPED_UNICODE))) {
+                    continue;
+                }
+            }
+            // return true;
+        }
+
         $langFile = $path . $langCode . '.json';
-        if (!file_exists($langFile) || (filemtime($langFile) < $lastLabelsUpdatedAt) || 1 > filesize($langFile) || $updateForceFully == true) {
-            $records = static::fetchAllAssoc($langId, array('label_key', 'label_caption'), $type);
-            $records = empty($records) ? (object)array() : $records;
+        if ((!file_exists($langFile) || (filemtime($langFile) < $lastLabelsUpdatedAt) || 1 > filesize($langFile)) && $updateForceFully == false) {
+            $records = static::fetchAllAssoc($langId, array('label_key', 'label_caption'), $type, $keyFileName);
+            $records = empty($records) ? (object) array() : $records;
             if (!FatUtility::convertToJson($records, JSON_UNESCAPED_UNICODE)) {
                 return false;
             }
@@ -235,16 +296,19 @@ class Labels extends MyAppModel
                 return false;
             }
         }
-        
+
         return true;
     }
 
 
-    public static function fetchAllAssoc($langId, $attr = '', $type = Labels::TYPE_WEB)
+    public static function fetchAllAssoc($langId, $attr = '', $type = Labels::TYPE_WEB, $keyPrefix = '')
     {
         $srch = static::getSearchObject($langId, $attr);
         $srch->joinTable('tbl_languages', 'inner join', 'label_lang_id = language_id and language_active = ' . applicationConstants::ACTIVE);
         $srch->addCondition('label_type', '=', $type);
+        if (!empty($keyPrefix)) {
+            $srch->addCondition('label_key', 'like', $keyPrefix . '%');
+        }
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();

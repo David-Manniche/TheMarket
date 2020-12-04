@@ -535,7 +535,7 @@ class HomeController extends MyAppController
         }
         $collections = array();
 
-        $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);        
+        $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);
         $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));
 
         $collectionObj = new CollectionSearch();
@@ -680,7 +680,7 @@ class HomeController extends MyAppController
                             //$subCategorySrch->addOrder('ctr.ctr_record_id', 'ASC');
                             $subCategorySrch->setPageSize(5);
                             $Catrs = $subCategorySrch->getResultSet();
-                            
+
                             if (true === MOBILE_APP_API_CALL) {
                                 $collections[$i]['categories'][$counter] = $catData;
                                 // $collections[$i]['categories'][$counter]['subCategories'] = $db->fetchAll($Catrs);
@@ -1349,7 +1349,7 @@ class HomeController extends MyAppController
             LibHelper::dieJsonError(Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId));
         }
         $detail = CommonHelper::getUrlTypeData($url);
-        $this->set('data', ['urlSegmentsDetail' => (object)$detail]);
+        $this->set('data', ['urlSegmentsDetail' => (object) $detail]);
         $this->_template->render();
     }
 
