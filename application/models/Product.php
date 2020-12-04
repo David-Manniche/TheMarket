@@ -966,13 +966,10 @@ class Product extends MyAppModel
         return $stockHoldRow['stockHold'];
     }
 
-    public function addUpdateUserFavoriteProduct($user_id, $product_id)
+    public function addUpdateUserFavoriteProduct(int $user_id, int $selProdId)
     {
-        $user_id = FatUtility::int($user_id);
-        $product_id = FatUtility::int($product_id);
-
-        $data_to_save = array('ufp_user_id' => $user_id, 'ufp_selprod_id' => $product_id);
-        $data_to_save_on_duplicate = array('ufp_selprod_id' => $product_id);
+        $data_to_save = array('ufp_user_id' => $user_id, 'ufp_selprod_id' => $selProdId);
+        $data_to_save_on_duplicate = array('ufp_selprod_id' => $selProdId);
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_PRODUCT_FAVORITE, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
             $this->error = FatApp::getDb()->getError();
             return false;

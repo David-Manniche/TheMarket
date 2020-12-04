@@ -477,6 +477,8 @@ Bugs:
     => 045915	Google webmaster and bing file upload for verification
     => 045924 - Footer Trust Banners image fill color issue
     => 045923 - android- rewards applied are getting removed from payment screen
+    => 045933 - android- rating needs to be round figure on app
+    => 045930 - android- shipping/pickup option are not there
     => 046046 - Phone no with 15 number not accepting
     => 046113	S3 bucket bulk media issue
 
