@@ -3,20 +3,21 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
 <main id="main-area" class="main" role="main">
     <div class="content-wrapper content-space">
         <div class="content-header row justify-content-between mb-3">
-            <?php //$this->includeTemplate('_partial/dashboardTop.php'); ?>
+            <?php //$this->includeTemplate('_partial/dashboardTop.php'); 
+            ?>
             <div class="col-md-auto">
                 <h2 class="content-header-title">
-                    <?php 
-                    if($type == 1){ 
+                    <?php
+                    if ($type == 1) {
                         echo Labels::getLabel('LBL_Seller_Products', $siteLangId);
-                    }else{ 
-                        echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId); 
-                    } 
-                    ?>  
+                    } else {
+                        echo Labels::getLabel('LBL_Marketplace_Products', $siteLangId);
+                    }
+                    ?>
                     <i class="fa fa-question-circle" onClick="productInstructions(<?php echo Extrapage::MARKETPLACE_PRODUCT_INSTRUCTIONS; ?>)"></i>
-                </h2>                
-            </div>   
-            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId'=>$siteLangId, 'controllerName'=>$controllerName, 'action'=>$action, 'canEdit'=>$canEdit, 'type' =>$type), false); ?>
+                </h2>
+            </div>
+            <?php $this->includeTemplate('_partial/productPagesTabs.php', array('siteLangId' => $siteLangId, 'controllerName' => $controllerName, 'action' => $action, 'canEdit' => $canEdit, 'type' => $type), false); ?>
         </div>
         <div class="content-body">
             <div class="row mb-4">
@@ -37,12 +38,12 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 $keywordFld->setWrapperAttribute('class', 'col-lg-6');
                                 $keywordFld->developerTags['col'] = 6;
 
-//                                if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
-//                                    $dateFromFld = $frmSearchCatalogProduct->getField('type');
-//                                    $dateFromFld->setFieldTagAttribute('class', '');
-//                                    $dateFromFld->setWrapperAttribute('class', 'col-lg-2');
-//                                    $dateFromFld->developerTags['col'] = 2;
-//                                }
+                                // if (FatApp::getConfig('CONF_ENABLED_SELLER_CUSTOM_PRODUCT')) {
+                                // $dateFromFld = $frmSearchCatalogProduct->getField('type');
+                                // $dateFromFld->setFieldTagAttribute('class', '');
+                                // $dateFromFld->setWrapperAttribute('class', 'col-lg-2');
+                                // $dateFromFld->developerTags['col'] = 2;
+                                // }
                                 $typeFld = $frmSearchCatalogProduct->getField('product_type');
                                 $typeFld->setWrapperAttribute('class', 'col-lg-2');
                                 $typeFld->developerTags['col'] = 2;
@@ -57,7 +58,7 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
                                 $fldClear->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
                                 $fldClear->setWrapperAttribute('class', 'col-lg-2');
                                 $fldClear->developerTags['col'] = 2;
-                                    /* if( User::canAddCustomProductAvailableToAllSellers() ){
+                                /* if( User::canAddCustomProductAvailableToAllSellers() ){
                                       $submitFld = $frmSearchCatalogProduct->getField('btn_submit');
                                       $submitFld->setFieldTagAttribute('class','btn-block');
                                       $submitFld->developerTags['col'] = 4;
@@ -82,13 +83,15 @@ $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
     </div>
 </main>
 <script>
-    $(document).ready(function(){
-    <?php //if (!$displayDefaultListing) { ?>
+    $(document).ready(function() {
+        <?php //if (!$displayDefaultListing) { 
+        ?>
         searchCatalogProducts(document.frmSearchCatalogProduct);
-    <?php //} ?>
+        <?php //} 
+        ?>
     });
 
-    $(".btn-inline-js").click(function(){
+    $(".btn-inline-js").click(function() {
         $(".box-slide-js").slideToggle();
     });
 </script>
