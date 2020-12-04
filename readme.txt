@@ -478,6 +478,7 @@ Bugs:
     => 045924 - Footer Trust Banners image fill color issue
     => 045923 - android- rewards applied are getting removed from payment screen
     => 045933 - android- rating needs to be round figure on app
+    => 045930 - android- shipping/pickup option are not there
 
 ----------------------TV-9.2.3.20201201------------------------------
 Enhancements:
