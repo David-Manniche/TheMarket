@@ -193,7 +193,7 @@ $data = array(
         'title' => Labels::getLabel('LBL_Detail', $siteLangId),
         'data' => empty($product) ? (object)array() : $product,
     ),
-    'shop_rating' => $shop_rating,
+    'shop_rating' => round($shop_rating, 1),
     'shop' => empty($shop) ? (object)array() : $shop,
     'shopTotalReviews' => $shopTotalReviews,
     'productImagesArr' => array_values($productImagesArr),

@@ -477,7 +477,8 @@ Bugs:
     => 045915	Google webmaster and bing file upload for verification
     => 045924 - Footer Trust Banners image fill color issue
     => 045923 - android- rewards applied are getting removed from payment screen
-    
+    => 045933 - android- rating needs to be round figure on app
+
 ----------------------TV-9.2.3.20201201------------------------------
 Enhancements:
     => Tax module upgrade
