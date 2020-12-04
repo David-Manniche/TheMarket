@@ -54,7 +54,7 @@ if(count($headerNavigation)) {
                             $count = 0;
                             foreach ($headerCategories as $link) {
                                 $count++;
-                                if ($count > 12) { break; }
+                                if ($count > 9) { break; }
                                 $navUrl = UrlHelper::generateUrl('category', 'view', array($link['prodcat_id']));
                                 $OrgnavUrl = UrlHelper::generateUrl('category', 'view', array($link['prodcat_id']), '', null, false, $getOrgUrl);
 
