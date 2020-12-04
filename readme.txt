@@ -480,9 +480,9 @@ Bugs:
     => 045933 - android- rating needs to be round figure on app
     => 045930 - android- shipping/pickup option are not there
     => 046046 - Phone no with 15 number not accepting
-    => 046113	S3 bucket bulk media issue
-
 ----------------------TV-9.2.3.20201201------------------------------
+    => 046113	S3 bucket bulk media issue
+-----------------------TV-9.2.3.20201204---------------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -1286,3 +1286,4 @@ DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_What_Clients_Say';
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
 ("LBL_NEWSLETTER_SIGNUP_AWEBER", 1, "Newsletter Signup", 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
+-- -----------------------TV-9.2.3.20201204-------------------------
