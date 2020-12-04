@@ -143,6 +143,7 @@
     padding-right: 4rem;
     padding-bottom: 2rem;
     position: relative;
+    display: flex;
     @include media-breakpoint-down(md) {
         & {
             padding-left: 0;
@@ -170,15 +171,19 @@
         }
     }
     .slide-item {
+        flex: 1;
+        max-width: 450px;
         margin: auto;
         padding: 0 1rem;
-        opacity: 0.4;
-        filter: grayscale(100);
         -webkit-transition: all 0.5s ease-in-out;
         transition: all 0.5s ease-in-out;
-        &.slick-current {
-            opacity: 1;
-            filter: grayscale(0);
+        &.slick-slide {
+            opacity: 0.4;
+            filter: grayscale(100);
+            &.slick-current {
+                opacity: 1;
+                filter: grayscale(0);
+            }
         }
         &__text {
             background: $bg-white;

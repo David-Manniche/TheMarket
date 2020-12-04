@@ -67,8 +67,6 @@
         align-items: center;
         flex: 1;
         width: 100%;
-        border-radius: $radius4;
-        border: solid 1px $brand-color;
         .main-search__field {
             position: relative;
             width: 100%;
@@ -92,6 +90,9 @@
             height: 36px;
             flex: 1;
             width: 100%;
+            border-top-#{$start-direction}-radius: $radius3;
+            border-bottom-#{$start-direction}-radius: $radius3;
+            border: solid 1px $brand-color;
         }
         .scroll-y {
             max-height: 350px;
@@ -219,7 +220,8 @@
     background-position: center;
     background-color: $brand-color;
     border: none;
-    border-radius: 0;
+    border-top-#{$end-direction}-radius: $radius3;
+    border-bottom-#{$end-direction}-radius: $radius3;
     cursor: pointer;
     color: #fff;
     font-size: 0;

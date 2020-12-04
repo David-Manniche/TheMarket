@@ -8787,9 +8787,7 @@ a.text-dark:hover, a.text-dark:focus {
     -ms-flex-align: center;
     align-items: center;
     flex: 1;
-    width: 100%;
-    border-radius: 4px;
-    border: solid 1px var(--brand-color); }
+    width: 100%; }
     .form--search .main-search-form .main-search__field {
       position: relative;
       width: 100%;
@@ -8810,7 +8808,10 @@ a.text-dark:hover, a.text-dark:focus {
       font-weight: 300;
       height: 36px;
       flex: 1;
-      width: 100%; }
+      width: 100%;
+      border-top-left-radius: 3px;
+      border-bottom-left-radius: 3px;
+      border: solid 1px var(--brand-color); }
     .form--search .main-search-form .scroll-y {
       max-height: 350px; }
 
@@ -8919,7 +8920,8 @@ a.text-dark:hover, a.text-dark:focus {
   background-position: center;
   background-color: var(--brand-color);
   border: none;
-  border-radius: 0;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
   cursor: pointer;
   color: #fff;
   font-size: 0;
@@ -35627,7 +35629,8 @@ div.faqanswer {
   padding-left: 4rem;
   padding-right: 4rem;
   padding-bottom: 2rem;
-  position: relative; }
+  position: relative;
+  display: flex; }
   @media (max-width: 991.98px) {
     .slider-testimonials {
       padding-left: 0;
@@ -35648,15 +35651,18 @@ div.faqanswer {
     .slider-testimonials:hover .slick-arrow:hover {
       background-color: rgba(255, 255, 255, 0.9); }
   .slider-testimonials .slide-item {
+    flex: 1;
+    max-width: 450px;
     margin: auto;
     padding: 0 1rem;
-    opacity: 0.4;
-    filter: grayscale(100);
     -webkit-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out; }
-    .slider-testimonials .slide-item.slick-current {
-      opacity: 1;
-      filter: grayscale(0); }
+    .slider-testimonials .slide-item.slick-slide {
+      opacity: 0.4;
+      filter: grayscale(100); }
+      .slider-testimonials .slide-item.slick-slide.slick-current {
+        opacity: 1;
+        filter: grayscale(0); }
     .slider-testimonials .slide-item__text {
       background: #fff;
       color: #2e384d;
