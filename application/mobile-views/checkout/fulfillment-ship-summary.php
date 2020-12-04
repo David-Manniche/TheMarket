@@ -2,7 +2,6 @@
 
 ksort($shippingRates);
 
-$productItems = [];
 foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
     ksort($shippedByItemArr);
     foreach ($shippedByItemArr as $shipLevel => $items) {

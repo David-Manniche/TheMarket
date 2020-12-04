@@ -16,10 +16,9 @@ foreach ($shippingRates as $pickUpBy => $levelItems) {
             $productItems[$pickUpBy]['pickup_address'] = (object)$levelItems['pickup_address'];
         }
 
+        $productItems[$pickUpBy]['pickup_addresses'] = [];
         if (count($levelItems['pickup_options']) > 0) {
             $productItems[$pickUpBy]['pickup_addresses'] = $levelItems['pickup_options'];
-        } else {
-            $productItems[$pickUpBy]['pickup_addresses'] = [];
         }
     }
 
@@ -33,10 +32,9 @@ foreach ($shippingRates as $pickUpBy => $levelItems) {
                         $productItems[$pickUpBy]['pickup_address'] = (object)$levelItems['pickup_address'];
                     }
 
+                    $productItems[$pickUpBy]['pickup_addresses'] = [];
                     if (count($levelItems['pickup_options']) > 0) {
                         $productItems[$pickUpBy]['pickup_addresses'] = $levelItems['pickup_options'];
-                    } else {
-                        $productItems[$pickUpBy]['pickup_addresses'] = [];
                     }
                 }
             }
@@ -52,10 +50,16 @@ foreach ($shippingRates as $pickUpBy => $levelItems) {
         if (isset($levelItems['digital_products']) && count($levelItems['digital_products']) > 0) {
             foreach ($levelItems['digital_products'] as $product) {
                 $productItems[$pickUpBy]['title'] = $product['shop_name'];
-                $productItems[$pickUpBy]['pickup_address'] = (object)[];
-                $productItems[$pickUpBy]['pickup_addresses'] = [];
                 $productItems[$pickUpBy]['products'][] = $product;
             }
+        }
+
+        if (!isset($productItems[$pickUpBy]['pickup_address'])) {
+            $productItems[$pickUpBy]['pickup_address'] = (object)[];
+        }
+
+        if (!isset($productItems[$pickUpBy]['pickup_addresses'])) {
+            $productItems[$pickUpBy]['pickup_addresses'] = [];
         }
     }
 }
