@@ -131,13 +131,13 @@
   .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-start);
     // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+    text-anchor:flex-start;
   }
 
   .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, flex-start);
     // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+    text-anchor:flex-start;
   }
 
   .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
@@ -149,31 +149,31 @@
   .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-end} {
     @include ct-align-justify(flex-end, flex-start);
     // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+    text-anchor:flex-start;
   }
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, center);
     // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+    text-anchor:flex-start;
   }
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, center);
     // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+    text-anchor:flex-start;
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-start);
     // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+    text-anchor:flex-start;
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, flex-start);
     // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+    text-anchor:flex-start;
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
