@@ -1379,7 +1379,7 @@ $(document).on('click', '.readMore', function() {
         $this.text($linkMoreText);
     } else {
         $lessText.hide();
-        $moreText.slideDown(1000);
+        $moreText.fadeIn();
         $this.text($linkLessText);
     }
     $this.toggleClass('expanded');

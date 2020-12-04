@@ -34,7 +34,7 @@
                             <span class='moreText hidden'>
                                 <?php echo nl2br($review['spreview_description']); ?>
                             </span>
-                            <a class="readMore link--arrow btn-link" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?> </a>
+                            <br><a class="readMore link--arrow btn-link" href="javascript:void(0);"> <?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) ; ?> </a>
                             <?php } ?>
                         </p>
                         <a class="btn btn-brand mt-3"
