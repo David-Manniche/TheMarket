@@ -25,6 +25,8 @@
 /error_log
 /application/views/designer/*
 /public/application_top.php
+/node_modules
+package-lock.json
 
 # zip files
 /*.zip

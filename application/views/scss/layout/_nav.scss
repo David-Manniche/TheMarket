@@ -73,8 +73,8 @@
             -webkit-box-direction: normal;
             -ms-flex-direction: column;
             flex-direction: column;
-            -webkit-box-pack: start !important;
-            -ms-flex-pack: start !important;
+            -webkit-box-pack:flex-start !important;
+            -ms-flex-pack:flex-start !important;
             justify-content: flex-start !important;
         }
     }

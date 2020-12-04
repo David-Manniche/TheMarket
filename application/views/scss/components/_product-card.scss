@@ -420,8 +420,8 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
+    -webkit-box-pack:flex-start;
+    -ms-flex-pack:flex-start;
     justify-content: flex-start;
     font-size: 0.85em;
     display: flex;
@@ -432,8 +432,8 @@
         font-size: inherit;
     }
     &.left--align {
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
+        -webkit-box-pack:flex-start;
+        -ms-flex-pack:flex-start;
         justify-content: flex-start;
     }
     .icn {

@@ -8060,8 +8060,8 @@ a.text-dark:hover, a.text-dark:focus {
       -webkit-box-direction: normal;
       -ms-flex-direction: column;
       flex-direction: column;
-      -webkit-box-pack: start !important;
-      -ms-flex-pack: start !important;
+      -webkit-box-pack: flex-start !important;
+      -ms-flex-pack: flex-start !important;
       justify-content: flex-start !important; } }
   .navigations > li {
     display: block;
@@ -11975,7 +11975,7 @@ form.custom-form {
 
 /* Ion.RangeSlider
 // css version 2.0.3
-// ┬⌐ 2013-2014 Denis Ineshin | IonDen.com
+// © 2013-2014 Denis Ineshin | IonDen.com
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // RangeSlider */
@@ -12131,8 +12131,8 @@ form.custom-form {
 
 /* Ion.RangeSlider, Simple Skin
 // css version 2.0.3
-// ┬⌐ Denis Ineshin, 2014    https://github.com/IonDen
-// ┬⌐ guybowden, 2014        https://github.com/guybowden
+// © Denis Ineshin, 2014    https://github.com/IonDen
+// © guybowden, 2014        https://github.com/guybowden
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // Skin details */
@@ -15078,8 +15078,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
+  -webkit-box-pack: flex-start;
+  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   font-size: 0.85em;
   display: flex;
@@ -15089,8 +15089,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     color: inherit;
     font-size: inherit; }
   .products__rating.left--align {
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
+    -webkit-box-pack: flex-start;
+    -ms-flex-pack: flex-start;
     justify-content: flex-start; }
   .products__rating .icn {
     margin-right: 5px; }
@@ -16894,8 +16894,8 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
+    -webkit-box-align: flex-start;
+    -ms-flex-align: flex-start;
     align-items: flex-start;
     justify-content: center;
     flex-wrap: nowrap;
@@ -17152,10 +17152,10 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
   flex-direction: column;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
+  -webkit-box-align: flex-start;
+  -ms-flex-align: flex-start;
   align-items: flex-start;
-  -ms-flex-line-pack: start;
+  -ms-flex-line-pack: flex-start;
   align-content: flex-start;
   white-space: nowrap;
   overflow-y: auto; }
@@ -17897,9 +17897,9 @@ a:hover {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
-    align-items: start;
+    -webkit-box-align: flex-start;
+    -ms-flex-align: flex-start;
+    align-items: flex-start;
     min-height: 450px; }
 
 html.quick-view--open {
@@ -25153,7 +25153,7 @@ readers do not read off random characters that represent icons */
   -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
-  text-anchor: start; }
+  text-anchor: flex-start; }
 
 .ct-label.ct-horizontal.ct-end {
   -webkit-box-align: flex-start;
@@ -25163,7 +25163,7 @@ readers do not read off random characters that represent icons */
   -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
-  text-anchor: start; }
+  text-anchor: flex-start; }
 
 .ct-label.ct-vertical.ct-start {
   -webkit-box-align: flex-end;
@@ -25183,7 +25183,7 @@ readers do not read off random characters that represent icons */
   -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
-  text-anchor: start; }
+  text-anchor: flex-start; }
 
 .ct-chart-bar .ct-label.ct-horizontal.ct-start {
   -webkit-box-align: flex-end;
@@ -25193,7 +25193,7 @@ readers do not read off random characters that represent icons */
   -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
-  text-anchor: start; }
+  text-anchor: flex-start; }
 
 .ct-chart-bar .ct-label.ct-horizontal.ct-end {
   -webkit-box-align: flex-start;
@@ -25203,7 +25203,7 @@ readers do not read off random characters that represent icons */
   -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
-  text-anchor: start; }
+  text-anchor: flex-start; }
 
 .ct-chart-bar.ct-horizontal-bars .ct-label.ct-horizontal.ct-start {
   -webkit-box-align: flex-end;
@@ -25213,7 +25213,7 @@ readers do not read off random characters that represent icons */
   -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
-  text-anchor: start; }
+  text-anchor: flex-start; }
 
 .ct-chart-bar.ct-horizontal-bars .ct-label.ct-horizontal.ct-end {
   -webkit-box-align: flex-start;
@@ -25223,7 +25223,7 @@ readers do not read off random characters that represent icons */
   -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
-  text-anchor: start; }
+  text-anchor: flex-start; }
 
 .ct-chart-bar.ct-horizontal-bars .ct-label.ct-vertical.ct-start {
   -webkit-box-align: center;
@@ -28176,13 +28176,13 @@ a.ui-button:active,
   flex-direction: column;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
+  -webkit-box-pack: flex-start;
+  -ms-flex-pack: flex-start;
   justify-content: flex-start;
-  -ms-flex-line-pack: start;
+  -ms-flex-line-pack: flex-start;
   align-content: flex-start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
+  -webkit-box-align: flex-start;
+  -ms-flex-align: flex-start;
   align-items: flex-start;
   width: inherit;
   /*height: inherit;*/
@@ -30988,8 +30988,8 @@ a.ui-button:active,
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
+    -webkit-box-align: flex-start;
+    -ms-flex-align: flex-start;
     align-items: flex-start; }
   .post__author .media__image {
     margin-right: 2rem; }
@@ -34797,8 +34797,8 @@ transform: rotate(-135deg);*/ }
   color: #000;
   font-size: 0.875em; }
 .owener_info .products__rating {
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
+  -webkit-box-pack: flex-start;
+  -ms-flex-pack: flex-start;
   justify-content: flex-start; }
 
 .shop-reviews-wrapper {
@@ -34943,8 +34943,8 @@ transform: rotate(-135deg);*/ }
 .share-this:after {
   content: '';
   right: 0;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
+  -webkit-box-pack: flex-start;
+  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   background-color: #fff; }
 

@@ -6,13 +6,13 @@
     flex-direction: column;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
+    -webkit-box-pack:flex-start;
+    -ms-flex-pack:flex-start;
     justify-content: flex-start;
-    -ms-flex-line-pack: start;
+    -ms-flex-line-pack:flex-start;
     align-content: flex-start;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
+    -webkit-box-align:flex-start;
+    -ms-flex-align:flex-start;
     align-items: flex-start;
     width: inherit;
     /*height: inherit;*/
