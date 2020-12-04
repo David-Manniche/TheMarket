@@ -1,5 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
+$productItems = [];
 switch ($fulfillmentType) {
     case Shipping::FULFILMENT_PICKUP:
         require_once(CONF_THEME_PATH . 'checkout/fulfillment-pickup-summary.php');
