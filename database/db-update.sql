@@ -1216,7 +1216,7 @@ update `tbl_products` set `product_fulfillment_type` = 2 WHERE `product_fulfillm
 -- --- Mpesa Payment Gateway--- --
 INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Mpesa', '13', 'Mpesa', '0', '9');
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
-("LBL_MPESA_ACCOUNT_REFERENCE_DESCRIPTION", 1, "This is an Alpha-Numeric parameter that is defined by your system as an Identifier of the transaction for CustomerPayBillOnline transaction type. Along with the business name, this value is also displayed to the customer in the STK Pin Prompt message. Maximum of 12 characters.", 1),
+("LBL_MPESA_ACCOUNT_REFERENCE_DESCRIPTION", 1, "This is an Alpha-Numeric parameter that is defined by admin as an Identifier of the transaction for CustomerPayBillOnline transaction type. Along with the business name, this value is also displayed to the customer in the STK Pin Prompt message. Maximum of 12 characters.", 1),
 ("LBL_MSISDN_12_DIGITS_MOBILE_NUMBER", 1, "MSISDN (12 digits Mobile Number) e.g. 2547XXXXXXXX", 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- --- Mpesa Payment Gateway--- --
@@ -1230,6 +1230,59 @@ UPDATE `tbl_plugins` SET `plugin_identifier` = '2Checkout' WHERE `plugin_code` =
 ALTER TABLE `tbl_coupons_hold_pending_order` CHANGE `ochold_order_id` `ochold_order_id` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `tbl_notifications` CHANGE `notification_user_id` `notification_user_id` INT(11) NOT NULL;
 -- ---------------------TV-9.2.3.20201201------------------
-
-
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'LBL_PLUGIN_ICON' WHERE `tbl_language_labels`.`label_key` = 'PLUGIN_ICON';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'INV_{PRODUCT}_ORDER_{ORDERID}_HAS_BEEN_PLACED' WHERE `tbl_language_labels`.`label_key` = 'SAPP_{PRODUCT}_ORDER_{ORDERID}_HAS_BEEN_PLACED';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'INV_RECEIVED_CANCELLATION_FOR_INVOICE_{invoicenumber}' WHERE `tbl_language_labels`.`label_key` = 'SAPP_RECEIVED_CANCELLATION_FOR_INVOICE_{invoicenumber}';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'INV_RECEIVED_RETURN_FROM_{username}_WITH_REFERENCE_NUMBER_{returnrequestid}' WHERE `tbl_language_labels`.`label_key` = 'SAPP_RECEIVED_RETURN_FROM_{username}_WITH_REFERENCE_NUMBER_{returnrequestid}';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ADDTAXFORM';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = '0';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ADMIN_ABUSIVE_REVIEW_POSTED_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ADMIN_PRODUCT_REVIEW_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ADMIN_ORDER_PAYMENT_STATUS_CHANGE_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ADMIN_ORDER_RETURN_REQUEST_MESSAGE_TO_USER_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ADMIN_ORDER_EMAIL_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ADMIN_CUSTOM_CATALOG_REQUEST_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'BUYER_RETURN_REQUEST_STATUS_CHANGE_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'GUEST_ADVISER_REGISTRATION_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'SUPPLIER_REGISTRATION_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'HOME_PAGE_BOTTOM_BANNER';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'HOME_PAGE_TOP_BANNER';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PRODUCT_DETAIL_PAGE_BANNER';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'NOP';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'TEST';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'USER_PROFILE';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'INACTIVE';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'ACTIVE';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'SHIPPING_USERS_LIST';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'MANAGE_SHIPPING_USERS';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'IDENTIFIER';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PLEASE_TRY_DIFFERENT_URL,_URL_ALREADY_USED_FOR_ANOTHER_RECORD';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'CLONE';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'API_AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR' WHERE `tbl_language_labels`.`label_key` = 'AMAZON_INVALID_PAYMENT_GATEWAY_SETUP_ERROR';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'USER_REGISTRATION_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PLEASE_TRY_DIFFERENT_URL,_URL_ALREADY_USED_FOR_ANOTHER_RECORD.';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'API_AMAZON_PAYMENT_COMPLETE' WHERE `tbl_language_labels`.`label_key` = 'AMAZON_PAYMENT_COMPLETE';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'USER_ORDER_PLACED_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'M_ORDER_PAYMENT_GATEWAY_DESCRIPTION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'M_CARD_HOLDER_NAME';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'M_PROMOTION_ADDED_UPDATED';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'M_NO_SHIPPING_SET';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'LBL_COMPANY' WHERE `tbl_language_labels`.`label_key` = 'L_Company';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'LBL_BRIEF_PROFILE' WHERE `tbl_language_labels`.`label_key` = 'L_Brief_Profile';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'LBL_PLEASE_TELL_US_SOMETHING_ABOUT_YOURSELF' WHERE `tbl_language_labels`.`label_key` = 'L_Please_tell_us_something_about_yourself';
+UPDATE IGNORE `tbl_language_labels` SET `label_key` = 'LBL_WHAT_KIND_PRODUCTS_SERVICES_ADVERTISE' WHERE `tbl_language_labels`.`label_key` = 'L_What_kind_products_services_advertise';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'TOTAL';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PAYFORT_INVALID_PAYMENT_GATEWAY_SETUP_ERROR';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'LAYOUT2_(COLLECTION_ALONG_WITH_PRODUCTS-FULL-WIDTH)';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PAYFORT_INVALID_REQUEST';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'LAYOUT3_(COLLECTION_ALONG_WITH_PRODUCTS)';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'OFFER';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'SELECT';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'SELLER_BRAND_REQUEST_NOTIFICATION';
+DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PAYFORT_INVALID_REQUEST_PARAMETERS';
 DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_What_Clients_Say';
+
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
+("LBL_NEWSLETTER_SIGNUP_AWEBER", 1, "Newsletter Signup", 1)
+ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);

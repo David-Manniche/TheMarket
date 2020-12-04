@@ -3,6 +3,7 @@ RewriteRule ^sitemap/list_([0-9]+).xml$ user-uploads/sitemap/list_$1.xml [L]
 
 RewriteRule ^sitemap.xml$ user-uploads/sitemap.xml [L]
 RewriteRule ^robots.txt$ user-uploads/robots.txt [L]
+RewriteRule ^BingSiteAuth.xml$ user-uploads/BingSiteAuth.xml [L]
 RewriteRule ^google(.*).html$ user-uploads/google-site-verification.html [L]
 RewriteRule ^favicon.ico image/favicon/1 [NC,L]
 

@@ -1124,7 +1124,7 @@ class EmailHandler extends FatModel
                     '{ORDERID}' => $orderDetail['order_id']
                 );
 
-                $appNotification = CommonHelper::replaceStringData(Labels::getLabel('SAPP_{PRODUCT}_ORDER_{ORDERID}_HAS_BEEN_PLACED', $langId), $notiArrReplacements);
+                $appNotification = CommonHelper::replaceStringData(Labels::getLabel('INV_{PRODUCT}_ORDER_{ORDERID}_HAS_BEEN_PLACED', $langId), $notiArrReplacements);
 
                 $notificationObj = new Notifications();
                 $notificationDataArr = array(
@@ -1521,7 +1521,7 @@ class EmailHandler extends FatModel
         $this->sendMailToAdminAndAdditionalEmails($tpl, $arrReplacements, static::ADD_ADDITIONAL_ALERTS, static::NOT_ONLY_SUPER_ADMIN, $langId);
         $this->sendSms($tpl, FatApp::getConfig('CONF_SITE_PHONE'), $arrReplacements, $langId);
 
-        $appNotification = CommonHelper::replaceStringData(Labels::getLabel('SAPP_RECEIVED_CANCELLATION_FOR_INVOICE_{invoicenumber}', $langId), array('{invoicenumber}' => $sellerOrderAnchor), true);
+        $appNotification = CommonHelper::replaceStringData(Labels::getLabel('INV_RECEIVED_CANCELLATION_FOR_INVOICE_{invoicenumber}', $langId), array('{invoicenumber}' => $sellerOrderAnchor), true);
 
         $notificationObj = new Notifications();
         $notificationDataArr = array(
@@ -1624,7 +1624,7 @@ class EmailHandler extends FatModel
             '{returnrequestid}' => $msgDetail['orrequest_reference'],
         );
 
-        $appNotification = CommonHelper::replaceStringData(Labels::getLabel('SAPP_RECEIVED_RETURN_FROM_{username}_WITH_REFERENCE_NUMBER_{returnrequestid}', $langId), $notiArrReplacements, true);
+        $appNotification = CommonHelper::replaceStringData(Labels::getLabel('INV_RECEIVED_RETURN_FROM_{username}_WITH_REFERENCE_NUMBER_{returnrequestid}', $langId), $notiArrReplacements, true);
 
         $notificationObj = new Notifications();
         $notificationDataArr = array(

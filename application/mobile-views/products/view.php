@@ -137,6 +137,23 @@ if (!empty($product)) {
 $product['selprod_return_policies'] = !empty($product['selprod_return_policies']) ? $product['selprod_return_policies'] : (object)array();
 $product['selprod_warranty_policies'] = !empty($product['selprod_warranty_policies']) ? $product['selprod_warranty_policies'] : (object)array();
 
+$fulfillmentLabel = Labels::getLabel('LBL_INVALID_FULFILLMENT', $siteLangId);
+switch ($fulfillmentType) {
+    case Shipping::FULFILMENT_SHIP:
+        $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
+        break;
+    case Shipping::FULFILMENT_PICKUP:
+        $fulfillmentLabel = Labels::getLabel('LBL_PICKUP_ONLY', $siteLangId);
+        break;
+    case Shipping::FULFILMENT_ALL:
+        $fulfillmentLabel = Labels::getLabel('LBL_SHIPPMENT_AND_PICKUP', $siteLangId);
+        break;
+}
+$product['productFulfillment'] = array(
+    'title' => $fulfillmentLabel,
+    'fulfillmentType' => $fulfillmentType
+);
+
 $product['product_description'] = strip_tags(html_entity_decode($product['product_description'], ENT_QUOTES, 'utf-8'), applicationConstants::ALLOWED_HTML_TAGS_FOR_APP);
 
 if (!empty($product['moreSellersArr']) && 0 < count($product['moreSellersArr'])) {
@@ -193,7 +210,7 @@ $data = array(
         'title' => Labels::getLabel('LBL_Detail', $siteLangId),
         'data' => empty($product) ? (object)array() : $product,
     ),
-    'shop_rating' => $shop_rating,
+    'shop_rating' => round($shop_rating, 1),
     'shop' => empty($shop) ? (object)array() : $shop,
     'shopTotalReviews' => $shopTotalReviews,
     'productImagesArr' => array_values($productImagesArr),

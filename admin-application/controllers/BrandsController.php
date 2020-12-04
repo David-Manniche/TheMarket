@@ -826,6 +826,13 @@ class BrandsController extends AdminBaseController
         } else {
             $srch->setPageSize($pagesize);
         }
+
+        $collectionId = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
+        $alreadyAdded = Collections::getRecords($collectionId);
+        if (!empty($alreadyAdded) && 0 < count($alreadyAdded)) {
+            $srch->addCondition('brand_id', 'NOT IN', array_keys($alreadyAdded));
+        }
+
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $brands = $db->fetchAll($rs, 'brand_id');

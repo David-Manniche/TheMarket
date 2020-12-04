@@ -13,7 +13,10 @@
         </form>
         <?php echo $frm->getExternalJS(); ?>
     <?php } elseif (FatApp::getConfig('CONF_NEWSLETTER_SYSTEM') == applicationConstants::NEWS_LETTER_SYSTEM_AWEBER) { ?>
-        <?php echo FatApp::getConfig('CONF_AWEBER_SIGNUP_CODE'); ?>
+        <span class='d-none aweber-js'><?php echo FatApp::getConfig('CONF_AWEBER_SIGNUP_CODE'); ?></span>
+		<a href="javascript:void(0)" class="btn btn-brand" onclick="awebersignup();">
+			<?php echo Labels::getLabel('LBL_NEWSLETTER_SIGNUP_AWEBER', $siteLangId); ?>
+		</a>
     <?php }
 } else { ?>
     <div class="gap"></div>

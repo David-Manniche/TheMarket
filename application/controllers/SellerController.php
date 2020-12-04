@@ -50,7 +50,7 @@ class SellerController extends SellerBaseController
         $srch->setPageSize(2);
 
         $srch->addMultipleFields(
-            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_color_class', 'order_pmethod_id', 'opshipping_fulfillment_type','op_rounding_off')
+            array('order_id', 'order_user_id', 'op_selprod_id', 'op_is_batch', 'selprod_product_id', 'order_date_added', 'order_net_amount', 'op_invoice_number', 'totCombinedOrders as totOrders', 'op_selprod_title', 'op_product_name', 'op_id', 'op_qty', 'op_selprod_options', 'op_status_id', 'op_brand_name', 'op_shop_name', 'op_other_charges', 'op_unit_price', 'IFNULL(orderstatus_name, orderstatus_identifier) as orderstatus_name', 'op_tax_collected_by_seller', 'op_selprod_user_id', 'opshipping_by_seller_user_id', 'orderstatus_color_class', 'order_pmethod_id', 'opshipping_fulfillment_type', 'op_rounding_off')
         );
 
         $rs = $srch->getResultSet();
@@ -858,14 +858,14 @@ class SellerController extends SellerBaseController
                         "opship_tracking_number" => $post['tracking_number'],
                         //"opship_tracking_url" => $post['opship_tracking_url'],
                     ];
-                    
-                    if(array_key_exists('opship_tracking_url', $post)){
+
+                    if (array_key_exists('opship_tracking_url', $post)) {
                         $updateData['opship_tracking_url'] =  $post['opship_tracking_url'];
                     }
-                    if(array_key_exists('oshistory_courier', $post)){
+                    if (array_key_exists('oshistory_courier', $post)) {
                         $trackingCourierCode = $post['oshistory_courier'];
                     }
-                    
+
                     if (!FatApp::getDb()->insertFromArray(OrderProductShipment::DB_TBL, $updateData, false, array(), $updateData)) {
                         LibHelper::dieJsonError(FatApp::getDb()->getError());
                     }
@@ -3756,17 +3756,17 @@ class SellerController extends SellerBaseController
 
             $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'tracking_number', $trackingReqObj);
             $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'tracking_number', $trackingUnReqObj);
-            
+
             $plugin = new Plugin();
             $afterShipData = $plugin->getDefaultPluginKeyName(Plugin::TYPE_SHIPMENT_TRACKING);
-            if($afterShipData != false){ 
-                $shipmentTracking = new ShipmentTracking(); 
+            if ($afterShipData != false) {
+                $shipmentTracking = new ShipmentTracking();
                 $shipmentTracking->init($this->siteLangId);
                 $shipmentTracking->getTrackingCouriers();
                 $trackCarriers = $shipmentTracking->getResponse();
-                
+
                 $trackCarrierFld = $frm->addSelectBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'oshistory_courier', $trackCarriers, '', array(), Labels::getLabel('LBL_Select', $this->siteLangId));
-               
+
                 $trackCarrierFldUnReqObj = new FormFieldRequirement('oshistory_courier', Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId));
                 $trackCarrierFldUnReqObj->setRequired(false);
 
@@ -3774,8 +3774,8 @@ class SellerController extends SellerBaseController
                 $trackCarrierFldReqObj->setRequired(true);
 
                 $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'oshistory_courier', $trackCarrierFldReqObj);
-                $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'oshistory_courier', $trackCarrierFldUnReqObj);        
-            }else{ 
+                $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'oshistory_courier', $trackCarrierFldUnReqObj);
+            } else {
                 $trackUrlFld = $frm->addTextBox(Labels::getLabel('LBL_TRACK_THROUGH', $this->siteLangId), 'opship_tracking_url', '', $attr);
                 $trackUrlFld->htmlAfterField = '<small class="text--small">' . Labels::getLabel('LBL_ENTER_THE_URL_TO_TRACK_THE_SHIPMENT.', $this->siteLangId) . '</small>';
 
@@ -3786,7 +3786,7 @@ class SellerController extends SellerBaseController
 
                 $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::YES, 'eq', 'opship_tracking_url', $trackingurlReqObj);
                 $manualFld->requirements()->addOnChangerequirementUpdate(applicationConstants::NO, 'eq', 'opship_tracking_url', $trackingUrlUnReqObj);
-            }            
+            }
         }
 
         $frm->addHiddenField('', 'op_id', 0);
@@ -4485,9 +4485,8 @@ class SellerController extends SellerBaseController
         return $frm;
     }
 
-    public function catalogInfo($product_id)
+    public function catalogInfo(int $product_id)
     {
-        $product_id = FatUtility::int($product_id);
         $prodSrchObj = new ProductSearch($this->siteLangId, null, null, false, false);
         /* fetch requested product[ */
         $prodSrch = clone $prodSrchObj;
@@ -4513,7 +4512,8 @@ class SellerController extends SellerBaseController
         }
 
         if (!$product) {
-            FatUtility::exitWithErrorCode(404);
+            Message::addErrorMessage(Labels::getLabel('VLBL_INVALID_PRODUCT', $this->siteLangId));
+            FatUtility::dieWithError(Message::getHtml());
         }
 
         /* Get Product Specifications [ */
@@ -4529,8 +4529,8 @@ class SellerController extends SellerBaseController
         $productSpecifications = FatApp::getDb()->fetchAll($specSrchObjRs);
 
         $productImagesArr = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, 0, $this->siteLangId);
-
         /* ] */
+
         $this->set('productImagesArr', $productImagesArr);
         $this->set('product', $product);
         $this->set('productSpecifications', $productSpecifications);
@@ -4804,7 +4804,7 @@ class SellerController extends SellerBaseController
             Message::addInfo(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
-        
+
         $selProd_id = FatUtility::int($selProd_id);
 
         if (0 < $selProd_id || 0 > $selProd_id) {

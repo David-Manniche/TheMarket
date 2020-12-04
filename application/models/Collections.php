@@ -196,17 +196,10 @@ class Collections extends MyAppModel
     public static function getTypeSpecificLayouts(int $langId): array
     {
         return [
-            self::COLLECTION_TYPE_PRODUCT => [
-                self::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
-                self::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),
-                self::TYPE_PRODUCT_LAYOUT3 => Labels::getLabel('LBL_Product_Layout3', $langId),
-            ],
-            self::COLLECTION_TYPE_CATEGORY => [
-                self::TYPE_CATEGORY_LAYOUT1 => Labels::getLabel('LBL_Category_Layout1', $langId),
-                self::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
-            ],
-            self::COLLECTION_TYPE_SHOP => [
-                self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
+            self::COLLECTION_TYPE_BANNER => [
+                self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
+                self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
+                self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
             ],
             self::COLLECTION_TYPE_BRAND => [
                 self::TYPE_BRAND_LAYOUT1 => Labels::getLabel('LBL_Brand_Layout1', $langId),
@@ -214,26 +207,33 @@ class Collections extends MyAppModel
             self::COLLECTION_TYPE_BLOG => [
                 self::TYPE_BLOG_LAYOUT1 => Labels::getLabel('LBL_Blog_Layout1', $langId),
             ],
-            self::COLLECTION_TYPE_BANNER => [
-                self::TYPE_BANNER_LAYOUT1 => Labels::getLabel('LBL_Banner_Layout1', $langId),
-                self::TYPE_BANNER_LAYOUT2 => Labels::getLabel('LBL_Banner_Layout2', $langId),
-                self::TYPE_BANNER_LAYOUT3 => Labels::getLabel('LBL_Mobile_Banner_Layout', $langId),
+            self::COLLECTION_TYPE_CATEGORY => [
+                self::TYPE_CATEGORY_LAYOUT1 => Labels::getLabel('LBL_Category_Layout1', $langId),
+                self::TYPE_CATEGORY_LAYOUT2 => Labels::getLabel('LBL_Category_Layout2', $langId),
             ],
+            self::COLLECTION_TYPE_FAQ => [
+                self::TYPE_FAQ_LAYOUT1 => Labels::getLabel('LBL_FAQ', $langId),
+            ],
+            self::COLLECTION_TYPE_REVIEWS => [
+                self::TYPE_PENDING_REVIEWS1 => Labels::getLabel('LBL_PENDING_REVIEWS1', $langId),
+            ],
+            self::COLLECTION_TYPE_PRODUCT => [
+                self::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
+                self::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),
+                self::TYPE_PRODUCT_LAYOUT3 => Labels::getLabel('LBL_Product_Layout3', $langId),
+            ],            
+            self::COLLECTION_TYPE_SHOP => [
+                self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
+            ],            
             self::COLLECTION_TYPE_SPONSORED_PRODUCTS => [
                 self::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
             ],
             self::COLLECTION_TYPE_SPONSORED_SHOPS => [
                 self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
-            ],
-            self::COLLECTION_TYPE_FAQ => [
-                self::TYPE_FAQ_LAYOUT1 => Labels::getLabel('LBL_FAQ', $langId),
-            ],
+            ],            
             self::COLLECTION_TYPE_TESTIMONIAL => [
                 self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial', $langId),
-            ],
-            self::COLLECTION_TYPE_REVIEWS => [
-                self::TYPE_PENDING_REVIEWS1 => Labels::getLabel('LBL_PENDING_REVIEWS1', $langId),
-            ],
+            ],            
             /* self::COLLECTION_TYPE_CONTENT_BLOCK => [
                 self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_Block', $langId),
             ] */
@@ -766,5 +766,26 @@ class Collections extends MyAppModel
             return false;
         }
         return true;
+    }
+    
+    /**
+     * getRecords
+     *
+     * @param  int $collectionId
+     * @return array
+     */
+    public static function getRecords(int $collectionId): array
+    {
+        if (1 > $collectionId) {
+            return [];
+        }
+        
+        $srch = new SearchBase(self::DB_TBL_COLLECTION_TO_RECORDS);
+        $srch->addCondition(Collections::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
+        $srch->addMultipleFields(array('ctr_record_id', 'ctr_collection_id'));
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $res = $srch->getResultSet();
+        return (array) FatApp::getDb()->fetchAllAssoc($res);
     }
 }

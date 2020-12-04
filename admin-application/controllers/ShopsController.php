@@ -525,6 +525,13 @@ class ShopsController extends AdminBaseController
 
         $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
         $srch->addMultipleFields(array('shop_id', 'IFNULL(shop_name,shop_identifier) as shop_name'));
+        
+        $collectionId = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
+        $alreadyAdded = Collections::getRecords($collectionId);
+        if (!empty($alreadyAdded) && 0 < count($alreadyAdded)) {
+            $srch->addCondition('shop_id', 'NOT IN', array_keys($alreadyAdded));
+        }
+        
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
         $products = $db->fetchAll($rs, 'shop_id');
