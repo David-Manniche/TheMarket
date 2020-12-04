@@ -1703,3 +1703,23 @@ $('.form-floating').find('input, textarea, select').each(function() {
 $('.dropdown-menu').on('click', function(e) {
     e.stopPropagation();
 });
+
+function awebersignup() {
+	var content = $('.aweber-js').html();
+	fcom.updateFaceboxContent(content, 'faceboxWidth loginpopup aweberform-js');
+	var weberformload = setInterval(function(){
+	  if (0 < $(".aweberform-js form").length) {
+		var myForm = $(".aweberform-js form")[0];
+		myForm.onsubmit = function() {
+			var popwidth = 500,
+				popheight = 700,
+				popleft  = ($(window).width()/2)-(popwidth/2),
+				poptop   = ($(window).height()/2)-(popheight/2),
+				popup = window.open ("", "popup", "width="+popwidth+", height="+popheight+", top="+poptop+", left="+popleft);
+			this.target = 'popup';
+			$(document).trigger('close.facebox');
+		};
+		clearInterval(weberformload);
+	  }
+	}, 1000);
+}
