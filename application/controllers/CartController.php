@@ -197,8 +197,9 @@ class CartController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(UrlHelper::generateUrl());
         }
+        $loggedUserId = UserAuthentication::getLoggedUserId();
         if (UserAuthentication::isUserLogged()) {
-            $user_is_buyer = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_is_buyer');
+            $user_is_buyer = User::getAttributesById($loggedUserId, 'user_is_buyer');
             if (!$user_is_buyer) {
                 $errMsg = Labels::getLabel('MSG_Please_login_with_buyer_account_to_add_products_to_cart', $this->siteLangId);
                 if (true === MOBILE_APP_API_CALL) {
@@ -224,13 +225,11 @@ class CartController extends MyAppController
 
         $this->addProductToCart($productsToAdd, $selprod_id);
 
+        $db = FatApp::getDb();
         $wishlistId = FatApp::getPostedData('uwlist_id', FatUtility::VAR_INT, 0);
         $rowAction = FatApp::getPostedData('rowAction', FatUtility::VAR_INT, 0); // 1 = Remove From Wishlist / 0 = Add To Wishlist
-        if (0 < $wishlistId) {
-            $db = FatApp::getDb();
-            $wListObj = new UserWishList();
-
-            $srch = UserWishList::getSearchObject(UserAuthentication::getLoggedUserId());
+        if (0 < $wishlistId && applicationConstants::YES == FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1)) {
+            $srch = UserWishList::getSearchObject($loggedUserId);
             $srch->addMultipleFields(array('uwlist_id'));
             $srch->doNotCalculateRecords();
             $srch->setPageSize(1);
@@ -255,11 +254,35 @@ class CartController extends MyAppController
                     FatApp::redirectUser(UrlHelper::generateUrl());
                 }
             } else {
+                $wListObj = new UserWishList();
                 if (!$wListObj->addUpdateListProducts($wishlistId, $selprod_id)) {
                     if (true === MOBILE_APP_API_CALL) {
-                        FatUtility::dieJsonError($wListObj->getError);
+                        FatUtility::dieJsonError($wListObj->getError());
                     }
-                    Message::addErrorMessage($wListObj->getError);
+                    Message::addErrorMessage($wListObj->getError());
+                    FatUtility::dieWithError(Message::getHtml());
+                    FatApp::redirectUser(UrlHelper::generateUrl());
+                }
+            }
+        }
+        
+        $ufpId  = FatApp::getPostedData('ufp_id', FatUtility::VAR_INT, 0);
+        if (0 < $ufpId && applicationConstants::NO == FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1)) {
+            if (0 < $rowAction) {
+                if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt' => 'ufp_user_id = ? AND ufp_id = ?', 'vals' => array($loggedUserId, $ufpId)))) {
+                    if (true === MOBILE_APP_API_CALL) {
+                        FatUtility::dieJsonError($db->getError());
+                    }
+                    Message::addErrorMessage($db->getError());
+                    FatApp::redirectUser(UrlHelper::generateUrl());
+                }
+            } else {
+                $productObj = new product();
+                if (!$productObj->addUpdateUserFavoriteProduct($loggedUserId, $selprod_id)) {
+                    if (true === MOBILE_APP_API_CALL) {
+                        FatUtility::dieJsonError($productObj->getError());
+                    }
+                    Message::addErrorMessage($productObj->getError());
                     FatUtility::dieWithError(Message::getHtml());
                     FatApp::redirectUser(UrlHelper::generateUrl());
                 }
