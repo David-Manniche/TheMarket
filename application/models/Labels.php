@@ -118,11 +118,9 @@ class Labels extends MyAppModel
 
         $str = '';
         global $langFileData;
-        if (!isset($langFileData[$langId])) {
-            $langFileData[$langId] = static::readDataFromFile($langId, $key_original, $type);
-        }
-
-        if (isset($langFileData[$langId])) {
+        if (!isset($langFileData[$langId][$key])) {
+            $str = $langFileData[$langId][$key] = static::readDataFromFile($langId, $key_original, $type);
+        } else {
             if (array_key_exists($key, $langFileData[$langId])) {
                 $str = $langFileData[$langId][$key];
             }
@@ -173,7 +171,7 @@ class Labels extends MyAppModel
         return strip_tags($str);
     }
 
-    public static function readDataFromFile($langId, $key, $type = Labels::TYPE_WEB, $returnArr = true)
+    public static function readDataFromFile($langId, $key, $type = Labels::TYPE_WEB, $returnVal = true)
     {
         if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
             return;
@@ -190,8 +188,12 @@ class Labels extends MyAppModel
             Labels::updateDataToFile($langId, $languages[$langId], $type, false, $key);
         }
 
-        if ($returnArr === true) {
-            return json_decode(file_get_contents($jsonfile), true);
+        if ($returnVal === true) {
+            $arr =  json_decode(file_get_contents($jsonfile), true);
+            if (array_key_exists(strtoupper($key), $arr)) {
+                return $arr[strtoupper($key)];
+            }
+            return;
         }
         return file_get_contents($jsonfile);
     }
