@@ -483,6 +483,7 @@ Bugs:
 ----------------------TV-9.2.3.20201201------------------------------
     => 046113	S3 bucket bulk media issue
 -----------------------TV-9.2.3.20201204---------------------------
+    => 046177	Admin -url rewriting issue
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
