@@ -180,8 +180,11 @@ $(document).ready(function() {
                             $.systemMessage(ans.msg, 'alert--success', false);
                             document.uploadBulkImages.reset();
                             $("#uploadFileName").text('');
-                            searchFiles();
-                            location.href = fcom.makeUrl('ImportExport', 'downloadPathsFile',[ans.path]);
+                            setTimeout(function(){ 
+                                searchFiles();
+                                location.href = fcom.makeUrl('ImportExport', 'downloadPathsFile',[ans.path]);
+                            }, 5000);
+                            
                         } else {
                             $(document).trigger('close.mbsmessage');
                             $.systemMessage(ans.msg, 'alert--danger');

@@ -1282,5 +1282,9 @@ DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'SEL
 DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PAYFORT_INVALID_REQUEST_PARAMETERS';
 DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_What_Clients_Say';
 
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
+("LBL_NEWSLETTER_SIGNUP_AWEBER", 1, "Newsletter Signup", 1)
+ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
+-- -----------------------TV-9.2.3.20201204-------------------------
 ALTER TABLE `tbl_user_withdrawal_requests` CHANGE `withdrawal_comments` `withdrawal_instructions` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `tbl_user_withdrawal_requests` ADD `withdrawal_comments` TEXT NOT NULL AFTER `withdrawal_paypal_email_id`;

@@ -90,8 +90,10 @@ $(document).ready(function() {
                             fcom.displaySuccessMessage(ans.msg, 'alert--success', false);
                             document.uploadBulkImages.reset();
                             $("#uploadFileName").text('');
+                            setTimeout(function(){ 
                             searchFiles(document.frmSearch);
                             location.href = fcom.makeUrl('UploadBulkImages', 'downloadPathsFile',[ans.path]);
+                        }, 5000);
                         } else {
                             $(document).trigger('close.mbsmessage');
                             fcom.displayErrorMessage(ans.msg);

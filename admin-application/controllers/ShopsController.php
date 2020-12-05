@@ -1044,7 +1044,7 @@ class ShopsController extends AdminBaseController
             FatApp::getDb()->deleteRecords(UrlRewrite::DB_TBL, array( 'smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)));
         } else {
             $shop = new Shop($shop_id);
-            $shop->setupCollectionUrl($post['urlrewrite_custom']);
+            $shop->setupCollectionUrl($post['urlrewrite_custom'], $scollection_id);
         }
 
 

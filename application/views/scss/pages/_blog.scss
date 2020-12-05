@@ -526,8 +526,8 @@
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
-        -webkit-box-align: start;
-        -ms-flex-align: start;
+        -webkit-box-align:flex-start;
+        -ms-flex-align:flex-start;
         align-items: flex-start;
     }
     .media__image {
