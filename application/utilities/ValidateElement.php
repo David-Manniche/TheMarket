@@ -5,7 +5,7 @@ class ValidateElement extends FatUtility
     // public const PHONE_REGEX = '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s#-]\d{3}[\s#-]\d{4}$';
     public const PHONE_NO_FORMAT = '';
     public const PHONE_NO_LENGTH = 15;
-    public const PHONE_REGEX = '^(?!0+$)[0-9]{1,14}$';
+    public const PHONE_REGEX = '^(?!0+$)[0-9]{1,15}$';
     public const ZIP_REGEX = '^[a-zA-Z0-9]+$';
     public const CITY_NAME_REGEX = '^([^0-9]*)$';
     public const PASSWORD_REGEX = '^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%-_]{8,15}$';
