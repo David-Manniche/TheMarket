@@ -482,6 +482,7 @@ Bugs:
     => 046046 - Phone no with 15 number not accepting
 ----------------------TV-9.2.3.20201201------------------------------
     => 046113	S3 bucket bulk media issue
+    => 046153 - On some email template 2 times header footer coming
 -----------------------TV-9.2.3.20201204---------------------------
     => 046177	Admin -url rewriting issue
 Enhancements:
