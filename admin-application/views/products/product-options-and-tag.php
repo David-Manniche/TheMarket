@@ -60,7 +60,7 @@
                  <div class="caption-wraper"><label class="field_label"></label></div>
                  <div class="field-wraper">
                      <div class="field_cover web_form">
-                        <input onclick="productAttributeAndSpecificationsFrm(<?php echo $productId; ?>);" type="button" name="btn_back" value="Back">                         .
+                        <input onclick="productAttributeAndSpecificationsFrm(<?php echo $productId; ?>);" type="button" name="btn_back" value="Back">
                      </div>
                  </div>
              </div>

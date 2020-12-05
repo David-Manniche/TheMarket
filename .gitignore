@@ -2,6 +2,8 @@
 #!/.gitignore
 /robots.txt
 /public/robots.txt
+/public/health.html
+/health.html
 /.htaccess
 /public/.htaccess
 /user-uploads/*
