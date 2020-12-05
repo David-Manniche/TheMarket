@@ -119,39 +119,36 @@ class WithdrawalRequestsController extends AdminBaseController
         $this->set('statusArr', Transactions::getWithdrawlStatusArr($this->adminLangId));
         $this->_template->render(false, false);
     }
-
-    public function updateStatus()
+    
+    public function setupUpdateStatus()
     {
         $this->objPrivilege->canEditWithdrawRequests();
-        $post = FatApp::getPostedData();
+        $withdrawalId = FatApp::getPostedData('withdrawal_id', FatUtility::VAR_INT, 0);
 
-        if ($post == false) {
-            Message::addErrorMessage($this->str_invalid_request);
+        $frm = $this->getUpdateStatusForm($withdrawalId);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (false == $post) {
+            Message::addErrorMessage($frm->getValidationErrors());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $withdrawalId = FatUtility::int($post['id']);
-        $status = FatUtility::int($post['status']);
 
         $allowedStatusUpdateArr = array(Transactions::WITHDRAWL_STATUS_APPROVED, Transactions::WITHDRAWL_STATUS_DECLINED);
 
         $srch = new WithdrawalRequestsSearch();
         $srch->addCondition('withdrawal_id', '=', $withdrawalId);
+        $srch->addCondition('withdrawal_status', '=', Transactions::WITHDRAWL_STATUS_PENDING);
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
+        $row = FatApp::getDb()->fetch($rs);
 
-        $records = array();
-        if ($rs) {
-            $records = FatApp::getDb()->fetch($rs);
-        }
-
-        if (1 > $withdrawalId || !in_array($status, $allowedStatusUpdateArr) || $records['withdrawal_status'] != Transactions::WITHDRAWL_STATUS_PENDING) {
+        if (!$row || !in_array($post['withdrawal_status'], $allowedStatusUpdateArr)) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $assignFields = array('withdrawal_status' => $status);
+        $comment = $post['withdrawal_comments'];
+        $assignFields = array('withdrawal_status' => $post['withdrawal_status'], 'withdrawal_comments' => $comment);
         if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?', 'vals' => array($withdrawalId)))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
@@ -163,13 +160,19 @@ class WithdrawalRequestsController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        $rs = FatApp::getDb()->updateFromArray(
-            Transactions::DB_TBL,
-            array("utxn_status" => Transactions::STATUS_COMPLETED),
-            array('smt' => 'utxn_withdrawal_id=?', 'vals' => array($withdrawalId))
+        $assignFields = array('utxn_status' => Transactions::STATUS_COMPLETED);
+        if ($post['withdrawal_status'] == Transactions::WITHDRAWL_STATUS_APPROVED) {
+            $oldTrxComment = Transactions::getAttributesById($withdrawalId, 'utxn_comments');
+            $assignFields['utxn_comments'] = $oldTrxComment . " (" . $comment . ")";
+        }
+
+        FatApp::getDb()->updateFromArray(
+                Transactions::DB_TBL,
+                $assignFields,
+                array('smt' => 'utxn_withdrawal_id=?', 'vals' => array($withdrawalId))
         );
 
-        if ($status == Transactions::WITHDRAWL_STATUS_DECLINED) {
+        if ($post['withdrawal_status'] == Transactions::WITHDRAWL_STATUS_DECLINED) {
             $transObj = new Transactions();
             $txnDetail = $transObj->getAttributesBywithdrawlId($withdrawalId);
             $formattedRequestValue = '#' . str_pad($withdrawalId, 6, '0', STR_PAD_LEFT);
@@ -180,6 +183,9 @@ class WithdrawalRequestsController extends AdminBaseController
             $txnArray["utxn_withdrawal_id"] = $txnDetail["utxn_withdrawal_id"];
             $txnArray["utxn_type"] = Transactions::TYPE_MONEY_WITHDRAWL_REFUND;
             $txnArray["utxn_comments"] = sprintf(Labels::getLabel('MSG_Withdrawal_Request_Declined_Amount_Refunded', $this->adminLangId), $formattedRequestValue);
+            if (!empty($comment)) {
+                $txnArray["utxn_comments"] = $txnArray["utxn_comments"] . "( " . $comment . " )";
+            }
 
             if ($txnId = $transObj->addTransaction($txnArray)) {
                 $emailNotificationObj->sendTxnNotification($txnId, $this->adminLangId);
@@ -190,6 +196,44 @@ class WithdrawalRequestsController extends AdminBaseController
         $this->_template->render(false, false, 'json-success.php');
     }
 
+    public function viewComment($withdrawalId)
+    {
+        $this->objPrivilege->canEditWithdrawRequests();
+        $srch = new WithdrawalRequestsSearch();
+        $srch->addCondition('withdrawal_id', '=', $withdrawalId);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $rs = $srch->getResultSet();        
+        $row = FatApp::getDb()->fetch($rs);        
+        if (!$row) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }  
+        $this->set('comment', $row['withdrawal_comments']);
+        $this->_template->render(false, false);
+    }
+    
+    public function updateStatusForm($withdrawalId)
+    {
+        $this->objPrivilege->canEditWithdrawRequests();
+        $allowedStatusUpdateArr = array(Transactions::WITHDRAWL_STATUS_APPROVED, Transactions::WITHDRAWL_STATUS_DECLINED);
+
+        $srch = new WithdrawalRequestsSearch();
+        $srch->addCondition('withdrawal_id', '=', $withdrawalId);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $rs = $srch->getResultSet();        
+        $row = FatApp::getDb()->fetch($rs);
+        
+        if (1 > $withdrawalId || !$row ||  $row['withdrawal_status'] != Transactions::WITHDRAWL_STATUS_PENDING) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $this->set('frm', $this->getUpdateStatusForm($withdrawalId));
+        $this->set('withdrawal_payment_method', $row['withdrawal_payment_method']);
+        $this->_template->render(false, false);
+    }
+    
     private function getSearchForm($langId)
     {
         $frm = new Form('frmReqSearch');
@@ -209,6 +253,21 @@ class WithdrawalRequestsController extends AdminBaseController
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId), array('onclick' => 'clearTagSearch();'));
         $fld_submit->attachField($fld_cancel);
+        return $frm;
+    }
+        
+    private function getUpdateStatusForm($withdrawalId)
+    {
+        $frm = new Form('frmUpdateStatus');
+        $statusArr = array(
+            Transactions::WITHDRAWL_STATUS_PENDING => Labels::getLabel('LBL_Withdrawal_Request_Pending', $this->adminLangId),
+            Transactions::WITHDRAWL_STATUS_APPROVED => Labels::getLabel('LBL_Withdrawal_Request_Approved', $this->adminLangId),
+            Transactions::WITHDRAWL_STATUS_DECLINED => Labels::getLabel('LBL_Withdrawal_Request_Declined', $this->adminLangId),
+        );
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'withdrawal_status', $statusArr, '', array(), '');
+        $frm->addTextarea(Labels::getLabel('LBL_Comment', $this->adminLangId), 'withdrawal_comments');
+        $fld = $frm->addHiddenField('', 'withdrawal_id', $withdrawalId);
+        $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;
     }
 }

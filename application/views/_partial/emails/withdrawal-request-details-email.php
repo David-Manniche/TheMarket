@@ -51,8 +51,8 @@ switch ($data['withdrawal_payment_method']) {
         break;
 }
 
-if (!empty($data["withdrawal_comments"])) {
-    $txt .= '<br><strong>' . Labels::getLabel('LBL_Comments', $siteLangId) . ': </strong>' . $data["withdrawal_comments"];
+if (!empty($data["withdrawal_instructions"])) {
+    $txt .= '<br><strong>' . Labels::getLabel('LBL_Instructions', $siteLangId) . ': </strong>' . $data["withdrawal_instructions"];
 }
 
 $str .= '<tr>

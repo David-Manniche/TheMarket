@@ -25,8 +25,7 @@ foreach ($arr_flds as $val) {
 }
 
 $sr_no = $page == 1 ? 0 : $pageSize * ($page - 1);
-foreach ($arr_listing as $sn => $row) {
-    $pluginKeyName = '';
+foreach ($arr_listing as $sn => $row) {    
     if ($row['withdrawal_payment_method'] == 0) {
         $row['withdrawal_payment_method'] = User::AFFILIATE_PAYMENT_METHOD_BANK;
     }
@@ -70,10 +69,7 @@ foreach ($arr_listing as $sn => $row) {
             case 'withdrawal_payment_method':
                 $methodType = $paymentMethods + $payoutPlugins;
                 $methodName = (isset($row[$key]) && isset($methodType[$row[$key]]) ? $methodType[$row[$key]] : Labels::getLabel('LBL_N/A', $adminLangId));
-                $td->appendElement('plaintext', array(), $methodName);
-                if (!in_array($row[$key], array_keys($paymentMethods)) && in_array($row[$key], array_keys($payoutPlugins))) {
-                    $pluginKeyName =  '"' . Plugin::getAttributesById($row[$key], 'plugin_code') . '",';
-                }
+                $td->appendElement('plaintext', array(), $methodName);                
                 break;
             case 'account_details':
                 $txt = '';
@@ -103,8 +99,8 @@ foreach ($arr_listing as $sn => $row) {
                     }
                 }
 
-                if (!empty($row["withdrawal_comments"])) {
-                    $txt .= '<br><strong>' . Labels::getLabel('LBL_Comments', $adminLangId) . ': </strong>' . $row["withdrawal_comments"];
+                if (!empty($row["withdrawal_instructions"])) {
+                    $txt .= '<br><strong>' . Labels::getLabel('LBL_INSTRUCTIONS', $adminLangId) . ': </strong>' . $row["withdrawal_instructions"];
                 }
 
                 $td->appendElement('plaintext', array(), $txt, true);
@@ -117,9 +113,10 @@ foreach ($arr_listing as $sn => $row) {
                 break;
             case 'action':
                 if ($canEdit && $row['withdrawal_status'] == Transactions::STATUS_PENDING) {
-                    $approveAction = empty($pluginKeyName) ? 'updateStatus' : 'requestOutside';
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Approve', $adminLangId), "onclick" => $approveAction . "(" . $pluginKeyName . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_APPROVED . " , 'approve' )"), "<i class='far fa-thumbs-up'></i>", true);
-                    $td->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon', 'title' => Labels::getLabel('LBL_Decline', $adminLangId), "onclick" => "updateStatus(" . $row['withdrawal_id'] . "," . Transactions::WITHDRAWL_STATUS_DECLINED . " , 'decline' )"), "<i class='far fa-thumbs-down'></i>", true);
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_Edit',$adminLangId),"onclick"=>"updateStatusForm(".$row['withdrawal_id'].")"),"<i class='far fa-edit icon'></i>", true);	                    
+                }
+                if (!empty($row['withdrawal_comments'])) {
+                    $td->appendElement('a', array('href'=>'javascript:void(0)','class'=>'btn btn-clean btn-sm btn-icon','title'=>Labels::getLabel('LBL_VIEW_COMMENT',$adminLangId),"onclick"=>"viewComment(".$row['withdrawal_id'].")"),"<i class='fas fa-eye'></i>", true);	                    
                 }
                 break;
             default:

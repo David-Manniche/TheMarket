@@ -1281,3 +1281,6 @@ DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'SEL
 DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'SELLER_BRAND_REQUEST_NOTIFICATION';
 DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = 'PAYFORT_INVALID_REQUEST_PARAMETERS';
 DELETE FROM `tbl_language_labels` WHERE label_key = 'LBL_What_Clients_Say';
+
+ALTER TABLE `tbl_user_withdrawal_requests` CHANGE `withdrawal_comments` `withdrawal_instructions` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `tbl_user_withdrawal_requests` ADD `withdrawal_comments` TEXT NOT NULL AFTER `withdrawal_paypal_email_id`;
