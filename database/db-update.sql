@@ -1287,3 +1287,7 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("LBL_NEWSLETTER_SIGNUP_AWEBER", 1, "Newsletter Signup", 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- -----------------------TV-9.2.3.20201204-------------------------
+
+-- --- Dpo Payment Gateway--- --
+INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Dpo', '13', 'Dpo', '0', '10');
+-- --- Dpo Payment Gateway--- --
