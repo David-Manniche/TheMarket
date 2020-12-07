@@ -1004,7 +1004,6 @@ class SellerProductsController extends AdminBaseController
             );
         }
         die(json_encode($json));
-        return  $arrListing;
     }
 
     public function setupSellerProductLinks()
@@ -1569,7 +1568,7 @@ class SellerProductsController extends AdminBaseController
         $urlController = implode('-', $arr);
         $className = ucwords(implode(' ', $arr));
         if ($action == 'index') {
-            $nodes[] = array('title' => $className);
+            $nodes[] = array('title' => Labels::getLabel('LBL_SELLER_INVENTORY', $this->adminLangId));
         } elseif ($action == 'upsellProducts') {
             $nodes[] = array('title' => Labels::getLabel('LBL_BUY_TOGETHER_PRODUCTS', $this->adminLangId));
         } else {
