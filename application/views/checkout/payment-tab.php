@@ -86,7 +86,7 @@ if ($isCodOrPayAtStore && true === $otpVerification) { ?>
         <div class="otp-success">
             <img class="img" src="<?php echo CONF_WEBROOT_URL; ?>images/retina/otp-complete.svg" alt="">
             <h5><?php echo Labels::getLabel('LBL_VERIFIED_SUCCESSFULLY', $siteLangId); ?></h5>
-            <p>Lorem ipsum dolor sit amet consectetur </p>
+            <!--p>Lorem ipsum dolor sit amet consectetur </p-->
         </div>
     </div>
 <?php } else { ?>

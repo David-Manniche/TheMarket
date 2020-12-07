@@ -2428,6 +2428,7 @@ class Orders extends MyAppModel
                     'oua_state' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_country' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_country_code' => static::REPLACE_ORDER_USER_ADDRESS,
+                    'oua_country_code_alpha3' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_state_code' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_phone' => static::REPLACE_ORDER_USER_ADDRESS,
                     'oua_zip' => static::REPLACE_ORDER_USER_ADDRESS

@@ -24,7 +24,9 @@ abstract class PaymentController extends MyAppController
         if (!is_array($this->allowedCurrenciesArr())) {
             $this->setErrorAndRedirect(Labels::getLabel('MSG_INVALID_CURRENCY_FORMAT', $this->siteLangId), FatUtility::isAjaxCall());
         }
-        if (!in_array($this->systemCurrencyCode, $this->allowedCurrenciesArr())) {
+
+        $validateCurrency = in_array($this->systemCurrencyCode, $this->allowedCurrenciesArr()) || in_array("*", $this->allowedCurrenciesArr());
+        if (!$validateCurrency) {
             $msg = Labels::getLabel('MSG_INVALID_ORDER_CURRENCY_({CURRENCY})_PASSED_TO_GATEWAY', $this->siteLangId);
             $msg = CommonHelper::replaceStringData($msg, ['{CURRENCY}' => $this->systemCurrencyCode]);
             $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
