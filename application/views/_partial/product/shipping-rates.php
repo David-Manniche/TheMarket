@@ -1,6 +1,7 @@
 <section class="section certified-bar">
     <ul>
-        <?php if (!empty($product['product_warranty'])) { ?>
+        <?php 
+		if (!empty($product['product_warranty'])) { ?>
             <li>
                 <div class="certified-box">
                     <i class="icn">
@@ -19,7 +20,7 @@
                 </div>
             </li>
         <?php } ?>
-        <?php if (!empty($product['shop_return_age']) || !empty($product['selprod_return_age'])) { ?>
+        <?php if ((!empty($product['shop_return_age']) || !empty($product['selprod_return_age'])) && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>
             <li>
                 <div class="certified-box">
                     <i class="icn">
@@ -40,7 +41,7 @@
                 </div>
             </li>
         <?php } ?>
-        <?php if (!empty($product['shop_cancellation_age']) || !empty($product['selprod_cancellation_age'])) { ?>
+        <?php if ((!empty($product['shop_cancellation_age']) || !empty($product['selprod_cancellation_age'])) && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>
             <li>
                 <div class="certified-box">
                     <i class="icn">
@@ -60,7 +61,7 @@
                 </div>
             </li>
         <?php } ?>
-        <?php if ($codEnabled) { ?>
+        <?php if ($codEnabled && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>
             <li>
                 <div class="certified-box">
                     <i class="icn">
@@ -75,31 +76,33 @@
                 </div>
             </li>
         <?php } ?>
-        <li>
-            <div class="certified-box">
-                <?php $icon = $fulfillmentType == Shipping::FULFILMENT_PICKUP ? 'pickup' : 'freeshipping'; ?>
-                <i class="icn">
-                    <svg class="svg">
-                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $icon; ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $icon; ?>">
-                        </use>
-                    </svg>
-                </i>
-                <p>
-                    <?php
-                    switch ($fulfillmentType) {
-                        case Shipping::FULFILMENT_SHIP:
-                            echo Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
-                            break;
-                        case Shipping::FULFILMENT_PICKUP:
-                            echo Labels::getLabel('LBL_PICKUP_ONLY', $siteLangId);
-                            break;
-                        default:
-                            echo Labels::getLabel('LBL_SHIPPMENT_AND_PICKUP', $siteLangId);
-                            break;
-                    }
-                    ?>
-                </p>
-            </div>
-        </li>
+        <?php if (Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>
+			<li>
+				<div class="certified-box">
+					<?php $icon = $fulfillmentType == Shipping::FULFILMENT_PICKUP ? 'pickup' : 'freeshipping'; ?>
+					<i class="icn">
+						<svg class="svg">
+							<use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $icon; ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $icon; ?>">
+							</use>
+						</svg>
+					</i>
+					<p>
+						<?php
+						switch ($fulfillmentType) {
+							case Shipping::FULFILMENT_SHIP:
+								echo Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
+								break;
+							case Shipping::FULFILMENT_PICKUP:
+								echo Labels::getLabel('LBL_PICKUP_ONLY', $siteLangId);
+								break;
+							default:
+								echo Labels::getLabel('LBL_SHIPPMENT_AND_PICKUP', $siteLangId);
+								break;
+						}
+						?>
+					</p>
+				</div>
+			</li>
+		<?php } ?>
     </ul>
 </section>

@@ -487,6 +487,7 @@ Bugs:
     => 046177	Admin -url rewriting issue
     => 046187 buyer unable to add to cart when it is not signed in.
     => 046189 - blog detail page- when there is no comment still then comment count is listing there
+    => 046195 - return/cancellation, cod, pickup options are listing on digital item detail page
 
 Enhancements:
     => Tax module upgrade
