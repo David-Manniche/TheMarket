@@ -342,6 +342,7 @@
                             <div class="scrollbar">
                                 <ul class="list list--vertical theme--txtcolor theme--hovercolor topSearchKeyword">
                                     <?php
+                                    /*
                                     $count = 1;
                                     if (count($dashboardInfo['topSearchKeyword']) > 0) {
                                         foreach ($dashboardInfo['topSearchKeyword'] as $row) {
@@ -358,7 +359,10 @@
                                         }
                                     } else {
                                         echo Labels::getLabel('LBL_No_Record_Found', $adminLangId);
-                                    } ?>
+                                    } 
+                                     * 
+                                     */                                    
+                                    ?>
                                 </ul>
                             </div>
                         </div>
