@@ -1120,25 +1120,32 @@ class Product extends MyAppModel
         $srch->addCondition('selprod_product_id', '=', $productId);
         $srch->addCondition('selprod_user_id', '=', $userId);
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
         // $srch->addCondition('tspo.selprodoption_optionvalue_id', 'is', 'mysql_func_null', 'and', true);
-        $srch->addFld('selprodoption_optionvalue_id');
+        $srch->addFld('count(DISTINCT selprod_code) as count');
         $rs = $srch->getResultSet();
-        $alreadyAdded = FatApp::getDb()->fetchAll($rs, 'selprodoption_optionvalue_id');
+        $alreadyAdded = FatApp::getDb()->fetch($rs);
         if ($alreadyAdded == false) {
             return true;
         }
+        $alreadyAddedOptions = $alreadyAdded['count'];
 
         $srch = new SearchBase(static::DB_PRODUCT_TO_OPTION);
         $srch->addCondition(static::DB_PRODUCT_TO_OPTION_PREFIX . 'product_id', '=', $productId);
         $srch->joinTable(OptionValue::DB_TBL, 'LEFT JOIN', 'prodoption_option_id = opval.optionvalue_option_id', 'opval');
-        $srch->addFld('optionvalue_id');
+        $srch->addFld('count(DISTINCT optionvalue_id) as count');
+        $srch->addGroupBy('prodoption_option_id');
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
         $rs = $srch->getResultSet();
-        $allOptions = FatApp::getDb()->fetchAll($rs, 'optionvalue_id');
-        $result = array_diff_key($allOptions, $alreadyAdded);
-        if (empty($result)) {
-            return false;
+        $totalOptionCombination = 1;
+
+        while ($row = FatApp::getDb()->fetch($rs)) {
+            $totalOptionCombination *= $row['count'];
         }
-        return true;
+
+        return ($totalOptionCombination - $alreadyAddedOptions) > 0 ? true : false;
     }
 
     public static function hasInventory($productId, $userId)

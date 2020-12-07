@@ -111,7 +111,7 @@ class SellerRequestsController extends SellerBaseController
                 'preq_user_id' => $row['preq_user_id'],
                 'preq_added_on' => $row['preq_added_on'],
                 'preq_requested_on' => isset($row['preq_requested_on']) ?? $row['preq_requested_on'],
-                'preq_status_updated_on' => isset($row['preq_status_updated_on']) ??$row['preq_status_updated_on'],
+                'preq_status_updated_on' => isset($row['preq_status_updated_on']) ?? $row['preq_status_updated_on'],
                 'preq_status' => $row['preq_status'],
                 'product_identifier' => $row['product_identifier'],
                 'product_name' => (!empty($row['product_name'])) ? $row['product_name'] : '',
@@ -194,6 +194,14 @@ class SellerRequestsController extends SellerBaseController
         }
         $this->set('frm', $frm);
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
+        $langData = Language::getAllNames();
+        unset($langData[$siteDefaultLangId]);
+        $auto_update_other_langs_data = false;
+        if (!empty($translatorSubscriptionKey) && count($langData) > 0) {
+            $auto_update_other_langs_data = true;
+        }
+        $this->set('auto_update_other_langs_data', $auto_update_other_langs_data);
         $this->set('siteDefaultLangId', $siteDefaultLangId);
         $this->set('categoryReqId', $categoryReqId);
         $this->set('langId', $this->siteLangId);
@@ -249,11 +257,18 @@ class SellerRequestsController extends SellerBaseController
             $post['prodcat_active'] = applicationConstants::ACTIVE;
             $post['prodcat_status'] = ProductCategory::REQUEST_APPROVED;
             $post['prodcat_status_updated_on'] = date('Y-m-d H:i:s');
+        } else {
+            $post['prodcat_active'] = applicationConstants::INACTIVE;
+            $post['prodcat_status'] = ProductCategory::REQUEST_PENDING;
         }
 
         $post['prodcat_requested_on'] = date('Y-m-d H:i:s');
 
+        $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
+        $post['prodcat_identifier'] = $post['prodcat_name'][$siteDefaultLangId];
+
         $post['prodcat_seller_id'] = UserAuthentication::getLoggedUserId();
+
         $productCategory = new ProductCategory($categoryReqId);
         if (!$productCategory->saveCategoryData($post)) {
             Message::addErrorMessage($productCategory->getError());
