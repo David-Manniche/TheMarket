@@ -484,6 +484,7 @@ Bugs:
     => 046113	S3 bucket bulk media issue
     => 046153 - On some email template 2 times header footer coming
     => 046188 - on admin dashboard undefined index: topSearchKeyword error coming
+    => 046199 - unable to add seller product with all option combination
 
 -----------------------TV-9.2.3.20201204---------------------------
 Enhancements:
