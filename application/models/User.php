@@ -2006,7 +2006,7 @@ class User extends MyAppModel
             'withdrawal_account_number' => isset($data['ub_account_number']) ? $data['ub_account_number'] : '',
             'withdrawal_ifc_swift_code' => isset($data['ub_ifsc_swift_code']) ? $data['ub_ifsc_swift_code'] : '',
             'withdrawal_bank_address' => isset($data['ub_bank_address']) ? $data['ub_bank_address'] : '',
-            'withdrawal_comments' => isset($data['withdrawal_comments']) ? $data['withdrawal_comments'] : '',
+            'withdrawal_instructions' => isset($data['withdrawal_instructions']) ? $data['withdrawal_instructions'] : '',
             'withdrawal_status' => 0,
             'withdrawal_request_date' => date('Y-m-d H:i:s'),
             'withdrawal_cheque_payee_name' => isset($data['withdrawal_cheque_payee_name']) ? $data['withdrawal_cheque_payee_name'] : '',

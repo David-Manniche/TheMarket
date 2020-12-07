@@ -716,7 +716,7 @@ class AccountController extends LoggedUserController
         $withdrawal_account_number = '';
         $withdrawal_ifc_swift_code = '';
         $withdrawal_bank_address = '';
-        $withdrawal_comments = $post['withdrawal_comments'];
+        $withdrawal_instructions = $post['withdrawal_instructions'];
 
         switch ($withdrawal_payment_method) {
             case User::AFFILIATE_PAYMENT_METHOD_CHEQUE:
@@ -745,7 +745,7 @@ class AccountController extends LoggedUserController
         $post['ub_ifsc_swift_code'] = $withdrawal_ifc_swift_code;
         $post['ub_bank_address'] = $withdrawal_bank_address;
 
-        $post['withdrawal_comments'] = $withdrawal_comments;
+        $post['withdrawal_instructions'] = $withdrawal_instructions;
 
         if (!$withdrawRequestId = $userObj->addWithdrawalRequest(array_merge($post, array("ub_user_id" => $userId)), $this->siteLangId)) {
             $message = Labels::getLabel($userObj->getError(), $this->siteLangId);
@@ -2758,7 +2758,7 @@ class AccountController extends LoggedUserController
             $ifsc->requirements()->setRegularExpressionToValidate(ValidateElement::USERNAME_REGEX);
             $frm->addTextArea(Labels::getLabel('LBL_Bank_Address', $langId), 'ub_bank_address');
         }
-        $frm->addTextArea(Labels::getLabel('LBL_Other_Info_Instructions', $langId), 'withdrawal_comments');
+        $frm->addTextArea(Labels::getLabel('LBL_Other_Info_Instructions', $langId), 'withdrawal_instructions');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Request', $langId));
         $frm->addButton("", "btn_cancel", Labels::getLabel("LBL_Cancel", $langId));
         return $frm;

@@ -18,6 +18,8 @@ class PayoutBaseController extends PluginSettingController
             LibHelper::dieJsonError($message);
         }
 
+        $comment = FatApp::getPostedData('comment', FatUtility::VAR_STRING, '');
+
         $specifics = WithdrawalRequestsSearch::getWithDrawalSpecifics($recordId);
         try {
             $calledClass = get_called_class();
@@ -33,11 +35,18 @@ class PayoutBaseController extends PluginSettingController
             LibHelper::dieJsonError($message);
         }
 
-        $assignFields = array('withdrawal_status' => Transactions::WITHDRAWL_STATUS_PROCESSED);
+        $assignFields = array('withdrawal_status' => Transactions::WITHDRAWL_STATUS_PROCESSED, 'withdrawal_comments' => $comment);
         if (!FatApp::getDb()->updateFromArray(User::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields, array('smt' => 'withdrawal_id=?', 'vals' => array($recordId)))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
+
+        $oldTrxComment = Transactions::getAttributesById($recordId, 'utxn_comments');
+        $rs = FatApp::getDb()->updateFromArray(
+                Transactions::DB_TBL,
+                array('utxn_comments' => $oldTrxComment . " (" . $comment . ")"),
+                array('smt' => 'utxn_withdrawal_id=?', 'vals' => array($recordId))
+        );
 
         $this->set('msg', Labels::getLabel('LBL_PAYOUT_REQUEST_SENT_SUCCESSFULLY', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');

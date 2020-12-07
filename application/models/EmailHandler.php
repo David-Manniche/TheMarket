@@ -1377,7 +1377,7 @@ class EmailHandler extends FatModel
             '{request_account_number}' => $withdrawalRequestData['withdrawal_account_number'],
             '{request_ifsc_swift_number}' => $withdrawalRequestData['withdrawal_ifc_swift_code'],
             '{request_bank_address}' => $withdrawalRequestData['withdrawal_bank_address'],
-            '{request_comments}' => $withdrawalRequestData['withdrawal_comments'],
+            '{request_comments}' => $withdrawalRequestData['withdrawal_instructions'],
 
             '{request_status}' => $statusArr[$withdrawalRequestData['withdrawal_status']],
             '{withdrawal_detail_table_format_html}' => $withdrawalDetailsTableFormatHtml,

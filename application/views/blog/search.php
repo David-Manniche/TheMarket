@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-xl-9 col-lg-8 mb-4 mb-md-0">
                 <div class="posted-content">
-                    <div id="blogs-listing-js"></div>
+                    <div id="blogs-listing-js" class="row"></div>
                 </div>
             </div>
             <div class="col-xl-3 col-lg-4">

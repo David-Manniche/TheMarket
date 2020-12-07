@@ -51,8 +51,15 @@
 					$td->appendElement('plaintext', array(), $txt, true);
 					break;
 				case 'utxn_comments':
-					$td->appendElement('plaintext', array(), Transactions::formatTransactionComments($row[$key]), true);
-					break;
+                                    $comments = Transactions::formatTransactionComments($row[$key]);
+                                    $commentsTxt = "<span class='lessText'>" . CommonHelper::truncateCharacters($comments, 150, '', '', true) . "</span>";
+                                    if (strlen($comments) > 150) {
+                                        $commentsTxt .= "<span class='moreText hidden'>";
+                                        $commentsTxt .= nl2br($comments) . "</span>";
+                                        $commentsTxt .= "</br><a class='readMore link--arrow btn-link' href='javascript:void(0);'>" . Labels::getLabel('Lbl_SHOW_MORE', $siteLangId) . "</a>";
+                                    }
+                                    $td->appendElement('plaintext', array(), $commentsTxt, true);
+                                    break;
 				default:
 					$td->appendElement('plaintext', array(), $row[$key], true);
 					break;
@@ -70,3 +77,8 @@
 echo FatUtility::createHiddenFormFromData($postedData, array('name' => 'frmCreditSrchPaging'));
 $pagingArr=array('pageCount'=>$pageCount,'page'=>$page,'recordCount'=>$recordCount, 'callBackJsFunc' => 'goToOrderSearchPage');
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
+?>
+<script>
+    var $linkMoreText = '<?php echo Labels::getLabel('Lbl_SHOW_MORE', $siteLangId); ?>';
+    var $linkLessText = '<?php echo Labels::getLabel('Lbl_SHOW_LESS', $siteLangId); ?>';
+</script>

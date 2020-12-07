@@ -47,16 +47,18 @@ FatApp::getDb()->logQueries(true,CONF_UPLOADS_PATH.'logQuery.txt'); */
 /* --- Redirect SSL --- */
 $protocol = (FatApp::getConfig('CONF_USE_SSL', FatUtility::VAR_INT, 0) == 1) ? 'https://' : 'http://';
 
-if ((!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')  && (FatApp::getConfig('CONF_USE_SSL') == 1)) {
-    $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    FatApp::redirectUser($redirect);
+if (true == USE_X_FORWARDED_PROTO) {
+    /* USE when $_SERVER['HTTPS'] will not provided by server . Generally in AWS server when load balance used for SSL. */
+    if ((!isset($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https')  && (FatApp::getConfig('CONF_USE_SSL') == 1)) {
+        $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        FatApp::redirectUser($redirect);
+    }
+} else {
+    if ((!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')  && (FatApp::getConfig('CONF_USE_SSL') == 1)) {
+        $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        FatApp::redirectUser($redirect);
+    }
 }
-
-/* USE when $_SERVER['HTTPS'] will not provided by server . Generally in AWS server when load balance used for SSL.
-if ((!isset($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https')  && (FatApp::getConfig('CONF_USE_SSL')==1)) {
-    $redirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-    FatApp::redirectUser($redirect);
-} */
 /* --- Redirect SSL --- */
 $_SESSION['WYSIWYGFileManagerRequirements'] = CONF_INSTALLATION_PATH . 'public/WYSIWYGFileManagerRequirements.php';
 require_once CONF_INSTALLATION_PATH . 'library/aws/aws-autoloader.php';
