@@ -45,13 +45,10 @@ $(document).on('keyup', ".js-special-price", function () {
     var currObj = $(this);
     var parentForm = currObj.closest('form').attr('id');
     var selProdPrice = $("#" + parentForm + " .js-prod-price").attr('data-price');
-    console.log("#" + parentForm + " .js-prod-price");
     var specialPrice = $("#" + parentForm + " .js-special-price").val();
     if (specialPrice != '') {
         var discountAmt = selProdPrice - specialPrice;
-        console.log(discountAmt);
         var percentage = ((discountAmt / selProdPrice) * 100);
-        console.log(percentage);
         if (percentage > 0) {
             percentage = Number(Number(percentage).toFixed(2));
             var discountPercentage = langLbl.discountPercentage + ': ' + percentage + '%';

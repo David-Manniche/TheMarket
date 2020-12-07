@@ -2525,7 +2525,7 @@ class SellerProductsController extends AdminBaseController
                 $dataToEdit[] = array(
                     'product_name' => html_entity_decode($productsTitle[$selProdId], ENT_QUOTES, 'UTF-8'),
                     'splprice_selprod_id' => $selProdId,
-                    'selprod_price' => SellerProduct::getAttributesById($selProdId, 'selprod_price') 
+                    'selprod_price' => SellerProduct::getAttributesById($selProdId, 'selprod_price')
                 );
             }
         } else {
@@ -2542,7 +2542,7 @@ class SellerProductsController extends AdminBaseController
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProd_id]));
         }
-        // CommonHelper::printArray($dataToEdit);
+
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
@@ -2571,7 +2571,8 @@ class SellerProductsController extends AdminBaseController
             foreach ($selProdIdsArr as $selProdId) {
                 $dataToEdit[] = array(
                     'product_name' => html_entity_decode($productsTitle[$selProdId], ENT_QUOTES, 'UTF-8'),
-                    'voldiscount_selprod_id' => $selProdId
+                    'voldiscount_selprod_id' => $selProdId,
+                    'selprod_stock' => SellerProduct::getAttributesById($selProdId, 'selprod_stock')
                 );
             }
         } else {
