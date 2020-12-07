@@ -79,7 +79,7 @@ class Address extends MyAppModel
         $srch->joinState();
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
-        $srch->addMultipleFields(array('addr.*', 'state_code', 'country_code', 'IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
+        $srch->addMultipleFields(array('addr.*', 'state_code', 'country_code', 'country_code_alpha3', 'IFNULL(country_name, country_code) as country_name', 'IFNULL(state_name, state_identifier) as state_name'));
         $srch->addCondition('country_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition('state_active', '=', applicationConstants::ACTIVE);
         $srch->addCondition(self::tblFld('type'), '=', $type);
@@ -314,6 +314,7 @@ class Address extends MyAppModel
             'oua_state' => $addrArr['state_name'],
             'oua_country' => $addrArr['country_name'],
             'oua_country_code' => $addrArr['country_code'],
+            'oua_country_code_alpha3' => $addrArr['country_code_alpha3'],
             'oua_state_code' => $addrArr['state_code'],
             'oua_phone' => $addrArr['addr_phone'],
             'oua_zip' => $addrArr['addr_zip'],
