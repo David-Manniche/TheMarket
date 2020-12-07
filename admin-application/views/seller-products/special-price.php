@@ -1,16 +1,16 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-    $frmSearch->setFormTagAttribute('class', 'web_form last_td_nowrap');
-    $frmSearch->setFormTagAttribute('onsubmit', 'searchSpecialPriceProducts(this); return(false);');
-    $frmSearch->developerTags['colClassPrefix'] = 'col-md-';
-    $frmSearch->developerTags['fld_default_col'] = 4;
-    $fld_active = $frmSearch->getField('active');
+$frmSearch->setFormTagAttribute('class', 'web_form last_td_nowrap');
+$frmSearch->setFormTagAttribute('onsubmit', 'searchSpecialPriceProducts(this); return(false);');
+$frmSearch->developerTags['colClassPrefix'] = 'col-md-';
+$frmSearch->developerTags['fld_default_col'] = 4;
+$fld_active = $frmSearch->getField('active');
 
-    $class = (0 < $selProd_id) ? 'hide' : '';
-    $submitBtnFld = $frmSearch->getField('btn_submit');
-    $submitBtnFld->setFieldTagAttribute('class', $class);
+$class = (0 < $selProd_id) ? 'hide' : '';
+$submitBtnFld = $frmSearch->getField('btn_submit');
+$submitBtnFld->setFieldTagAttribute('class', $class);
 
-    $cancelBtnFld = $frmSearch->getField('btn_clear');
-    $cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch('.$selProd_id.');');
+$cancelBtnFld = $frmSearch->getField('btn_clear');
+$cancelBtnFld->setFieldTagAttribute('onclick', 'clearSearch(' . $selProd_id . ');');
 
 if (0 < $selProd_id) {
     $keywordFld = $frmSearch->getField('keyword');
@@ -61,7 +61,7 @@ if (0 < $selProd_id) {
                                     ],
                                 ]
                             ];
-        
+
                             $this->includeTemplate('_partial/action-buttons.php', $data, false);
                         }
                         ?>
@@ -77,7 +77,7 @@ if (0 < $selProd_id) {
                             $this->includeTemplate('seller-products/add-special-price-form.php', array('adminLangId' => $adminLangId), false);
                         }
                         ?>
-                        <div class="tablewrap" >
+                        <div class="tablewrap">
                             <div id="listing"> <?php echo Labels::getLabel('LBL_Processing...', $adminLangId); ?></div>
                         </div>
                     </div>

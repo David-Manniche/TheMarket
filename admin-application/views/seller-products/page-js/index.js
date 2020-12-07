@@ -472,6 +472,7 @@ $(document).ready(function(){
 	    }
 		$("#frmSelProdListing").attr({'action': fcom.makeUrl('SellerProducts','specialPrice'), 'target':"_blank"}).removeAttr('onsubmit').submit();
 		searchProducts(document.frmSearch);
+		showActionsBtns();
 	};
 
 	addVolumeDiscount = function(){
@@ -481,5 +482,6 @@ $(document).ready(function(){
 	    }
 		$("#frmSelProdListing").attr({'action': fcom.makeUrl('SellerProducts','volumeDiscount'), 'target':"_blank"}).removeAttr('onsubmit').submit();
 		searchProducts(document.frmSearch);
+		showActionsBtns();
 	};
 })();
