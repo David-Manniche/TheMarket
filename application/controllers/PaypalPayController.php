@@ -79,42 +79,6 @@ class PaypalPayController extends PaymentController
     }
 
     /**
-     * createOrder
-     *
-     * @param  string $orderId
-     * @return string json
-     */
-    public function createOrder(string $orderId)
-    {
-        if (false === $this->plugin->createOrder($orderId)) {
-            $error = $this->plugin->getError();
-            $msg = is_array($error) && isset($error['error']) ? $error['error'] . ' : ' . $error['error_description'] : $error;
-            $msg = is_array($msg) && isset($msg['message']) ? $msg['message'] : $msg;
-            $this->setErrorAndRedirect($msg, true);
-        }
-        $order = $this->plugin->getResponse();
-        echo json_encode($order->result, JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * captureOrder
-     *
-     * @param  mixed $paypalOrderId
-     * @return string json
-     */
-    public function captureOrder(string $paypalOrderId)
-    {
-        //=== Save order either by retrieving order from paypal OR the order we still have in session
-        if (false === $this->plugin->captureOrder($paypalOrderId)) {
-            $error = $this->plugin->getError();
-            $msg = is_array($error) && isset($error['error']) ? $error['error'] . ' : ' . $error['error_description'] : $error;
-            $this->setErrorAndRedirect($msg, true);
-        }
-        $order = $this->plugin->getResponse();
-        echo json_encode($order->result, JSON_PRETTY_PRINT);
-    }
-
-    /**
      * callback
      *
      * @param  string $orderId

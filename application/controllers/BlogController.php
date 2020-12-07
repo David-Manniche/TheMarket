@@ -226,6 +226,7 @@ class BlogController extends MyAppController
         $srchComment->joinTable(BlogComment::DB_TBL, 'inner join', 'bpcomment.bpcomment_post_id = post_id and bpcomment.bpcomment_deleted=0', 'bpcomment');
         $srchComment->addMultipleFields(array('bpcomment.*'));
         $srchComment->addCondition('bpcomment_approved', '=', BlogComment::COMMENT_STATUS_APPROVED);
+        $srchComment->addCondition('post_id', '=', $blogPostId);
 
         $commentsResultSet = $srchComment->getResultSet();
         $this->set('commentsCount', $srchComment->recordCount());

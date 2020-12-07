@@ -44,6 +44,7 @@ class PaymentMethodBase extends PluginBase
             'user_dob',
             'shop_city',
             'country_code',
+            'country_code_alpha3',
             'state_code',
             'ub.*'
         ]);

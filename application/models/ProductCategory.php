@@ -1075,7 +1075,7 @@ class ProductCategory extends MyAppModel
         }
 
         $this->assignValues($post);
-        if ($this->save()) {
+        if ($this->save()) { 
             $this->updateCatCode();
             $this->rewriteUrl($post['prodcat_identifier'], true, $parentCatId);
             Product::updateMinPrices();

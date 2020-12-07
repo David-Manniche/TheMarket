@@ -487,6 +487,10 @@ Bugs:
     => 046199 - unable to add seller product with all option combination
 
 -----------------------TV-9.2.3.20201204---------------------------
+    => 046177	Admin -url rewriting issue
+    => 046187 buyer unable to add to cart when it is not signed in.
+    => 046189 - blog detail page- when there is no comment still then comment count is listing there
+    => 046193	Admin configuration media icons not reflecting immediately
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
