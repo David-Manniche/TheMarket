@@ -197,7 +197,7 @@ class CartController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(UrlHelper::generateUrl());
         }
-        $loggedUserId = UserAuthentication::getLoggedUserId();
+        $loggedUserId = UserAuthentication::getLoggedUserId(true);
         if (UserAuthentication::isUserLogged()) {
             $user_is_buyer = User::getAttributesById($loggedUserId, 'user_is_buyer');
             if (!$user_is_buyer) {

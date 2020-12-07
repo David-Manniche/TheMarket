@@ -485,6 +485,8 @@ Bugs:
     => 046153 - On some email template 2 times header footer coming
 -----------------------TV-9.2.3.20201204---------------------------
     => 046177	Admin -url rewriting issue
+    => 046187 buyer unable to add to cart when it is not signed in
+
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
