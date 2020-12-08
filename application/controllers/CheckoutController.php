@@ -1488,14 +1488,10 @@ class CheckoutController extends MyAppController
         $this->set('cartSummary', $cartSummary);
         $this->set('fulfillmentType', $fulfillmentType);
         $this->set('cartHasDigitalProduct', $cartHasDigitalProduct);
+        $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
+        $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
+        $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
         if (false === MOBILE_APP_API_CALL) {
-            $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
-            //            $cartHasPhysicalProduct = false;
-            //            if ($this->cartObj->hasPhysicalProduct()) {
-            //                $cartHasPhysicalProduct = true;
-            //            }
-            $this->set('cartHasPhysicalProduct', $cartHasPhysicalProduct);
-            $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
             $this->set('orderInfo', $orderInfo);
             $this->set('WalletPaymentForm', $WalletPaymentForm);
             $this->set('confirmForm', $confirmForm);

@@ -492,6 +492,8 @@ Bugs:
     => 046189 - blog detail page- when there is no comment still then comment count is listing there
     => 046195 - return/cancellation, cod, pickup options are listing on digital item detail page
     => 046193	Admin configuration media icons not reflecting immediately
+    => 046127 - Exclude COD and PayAtStore payment gateway on digital products
+
     
 Enhancements:
     => Tax module upgrade
