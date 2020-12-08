@@ -142,7 +142,7 @@ echo $frm->getFormTag(); ?>
     </script>
 <?php } else { ?>
     <script type="text/javascript">
-        var publishable_key = '<?php echo $settings['publishable_key']; ?>';
+        var publishable_key = '<?php echo $settings[$liveMode . 'publishable_key']; ?>';
         var stripe = Stripe(publishable_key);
         var clientSecret = '<?php echo $clientSecret; ?>';
         stripe.confirmCardPayment(clientSecret, {

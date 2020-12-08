@@ -67,8 +67,8 @@ class StripeConnectPayController extends PaymentController
         return [
             'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW'
         ];
-    }    
-    
+    }
+
     protected function minChargeAmountCurrencies()
     {
         return [
@@ -221,9 +221,9 @@ class StripeConnectPayController extends PaymentController
             $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
             $this->setErrorAndRedirect($msg);
         }
-        
+
         if (array_key_exists($this->systemCurrencyCode, $this->minChargeAmountCurrencies())) {
-            $stripeMinAmount = $this->minChargeAmountCurrencies()[$this->systemCurrencyCode];           
+            $stripeMinAmount = $this->minChargeAmountCurrencies()[$this->systemCurrencyCode];
             if ($stripeMinAmount > $this->paymentAmount) {
                 $this->error = CommonHelper::replaceStringData(Labels::getLabel('MSG_MINIMUM_STRIPE_CHARGE_AMOUNT_IS_{MIN-AMOUNT}', $this->siteLangId), ['{MIN-AMOUNT}' => $stripeMinAmount]);
             }
@@ -328,7 +328,7 @@ class StripeConnectPayController extends PaymentController
             $savedCards = $customerInfo['sources']['data'];
             $defaultSource = $customerInfo['default_source'];
         }
-        
+
         $this->set('defaultSource', $defaultSource);
         $this->set('savedCards', $savedCards);
 
@@ -346,6 +346,7 @@ class StripeConnectPayController extends PaymentController
             $this->_template->render();
         }
 
+        $this->set('liveMode', $this->liveMode);
         $this->set('settings', $this->settings);
         $this->set('orderId', $orderId);
         $this->set('frm', $frm);
@@ -367,8 +368,8 @@ class StripeConnectPayController extends PaymentController
      * @return void
      */
     private function convertInPaisa($amount)
-    {        
-        if (in_array($this->systemCurrencyCode, $this->zeroDecimalCurrencies())){         
+    {
+        if (in_array($this->systemCurrencyCode, $this->zeroDecimalCurrencies())) {
             return $amount;
         }
         $amount = number_format($amount, 2, '.', '');
