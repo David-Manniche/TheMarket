@@ -493,7 +493,8 @@ Bugs:
     => 046195 - return/cancellation, cod, pickup options are listing on digital item detail page
     => 046193	Admin configuration media icons not reflecting immediately
     => 046127 - Exclude COD and PayAtStore payment gateway on digital products
-
+    => 046096 - when favorite option is enabled from admin then UI gets distorted on seller end
+    => 046197 - Home page: OG tag should be present
     
 Enhancements:
     => Tax module upgrade

@@ -30,10 +30,10 @@ class FatTemplate
         $this->variables[$name] = $value;
     }
 
-    protected function writeMetaTags()
+    protected function writeMetaTags($returnArr = false)
     {
         if (method_exists('MetaTagsWriter', 'getMetaTags')) {
-            return MetaTagsWriter::getMetaTags($this->_controller, $this->_action, FatApp::getParameters());
+            return MetaTagsWriter::getMetaTags($this->_controller, $this->_action, FatApp::getParameters(), $returnArr);
         }
         return '<title>N/A - create MetaTagsWriter::getMetaTags($controller, $action, $arrParameters) </title>';
     }
@@ -62,10 +62,10 @@ class FatTemplate
             $arrCommonfiles = scandir($pth, SCANDIR_SORT_ASCENDING);
 
             foreach ($arrCommonfiles as $fl) {
-                if (! is_file($pth . DIRECTORY_SEPARATOR . $fl)) {
+                if (!is_file($pth . DIRECTORY_SEPARATOR . $fl)) {
                     continue;
                 }
-                if ('.css' != substr($fl, - 4)) {
+                if ('.css' != substr($fl, -4)) {
                     continue;
                 }
 
@@ -74,7 +74,7 @@ class FatTemplate
                     $last_updated = max($last_updated, $time);
                 } else {
                     $str .= '<link rel="stylesheet" type="text/css"
-						href="' . FatCache::getCachedUrl(FatUtility::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css'). '" />' . "\n";
+						href="' . FatCache::getCachedUrl(FatUtility::generateUrl('JsCss', 'cssCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
                 }
             }
 
@@ -87,12 +87,12 @@ class FatTemplate
         if (count($this->arr_page_css) > 0) {
             $last_updated = 0;
             foreach ($this->arr_page_css as $val) {
-                $time = filemtime(CONF_THEME_PATH. $val);
+                $time = filemtime(CONF_THEME_PATH . $val);
                 if ($mergeFiles) {
                     $last_updated = max($last_updated, $time);
                 } else {
                     $str .= '<link rel="stylesheet" type="text/css"
-							href="' . FatCache::getCachedUrl(FatUtility::generateUrl('JsCss', 'css', array(), $use_root_url, false) . '&f=' . rawurlencode($val) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css'). '" />' . "\n";
+							href="' . FatCache::getCachedUrl(FatUtility::generateUrl('JsCss', 'css', array(), $use_root_url, false) . '&f=' . rawurlencode($val) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.css') . '" />' . "\n";
                 }
             }
             if ($mergeFiles) {
@@ -109,12 +109,12 @@ class FatTemplate
         /* Include JS */
         $str .= '<script type="text/javascript">
 				var siteConstants = ' . json_encode(array(
-                'webroot' => CONF_WEBROOT_URL. $landCode,
-                'webroot_traditional' => CONF_WEBROOT_URL_TRADITIONAL,
-                'rewritingEnabled' => (CONF_URL_REWRITING_ENABLED ? '1' : '0'),
+            'webroot' => CONF_WEBROOT_URL . $landCode,
+            'webroot_traditional' => CONF_WEBROOT_URL_TRADITIONAL,
+            'rewritingEnabled' => (CONF_URL_REWRITING_ENABLED ? '1' : '0'),
         )) . ';
 	    	</script>' . "\r\n";
-        
+
         $pth = CONF_THEME_PATH . 'common-js';
         if ($includeCommon  && file_exists($pth)) {
             // 			$dir = opendir($pth);
@@ -149,23 +149,23 @@ class FatTemplate
 
             if ($mergeFiles) {
                 $str .= '<script type="text/javascript" language="javascript"
-							src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'jsCommon', array(), $use_root_url, false) . '&min=0&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js'). '"></script>' . "\n";
+							src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'jsCommon', array(), $use_root_url, false) . '&min=0&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js') . '"></script>' . "\n";
             }
         }
         if (count($this->arr_page_js) > 0) {
             $last_updated = 0;
             foreach ($this->arr_page_js as $val) {
-                $time = filemtime(CONF_THEME_PATH. $val);
+                $time = filemtime(CONF_THEME_PATH . $val);
                 if ($mergeFiles) {
                     $last_updated = max($last_updated, $time);
                 } else {
                     $str .= '<script type="text/javascript" language="javascript"
-							src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode($val) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.js'). '" ></script>' . "\n";
+							src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode($val) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.js') . '" ></script>' . "\n";
                 }
             }
             if ($mergeFiles) {
                 $str .= '<script type="text/javascript" language="javascript"
-						src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode(implode(',', $this->arr_page_js)) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js'). '" ></script>' . "\n";
+						src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode(implode(',', $this->arr_page_js)) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js') . '" ></script>' . "\n";
             }
         }
         /* Include JS Ends */
@@ -179,7 +179,7 @@ class FatTemplate
 
         FatApplication::getInstance()->setVariablesToTemplateFromProvider($tplPath, $template);
 
-        foreach ($variables as $key=>$val) {
+        foreach ($variables as $key => $val) {
             $template->set($key, $val);
         }
 
@@ -188,9 +188,9 @@ class FatTemplate
 
     /** Display Template **/
 
-    public function render($include_header=true, $include_footer=true, $tplpath=null, $return_content = false, $convertVariablesToHtmlentities = true)
+    public function render($include_header = true, $include_footer = true, $tplpath = null, $return_content = false, $convertVariablesToHtmlentities = true)
     {
-        $themeDirName = FatUtility::camel2dashed(substr($this->_controller, 0, -(strlen('controller'))));
+        $themeDirName = FatUtility::camel2dashed(substr($this->_controller, 0, - (strlen('controller'))));
         $actionName = FatUtility::camel2dashed($this->_action) . '.php';
 
         if ($tplpath == null) {
@@ -251,7 +251,7 @@ class FatTemplate
     private function addHtmlEntities($var)
     {
         if (is_array($var)) {
-            foreach ($var as $key=>$val) {
+            foreach ($var as $key => $val) {
                 $var[$key] = $this->addHtmlEntities($val);
             }
         } elseif (is_string($var) || is_numeric($var)) {
@@ -268,7 +268,7 @@ class FatTemplate
             foreach ($file as $fl) {
                 $this->addJs($fl);
             }
-            return ;
+            return;
         }
         if (!in_array($file, $this->arr_page_js)) {
             $this->arr_page_js[] = $file;
@@ -281,7 +281,7 @@ class FatTemplate
             foreach ($file as $fl) {
                 $this->addCss($fl);
             }
-            return ;
+            return;
         }
         if (!in_array($file, $this->arr_page_css)) {
             $this->arr_page_css[] = $file;
