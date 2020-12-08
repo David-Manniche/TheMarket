@@ -1618,3 +1618,7 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ('API_ONBOARDING', 1, 'Onboarding.', 1),
 ('API_MOBILE_FRIENDLY_AND_CONVERSION_OPTIMIZED_UI', 1, 'Collect any information through your own flow and let Stripe take care of the rest through its mobile friendly and conversion-optimized UI.', 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
+('LBL_COUNTRY_ALPHA3_CODE', 1, 'Alpha-3 Code', 1)
+ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
