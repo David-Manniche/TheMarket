@@ -6,26 +6,22 @@
                 <?php if (empty($accountId)) { ?>
                     <div class="features-block">
                         <div class="features-block_head">
-                            <h4>Features</h4>
-                            <p>Connect’s flexible set of features includes:</p>
+                            <h4><?php echo Labels::getLabel('LBL_FEATURES', $siteLangId); ?></h4>
+                            <p><?php echo Labels::getLabel('API_CONNECT_FLEXIBLE_SET_OF_FEATURES_INCLUDES', $siteLangId); ?></p>
                         </div>
                         <ul class="features-block_list">
                             <li>
-                                <p><strong>Payouts</strong>:</p>
-                                <p> Route funds to your recipients’ bank accounts and debit card
-                                    flexibly and programmatically </p>
+                                <p><strong><?php echo Labels::getLabel('LBL_PAYOUTS', $siteLangId); ?></strong>:</p>
+                                <p><?php echo Labels::getLabel('API_ROUTE_FUNDS_TO_YOUR_RECIPIENTS', $siteLangId); ?></p>
                             </li>
 
                             <li>
-                                <p> <strong>Fee collection</strong>: </p>
-                                <p> Drive revenue for your business by collecting fees for
-                                    your services </p>
+                                <p> <strong><?php echo Labels::getLabel('LBL_FEE_COLLECTION', $siteLangId); ?></strong>: </p>
+                                <p> <?php echo Labels::getLabel('API_DRIVE_REVENUE_FOR_YOUR_BUSINESS', $siteLangId); ?> </p>
                             </li>
                             <li>
-                                <p> <strong>Onboarding</strong>:</p>
-                                <p> Collect any information through your own flow and let
-                                    Stripe take
-                                    care of the rest through its mobile friendly and conversion-optimized UI </p>
+                                <p> <strong><?php echo Labels::getLabel('API_ONBOARDING', $siteLangId); ?></strong>:</p>
+                                <p> <?php echo Labels::getLabel('API_MOBILE_FRIENDLY_AND_CONVERSION_OPTIMIZED_UI', $siteLangId); ?> </p>
                             </li>
                         </ul>
                         <div class="text-center"> <a class="btn btn-outline-brand btn-sm mr-2" onClick="register(this)" href="javascript:void(0)" data-href="<?php echo UrlHelper::generateUrl($keyName, 'register'); ?>">

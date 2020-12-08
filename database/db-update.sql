@@ -1610,3 +1610,11 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ('API_THE_ROUTING_NUMBER', 1, 'The routing number, sort code, or other country-appropriate institution number for the bank account. For US bank accounts, this is required and should be the ACH routing number, not the wire routing number. If you are providing an IBAN for account_number, this field is not required.', 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- --- Stripe Connect Fields Description Labels --- ---
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
+('API_CONNECT_FLEXIBLE_SET_OF_FEATURES_INCLUDES', 1, 'Connect’s flexible set of features includes:', 1),
+('API_ROUTE_FUNDS_TO_YOUR_RECIPIENTS', 1, 'Route funds to your recipients’ bank accounts and debit card flexibly and programmatically.', 1),
+('API_DRIVE_REVENUE_FOR_YOUR_BUSINESS', 1, 'Drive revenue for your business by collecting fees for your services.', 1),
+('API_ONBOARDING', 1, 'Onboarding.', 1),
+('API_MOBILE_FRIENDLY_AND_CONVERSION_OPTIMIZED_UI', 1, 'Collect any information through your own flow and let Stripe take care of the rest through its mobile friendly and conversion-optimized UI.', 1)
+ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
