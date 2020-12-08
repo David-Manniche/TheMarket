@@ -145,7 +145,7 @@ class ImageController extends FatController
             $srch->setPageNumber(1);
             $srch->setPageSize(1);
             /* $srch->addMultipleFields(array('selprod_id', 'selprod_product_id', 'selprodoption_option_id', 'afile_id', 'afile_record_id', 'afile_record_subid')); */
-            $srch->addMultipleFields(array( 'afile_id', 'afile_record_id', 'afile_record_subid'));
+            $srch->addMultipleFields(array('afile_id', 'afile_record_id', 'afile_record_subid'));
             $rs = $srch->getResultSet();
             $row = FatApp::getDb()->fetch($rs);
             /* CommonHelper::printArray($row); die(); */
@@ -252,7 +252,7 @@ class ImageController extends FatController
         switch (strtoupper($type)) {
             case 'MINI':
                 return AttachedFile::displayImage($img, 50, 50, 'promotions/', 'shop_default.jpg');
-            break;
+                break;
             default:
                 return AttachedFile::displayImage($img, 50, 50, $default_image);
         }
@@ -833,6 +833,22 @@ class ImageController extends FatController
                 $h = 120;
                 AttachedFile::displayImage($image_name, $w, $h, $default_image);
                 break;
+            default:
+                $w = 600;
+                $h = 400;
+                AttachedFile::displayImage($image_name, $w, $h, $default_image);
+                break;
+        }
+    }
+
+    public function metaImage($lang_id = 0, $sizeType = '')
+    {
+        $lang_id = FatUtility::int($lang_id);
+        $file_row = AttachedFile::getAttachment(AttachedFile::FILETYPE_META_IMAGE, 0, 0, $lang_id);
+        $image_name = isset($file_row['afile_physical_path']) ? $file_row['afile_physical_path'] : '';
+        $default_image = '';
+
+        switch (strtoupper($sizeType)) {
             default:
                 $w = 600;
                 $h = 400;

@@ -332,6 +332,7 @@ class ConfigurationsController extends AdminBaseController
             AttachedFile::FILETYPE_APP_MAIN_SCREEN_IMAGE,
             AttachedFile::FILETYPE_APP_LOGO,
             AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE,
+            AttachedFile::FILETYPE_META_IMAGE,
         );
 
         if (!in_array($file_type, $allowedFileTypeArr)) {
@@ -1884,7 +1885,19 @@ class ConfigurationsController extends AdminBaseController
 
                 $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="purchase_discount" id="purchase_discount" data-min_width = "120" data-min_height = "120" data-file_type=' . AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE . ' value="Upload file"><small>Dimensions 120*120</small></div>';
 
+                $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_SELECT_META_IMAGE', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
+
+                if ($fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_META_IMAGE, 0, 0, $langId)) {
+                    $uploadedTime = AttachedFile::setTimeParam($fileData['afile_updated_at']);
+                    $image = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'metaImage', array($langId), CONF_WEBROOT_FRONT_URL) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+
+                    $ul->htmlAfterField .= '<img src="' . $image . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeFavicon(' . $langId . ')" ><i class="ion-close-round"></i></a>';
+                }
+
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="meta_image" id="meta_image" data-file_type=' . AttachedFile::FILETYPE_META_IMAGE . ' value="Upload file"></div>';
+
                 $ul->htmlAfterField .= '</div>';
+
                 break;
 
             case Configurations::FORM_PPC:

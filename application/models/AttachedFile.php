@@ -73,6 +73,7 @@ class AttachedFile extends MyAppModel
     public const FILETYPE_APP_LOGO = 56;
     public const FILETYPE_PUSH_NOTIFICATION_IMAGE = 57;
     public const FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE = 58;
+    public const FILETYPE_META_IMAGE = 59;
 
     public const APP_IMAGE_WIDTH = 640;
     public const APP_IMAGE_HEIGHT = 480;
