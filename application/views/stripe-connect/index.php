@@ -28,30 +28,25 @@
                                     care of the rest through its mobile friendly and conversion-optimized UI </p>
                             </li>
                         </ul>
-                        <div class="text-center"> <a class="btn btn-outline-brand btn-sm mr-2" onClick="register(this)"
-                                href="javascript:void(0)"
-                                data-href="<?php echo UrlHelper::generateUrl($keyName, 'register'); ?>">
+                        <div class="text-center"> <a class="btn btn-outline-brand btn-sm mr-2" onClick="register(this)" href="javascript:void(0)" data-href="<?php echo UrlHelper::generateUrl($keyName, 'register'); ?>">
                                 <?php echo Labels::getLabel('LBL_REGISTER', $siteLangId); ?>
                             </a>
-                            <a class="btn btn-brand btn-sm" href="<?php echo UrlHelper::generateUrl($keyName, 'login') ?>"
-                                title="<?php echo Labels::getLabel('MSG_LOGIN', $siteLangId); ?>">
+                            <a class="btn btn-brand btn-sm" href="<?php echo UrlHelper::generateUrl($keyName, 'login') ?>" title="<?php echo Labels::getLabel('MSG_LOGIN', $siteLangId); ?>">
                                 <?php echo Labels::getLabel('LBL_ALREADY_HAVE_ACCOUNT_?', $siteLangId); ?>
                             </a>
                         </div>
                     </div>
-                <?php } else { 
+                    <?php } else {
                     if ('custom' == $stripeAccountType) { ?>
                         <div class="text-center">
                             <h5>
-                                <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId); ?> : <?php echo $accountId; ?>                                    
-                                <a class="btn btn-brand btn-sm" onClick="deleteAccount(this)" href="javascript:void(0)"
-                                    data-href="<?php echo UrlHelper::generateUrl($keyName, 'deleteAccount') ?>"
-                                    title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+                                <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId); ?> : <?php echo $accountId; ?>
+                                <a class="btn btn-brand btn-sm" onClick="deleteAccount(this)" href="javascript:void(0)" data-href="<?php echo UrlHelper::generateUrl($keyName, 'deleteAccount') ?>" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </h5>
                         </div>
-                    <?php } 
+                <?php }
                 } ?>
                 <?php if (!empty($loginUrl)) { ?>
                     <a class="btn btn-brand btn-sm" href="<?php echo $loginUrl; ?>" target="_blank">
@@ -65,7 +60,7 @@
                 <div class="col-md-12 requiredFieldsForm-js"></div>
             </div>
             <script>
-            requiredFieldsForm();
+                requiredFieldsForm();
             </script>
         <?php } elseif (!empty($accountId) && !empty($stripeUserData)) { ?>
             <ul class="stripe-stats">
@@ -116,17 +111,17 @@
                     <div class="stats">
                         <span class="title"><?php echo Labels::getLabel('MSG_BANK_DETAIL', $siteLangId); ?></span>
                         <?php foreach ($stripeUserData['external_accounts']['data'] as $index => $bank) { ?>
-                        <p><?php echo Labels::getLabel('MSG_BANK_NAME', $siteLangId); ?> : <?php echo $bank['bank_name']; ?>
-                        </p>
-                        <p><?php echo Labels::getLabel('MSG_ACCOUNT_HOLDER_NAME', $siteLangId); ?> :
-                            <?php echo $bank['account_holder_name']; ?></p>
-                        <p><?php echo Labels::getLabel('MSG_ACCOUNT_NUMBER', $siteLangId); ?> :
-                            <?php echo '****' . $bank['last4']; ?></p>
-                        <p><?php echo Labels::getLabel('MSG_ROUTING_NUMBER', $siteLangId); ?> :
-                            <?php echo $bank['routing_number']; ?></p>
-                        <?php if (($index + 1) < count($stripeUserData['external_accounts']['data'])) { ?>
+                            <p><?php echo Labels::getLabel('MSG_BANK_NAME', $siteLangId); ?> : <?php echo $bank['bank_name']; ?>
+                            </p>
+                            <p><?php echo Labels::getLabel('MSG_ACCOUNT_HOLDER_NAME', $siteLangId); ?> :
+                                <?php echo $bank['account_holder_name']; ?></p>
+                            <p><?php echo Labels::getLabel('MSG_ACCOUNT_NUMBER', $siteLangId); ?> :
+                                <?php echo '****' . $bank['last4']; ?></p>
+                            <p><?php echo Labels::getLabel('MSG_ROUTING_NUMBER', $siteLangId); ?> :
+                                <?php echo $bank['routing_number']; ?></p>
+                            <?php if (($index + 1) < count($stripeUserData['external_accounts']['data'])) { ?>
 
-                        <?php } ?>
+                            <?php } ?>
                         <?php } ?>
                     </div>
                 </li>
@@ -134,3 +129,44 @@
         <?php } ?>
     </div>
 </div>
+<script>
+    var keyName = '<?php echo $keyName; ?>';
+    $(document).on('keyup', ".mcc-js", function() {
+        var currObj = $(this);
+        var valueFld = currObj.data('valfld');
+        console.log(valueFld);
+        if ('' != currObj.val()) {
+            currObj.siblings('ul.dropdown-menu').remove();
+            currObj.autocomplete({
+                'classes': {
+                    "ui-autocomplete": "custom-ui-autocomplete"
+                },
+                'source': function(request, response) {
+                    $.ajax({
+                        url: fcom.makeUrl(keyName, 'getMerchantCategory'),
+                        data: {
+                            fIsAjax: 1,
+                            keyword: currObj.val()
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function(json) {
+                            response($.map(json, function(value, index) {
+                                return {
+                                    label: value,
+                                    value: value,
+                                    id: index
+                                };
+                            }));
+                        },
+                    });
+                },
+                select: function(event, ui) {
+                    $("." + valueFld).val(ui.item.id);
+                }
+            });
+        } else {
+            $("." + valueFld).val('');
+        }
+    });
+</script>

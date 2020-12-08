@@ -126,7 +126,7 @@ class GoogleShoppingFeed extends AdvertisementFeedBase
             $rowIndex = 1;
             while (!feof($fh)) {
                 $line = fgets($fh);
-                if ($returnFullArray || false != stripos($line, $keyword)) {
+                if ($returnFullArray || false !== stripos($line, $keyword)) {
                     $lineContentArr = explode('-', $line, 2);
                     if (!empty($lineContentArr) && 1 < count($lineContentArr)) {
                         $arr[trim($lineContentArr[0])] = trim($lineContentArr[1]);
