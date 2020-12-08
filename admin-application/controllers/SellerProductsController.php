@@ -41,9 +41,9 @@ class SellerProductsController extends AdminBaseController
         $prodCatObj = new ProductCategory();
         $arrCategories = $prodCatObj->getCategoriesForSelectBox($this->adminLangId);
         $categories = $prodCatObj->makeAssociativeArray($arrCategories);
-        $frm->addSelectBox(Labels::getLabel('LBL_category', $this->adminLangId), 'prodcat_id', array( -1 => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId) ) + $categories, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_category', $this->adminLangId), 'prodcat_id', array(-1 => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId)) + $categories, '', array(), '');
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Active', $this->adminLangId), 'active', array( -1 => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId) ) + $activeInactiveArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Active', $this->adminLangId), 'active', array(-1 => Labels::getLabel('LBL_Does_Not_Matter', $this->adminLangId)) + $activeInactiveArr, '', array(), '');
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'user_id', '');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
@@ -137,8 +137,9 @@ class SellerProductsController extends AdminBaseController
 
         $srch->addMultipleFields(
             array(
-            'selprod_id', 'selprod_user_id', 'selprod_price', 'selprod_stock', 'selprod_product_id',
-            'selprod_active', 'selprod_available_from', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title', 'u.user_name', 'uc.credential_email', 'product_type')
+                'selprod_id', 'selprod_user_id', 'selprod_price', 'selprod_stock', 'selprod_product_id',
+                'selprod_active', 'selprod_available_from', 'IFNULL(product_name, product_identifier) as product_name', 'selprod_title', 'u.user_name', 'uc.credential_email', 'product_type'
+            )
         );
 
         $srch->addOrder('selprod_active', 'DESC');
@@ -378,10 +379,10 @@ class SellerProductsController extends AdminBaseController
         foreach ($languages as $langId => $langName) {
             if (!empty($post['selprod_title' . $langId])) {
                 $selProdData = array(
-                'selprodlang_selprod_id' => $selprod_id,
-                'selprodlang_lang_id' => $langId,
-                'selprod_title' => $post['selprod_title' . $langId],
-                'selprod_comments' => $post['selprod_comments' . $langId],
+                    'selprodlang_selprod_id' => $selprod_id,
+                    'selprodlang_lang_id' => $langId,
+                    'selprod_title' => $post['selprod_title' . $langId],
+                    'selprod_comments' => $post['selprod_comments' . $langId],
                 );
 
                 if (!$sellerProdObj->updateLangData($langId, $selProdData)) {
@@ -590,7 +591,7 @@ class SellerProductsController extends AdminBaseController
         }
         $selprod_id = FatUtility::int($post['selprod_id']);
         $ppoint_id = FatUtility::int($post['ppoint_id']);
-        $whereCond = array('smt' => 'sppolicy_ppoint_id = ? and sppolicy_selprod_id = ?', 'vals' => array($ppoint_id, $selprod_id) );
+        $whereCond = array('smt' => 'sppolicy_ppoint_id = ? and sppolicy_selprod_id = ?', 'vals' => array($ppoint_id, $selprod_id));
         $db = FatApp::getDb();
         if (!$db->deleteRecords(SellerProduct::DB_TBL_SELLER_PROD_POLICY, $whereCond)) {
             Message::addErrorMessage($db->getError());
@@ -695,7 +696,7 @@ class SellerProductsController extends AdminBaseController
             $metaData = MetaTag::getAttributesByLangId($langId, $metaId);
         }
 
-        $prodSeoLangFrm ->fill($metaData);
+        $prodSeoLangFrm->fill($metaData);
         $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
 
         $this->set('languages', Language::getAllNames());
@@ -920,14 +921,14 @@ class SellerProductsController extends AdminBaseController
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->adminLangId, 'p_l');
         $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = sp.selprod_user_id', 'tuc');
-		
-		if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
+
+        if (FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
             $srch->joinTable(Brand::DB_TBL, 'INNER JOIN', 'tb.brand_id = product_brand_id and tb.brand_active = ' . applicationConstants::YES . ' and tb.brand_deleted = ' . applicationConstants::NO, 'tb');
         } else {
             $srch->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'tb.brand_id = product_brand_id', 'tb');
-			$srch->addDirectCondition("(case WHEN brand_id > 0 THEN (tb.brand_active = " . applicationConstants::YES . " AND tb.brand_deleted = " . applicationConstants::NO . ") else TRUE end)");
+            $srch->addDirectCondition("(case WHEN brand_id > 0 THEN (tb.brand_active = " . applicationConstants::YES . " AND tb.brand_deleted = " . applicationConstants::NO . ") else TRUE end)");
         }
-		
+
         $srch->addOrder('product_name');
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('product_name', 'LIKE', '%' . $post['keyword'] . '%');
@@ -958,7 +959,7 @@ class SellerProductsController extends AdminBaseController
         foreach ($products as $key => $option) {
             $options = SellerProduct::getSellerProductOptions($key, true, $this->adminLangId);
             $variantsStr = '';
-            array_walk($options, function ($item, $key) use(&$variantsStr) {
+            array_walk($options, function ($item, $key) use (&$variantsStr) {
                 $variantsStr .= ' | ' . $item['option_name'] . ' : ' . $item['optionvalue_name'];
             });
             $userName = isset($option["credential_username"]) ? " | " . $option["credential_username"] : '';
@@ -998,13 +999,12 @@ class SellerProductsController extends AdminBaseController
         }
         foreach ($users as $key => $option) {
             $json[] = array(
-            'user_id' => $option['user_id'],
-            'user_name' => strip_tags(html_entity_decode($option['user_name'], ENT_QUOTES, 'UTF-8')),
-            'shop_identifier' => strip_tags(html_entity_decode($option['shop_identifier'], ENT_QUOTES, 'UTF-8'))
+                'user_id' => $option['user_id'],
+                'user_name' => strip_tags(html_entity_decode($option['user_name'], ENT_QUOTES, 'UTF-8')),
+                'shop_identifier' => strip_tags(html_entity_decode($option['shop_identifier'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
-        return  $arrListing;
     }
 
     public function setupSellerProductLinks()
@@ -1156,10 +1156,10 @@ class SellerProductsController extends AdminBaseController
 
         $smt = 'splprice_selprod_id = ? AND ';
         $smt .= '(
-                                ((splprice_start_date between ? AND ?) OR (splprice_end_date between ? AND ?))
-                                OR
-                                ((? BETWEEN splprice_start_date AND splprice_end_date) OR (? BETWEEN  splprice_start_date AND splprice_end_date))
-                            )';
+                    ((splprice_start_date between ? AND ?) OR (splprice_end_date between ? AND ?))
+                    OR
+                    ((? BETWEEN splprice_start_date AND splprice_end_date) OR (? BETWEEN  splprice_start_date AND splprice_end_date))
+                )';
         $smtValues = array(
             $selprod_id,
             $post['splprice_start_date'],
@@ -1188,10 +1188,10 @@ class SellerProductsController extends AdminBaseController
         /* ] */
 
         $data_to_save = array(
-        'splprice_selprod_id' => $selprod_id,
-        'splprice_start_date' => $post['splprice_start_date'],
-        'splprice_end_date' => $post['splprice_end_date'],
-        'splprice_price' => $post['splprice_price'],
+            'splprice_selprod_id' => $selprod_id,
+            'splprice_start_date' => $post['splprice_start_date'],
+            'splprice_end_date' => $post['splprice_end_date'],
+            'splprice_price' => $post['splprice_price'],
         );
 
         if (0 < $splprice_id) {
@@ -1253,7 +1253,7 @@ class SellerProductsController extends AdminBaseController
     public function sellerProductVolumeDiscounts($selprod_id)
     {
         $selprod_id = FatUtility::int($selprod_id);
-        $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array('selprod_user_id', 'selprod_id', 'selprod_product_id' ));
+        $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array('selprod_user_id', 'selprod_id', 'selprod_product_id'));
         $productRow = Product::getAttributesById($sellerProductRow['selprod_product_id'], array('product_type'));
 
         $srch = new SellerProductVolumeDiscountSearch();
@@ -1281,7 +1281,7 @@ class SellerProductsController extends AdminBaseController
         if ($selprod_id <= 0) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
         }
-        $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array( 'selprod_id', 'selprod_user_id', 'selprod_product_id'));
+        $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array('selprod_id', 'selprod_user_id', 'selprod_product_id'));
         if ($selprod_id != $sellerProductRow['selprod_id']) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->adminLangId));
         }
@@ -1366,9 +1366,9 @@ class SellerProductsController extends AdminBaseController
         /* ] */
 
         $data_to_save = array(
-        'voldiscount_selprod_id' => $selprod_id,
-        'voldiscount_min_qty' => $minQty,
-        'voldiscount_percentage' => $perc
+            'voldiscount_selprod_id' => $selprod_id,
+            'voldiscount_min_qty' => $minQty,
+            'voldiscount_percentage' => $perc
         );
 
         if ($voldiscount_id > 0) {
@@ -1430,7 +1430,7 @@ class SellerProductsController extends AdminBaseController
     private function deleteVolumeDiscount($volumeDiscountId, $volumeDiscountSelprodId)
     {
         $db = FatApp::getDb();
-        if (!$db->deleteRecords(SellerProductVolumeDiscount::DB_TBL, array( 'smt' => 'voldiscount_id = ? AND voldiscount_selprod_id = ?', 'vals' => array($volumeDiscountId, $volumeDiscountSelprodId) ))) {
+        if (!$db->deleteRecords(SellerProductVolumeDiscount::DB_TBL, array('smt' => 'voldiscount_id = ? AND voldiscount_selprod_id = ?', 'vals' => array($volumeDiscountId, $volumeDiscountSelprodId)))) {
             Message::addErrorMessage(Labels::getLabel("LBL_" . $db->getError(), $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -1528,9 +1528,9 @@ class SellerProductsController extends AdminBaseController
         $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
 
         $data = array(
-        'ptt_product_id' => $sellerProductRow['selprod_product_id'],
-        'ptt_taxcat_id' => $post['ptt_taxcat_id'],
-        'ptt_seller_user_id' => $sellerProductRow['selprod_user_id']
+            'ptt_product_id' => $sellerProductRow['selprod_product_id'],
+            'ptt_taxcat_id' => $post['ptt_taxcat_id'],
+            'ptt_seller_user_id' => $sellerProductRow['selprod_user_id']
         );
 
         $obj = new Tax();
@@ -1550,7 +1550,7 @@ class SellerProductsController extends AdminBaseController
         $selprod_id = FatUtility::int($selprod_id);
         $sellerProductRow = SellerProduct::getAttributesById($selprod_id);
 
-        if (!FatApp::getDb()->deleteRecords(Tax::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_product_id = ? and ptt_seller_user_id = ?', 'vals' => array( $sellerProductRow['selprod_product_id'], $sellerProductRow['selprod_user_id'] ) ))) {
+        if (!FatApp::getDb()->deleteRecords(Tax::DB_TBL_PRODUCT_TO_TAX, array('smt' => 'ptt_product_id = ? and ptt_seller_user_id = ?', 'vals' => array($sellerProductRow['selprod_product_id'], $sellerProductRow['selprod_user_id'])))) {
             Message::addErrorMessage(FatApp::getDb()->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -1569,7 +1569,7 @@ class SellerProductsController extends AdminBaseController
         $urlController = implode('-', $arr);
         $className = ucwords(implode(' ', $arr));
         if ($action == 'index') {
-            $nodes[] = array('title' => $className);
+            $nodes[] = array('title' => Labels::getLabel('LBL_SELLER_INVENTORY', $this->adminLangId));
         } elseif ($action == 'upsellProducts') {
             $nodes[] = array('title' => Labels::getLabel('LBL_BUY_TOGETHER_PRODUCTS', $this->adminLangId));
         } else {
@@ -1602,8 +1602,8 @@ class SellerProductsController extends AdminBaseController
         $json = array();
         foreach ($products as $key => $product) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($product['product_name'], ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($product['product_name'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -1670,8 +1670,7 @@ class SellerProductsController extends AdminBaseController
                 -1,
                 $unique_record = false,
                 $lang_id
-            )
-            ) {
+            )) {
                 Message::addErrorMessage($fileHandlerObj->getError());
                 FatUtility::dieJsonError(Message::getHtml());
             }
@@ -1827,13 +1826,13 @@ class SellerProductsController extends AdminBaseController
         $srch = $cRequestObj->getUserCatalogRequestsObj();
         $srch->addMultipleFields(
             array(
-            'scatrequest_id',
-            'scatrequest_user_id',
-            'scatrequest_reference',
-            'scatrequest_title',
-            'scatrequest_comments',
-            'scatrequest_status',
-            'scatrequest_date'
+                'scatrequest_id',
+                'scatrequest_user_id',
+                'scatrequest_reference',
+                'scatrequest_title',
+                'scatrequest_comments',
+                'scatrequest_status',
+                'scatrequest_date'
             )
         );
         $srch->addOrder('scatrequest_date', 'DESC');
@@ -1891,11 +1890,11 @@ class SellerProductsController extends AdminBaseController
         $db->startTransaction();
 
         $data = array(
-        'scatrequest_user_id' => $userId,
-        'scatrequest_reference' => $reference_number,
-        'scatrequest_title' => $post['scatrequest_title'],
-        'scatrequest_content' => $post['scatrequest_content'],
-        'scatrequest_date' => date('Y-m-d H:i:s'),
+            'scatrequest_user_id' => $userId,
+            'scatrequest_reference' => $reference_number,
+            'scatrequest_title' => $post['scatrequest_title'],
+            'scatrequest_content' => $post['scatrequest_content'],
+            'scatrequest_date' => date('Y-m-d H:i:s'),
         );
 
         if (!$obj->addCatalogRequest($data)) {
@@ -2017,11 +2016,13 @@ class SellerProductsController extends AdminBaseController
         $srch->setPageSize($pageSize);
         $srch->addOrder('scatrequestmsg_id', 'DESC');
         $srch->addMultipleFields(
-            array( 'scatrequestmsg_id', 'scatrequestmsg_from_user_id', 'scatrequestmsg_from_admin_id',
-            'admin_name', 'admin_username', 'admin_email', 'scatrequestmsg_msg',
-            'scatrequestmsg_date', 'msg_user.user_name as msg_user_name', 'msg_user_cred.credential_username as msg_username',
-            'msg_user_cred.credential_email as msg_user_email',
-            'scatrequest_status' )
+            array(
+                'scatrequestmsg_id', 'scatrequestmsg_from_user_id', 'scatrequestmsg_from_admin_id',
+                'admin_name', 'admin_username', 'admin_email', 'scatrequestmsg_msg',
+                'scatrequestmsg_date', 'msg_user.user_name as msg_user_name', 'msg_user_cred.credential_username as msg_username',
+                'msg_user_cred.credential_email as msg_user_email',
+                'scatrequest_status'
+            )
         );
 
         $rs = $srch->getResultSet();
@@ -2079,11 +2080,11 @@ class SellerProductsController extends AdminBaseController
 
         /* save catalog request message[ */
         $dataToSave = array(
-        'scatrequestmsg_scatrequest_id' => $requestRow['scatrequest_id'],
-        'scatrequestmsg_from_user_id' => UserAuthentication::getLoggedUserId(),
-        'scatrequestmsg_from_admin_id' => 0,
-        'scatrequestmsg_msg' => $post['message'],
-        'scatrequestmsg_date' => date('Y-m-d H:i:s'),
+            'scatrequestmsg_scatrequest_id' => $requestRow['scatrequest_id'],
+            'scatrequestmsg_from_user_id' => UserAuthentication::getLoggedUserId(),
+            'scatrequestmsg_from_admin_id' => 0,
+            'scatrequestmsg_msg' => $post['message'],
+            'scatrequestmsg_date' => date('Y-m-d H:i:s'),
         );
         $catRequestMsgObj = new CatalogRequestMessage();
         $catRequestMsgObj->assignValues($dataToSave, true);
@@ -2179,13 +2180,14 @@ class SellerProductsController extends AdminBaseController
 
         $srch->addMultipleFields(
             array(
-            'product_id',
-            'product_identifier',
-            'product_name',
-            'product_added_on',
-            'product_model',
-            'product_attrgrp_id',
-            'attrgrp_name')
+                'product_id',
+                'product_identifier',
+                'product_name',
+                'product_added_on',
+                'product_model',
+                'product_attrgrp_id',
+                'attrgrp_name'
+            )
         );
         $srch->addOrder('product_added_on', 'DESC');
         $srch->setPageNumber($page);
@@ -2249,7 +2251,7 @@ class SellerProductsController extends AdminBaseController
             return $shop->getData();
         }
 
-        return false;        
+        return false;
     }
 
     private function addNewCatalogRequestForm()
@@ -2260,7 +2262,7 @@ class SellerProductsController extends AdminBaseController
         $fld->htmlBeforeField = '<div class="editor-bar">';
         $fld->htmlAfterField = '</div>'; */
         $frm->addTextArea(Labels::getLabel('LBL_Content', $this->adminLangId), 'scatrequest_content');
-        $fileFld = $frm->addFileUpload(Labels::getLabel('LBL_Upload_File', $this->adminLangId), 'file', array('accept' => 'image/*,.zip', 'enctype' => "multipart/form-data" ));
+        $fileFld = $frm->addFileUpload(Labels::getLabel('LBL_Upload_File', $this->adminLangId), 'file', array('accept' => 'image/*,.zip', 'enctype' => "multipart/form-data"));
         $fileFld->htmlAfterField = '<span class="text--small">' . Labels::getLabel('MSG_Only_Image_extensions_and_zip_is_allowed', $this->adminLangId) . '</span>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
@@ -2283,7 +2285,7 @@ class SellerProductsController extends AdminBaseController
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
-        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);        
+        $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $srch = SellerProduct::getSearchObject($this->adminLangId);
 
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
@@ -2304,7 +2306,7 @@ class SellerProductsController extends AdminBaseController
         $srch->setPageSize($pagesize);
         $srch->addGroupBy('selprod_id');
         $srch->addOrder('selprod_id', 'DESC');
-        
+
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
 
@@ -2522,7 +2524,8 @@ class SellerProductsController extends AdminBaseController
             foreach ($selProdIdsArr as $selProdId) {
                 $dataToEdit[] = array(
                     'product_name' => html_entity_decode($productsTitle[$selProdId], ENT_QUOTES, 'UTF-8'),
-                    'splprice_selprod_id' => $selProdId
+                    'splprice_selprod_id' => $selProdId,
+                    'selprod_price' => SellerProduct::getAttributesById($selProdId, 'selprod_price')
                 );
             }
         } else {
@@ -2539,6 +2542,7 @@ class SellerProductsController extends AdminBaseController
             $srchFrm->addHiddenField('', 'selprod_id', $selProd_id);
             $srchFrm->fill(array('keyword' => $productsTitle[$selProd_id]));
         }
+
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
@@ -2567,7 +2571,8 @@ class SellerProductsController extends AdminBaseController
             foreach ($selProdIdsArr as $selProdId) {
                 $dataToEdit[] = array(
                     'product_name' => html_entity_decode($productsTitle[$selProdId], ENT_QUOTES, 'UTF-8'),
-                    'voldiscount_selprod_id' => $selProdId
+                    'voldiscount_selprod_id' => $selProdId,
+                    'selprod_stock' => SellerProduct::getAttributesById($selProdId, 'selprod_stock')
                 );
             }
         } else {
@@ -3002,7 +3007,7 @@ class SellerProductsController extends AdminBaseController
         }
 
         $db = FatApp::getDb();
-        if (!$db->deleteRecords(SellerProduct::DB_TBL_RELATED_PRODUCTS, array( 'smt' => 'related_sellerproduct_id = ? AND related_recommend_sellerproduct_id = ?', 'vals' => array($selprod_id, $relprod_id) ))) {
+        if (!$db->deleteRecords(SellerProduct::DB_TBL_RELATED_PRODUCTS, array('smt' => 'related_sellerproduct_id = ? AND related_recommend_sellerproduct_id = ?', 'vals' => array($selprod_id, $relprod_id)))) {
             Message::addErrorMessage(Labels::getLabel("LBL_" . $db->getError(), $this->adminLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }
@@ -3183,7 +3188,7 @@ class SellerProductsController extends AdminBaseController
         }
 
         $db = FatApp::getDb();
-        if (!$db->deleteRecords(SellerProduct::DB_TBL_UPSELL_PRODUCTS, array( 'smt' => 'upsell_sellerproduct_id = ? AND upsell_recommend_sellerproduct_id = ?', 'vals' => array($selprod_id, $relprod_id) ))) {
+        if (!$db->deleteRecords(SellerProduct::DB_TBL_UPSELL_PRODUCTS, array('smt' => 'upsell_sellerproduct_id = ? AND upsell_recommend_sellerproduct_id = ?', 'vals' => array($selprod_id, $relprod_id)))) {
             Message::addErrorMessage(Labels::getLabel("LBL_" . $db->getError(), $this->adminLangId));
             FatApp::redirectUser($_SESSION['referer_page_url']);
         }

@@ -22,18 +22,18 @@ $(document).on('keyup', "input[name='product_name']", function(){
         	select: function(event, ui) {
         		$("#"+parentForm+" input[name='voldiscount_selprod_id']").val(ui.item.id);
                 currObj.val((ui.item.label).replace(/<[^>]+>/g, ''));
-                $("input[name='voldiscount_min_qty']").removeAttr('disabled');
-                $("input[name='voldiscount_percentage']").removeAttr('disabled');
+                $("#"+parentForm+" input[name='voldiscount_min_qty']").removeAttr('disabled');
+                $("#"+parentForm+" input[name='voldiscount_percentage']").removeAttr('disabled');
 				var stock = langLbl.currentStock+': '+ui.item.stock;
-				$(".js-prod-stock").html(stock);
-                $(".js-prod-stock").attr('data-stock', ui.item.stock);
+				$("#"+parentForm+" .js-prod-stock").html(stock);
+                $("#"+parentForm+" .js-prod-stock").attr('data-stock', ui.item.stock);
                 return false;
         	}
         });
     }else{
         $("#"+parentForm+" input[name='voldiscount_selprod_id']").val('');
-        $("input[name='voldiscount_min_qty']").attr('disabled', 'disabled').val('');
-        $("input[name='voldiscount_percentage']").attr('disabled', 'disabled').val('');
+        $("#"+parentForm+" input[name='voldiscount_min_qty']").attr('disabled', 'disabled').val('');
+        $("#"+parentForm+" input[name='voldiscount_percentage']").attr('disabled', 'disabled').val('');
     }
 });
 
@@ -189,6 +189,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
                 if (0 < $('.noResult--js').length) {
                     $('.noResult--js').remove();
                 }
+                $("#frmAddVolumeDiscount-" + selProd_id +" .js-prod-stock").html('');
             }
 			$(document).trigger('close.facebox');
             if (0 < frm.addMultiple.value) {

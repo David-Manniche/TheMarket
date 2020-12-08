@@ -490,9 +490,11 @@ Bugs:
     => 046177	Admin -url rewriting issue
     => 046187 buyer unable to add to cart when it is not signed in.
     => 046189 - blog detail page- when there is no comment still then comment count is listing there
+    => 046195 - return/cancellation, cod, pickup options are listing on digital item detail page
     => 046193	Admin configuration media icons not reflecting immediately
     => 046096 - when favorite option is enabled from admin then UI gets distorted on seller end
     => 046197 - Home page: OG tag should be present
+    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

@@ -2015,8 +2015,10 @@ class User extends MyAppModel
 
         $broken = false;
 
-        if (FatApp::getDb()->startTransaction() && FatApp::getDb()->insertFromArray(static::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields)) {
-            $withdrawRequestId = FatApp::getDb()->getInsertId();
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        if ($db->insertFromArray(static::DB_TBL_USR_WITHDRAWAL_REQ, $assignFields)) {
+            $withdrawRequestId = $db->getInsertId();
 
             $formattedRequestValue = '#' . str_pad($withdrawRequestId, 6, '0', STR_PAD_LEFT);
 
@@ -2037,13 +2039,16 @@ class User extends MyAppModel
                 $this->error = $transObj->getError();
                 $broken = true;
             }
+        } else {
+            $this->error = $db->getError();
+            $broken = true;
         }
 
-        if ($broken === false && FatApp::getDb()->commitTransaction()) {
+        if ($broken === false && $db->commitTransaction()) {
             return $withdrawRequestId;
         }
 
-        FatApp::getDb()->rollbackTransaction();
+        $db->rollbackTransaction();
         return false;
     }
 
