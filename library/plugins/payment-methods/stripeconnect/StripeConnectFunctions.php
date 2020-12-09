@@ -12,6 +12,9 @@ trait StripeConnectFunctions
         "executive",
         "owner",
         "representative",
+        "directors_provided",
+        "executives_provided",
+        "owners_provided",
     ];
 
     /**
@@ -126,9 +129,6 @@ trait StripeConnectFunctions
     private function updatePerson(array $requestParam): object
     {
         $this->convertToBool($requestParam);
-        /* var_dump($requestParam);
-        CommonHelper::printArray($requestParam);
-        die; */
         return $this->stripe->accounts->updatePerson(
             $this->getAccountId(),
             $this->getRelationshipPersonId(),

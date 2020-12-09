@@ -464,7 +464,7 @@ class StripeConnect extends PaymentMethodBase
                 'individual.id_number' => [
                     'title' => Labels::getLabel("MSG_ID_NUMBER", $this->langId),
                     'description' => Labels::getLabel('API_THE_GOVERNMENT_ISSUED_ID_NUMBER', $this->langId),
-                    'required' => true
+                    'required' => false
                 ],
                 'individual.first_name' => [
                     'title' => Labels::getLabel("MSG_FIRST_NAME", $this->langId),
@@ -479,7 +479,7 @@ class StripeConnect extends PaymentMethodBase
                 'individual.email' => [
                     'title' => Labels::getLabel("MSG_EMAIL", $this->langId),
                     'description' => Labels::getLabel('API_THE_INDIVIDUAL_EMAIL_ADDRESS', $this->langId),
-                    'required' => true
+                    'required' => false
                 ],
                 'individual.phone' => [
                     'title' => Labels::getLabel("MSG_PHONE", $this->langId),
@@ -519,12 +519,12 @@ class StripeConnect extends PaymentMethodBase
                 'individual.address.country' => [
                     'title' => Labels::getLabel("MSG_COUNTRY", $this->langId),
                     'description' => Labels::getLabel('API_TWO_LETTER_COUNTRY_CODE', $this->langId),
-                    'required' => true
+                    'required' => false
                 ],
                 'individual.address.state' => [
                     'title' => Labels::getLabel("MSG_STATE", $this->langId),
                     'description' => Labels::getLabel('API_STATE_COUNTY_PROVINCE_OR_REGION', $this->langId),
-                    'required' => true
+                    'required' => false
                 ],
                 'individual.verification.document' => [
                     'title' => Labels::getLabel("MSG_DOCUMENT", $this->langId),
@@ -536,42 +536,42 @@ class StripeConnect extends PaymentMethodBase
                 'company.address.line1' => [
                     'title' => Labels::getLabel("MSG_ADDRESS_LINE1", $this->langId),
                     'description' => Labels::getLabel('API_ADDRESS_LINE_1', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'company.address.city' => [
                     'title' => Labels::getLabel("MSG_CITY", $this->langId),
                     'description' => Labels::getLabel('API_CITY_DISTRICT_SUBURB_TOWN_OR_VILLAGE', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'company.address.postal_code' => [
                     'title' => Labels::getLabel("MSG_POSTAL_CODE", $this->langId),
                     'description' => Labels::getLabel('API_ZIP_OR_POSTAL_CODE', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'company.address.country' => [
                     'title' => Labels::getLabel("MSG_COUNTRY", $this->langId),
                     'description' => Labels::getLabel('API_TWO_LETTER_COUNTRY_CODE', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'company.address.state' => [
                     'title' => Labels::getLabel("MSG_STATE", $this->langId),
                     'description' => Labels::getLabel('API_STATE_COUNTY_PROVINCE_OR_REGION', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'company.name' => [
                     'title' => Labels::getLabel("MSG_NAME", $this->langId),
                     'description' => Labels::getLabel('API_THE_COMPANY_LEGAL_NAME', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'company.phone' => [
                     'title' => Labels::getLabel("MSG_PHONE", $this->langId),
                     'description' => Labels::getLabel('API_THE_COMPANY_PHONE_NUMBER', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'company.tax_id' => [
                     'title' => Labels::getLabel("MSG_TAX_ID", $this->langId),
                     'description' => Labels::getLabel('API_THE_BUSINESS_ID_NUMBER', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship_person.address.line1' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_ADDRESS_LINE1", $this->langId),
@@ -601,17 +601,17 @@ class StripeConnect extends PaymentMethodBase
                 'relationship_person.dob.month' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_BIRTH_MONTH", $this->langId),
                     'description' => Labels::getLabel('API_THE_MONTH_OF_BIRTH_BETWEEN_1_AND_12', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship_person.dob.day' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_BIRTH_DAY", $this->langId),
                     'description' => Labels::getLabel('API_THE_DAY_OF_BIRTH_BETWEEN_1_AND_31', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship_person.dob.year' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_BIRTH_YEAR", $this->langId),
                     'description' => Labels::getLabel('API_THE_FOUR_DIGIT_YEAR_OF_BIRTH', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship_person.email' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_EMAIL", $this->langId),
@@ -621,17 +621,17 @@ class StripeConnect extends PaymentMethodBase
                 'relationship_person.first_name' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_FIRST_NAME", $this->langId),
                     'description' => Labels::getLabel('API_THE_RELATIONSHIP_PERSON_FIRST_NAME', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship_person.last_name' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_LAST_NAME", $this->langId),
                     'description' => Labels::getLabel('API_THE_RELATIONSHIP_PERSON_LAST_NAME', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship_person.phone' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_PHONE", $this->langId),
                     'description' => Labels::getLabel('API_THE_RELATIONSHIP_PERSON_PHONE_NUMBER', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship_person.ssn_last_4' => [
                     'title' => Labels::getLabel("MSG_RELATIONSHIP_PERSON_SSN_LAST_4", $this->langId),
@@ -641,17 +641,27 @@ class StripeConnect extends PaymentMethodBase
                 'relationship.title' => [
                     'title' => Labels::getLabel("MSG_TITLE", $this->langId),
                     'description' => Labels::getLabel('API_THE_PERSON_TITLE', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'relationship.owner' => [
                     'title' => Labels::getLabel("MSG_OWNER", $this->langId),
-                    'description' => '',
-                    'required' => false
+                    'description' => Labels::getLabel('API_WHETHER_THE_PERSON_IS_AN_OWNER_OF_THE_ACCOUNT_LEGAL_ENTITY', $this->langId),
+                    'required' => true
                 ],
                 'relationship.representative' => [
                     'title' => Labels::getLabel("MSG_REPRESENTATIVE", $this->langId),
-                    'description' => Labels::getLabel('API_WHETHER_THE_PERSON_IS_AN_OWNER_OF_THE_ACCOUNT_LEGAL_ENTITY', $this->langId),
-                    'required' => false
+                    'description' => Labels::getLabel('API_WHETHER_THE_PERSON_IS_A_REPRESENTATIVE_OF_THE_ACCOUNT_LEGAL_ENTITY', $this->langId),
+                    'required' => true
+                ],
+                'relationship.director' => [
+                    'title' => Labels::getLabel("MSG_DIRECTOR", $this->langId),
+                    'description' => Labels::getLabel("API_WHETHER_THE_PERSON_IS_A_DIRECTOR_OF_THE_LEGAL_ENTITY", $this->langId),
+                    'required' => true
+                ],
+                'relationship.executive' => [
+                    'title' => Labels::getLabel("MSG_EXECUTIVE", $this->langId),
+                    'description' => Labels::getLabel("API_WHETHER_THE_PERSON_IS_AN_EXECUTIVE_OF_THE_LEGAL_ENTITY", $this->langId),
+                    'required' => true
                 ],
             ]
         ];
@@ -724,7 +734,29 @@ class StripeConnect extends PaymentMethodBase
 
         return $this->requiredFields;
     }
-
+    
+    /**
+     * cleanRequest
+     *
+     * @param  array $array
+     * @return array
+     */
+    private function cleanRequest(array $array): array
+    {
+        foreach ($array as $key => &$value) {
+            if ('' == $value) {
+                unset($array[$key]);
+            } else {
+                if (is_array($value)) {
+                    $value = $this->cleanRequest($value);
+                    if ('' == $value) {
+                        unset($array[$key]);
+                    }
+                }
+            }
+        }
+        return $array;
+    }
 
     /**
      * updateRequiredFields
@@ -740,6 +772,14 @@ class StripeConnect extends PaymentMethodBase
             $requestParam['external_account']['object'] = 'bank_account';
             $requestParam['external_account']['country'] = strtoupper($this->userData['country_code']);
             $requestParam['external_account']['currency'] = $this->systemCurrencyCode;
+        }
+        
+        $requestParam = $this->cleanRequest($requestParam);
+
+        if (array_key_exists('relationship', $requestParam)) {
+            $requestParam['company']['directors_provided'] = true;
+            $requestParam['company']['executives_provided'] = true;
+            $requestParam['company']['owners_provided'] = true;
         }
 
         return $this->doRequest(self::REQUEST_UPDATE_ACCOUNT, $requestParam);
@@ -789,15 +829,16 @@ class StripeConnect extends PaymentMethodBase
 
         $personId = $this->getRelationshipPersonId();
 
-        if (array_key_exists('relationship', $requestParam)) {
-            $relationship = $requestParam['relationship'];
-            $person = isset($requestParam['relationship_person']) ? $requestParam['relationship_person'] : [];
-            if (!empty($person)) {
-                unset($requestParam['relationship_person']);
-            }
-            unset($requestParam['relationship']);
+        $person = isset($requestParam['relationship_person']) ? $requestParam['relationship_person'] : [];
+        if (!empty($person)) {
+            unset($requestParam['relationship_person']);
         }
 
+        if (array_key_exists('relationship', $requestParam)) {
+            $relationship = $requestParam['relationship'];
+            unset($requestParam['relationship']);
+        }
+        
         if (!empty($personId) && array_key_exists($personId, $requestParam)) {
             $personData = $requestParam[$personId];
             unset($requestParam[$personId]);
@@ -814,7 +855,7 @@ class StripeConnect extends PaymentMethodBase
         if (!empty($requestParam) && false === $this->update($requestParam)) {
             return false;
         }
-        
+
         if (array_key_exists('business_type', $requestParam)) {
             $this->updateUserMeta('stripe_business_type', $requestParam['business_type']);
         }
