@@ -496,6 +496,7 @@ Bugs:
     => 046096 - when favorite option is enabled from admin then UI gets distorted on seller end
     => 046197 - Home page: OG tag should be present
     => 046207 - when item is moved from saved car to cart still then the item is still lying in saved cart
+    => 046235 - when we try to add same custom url for two products then warning message is not proper
     
 Enhancements:
     => Tax module upgrade

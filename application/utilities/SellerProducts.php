@@ -1678,6 +1678,17 @@ trait SellerProducts
                 $recordId = $row[$langId]['urlrewrite_id'];
             }
             $url = $post['urlrewrite_custom'][$langId];
+
+            $srch = UrlRewrite::getSearchObject();
+            $srch->addCondition('ur.urlrewrite_custom', '=', $url);
+            $srch->addCondition('ur.urlrewrite_id', '!=', $recordId);
+            $srch->addMultipleFields(['ur.urlrewrite_id']);
+            $rs = $srch->getResultSet();
+            if (FatApp::getDb()->fetch($rs)) {
+                Message::addErrorMessage(Labels::getLabel('MSG_DUPLICATE_CUSTOM_URL', $this->siteLangId));
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+
             $data = [
                 'urlrewrite_original' => $originalUrl,
                 'urlrewrite_lang_id' => $langId,
