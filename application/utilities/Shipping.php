@@ -18,7 +18,7 @@ class Shipping
     private $pluginId = 0;
     private $successMsg = '';
     private $shippedByArr = [];
-    private $shippingApiObj = [];
+    private $shippingApiObj;
     private $selProdShipRates = [];
 
     public const FULFILMENT_ALL = -1;
@@ -240,7 +240,7 @@ class Shipping
         if ($carriers) {
             $carriers = unserialize($carriers);
         } else {
-            $carriers = $this->shippingApiObj->getCarriers();;
+            $carriers = $this->shippingApiObj->getCarriers();
             if (!empty($carriers)) {
                 FatCache::set($cacheKey, serialize($carriers), '.txt');
             }

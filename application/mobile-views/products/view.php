@@ -141,17 +141,22 @@ $fulfillmentLabel = Labels::getLabel('LBL_INVALID_FULFILLMENT', $siteLangId);
 switch ($fulfillmentType) {
     case Shipping::FULFILMENT_SHIP:
         $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
+        $icon = 'freeshipping';
         break;
     case Shipping::FULFILMENT_PICKUP:
         $fulfillmentLabel = Labels::getLabel('LBL_PICKUP_ONLY', $siteLangId);
+        $icon = 'pickup';
         break;
     case Shipping::FULFILMENT_ALL:
         $fulfillmentLabel = Labels::getLabel('LBL_SHIPPMENT_AND_PICKUP', $siteLangId);
+        $icon = 'freeshipping';
         break;
 }
-$product['productFulfillment'] = array(
+
+$icon = CONF_WEBROOT_URL . 'images/retina/sprite.svg#' . $icon;
+$product['productPolicies'][] = array(
     'title' => $fulfillmentLabel,
-    'fulfillmentType' => $fulfillmentType
+    'icon' => $icon
 );
 
 $product['product_description'] = strip_tags(html_entity_decode($product['product_description'], ENT_QUOTES, 'utf-8'), applicationConstants::ALLOWED_HTML_TAGS_FOR_APP);
