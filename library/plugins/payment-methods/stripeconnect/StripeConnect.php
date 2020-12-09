@@ -464,7 +464,7 @@ class StripeConnect extends PaymentMethodBase
                 'individual.id_number' => [
                     'title' => Labels::getLabel("MSG_ID_NUMBER", $this->langId),
                     'description' => Labels::getLabel('API_THE_GOVERNMENT_ISSUED_ID_NUMBER', $this->langId),
-                    'required' => false
+                    'required' => true
                 ],
                 'individual.first_name' => [
                     'title' => Labels::getLabel("MSG_FIRST_NAME", $this->langId),
