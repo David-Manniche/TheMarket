@@ -244,7 +244,7 @@ $rewardPoints = UserRewardBreakup::rewardPointBalance(UserAuthentication::getLog
                 function confirmOrder(frm) {
                     var data = fcom.frmData(frm);
                     var action = $(frm).attr('action');
-                    fcom.updateWithAjax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(ans) {
+                    fcom.updateWithAjax(fcom.makeUrl('Checkout', 'confirmOrder'), data, function(ans) {
                         $(location).attr("href", action);
                     });
                 }

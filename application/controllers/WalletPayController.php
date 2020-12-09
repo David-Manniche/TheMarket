@@ -260,7 +260,7 @@ class WalletPayController extends MyAppController
         return $frm;
     }
 
-    public function ConfirmOrder()
+    public function confirmOrder()
     {
         $order_type = FatApp::getPostedData('order_type', FatUtility::VAR_INT, 0);
 
@@ -311,7 +311,7 @@ class WalletPayController extends MyAppController
         }
         /* ] */
 
-        /* ConfirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
+        /* confirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
         $criteria = array('isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true);
         if ($this->cartObj->hasPhysicalProduct()) {
             $criteria['hasShippingAddress'] = true;

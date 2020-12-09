@@ -38,7 +38,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-brand");
         var action = $(frm).attr('action')
         var getExternalLibraryUrl = $(frm).data('external');
         $.mbsmessage(langLbl.processing, false, 'alert--process alert');
-        fcom.ajax(fcom.makeUrl('SubscriptionCheckout', 'ConfirmOrder'), data, function(res) {
+        fcom.ajax(fcom.makeUrl('SubscriptionCheckout', 'confirmOrder'), data, function(res) {
             if ('undefined' != typeof getExternalLibraryUrl) {
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {
                     var json = $.parseJSON(t);
@@ -88,7 +88,7 @@ $submitFld->setFieldTagAttribute('class', "btn btn-brand");
     function confirmOrder(frm) {
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action')
-        fcom.updateWithAjax(fcom.makeUrl('SubscriptionCheckout', 'ConfirmOrder'), data, function(ans) {
+        fcom.updateWithAjax(fcom.makeUrl('SubscriptionCheckout', 'confirmOrder'), data, function(ans) {
             $(location).attr("href", action);
         });
     }

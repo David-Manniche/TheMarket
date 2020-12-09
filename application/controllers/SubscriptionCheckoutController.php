@@ -538,7 +538,7 @@ class SubscriptionCheckoutController extends LoggedUserController
     public function confirmOrder()
     {
         $this->userPrivilege->canEditSubscription(UserAuthentication::getLoggedUserId());
-        /* ConfirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
+        /* confirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
         $criteria = array( 'isUserLogged' => true, 'hasSubscription' => true );
 
         if (!$this->isEligibleForNextStep($criteria)) {
@@ -637,9 +637,10 @@ class SubscriptionCheckoutController extends LoggedUserController
         $frm = new Form('frmPaymentTabForm');
         $frm->setFormTagAttribute('id', 'frmPaymentTabForm');
 
-        if (strtolower($paymentMethodCode) == "cashondelivery") {
+		if (in_array(strtolower($paymentMethodCode), ["cashondelivery", "payatstore"])) {
             CommonHelper::addCaptchaField($frm);
         }
+		
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Confirm_Payment', $langId));
         $frm->addHiddenField('', 'order_id');
         $frm->addHiddenField('', 'plugin_id');

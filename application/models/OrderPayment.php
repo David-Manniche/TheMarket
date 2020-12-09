@@ -83,6 +83,7 @@ class OrderPayment extends Orders
             "site_system_admin_email" => FatApp::getConfig("CONF_SITE_OWNER_EMAIL", FatUtility::VAR_STRING, ''),
             "order_wallet_amount_charge" => $orderInfo['order_wallet_amount_charge'],
             "paypal_bn" => "FATbit_SP",
+            "order_pmethod_id" => $orderInfo['order_pmethod_id'],
         );
 
         /* if (empty($orderInfo) || empty($userInfo) || empty($addresses)){
