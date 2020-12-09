@@ -56,7 +56,7 @@
                                             var data = fcom.frmData(frm);
                                             var action = $(frm).attr('action')
                                             fcom.updateWithAjax(fcom.makeUrl('SubscriptionCheckout',
-                                                    'ConfirmOrder'), data,
+                                                    'confirmOrder'), data,
                                                 function(ans) {
                                                     $(location).attr("href", action);
                                                 });
@@ -83,7 +83,7 @@
                                             function confirmOrder(frm) {
                                                 var data = fcom.frmData(frm);
                                                 var action = $(frm).attr('action')
-                                                fcom.updateWithAjax(fcom.makeUrl('SubscriptionCheckout', 'ConfirmOrder'),
+                                                fcom.updateWithAjax(fcom.makeUrl('SubscriptionCheckout', 'confirmOrder'),
                                                     data,
                                                     function(ans) {
                                                         $(location).attr("href", action);

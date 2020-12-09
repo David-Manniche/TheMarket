@@ -1536,6 +1536,7 @@ class CheckoutController extends MyAppController
         $srch->addCondition('order_payment_status', '=', Orders::ORDER_PAYMENT_PENDING);
         $rs = $srch->getResultSet();
         $orderInfo = FatApp::getDb()->fetch($rs);
+        // CommonHelper::printArray($orderInfo);
         /* $orderObj = new Orders();
         $orderInfo = $orderObj->getOrderById( $order_id, $this->siteLangId, array('payment_status' => 0) ); */
         if (!$orderInfo) {
@@ -1756,13 +1757,13 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function ConfirmOrder()
+    public function confirmOrder()
     {
         $order_type = FatApp::getPostedData('order_type', FatUtility::VAR_INT, 0);
         $plugin_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
 
         $order_id = FatApp::getPostedData("order_id", FatUtility::VAR_STRING, "");
-
+        
         $user_id = UserAuthentication::getLoggedUserId();
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userWalletBalance = FatUtility::convertToType(User::getUserBalance($user_id, true), FatUtility::VAR_FLOAT);
@@ -1776,21 +1777,14 @@ class CheckoutController extends MyAppController
 
             if (!$paymentMethodRow || $isActive != applicationConstants::ACTIVE) {
                 $this->errMessage = Labels::getLabel("LBL_Invalid_Payment_method,_Please_contact_Webadmin.", $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($this->errMessage);
-                }
-                Message::addErrorMessage($this->errMessage);
-                FatUtility::dieWithError(Message::getHtml());
+                LibHelper::dieJsonError($this->errMessage);
             }
         }
 
         if (!empty($paymentMethodRow) && in_array(strtolower($pmethodCode), ['cashondelivery', 'payatstore']) && $cartSummary['cartWalletSelected'] && $userWalletBalance < $orderNetAmount) {
             $str = Labels::getLabel('MSG_Wallet_can_not_be_used_along_with_{COD}', $this->siteLangId);
             $str = str_replace('{cod}', $pmethodIdentifier, $str);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($str);
-            }
-            FatUtility::dieWithError($str);
+            LibHelper::dieJsonError($str);
         }
 
         if (true === MOBILE_APP_API_CALL) {
@@ -1816,24 +1810,14 @@ class CheckoutController extends MyAppController
             $criteria = array('isUserLogged' => true);
             if (!$this->isEligibleForNextStep($criteria)) {
                 $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($this->errMessage);
-                }
-                if (Message::getErrorCount()) {
-                    $this->errMessage = Message::getHtml();
-                }
-                FatUtility::dieWithError($this->errMessage);
+                LibHelper::dieJsonError($this->errMessage);
             }
 
             $user_id = UserAuthentication::getLoggedUserId();
 
             if ($order_id == '') {
                 $this->errMessage = Labels::getLabel("MSG_INVALID_Request", $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($this->errMessage);
-                }
-                Message::addErrorMessage($this->errMessage);
-                FatUtility::dieWithError(Message::getHtml());
+                LibHelper::dieJsonError($this->errMessage);
             }
             $orderObj = new Orders();
 
@@ -1848,17 +1832,13 @@ class CheckoutController extends MyAppController
             $orderInfo = FatApp::getDb()->fetch($rs);
             if (!$orderInfo) {
                 $this->errMessage = Labels::getLabel("MSG_INVALID_ORDER_PAID_CANCELLED", $this->siteLangId);
-                if (true === MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError($this->errMessage);
-                }
-                Message::addErrorMessage($this->errMessage);
-                FatUtility::dieWithError(Message::getHtml());
+                LibHelper::dieJsonError($this->errMessage);
             }
 
             //No Need to clear cart in case of wallet recharge
             /*$this->cartObj->clear();
             $this->cartObj->updateUserCart();*/
-
+            
             $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $plugin_id));
 
             if (true === MOBILE_APP_API_CALL) {
@@ -1868,7 +1848,7 @@ class CheckoutController extends MyAppController
         }
         /* ] */
 
-        /* ConfirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
+        /* confirmOrder function is called for both wallet payments and for paymentgateway selection as well. */
         $criteria = array('isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true);
         $fulfillmentType = $this->cartObj->getCartCheckoutType();
         if ($this->cartObj->hasPhysicalProduct() && $fulfillmentType == Shipping::FULFILMENT_SHIP) {
@@ -1881,13 +1861,7 @@ class CheckoutController extends MyAppController
 
         if (!$this->isEligibleForNextStep($criteria)) {
             $this->errMessage = Labels::getLabel('MSG_Something_went_wrong,_please_try_after_some_time.', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            if (Message::getErrorCount()) {
-                $this->errMessage = Message::getHtml();
-            }
-            FatUtility::dieWithError($this->errMessage);
+            LibHelper::dieJsonError($this->errMessage);
         }
 
         if ($cartSummary['cartWalletSelected'] && $userWalletBalance >= $orderNetAmount && !$plugin_id) {
@@ -1902,21 +1876,15 @@ class CheckoutController extends MyAppController
 
         if (!$paymentMethodRow || $isActive != applicationConstants::ACTIVE) {
             $this->errMessage = Labels::getLabel("LBL_Invalid_Payment_method,_Please_contact_Webadmin.", $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            Message::addErrorMessage($this->errMessage);
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::dieJsonError($this->errMessage);
         }
 
         if (false === MOBILE_APP_API_CALL && in_array(strtolower($pmethodCode), ['cashondelivery', 'payatstore']) && FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '' && FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '') != '')) {
             if (!CommonHelper::verifyCaptcha()) {
-                Message::addErrorMessage(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
-                FatUtility::dieWithError(Message::getHtml());
-                //FatApp::redirectUser(UrlHelper::generateUrl('Custom', 'ContactUs'));
+                LibHelper::dieJsonError(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
             }
         }
-
+        
         if ($userWalletBalance >= $cartSummary['orderNetAmount'] && $cartSummary['cartWalletSelected'] && !$plugin_id) {
             $frm = $this->getWalletPaymentForm($this->siteLangId);
         } else {
@@ -1926,11 +1894,7 @@ class CheckoutController extends MyAppController
         $post = $frm->getFormDataFromArray($post);
         if (!isset($post['order_id']) || $post['order_id'] == '') {
             $this->errMessage = Labels::getLabel('MSG_Invalid_Request', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            Message::addErrorMessage($this->errMessage);
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::dieJsonError($this->errMessage);
         }
 
         $orderObj = new Orders();
@@ -1947,28 +1911,16 @@ class CheckoutController extends MyAppController
 
         if (!$orderInfo) {
             $this->errMessage = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            Message::addErrorMessage($this->errMessage);
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::dieJsonError($this->errMessage);
         }
         if ($cartSummary['cartWalletSelected'] && $cartSummary['orderPaymentGatewayCharges'] == 0) {
             $this->errMessage = Labels::getLabel('MSG_Try_to_pay_using_wallet_balance_as_amount_for_payment_gateway_is_not_enough.', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            Message::addErrorMessage($this->errMessage);
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::dieJsonError($this->errMessage);
         }
 
         if ($cartSummary['orderPaymentGatewayCharges'] == 0 && $plugin_id) {
             $this->errMessage = Labels::getLabel('MSG_Amount_for_payment_gateway_must_be_greater_than_zero.', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($this->errMessage);
-            }
-            Message::addErrorMessage($this->errMessage);
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::dieJsonError($this->errMessage);
         }
 
         if ($plugin_id) {
@@ -1983,10 +1935,8 @@ class CheckoutController extends MyAppController
         if (in_array(strtolower($pmethodCode), ['cashondelivery', 'payatstore']) && $orderInfo['order_reward_point_used'] > 0) {
             $rewardDebited = UserRewards::debit($orderInfo['order_user_id'], $orderInfo['order_reward_point_used'], $order_id, $orderInfo['order_language_id']);
             if (!$rewardDebited) {
-                if (true === MOBILE_APP_API_CALL) {
-                    LibHelper::dieJsonError(Message::getHtml());
-                }
-                FatUtility::dieWithError(Message::getHtml());
+                $msg = Labels::getLabel("MSG_UNABLE_TO_DEBIT_REWARD_POINTS", $this->siteLangId);
+                LibHelper::dieJsonError($msg);
             }
         }
 
@@ -2062,7 +2012,7 @@ class CheckoutController extends MyAppController
 
         $frm->setFormTagAttribute('id', 'frmPaymentTabForm');
 
-        if (strtolower($paymentMethodCode) == "cashondelivery") {
+        if (in_array(strtolower($paymentMethodCode), ["cashondelivery", "payatstore"])) {
             CommonHelper::addCaptchaField($frm);
         }
 

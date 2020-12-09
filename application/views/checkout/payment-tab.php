@@ -117,7 +117,18 @@ if ($isCodOrPayAtStore && true === $otpVerification) { ?>
         var action = $(frm).attr('action')
         var getExternalLibraryUrl = $(frm).data('external');
         $.mbsmessage(langLbl.processing, false, 'alert--process alert');
-        fcom.ajax(fcom.makeUrl('Checkout', 'ConfirmOrder'), data, function(res) {
+        fcom.ajax(fcom.makeUrl('Checkout', 'confirmOrder'), data, function(res) {
+            try {
+                var ans = $.parseJSON(res);
+                if (1 > ans.status) {
+                    $.mbsmessage(ans.msg, true, 'alert--danger');
+                    return false;
+                }
+
+            } catch (e) {
+                // console.log(e);
+            }
+            
             if ('undefined' != typeof getExternalLibraryUrl) {
                 fcom.ajax(getExternalLibraryUrl, '', function(t) {
                     var json = $.parseJSON(t);

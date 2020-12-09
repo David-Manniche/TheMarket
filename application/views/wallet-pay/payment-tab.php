@@ -24,7 +24,7 @@ $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
     function confirmOrder(frm) {
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action')
-        fcom.updateWithAjax(fcom.makeUrl('WalletPay', 'ConfirmOrder'), data, function(ans) {
+        fcom.updateWithAjax(fcom.makeUrl('WalletPay', 'confirmOrder'), data, function(ans) {
             $(location).attr("href", action);
         });
     }

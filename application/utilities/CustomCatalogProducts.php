@@ -1058,11 +1058,13 @@ trait CustomCatalogProducts
             foreach ($languages as $langId => $data) {
                 $prodReq = new ProductRequest($preqId);
                 $customProductLangData = $prodReq->getAttributesByLangId($langId, $preqId);
-                $langContent = json_decode($customProductLangData['preq_lang_data'], true);
-                $langData['product_name'][$langId] = $langContent['product_name'];
-                $langData['product_youtube_video'][$langId] = $langContent['product_youtube_video'];
-                //$langData['product_description'][$langId] = $langContent['product_description'];
-                $langData['product_description_' . $langId] = $langContent['product_description'];
+                if (is_array($customProductLangData)) {
+                    $langContent = json_decode($customProductLangData['preq_lang_data'], true);
+                    $langData['product_name'][$langId] = $langContent['product_name'];
+                    $langData['product_youtube_video'][$langId] = $langContent['product_youtube_video'];
+                    //$langData['product_description'][$langId] = $langContent['product_description'];
+                    $langData['product_description_' . $langId] = $langContent['product_description'];
+                }
             }
             $productReqRow = array_merge($productReqRow, $langData);
             $customProductFrm->fill($productReqRow);

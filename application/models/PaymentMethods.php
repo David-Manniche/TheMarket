@@ -49,7 +49,7 @@ class PaymentMethods
      */
     public function cashOnDeliveryIsActive(): bool
     {
-        return Plugin::isActive('CashOnDelivery');
+        return (Plugin::isActive('CashOnDelivery') || Plugin::isActive('PayAtStore'));
     }
 
     /**
