@@ -369,7 +369,7 @@ class OrderPayment extends Orders
     {
         $paymentOrderId = $this->paymentOrderId;
         $orderInfo = $this->attributes;
-        if (!empty($orderInfo)) {
+        if (!empty($orderInfo)) { 
             $this->addOrderPaymentHistory($paymentOrderId, Orders::ORDER_PAYMENT_PENDING, $comments, $notify);
         } else {
             $this->error = Labels::getLabel('MSG_Invalid_Order', $this->commonLangId);
