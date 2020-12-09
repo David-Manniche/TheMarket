@@ -498,7 +498,7 @@ class ProductCategoriesController extends AdminBaseController
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
         $srch->addMultipleFields(array('m.*','prodcat_name', 'u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
-        $srch->addOrder('prodcat_id', 'desc');
+        $srch->addOrder('prodcat_requested_on', 'desc');
         if (!empty($post['keyword'])) {
             $condition = $srch->addCondition('prodcat_identifier', 'like', '%' . $post['keyword'] . '%');
             $condition->attachCondition('prodcat_name', 'like', '%' . $post['keyword'] . '%', 'OR');
