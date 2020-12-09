@@ -27,7 +27,7 @@ class ProductsController extends MyAppController
     private function productsData($method, $validateBrand = false, $post = [])
     {
         $get = (!empty($post)) ? $post : Product::convertArrToSrchFiltersAssocArr(FatApp::getParameters());
-        
+
         $postBrands = [];
         if (MOBILE_APP_API_CALL) {
             $postBrands = FatApp::getPostedData('brand', FatUtility::VAR_STRING, '[]');
@@ -107,7 +107,7 @@ class ProductsController extends MyAppController
             $searchData = array('keyword' => $get['keyword']);
             $searchItemObj->addSearchResult($searchData);
         }
-        
+
         $common = [];
         if (false === MOBILE_APP_API_CALL) {
             $common = array(
@@ -130,7 +130,7 @@ class ProductsController extends MyAppController
             exit;
         }
         $this->set('data', $data);
-        
+
         $this->includeProductPageJsCss();
         $this->_template->addJs('js/slick.min.js');
         $this->_template->render(true, true, 'products/index.php');
@@ -1170,7 +1170,10 @@ class ProductsController extends MyAppController
             $brandSrch->addGroupBy('brand_id');
             $brandSrch->setPageSize(5);
             $brandRs = $brandSrch->getResultSet();
-            $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
+            $brandArr = [];
+            while ($row = FatApp::getDb()->fetch($brandRs)) {
+                $brandArr[$row['brand_id']] = $row['brand_name'];
+            }
 
             $catListingCount = 10 - count($brandArr);
             $catSrch = clone $prodSrchObj;
@@ -1181,7 +1184,11 @@ class ProductsController extends MyAppController
             $catSrch->addOrder('level');
             $catSrch->addGroupBy('prodcat_id');
             $catRs = $catSrch->getResultSet();
-            $catArr = FatApp::getDb()->fetchAllAssoc($catRs);
+            // $catArr = FatApp::getDb()->fetchAll($catRs);
+            $catArr = [];
+            while ($row = FatApp::getDb()->fetch($catRs)) {
+                $catArr[$row['prodcat_id']] = $row['prodcat_name'];
+            }
 
             $srch = Tag::getSearchObject($this->siteLangId);
             $srch->doNotCalculateRecords();
