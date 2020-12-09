@@ -228,7 +228,7 @@ class CartController extends MyAppController
         $db = FatApp::getDb();
         $wishlistId = FatApp::getPostedData('uwlist_id', FatUtility::VAR_INT, 0);
         $rowAction = FatApp::getPostedData('rowAction', FatUtility::VAR_INT, 0); // 1 = Remove From Wishlist / 0 = Add To Wishlist
-        if (0 < $wishlistId && applicationConstants::YES == FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1)) {
+        if (0 < $wishlistId) {
             $srch = UserWishList::getSearchObject($loggedUserId);
             $srch->addMultipleFields(array('uwlist_id'));
             $srch->doNotCalculateRecords();
@@ -267,7 +267,7 @@ class CartController extends MyAppController
         }
         
         $ufpId  = FatApp::getPostedData('ufp_id', FatUtility::VAR_INT, 0);
-        if (0 < $ufpId && applicationConstants::NO == FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1)) {
+        if (0 < $ufpId) {
             if (0 < $rowAction) {
                 if (!$db->deleteRecords(Product::DB_TBL_PRODUCT_FAVORITE, array('smt' => 'ufp_user_id = ? AND ufp_id = ?', 'vals' => array($loggedUserId, $ufpId)))) {
                     if (true === MOBILE_APP_API_CALL) {

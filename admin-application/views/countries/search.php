@@ -3,6 +3,7 @@ $arr_flds = array(
     'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
     'listserial' => Labels::getLabel('LBL_#', $adminLangId),
     'country_code' => Labels::getLabel('LBL_Country_Code', $adminLangId),
+    'country_code_alpha3' => Labels::getLabel('LBL_COUNTRY_ALPHA3_CODE', $adminLangId),
     'country_name' => Labels::getLabel('LBL_Country_Name', $adminLangId),
     'country_active' => Labels::getLabel('LBL_Status', $adminLangId),
     'action' =>  '',

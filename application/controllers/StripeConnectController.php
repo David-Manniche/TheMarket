@@ -84,7 +84,6 @@ class StripeConnectController extends PaymentMethodBaseController
                 $this->setError();
             }
             $stripeUserData = $this->stripeConnect->getResponse()->toArray();
-            // CommonHelper::printArray($stripeUserData, true);
         }
         // This will return url only for ExpressAccount connected to admin account.
         $this->stripeConnect->createLoginLink();
@@ -250,6 +249,10 @@ class StripeConnectController extends PaymentMethodBaseController
             return false;
         }
 
+        $userId = UserAuthentication::getLoggedUserId(true);
+        $userObj = new User($userId);
+        $userEmail = current($userObj->getUserInfo('credential_email'));
+
         $frm = new Form('frm' . self::KEY_NAME);
         $stateFldClass = '';
         $i = 0;
@@ -361,6 +364,8 @@ class StripeConnectController extends PaymentMethodBaseController
             } elseif (false !== strpos($field, 'mcc')) {
                 $frm->addHiddenField('', $name, '', ['class' => 'mccValue-js' . $i]);
                 $fld = $frm->addTextBox($labelStr, 'merchantCatCode', '', ['class' => 'mcc-js', 'data-valfld' => 'mccValue-js' . $i]);
+            } elseif (false !== strpos($field, 'email')) {
+                $fld = $frm->addTextBox($labelStr, $name, $userEmail);
             } else {
                 $fld = $frm->addTextBox($labelStr, $name);
             }

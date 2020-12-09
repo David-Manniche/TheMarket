@@ -495,6 +495,7 @@ Bugs:
     => 046127 - Exclude COD and PayAtStore payment gateway on digital products
     => 046096 - when favorite option is enabled from admin then UI gets distorted on seller end
     => 046197 - Home page: OG tag should be present
+    => 046207 - when item is moved from saved car to cart still then the item is still lying in saved cart
     
 Enhancements:
     => Tax module upgrade
