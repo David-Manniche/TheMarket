@@ -86,6 +86,7 @@ if (!empty($product)) {
         $returnAge = CommonHelper::replaceStringData($lbl, ['{DAYS}' => $returnAge]);
         $product['productPolicies'][] = array(
             'title' => $returnAge,
+            'isSvg' => Plugin::RETURN_FALSE,
             'icon' => CONF_WEBROOT_URL . 'images/easyreturns.png'
         );
     }
@@ -96,6 +97,7 @@ if (!empty($product)) {
         $cancellationAge = CommonHelper::replaceStringData($lbl, ['{DAYS}' => $cancellationAge]);
         $product['productPolicies'][] = array(
             'title' => $cancellationAge,
+            'isSvg' => Plugin::RETURN_FALSE,
             'icon' => CONF_WEBROOT_URL . 'images/easyreturns.png'
         );
     }
@@ -104,17 +106,20 @@ if (!empty($product)) {
         $warranty = CommonHelper::replaceStringData($lbl, ['{DAYS}' => $product['product_warranty']]);
         $product['productPolicies'][] = array(
             'title' => $warranty,
+            'isSvg' => Plugin::RETURN_FALSE,
             'icon' => CONF_WEBROOT_URL . 'images/yearswarranty.png'
         );
     }
     if (isset($shippingDetails['ps_free']) && $shippingDetails['ps_free'] == applicationConstants::YES) {
         $product['productPolicies'][] = array(
             'title' => Labels::getLabel('LBL_Free_Shipping_on_this_Order', $siteLangId),
+            'isSvg' => Plugin::RETURN_FALSE,
             'icon' => CONF_WEBROOT_URL . 'images/freeshipping.png'
         );
     } elseif (count($shippingRates) > 0) {
         $product['productPolicies'][] = array(
             'title' => Labels::getLabel('LBL_Shipping_Rates', $siteLangId),
+            'isSvg' => Plugin::RETURN_FALSE,
             'icon' => CONF_WEBROOT_URL . 'images/shipping-policies.png',
             'shippingRatesDetail' => $shippingRatesDetail,
         );
@@ -122,6 +127,7 @@ if (!empty($product)) {
     if (0 < $codEnabled) {
         $product['productPolicies'][] = array(
             'title' => Labels::getLabel('LBL_Cash_on_delivery_is_available', $siteLangId),
+            'isSvg' => Plugin::RETURN_FALSE,
             'icon' => CONF_WEBROOT_URL . 'images/safepayments.png'
         );
     }
@@ -156,6 +162,7 @@ switch ($fulfillmentType) {
 $icon = CONF_WEBROOT_URL . 'images/retina/sprite.svg#' . $icon;
 $product['productPolicies'][] = array(
     'title' => $fulfillmentLabel,
+    'isSvg' => Plugin::RETURN_TRUE,
     'icon' => $icon
 );
 
