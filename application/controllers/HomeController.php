@@ -74,6 +74,7 @@ class HomeController extends MyAppController
         }
 
         if (true === MOBILE_APP_API_CALL) {
+            $this->set('displayProductNotAvailableLable', $displayProductNotAvailableLable);
             $this->_template->render();
             die;
         }
