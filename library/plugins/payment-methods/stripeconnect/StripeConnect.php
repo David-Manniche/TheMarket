@@ -648,11 +648,6 @@ class StripeConnect extends PaymentMethodBase
                     'description' => Labels::getLabel('API_WHETHER_THE_PERSON_IS_AN_OWNER_OF_THE_ACCOUNT_LEGAL_ENTITY', $this->langId),
                     'required' => true
                 ],
-                'relationship.representative' => [
-                    'title' => Labels::getLabel("MSG_REPRESENTATIVE", $this->langId),
-                    'description' => Labels::getLabel('API_WHETHER_THE_PERSON_IS_A_REPRESENTATIVE_OF_THE_ACCOUNT_LEGAL_ENTITY', $this->langId),
-                    'required' => true
-                ],
                 'relationship.director' => [
                     'title' => Labels::getLabel("MSG_DIRECTOR", $this->langId),
                     'description' => Labels::getLabel("API_WHETHER_THE_PERSON_IS_A_DIRECTOR_OF_THE_LEGAL_ENTITY", $this->langId),
@@ -780,6 +775,7 @@ class StripeConnect extends PaymentMethodBase
             $requestParam['company']['directors_provided'] = true;
             $requestParam['company']['executives_provided'] = true;
             $requestParam['company']['owners_provided'] = true;
+            $requestParam['relationship']['representative'] = true;
         }
 
         return $this->doRequest(self::REQUEST_UPDATE_ACCOUNT, $requestParam);
