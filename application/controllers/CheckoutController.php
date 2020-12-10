@@ -883,6 +883,11 @@ class CheckoutController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $payFromWallet = FatApp::getPostedData('payFromWallet', Fatutility::VAR_INT, 0);
             $this->cartObj->updateCartWalletOption($payFromWallet);
+
+            $useRewardPoints = FatApp::getPostedData('redeem_rewards', FatUtility::VAR_INT, 0);
+            if (0 < $useRewardPoints) {
+                $this->useRewardPoints(true);
+            }
         }
 
         $criteria = array('isUserLogged' => true, 'hasProducts' => true, 'hasStock' => true, 'hasBillingAddress' => true);
@@ -917,6 +922,7 @@ class CheckoutController extends MyAppController
         }
 
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
+
         $userId = UserAuthentication::getLoggedUserId();
         $userWalletBalance = User::getUserBalance($userId, true);
 
@@ -1509,6 +1515,10 @@ class CheckoutController extends MyAppController
         if (true === MOBILE_APP_API_CALL) {
             $this->set('products', $cartProducts);
             $this->set('orderType', $orderInfo['order_type']);
+            if (0 < $useRewardPoints) {
+                $this->set('msg', Labels::getLabel("MSG_Used_Reward_point", $this->siteLangId) . '-' . $useRewardPoints);
+                $this->_template->render(true, true, 'checkout/use-reward-points.php');
+            }
             $this->_template->render();
         }
 
@@ -1625,7 +1635,8 @@ class CheckoutController extends MyAppController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function useRewardPoints()
+    /* Used through payment summary api to rid off session functionality in case of APP calling. */
+    public function useRewardPoints(bool $return = false)
     {
         $loggedUserId = UserAuthentication::getLoggedUserId();
         $post = FatApp::getPostedData();
@@ -1665,11 +1676,11 @@ class CheckoutController extends MyAppController
             FatUtility::dieJsonError($this->errMessage);
         }
 
-        $cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        if (false == $return) {
+            $this->cartObj = new Cart($loggedUserId, $this->siteLangId, $this->app_user['temp_user_id']);
+        }
 
-        // $cartObj = new Cart();
-
-        $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
+        $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
 
         $cartTotal = isset($cartSummary['cartTotal']) ? $cartSummary['cartTotal'] : 0;
         $cartDiscounts = isset($cartSummary['cartDiscounts']["coupon_discount_total"]) ? $cartSummary['cartDiscounts']["coupon_discount_total"] : 0;
@@ -1683,7 +1694,7 @@ class CheckoutController extends MyAppController
             $msg = CommonHelper::replaceStringData($msg, array('{MIN}' => FatApp::getConfig('CONF_MIN_REWARD_POINT'), '{MAX}' => FatApp::getConfig('CONF_MAX_REWARD_POINT')));
             LibHelper::dieJsonError($msg);
         }
-        if (!$cartObj->updateCartUseRewardPoints($rewardPoints)) {
+        if (!$this->cartObj->updateCartUseRewardPoints($rewardPoints)) {
             $this->errMessage = Labels::getLabel('LBL_Action_Trying_Perform_Not_Valid', $this->siteLangId);
             if (true === MOBILE_APP_API_CALL) {
                 FatUtility::dieJsonError($this->errMessage);
@@ -1691,24 +1702,15 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
+        
+        if (true === $return) {
+            return true;
+        }
 
         $this->set('msg', Labels::getLabel("MSG_Used_Reward_point", $this->siteLangId) . '-' . $rewardPoints);
         if (true === MOBILE_APP_API_CALL) {
-            $orderObj = new Orders();
-            $orderInfo = $orderObj->getOrderById($orderId, $this->siteLangId);
-            $financialSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
-            $cartSummary = $cartObj->getCartFinancialSummary($this->siteLangId);
-            $cartProducts = $cartObj->getProducts($this->siteLangId);
-
-            $orderData['order_id'] = $orderId;
-            $orderData['order_type'] = $orderInfo["order_type"];
-            $orderData['order_net_amount'] = $financialSummary["orderNetAmount"];
-            $orderData['order_reward_point_used'] = $financialSummary["cartRewardPoints"];
-            $orderData['order_reward_point_value'] = CommonHelper::convertRewardPointToCurrency($financialSummary["cartRewardPoints"]);
-            if (!$orderObj->addUpdateOrder($orderData, $this->siteLangId)) {
-                FatUtility::dieJsonError($orderObj->getError());
-            }
-
+            $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
+            $cartProducts = $this->cartObj->getProducts($this->siteLangId);
             $this->set('cartSummary', $cartSummary);
             $this->set('products', $cartProducts);
             $this->_template->render();
@@ -1763,7 +1765,7 @@ class CheckoutController extends MyAppController
         $plugin_id = FatApp::getPostedData('plugin_id', FatUtility::VAR_INT, 0);
 
         $order_id = FatApp::getPostedData("order_id", FatUtility::VAR_STRING, "");
-        
+
         $user_id = UserAuthentication::getLoggedUserId();
         $cartSummary = $this->cartObj->getCartFinancialSummary($this->siteLangId);
         $userWalletBalance = FatUtility::convertToType(User::getUserBalance($user_id, true), FatUtility::VAR_FLOAT);
@@ -1838,7 +1840,7 @@ class CheckoutController extends MyAppController
             //No Need to clear cart in case of wallet recharge
             /*$this->cartObj->clear();
             $this->cartObj->updateUserCart();*/
-            
+
             $orderObj->updateOrderInfo($order_id, array('order_pmethod_id' => $plugin_id));
 
             if (true === MOBILE_APP_API_CALL) {
@@ -1884,7 +1886,7 @@ class CheckoutController extends MyAppController
                 LibHelper::dieJsonError(Labels::getLabel('MSG_That_captcha_was_incorrect', $this->siteLangId));
             }
         }
-        
+
         if ($userWalletBalance >= $cartSummary['orderNetAmount'] && $cartSummary['cartWalletSelected'] && !$plugin_id) {
             $frm = $this->getWalletPaymentForm($this->siteLangId);
         } else {
