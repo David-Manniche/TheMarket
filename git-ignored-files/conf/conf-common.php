@@ -18,8 +18,6 @@ define('CONF_PLUGIN_DIR', CONF_INSTALLATION_PATH . 'library/plugins/');
 define('CONF_TEST_CASES_DIR', CONF_INSTALLATION_PATH . 'testcases/');
 
 if (strpos($_SERVER['SERVER_NAME'], '.4livedemo.com') !== false) {
-    define('CONF_CORE_LIB_PATH', '/etc/fatlib/');
-} elseif (strpos($_SERVER['SERVER_NAME'], '.4livedemo.com') !== false) {
     define('CONF_CORE_LIB_PATH', '/home/fatlib/v2.1/');
 } else {
     define('CONF_CORE_LIB_PATH', CONF_INSTALLATION_PATH . 'library/core/');
