@@ -498,6 +498,7 @@ Bugs:
     => 046207 - when item is moved from saved car to cart still then the item is still lying in saved cart
     => 046235 - when we try to add same custom url for two products then warning message is not proper
     => 046234 - admin> catalog> requested categories> order needs to be descending- latest one needs to be on top
+    => 046209 - abdroid-After order is placed on pickup then on success screen data is not populating
     
 Enhancements:
     => Tax module upgrade
