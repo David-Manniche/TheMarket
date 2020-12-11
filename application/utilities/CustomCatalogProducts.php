@@ -570,8 +570,8 @@ trait CustomCatalogProducts
     {
         $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct();
-        $preq_id = FatUtility :: int($preq_id);
-        $image_id = FatUtility :: int($image_id);
+        $preq_id = FatUtility::int($preq_id);
+        $image_id = FatUtility::int($image_id);
         if (!$image_id || !$preq_id) {
             Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Request!", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -629,7 +629,7 @@ trait CustomCatalogProducts
 
         $preqObj = new ProductRequest();
         $post = FatApp::getPostedData();
-        $preq_id = FatUtility :: int($post['preq_id']);
+        $preq_id = FatUtility::int($post['preq_id']);
         /* Validate product belongs to current logged seller[ */
         $productRow = ProductRequest::getAttributesById($preq_id, array('preq_user_id'));
         $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
@@ -683,8 +683,7 @@ trait CustomCatalogProducts
             FatUtility::dieJsonError(Message::getHtml());
         }
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)
-        ) {
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_CUSTOM_PRODUCT_IMAGE, $preq_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -725,7 +724,7 @@ trait CustomCatalogProducts
                 $str .= "<li onClick='customCategoryListing(" . $category['prodcat_id'] . ",this)'><a class='selectCategory' href='javascript:void(0)'>" . strip_tags($category['prodcat_name']) . $arrow . "</a></li>";
             }
             $str .= "</ul>";
-        //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
+            //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
         } else {
             $srch = ProductCategory::getSearchObject(false, $this->siteLangId, true);
             $srch->addMultipleFields(array('m.prodcat_id', 'IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
@@ -891,9 +890,9 @@ trait CustomCatalogProducts
 
         $prodReqObj = new ProductRequest($preqId);
         $data = array(
-			'preq_submitted_for_approval' => applicationConstants::YES,
-			'preq_requested_on' => date('Y-m-d H:i:s'),
-		);
+            'preq_submitted_for_approval' => applicationConstants::YES,
+            'preq_requested_on' => date('Y-m-d H:i:s'),
+        );
         $prodReqObj->assignValues($data);
         if (!$prodReqObj->save()) {
             Message::addErrorMessage(Labels::getLabel("MSG_Invalid_Access", $this->siteLangId));
@@ -1037,6 +1036,7 @@ trait CustomCatalogProducts
         $this->set('productType', $productType);
         $this->set('preqId', $preqId);
         $this->_template->addJs(array('js/tagify.min.js', 'js/tagify.polyfills.min.js', 'js/cropper.js', 'js/cropper-main.js'));
+        
         $this->set('includeEditor', true);
         $this->_template->render();
     }
@@ -1138,7 +1138,7 @@ trait CustomCatalogProducts
         $dataForSave = array_merge($prodContent, $post);
         $dataForSave['preq_prodcat_id'] = $preqProdCatId;
         $dataForSave['product_added_by_admin_id'] = 0;
-        $dataForSave['product_seller_id'] = ($this->userParentId > 0) ? $this->userParentId: UserAuthentication::getLoggedUserId();
+        $dataForSave['product_seller_id'] = ($this->userParentId > 0) ? $this->userParentId : UserAuthentication::getLoggedUserId();
         if ($post['product_type'] == Product::PRODUCT_TYPE_DIGITAL) {
             $dataForSave['product_length'] = 0;
             $dataForSave['product_width'] = 0;
@@ -1214,7 +1214,7 @@ trait CustomCatalogProducts
         }
         $productData = ProductRequest::getAttributesById($preqId);
         $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
-       
+
         if (!in_array($productData['preq_user_id'], $userArr) || $productData['preq_status'] != ProductRequest::STATUS_PENDING) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
