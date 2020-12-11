@@ -1622,3 +1622,4 @@ ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
 ('LBL_COUNTRY_ALPHA3_CODE', 1, 'Alpha-3 Code', 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
+-- -----------------------------TV-9.2.3.20201211-------------------

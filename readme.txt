@@ -501,7 +501,7 @@ Bugs:
     => 046209 - abdroid-After order is placed on pickup then on success screen data is not populating
     => 046306 - Seller >> request >> shipping tab should be removed if we request for digital products
     => 046397	In case of image present with 0 id and 0 record id then default image displying wrong
-    
+---------------------------TV-9.2.3.20201211-----------------------    
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

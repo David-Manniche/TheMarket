@@ -65,4 +65,4 @@ require_once CONF_INSTALLATION_PATH . 'library/aws/aws-autoloader.php';
 AttachedFile::registerS3ClientStream();
 
 define('SYSTEM_INIT', true);
-define('CONF_WEB_APP_VERSION', 'TV-9.2.3.20201204');
+define('CONF_WEB_APP_VERSION', 'TV-9.2.3.20201211');
