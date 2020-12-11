@@ -318,7 +318,7 @@ $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '
 $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
 $paymentMethods = new PaymentMethods();
 if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDeliveryIsActive()) { ?>
-    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
+    <script src='https://www.google.com/recaptcha/api.js?onload=googleCaptcha&render=<?php echo $siteKey; ?>'></script>
     <script>
         var enableGcaptcha = true;
     </script>
@@ -351,10 +351,14 @@ if (!empty($siteKey) && !empty($secretKey) && true === $paymentMethods->cashOnDe
             if (!tabObj || !tabObj.length) {
                 return;
             }
-
+	
             fcom.ajax(tabObj.attr('href'), '', function(response) {
-                $('#tabs-container').html(response);
                 var paymentMethod = tabObj.data('paymentmethod');
+				if ('paypal' != paymentMethod.toLowerCase() && 0 < $("#paypal-buttons").length) {
+					$("#paypal-buttons").html("");	
+				}
+				
+				$('#tabs-container').html(response);
                 if ('cashondelivery' == paymentMethod.toLowerCase() || 'payatstore' == paymentMethod.toLowerCase()) {
                     if (true == enableGcaptcha) {
                         googleCaptcha();
