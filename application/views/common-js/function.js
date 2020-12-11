@@ -555,41 +555,44 @@ function getCookie(cname) {
     return "";
 }
 
-var gCaptcha = false;
+/*Google reCaptcha V3  */
 function googleCaptcha() {
     $("body").addClass("captcha");
     var inputObj = $("form input[name='g-recaptcha-response']");
+    if ('' != inputObj.val()) { return; }
+
     var submitBtn = inputObj.parent("form").find('input[type="submit"]');
-	var submitLbl = submitBtn.val();
-    submitBtn.attr({ "disabled": "disabled", "type": "button" }).val(langLbl.loadingCaptcha);
+    $.mbsmessage(langLbl.loadingCaptcha, false, 'alert--process');
+    submitBtn.attr({ "disabled": "disabled", "type": "button" });
 
+    var counter = 0;
     var checkToken = setInterval(function () {
-        if (true === gCaptcha) {
-            submitBtn.removeAttr("disabled").attr('type', 'submit').val(submitLbl);
+        counter++
+        /* Check if not loaded until 30 Sec = counter 150. Because it run 5 times in 1 sec. */
+        if (150 == counter) {
+            $.mbsmessage(langLbl.invalidGRecaptchaKeys, true, 'alert--danger');
             clearInterval(checkToken);
+            return;
         }
-    }, 500);
-
-    /*Google reCaptcha V3  */
-    setTimeout(function () {
+        
         if (0 < inputObj.length && 'undefined' !== typeof grecaptcha) {
             grecaptcha.ready(function () {
                 try {
                     grecaptcha.execute(langLbl.captchaSiteKey, { action: inputObj.data('action') }).then(function (token) {
                         inputObj.val(token);
-                        gCaptcha = true;
+                        submitBtn.removeAttr("disabled").attr('type', 'submit');
+                        clearInterval(checkToken);
+                        $.mbsmessage.close();
                     });
                 }
                 catch (error) {
-                    submitBtn.val(submitLbl);
                     $.mbsmessage(error, true, 'alert--danger');
                     return;
                 }
             });
-        } else if ('undefined' === typeof grecaptcha) {
-            $.mbsmessage(langLbl.invalidGRecaptchaKeys, true, 'alert--danger');
         }
-    }, 200);
+    }, 200); /* 1000 MS = 1 Sec. */
+    return;
 }
 
 function getLocation() {

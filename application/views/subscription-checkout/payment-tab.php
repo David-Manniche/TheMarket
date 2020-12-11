@@ -99,8 +99,5 @@ $submitFld->setFieldTagAttribute('class', "btn btn-brand");
 $siteKey = FatApp::getConfig('CONF_RECAPTCHA_SITEKEY', FatUtility::VAR_STRING, '');
 $secretKey = FatApp::getConfig('CONF_RECAPTCHA_SECRETKEY', FatUtility::VAR_STRING, '');
 if (!empty($siteKey) && !empty($secretKey) && in_array(strtolower($paymentMethod['plugin_code']), ['cashondelivery', 'payatstore'])) { ?>
-    <script src='https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>'></script>
-    <script>
-        googleCaptcha();
-    </script>
+    <script src='https://www.google.com/recaptcha/api.js?onload=googleCaptcha&render=<?php echo $siteKey; ?>'></script>
 <?php } ?>

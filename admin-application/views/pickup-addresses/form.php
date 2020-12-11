@@ -19,7 +19,7 @@ $stateFld->setFieldTagAttribute('id', 'shop_state');
 
 $slotTypeFld = $frm->getField('tslot_availability');
 $slotTypeFld->setOptionListTagAttribute('class', 'list-inline-checkboxes');
-$slotTypeFld->developerTags['rdLabelAttributes'] = array('class'=>'radio');
+$slotTypeFld->developerTags['rdLabelAttributes'] = array('class' => 'radio');
 $slotTypeFld->developerTags['rdHtmlAfterRadio'] = '<i class="input-helper"></i>';
 $slotTypeFld->setFieldTagAttribute('onClick', 'displaySlotTimings(this);');
 $slotTypeFld->setFieldTagAttribute('class', 'availabilityType-js');
@@ -269,7 +269,7 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                         $toFld->setFieldTagAttribute('data-row', $row);
                                         $toFld->setFieldTagAttribute('onChange', 'displayAddRowField(' . $i . ', this)');
                                         $toFld->value = $toTime;
-                                ?>
+                            ?>
                                         <div class="row row-<?php echo $row;
                                                             echo ($key > 0) ? ' js-added-rows-' . $i : '' ?>">
                                             <div class="col-md-2">
@@ -318,24 +318,24 @@ $toAllFld->setFieldTagAttribute('class', 'selectAllToTime-js');
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">                                            
-                                                    <div class="field-set">
-                                                        <div class="caption-wraper">
-                                                            <label class="field_label">
-                                                            </label>
+                                            <div class="col-md-2 addRowBtnBlock<?php echo $i; ?>-js">
+                                                <div class="field-set">
+                                                    <div class="caption-wraper">
+                                                        <label class="field_label">
+                                                        </label>
+                                                    </div>
+                                                    <div class="field-wraper">
+                                                        <div class="field_cover">
+                                                            <?php if ($key != 0) {  ?>
+                                                                <input type='button' name='btn_remove_row' value='x' data-day="<?php echo $i; ?>">
+                                                            <?php }
+                                                            if (count($slotData['tslot_from_time'][$i]) - 1 == $key) {
+                                                                echo $frm->getFieldHtml('btn_add_row[' . $i . ']');
+                                                            }
+                                                            ?>
                                                         </div>
-                                                        <div class="field-wraper">
-                                                            <div class="field_cover">
-                                                                <?php if ($key != 0) {  ?>
-                                                                    <input type='button' name='btn_remove_row' value='x' data-day="<?php echo $i; ?>">                                                               
-                                                                <?php }                                                        
-                                                                if (count($slotData['tslot_from_time'][$i]) - 1 == $key) { 
-                                                                    echo $frm->getFieldHtml('btn_add_row[' . $i . ']');
-                                                                } 
-                                                                ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>                                               
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     <?php

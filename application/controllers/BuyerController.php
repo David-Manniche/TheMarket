@@ -2765,25 +2765,39 @@ class BuyerController extends BuyerBaseController
     public function orderTrackingInfo($trackingNumber, $courier, $orderNumber)
     {
         if (empty($trackingNumber) || empty($courier)) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_request', $this->siteLangId));
+            $message = Labels::getLabel('MSG_Invalid_request', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
 
         $shipmentTracking = new ShipmentTracking();
         if (false === $shipmentTracking->init($this->siteLangId)) {
-            Message::addErrorMessage($shipmentTracking->getError());
+            $message = $shipmentTracking->getError();
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
 
         $shipmentTracking->createTracking($trackingNumber, $courier, $orderNumber);
 
         if (false === $shipmentTracking->getTrackingInfo($trackingNumber, $courier)) {
-            Message::addErrorMessage($shipmentTracking->getError());
+            $message = $shipmentTracking->getError();
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
         $trackingInfo = $shipmentTracking->getResponse();
-
         $this->set('trackingInfo', $trackingInfo);
+        if (true === MOBILE_APP_API_CALL) {
+            $this->_template->render();
+        }
         $this->_template->render(false, false);
     }
 

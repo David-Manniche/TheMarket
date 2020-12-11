@@ -10,6 +10,8 @@ $(document).ready(function () {
         $(dv).html(fcom.getLoader());
         fcom.ajax(fcom.makeUrl('PickupAddresses', 'search'), data, function (res) {
             $(dv).html(res);
+            var oldLabel = $(".label-js").data("listlabel");
+            $(".label-js").text(oldLabel);
             $(".js-pickup-addr").addClass('d-none');
             $(".js-add-pickup-addr").removeClass('d-none');
         });
@@ -19,6 +21,8 @@ $(document).ready(function () {
         var data = 'langId=' + langId;
         fcom.ajax(fcom.makeUrl('PickupAddresses', 'form', [id, langId]), data, function (res) {
             $(dv).html(res);
+            var oldLabel = $(".label-js").text();
+            $(".label-js").attr("data-listlabel", oldLabel).text(langLbl.pickupAddressForm);
             $(".js-add-pickup-addr").addClass('d-none');
             $(".js-pickup-addr").removeClass('d-none');
             setTimeout(function () { $('.fromTime-js').change(); }, 500);
