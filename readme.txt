@@ -499,7 +499,7 @@ Bugs:
     => 046235 - when we try to add same custom url for two products then warning message is not proper
     => 046234 - admin> catalog> requested categories> order needs to be descending- latest one needs to be on top
     => 046209 - abdroid-After order is placed on pickup then on success screen data is not populating
-    
+    => 046306 - Seller >> request >> shipping tab should be removed if we request for digital products
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
