@@ -15,7 +15,7 @@
                 <h1> </h1>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4></h4>
+                        <h4 class="label-js"><?php echo Labels::getLabel('LBL_PICKUP_ADDRESSES_LIST', $adminLangId); ?></h4>
                         <?php
                         if ($canEdit) {
                             $data = [
