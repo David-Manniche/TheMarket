@@ -95,10 +95,10 @@ class ProductCategoriesController extends AdminBaseController
             $catNameArr = array();
             foreach ($langData as $value) {
                 $catNameArr[ProductCategory::DB_TBL_PREFIX . 'name'][$value[ProductCategory::DB_TBL_LANG_PREFIX . 'lang_id']] = $value[ProductCategory::DB_TBL_PREFIX . 'name'];
-            }            
+            }
             $data['parent_category_name'] = $categories[$data['prodcat_parent']] ?? '';
-            
-            $data = array_merge($data, $catNameArr);            
+
+            $data = array_merge($data, $catNameArr);
         }
         $prodCatFrm->fill($data);
         $mediaLanguages = applicationConstants::bannerTypeArr();
@@ -129,13 +129,13 @@ class ProductCategoriesController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Parent_Category', $this->adminLangId), 'prodcat_parent', $categories, '', array(), '');
          * 
          */
-        
-        $frm->addRequiredField(Labels::getLabel('LBL_Parent_Category', $this->adminLangId), 'parent_category_name');        
-        $frm->addHiddenField('', 'prodcat_parent', $prodCatId);        
+
+        $frm->addRequiredField(Labels::getLabel('LBL_Parent_Category', $this->adminLangId), 'parent_category_name');
+        $frm->addHiddenField('', 'prodcat_parent', $prodCatId);
 
         $yesNoArr = applicationConstants::getYesNoArr($this->adminLangId);
         $frm->addRadioButtons(Labels::getLabel('LBL_Publish', $this->adminLangId), 'prodcat_active', $yesNoArr, '1', array());
-        
+
         if (0 < $productReq) {
             $frm->addRadioButtons(Labels::getLabel('LBL_STATUS', $this->adminLangId), 'prodcat_status', $yesNoArr, '1', array());
         }
@@ -181,7 +181,7 @@ class ProductCategoriesController extends AdminBaseController
     public function setup($prodCatReq = 0)
     {
         $this->objPrivilege->canEditProductCategories();
-        $frm = $this->getCategoryForm(0 , $prodCatReq);
+        $frm = $this->getCategoryForm(0, $prodCatReq);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
@@ -223,11 +223,11 @@ class ProductCategoriesController extends AdminBaseController
         $prodcat_id = FatUtility::int($prodcat_id);
         $lang_id = FatUtility::int($lang_id);
         $catIcons = $catBanners = array();
-        if ($imageType=='icon') {
+        if ($imageType == 'icon') {
             $catIcons = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_ICON, $prodcat_id, 0, $lang_id, false);
             $this->set('images', $catIcons);
             $this->set('imageFunction', 'icon');
-        } elseif ($imageType=='banner') {
+        } elseif ($imageType == 'banner') {
             $catBanners = AttachedFile::getAttachment(AttachedFile::FILETYPE_CATEGORY_BANNER, $prodcat_id, 0, $lang_id, false, $slide_screen);
             $this->set('images', $catBanners);
             $this->set('imageFunction', 'banner');
@@ -263,7 +263,7 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
-        ProductCategory:: deleteImagesWithOutCategoryId($file_type);
+        ProductCategory::deleteImagesWithOutCategoryId($file_type);
 
         $fileHandlerObj = new AttachedFile($afileId);
         if (!$res = $fileHandlerObj->saveImage(
@@ -284,7 +284,7 @@ class ProductCategoriesController extends AdminBaseController
         ProductCategory::setImageUpdatedOn($prodcat_id);
         $this->set('file', $_FILES['cropped_image']['name']);
         $this->set('prodcat_id', $prodcat_id);
-        $this->set('msg', $_FILES['cropped_image']['name'].' '.Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
+        $this->set('msg', $_FILES['cropped_image']['name'] . ' ' . Labels::getLabel('LBL_Uploaded_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -298,9 +298,9 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel('MSG_INVALID_REQUEST', $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        if ($imageType=='icon') {
+        if ($imageType == 'icon') {
             $fileType = AttachedFile::FILETYPE_CATEGORY_ICON;
-        } elseif ($imageType=='banner') {
+        } elseif ($imageType == 'banner') {
             $fileType = AttachedFile::FILETYPE_CATEGORY_BANNER;
         }
         $fileHandlerObj = new AttachedFile();
@@ -362,7 +362,7 @@ class ProductCategoriesController extends AdminBaseController
                 ProductCategory::tblFld('status') => ProductCategory::REQUEST_APPROVED,
                 ProductCategory::tblFld('active') => applicationConstants::ACTIVE,
                 ProductCategory::tblFld('updated_on') => date('Y-m-d H:i:s'),
-				ProductCategory::tblFld('status_updated_on') => date('Y-m-d H:i:s')
+                ProductCategory::tblFld('status_updated_on') => date('Y-m-d H:i:s')
             )
         );
         if (!$prodCat->save()) {
@@ -394,7 +394,7 @@ class ProductCategoriesController extends AdminBaseController
             FatUtility::dieJsonError(Labels::getLabel('LBL_Products_are_associated_with_its_category/sub-categories_so_we_are_not_able_to_delete_this_category', $this->adminLangId));
         }
         /* ] */
-		
+
         $prodCateObj->assignValues(array(ProductCategory::tblFld('deleted') => 1));
         if (!$prodCateObj->save()) {
             FatUtility::dieJsonError($prodCateObj->getError());
@@ -408,7 +408,7 @@ class ProductCategoriesController extends AdminBaseController
     public function getBreadcrumbNodes($action)
     {
         parent::getBreadcrumbNodes($action);
-        
+
         switch ($action) {
             case 'index':
             case 'form':
@@ -429,8 +429,8 @@ class ProductCategoriesController extends AdminBaseController
         $json = array();
         foreach ($categories as $key => $val) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($val, ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($val, ENT_QUOTES, 'UTF-8'))
             );
         }
         echo json_encode($json);
@@ -444,8 +444,8 @@ class ProductCategoriesController extends AdminBaseController
         $json = array();
         foreach ($arr_options as $key => $product) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($product, ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($product, ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -497,7 +497,7 @@ class ProductCategoriesController extends AdminBaseController
         $srch->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'u.user_id = prodcat_seller_id', 'u');
         $srch->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'shop_user_id = if(u.user_parent > 0, user_parent, u.user_id)', 'shop');
         $srch->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'shop.shop_id = s_l.shoplang_shop_id AND shoplang_lang_id = ' . $this->adminLangId, 's_l');
-        $srch->addMultipleFields(array('m.*','prodcat_name', 'u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
+        $srch->addMultipleFields(array('m.*', 'prodcat_name', 'u.user_name', 'ifnull(shop_name, shop_identifier) as shop_name'));
         $srch->addOrder('prodcat_requested_on', 'desc');
         if (!empty($post['keyword'])) {
             $condition = $srch->addCondition('prodcat_identifier', 'like', '%' . $post['keyword'] . '%');

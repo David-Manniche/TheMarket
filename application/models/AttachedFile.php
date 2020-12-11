@@ -253,9 +253,9 @@ class AttachedFile extends MyAppModel
         }
 
         return [
-            'afile_id' => 0,
+            'afile_id' => -1,
             'afile_type' => 0,
-            'afile_record_id' => 0,
+            'afile_record_id' => -1,
             'afile_record_subid' => 0,
             'afile_lang_id' => 0,
             'afile_screen' => 0,
