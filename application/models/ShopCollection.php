@@ -20,7 +20,7 @@ class ShopCollection extends MyAppModel
     public function __construct($scollectionId = 0)
     {
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $scollectionId);
-        $this->objMainTableRecord->setSensitiveFields(array());
+        $this->objMainTableRecord->setSensitiveFields(array(static::DB_TBL_PREFIX . 'id'));
     }
 
     public static function getSearchObject()
@@ -38,12 +38,12 @@ class ShopCollection extends MyAppModel
         return $this->mainTableRecordId;
     }
 
-    public static function getCollectionGeneralDetail($shop_id, $scollection_id = 0, $langId = 0)
+    public static function getCollectionGeneralDetail($shop_id, $scollection_id = 0, $langId = 0, $join = 'LEFT OUTER JOIN')
     {
         $langId = FatUtility::int($langId);
         $srch = self::getSearchObject();
         if (0 < $langId) {
-            $srch->joinTable(static::DB_TBL_LANG, 'LEFT OUTER JOIN', static::DB_TBL_LANG_PREFIX . 'scollection_id = ' . static::DB_TBL_PREFIX . 'id and ' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId);
+            $srch->joinTable(static::DB_TBL_LANG, $join, static::DB_TBL_LANG_PREFIX . 'scollection_id = ' . static::DB_TBL_PREFIX . 'id and ' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId);
             $srch->addMultipleFields(['scollection_id', 'scollection_shop_id', 'scollection_identifier', 'scollection_active', 'IFNULL(scollection_name, scollection_identifier) as scollection_name']);
         }
 

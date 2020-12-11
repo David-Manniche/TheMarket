@@ -25,7 +25,7 @@ class Shop extends MyAppModel
     public const SHOP_SEND_MESSAGE_ORGINAL_URL = 'shops/send-message/';
     public const SHOP_TOP_PRODUCTS_ORGINAL_URL = 'shops/top-products/';
     public const SHOP_COLLECTION_ORGINAL_URL = 'shops/collection/';
-    
+
     public const USE_SHOP_POLICY = 1;
 
     public const SHOP_PRODUCTS_COUNT_AT_HOMEPAGE = 2;
@@ -34,7 +34,7 @@ class Shop extends MyAppModel
     private $langId = 0;
     private $active = null;
     private $data = null;
-    
+
     /**
      * __construct
      *
@@ -54,7 +54,7 @@ class Shop extends MyAppModel
         }
 
         $this->langId = $langId;
-        
+
         parent::__construct(static::DB_TBL, static::DB_TBL_PREFIX . 'id', $shopId);
         $this->objMainTableRecord->setSensitiveFields(array());
     }
@@ -180,7 +180,7 @@ class Shop extends MyAppModel
         $srch->addMultipleFields(array('prodcat_id', 'ifnull(prodcat_name,prodcat_identifier) as prodcat_name', 'shop_id'));
         return $srch;
     }
-   
+
     public static function getShopAddress($shop_id, $isActive = true, $langId = 0, $attr = array())
     {
         $shop_id = FatUtility::int($shop_id);
@@ -190,11 +190,11 @@ class Shop extends MyAppModel
         $srch->addCondition(static::tblFld('id'), '=', $shop_id);
         $srch->joinTable(States::DB_TBL, 'LEFT JOIN', 's.shop_state_id=ss.state_id and ss.state_active=' . applicationConstants::ACTIVE, 'ss');
         $srch->joinTable(Countries::DB_TBL, 'LEFT JOIN', 's.shop_country_id=sc.country_id and sc.country_active=' . applicationConstants::ACTIVE, 'sc');
-        
+
         if (0 < $langId) {
             $srch->joinTable(States::DB_TBL_LANG, 'LEFT JOIN', 'ss_l.statelang_state_id=ss.state_id and ss_l.statelang_lang_id=' . $langId, 'ss_l');
         }
-       
+
         if ($isActive) {
             $srch->addCondition('s.shop_active', '=', $isActive);
         }
@@ -314,16 +314,16 @@ class Shop extends MyAppModel
         if (1 > $this->mainTableRecordId || 1 > $userId) {
             return false;
         }
-       
-        $data_to_save = array( 'ufs_user_id' => $userId, 'ufs_shop_id' => $this->mainTableRecordId );
-        $data_to_save_on_duplicate = array( 'ufs_shop_id' => $this->mainTableRecordId );
+
+        $data_to_save = array('ufs_user_id' => $userId, 'ufs_shop_id' => $this->mainTableRecordId);
+        $data_to_save_on_duplicate = array('ufs_shop_id' => $this->mainTableRecordId);
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_SHOP_FAVORITE, $data_to_save, false, array(), $data_to_save_on_duplicate)) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
         return true;
     }
-    
+
     /**
      * getRewriteCustomUrl
      *
@@ -348,7 +348,7 @@ class Shop extends MyAppModel
 
         return $row['urlrewrite_custom'];
     }
-    
+
     /**
      * getName
      *
@@ -375,13 +375,13 @@ class Shop extends MyAppModel
 
         return false;
     }
-        
+
     /**
      * isActive
      *
      * @return int
      */
-    public function isActive() : int
+    public function isActive(): int
     {
         if (1 > $this->mainTableRecordId) {
             return 0;
@@ -389,11 +389,11 @@ class Shop extends MyAppModel
         if (null != $this->active) {
             return $this->active;
         }
-       
+
         if (null != $this->data) {
             return $this->active = $this->data['shop_active'];
         }
-        
+
         $this->getData();
 
         if (!empty($this->data)) {
@@ -402,13 +402,13 @@ class Shop extends MyAppModel
 
         return 0;
     }
-    
+
     /**
      * getData
      *
      * @return array
      */
-    public function getData() : array
+    public function getData(): array
     {
         if (1 > $this->mainTableRecordId) {
             trigger_error('Shop instance not initialized!', E_USER_ERROR);
@@ -420,7 +420,7 @@ class Shop extends MyAppModel
 
         return $this->data;
     }
-    
+
     /**
      * setData
      *
@@ -444,7 +444,7 @@ class Shop extends MyAppModel
      *
      * @return int
      */
-    private function getIdFromUserId() : int
+    private function getIdFromUserId(): int
     {
         if (0 < $this->mainTableRecordId) {
             return  $this->mainTableRecordId;
@@ -456,13 +456,13 @@ class Shop extends MyAppModel
 
         return self::getAttributesByUserId($this->userId, 'shop_id');
     }
-    
+
     /**
      * getUserId
      *
      * @return int
      */
-    private function getUserId() : int
+    private function getUserId(): int
     {
         if (1 > $this->mainTableRecordId) {
             return  0;
@@ -475,7 +475,7 @@ class Shop extends MyAppModel
         if (null != $this->data) {
             return $this->userId = $this->data['shop_user_id'];
         }
-        
+
         $this->getData();
 
         if (!empty($this->data)) {

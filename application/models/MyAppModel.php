@@ -127,7 +127,7 @@ class MyAppModel extends FatModel
             return false;
         }
 
-        if (!FatApp::getDb()->deleteRecords($this->mainTableName, array('smt'=>$this->mainTableIdField . ' = ?', 'vals'=>array($this->mainTableRecordId)))) {
+        if (!FatApp::getDb()->deleteRecords($this->mainTableName, array('smt' => $this->mainTableIdField . ' = ?', 'vals' => array($this->mainTableRecordId)))) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
@@ -156,10 +156,10 @@ class MyAppModel extends FatModel
     {
         $result = $this->objMainTableRecord->loadFromDb(
             array(
-            'smt' => $this->mainTableIdField . " = ?",
-            'vals' => array(
-            $this->mainTableRecordId
-            )
+                'smt' => $this->mainTableIdField . " = ?",
+                'vals' => array(
+                    $this->mainTableRecordId
+                )
             ),
             $prepare_dates_for_display
         );
@@ -387,11 +387,11 @@ class MyAppModel extends FatModel
                 FatApp::getDb()->updateFromArray(
                     static::DB_TBL,
                     array(
-                    static::DB_TBL_PREFIX . 'display_order' => $i
+                        static::DB_TBL_PREFIX . 'display_order' => $i
                     ),
                     array(
-                    'smt' => static::DB_TBL_PREFIX . 'id = ?',
-                    'vals' => array($id)
+                        'smt' => static::DB_TBL_PREFIX . 'id = ?',
+                        'vals' => array($id)
                     )
                 );
             }

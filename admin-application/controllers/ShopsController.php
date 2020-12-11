@@ -838,8 +838,9 @@ class ShopsController extends AdminBaseController
             $urlSrch->doNotLimitRecords();
             $urlSrch->addFld('urlrewrite_custom');
 
+            $orignalUrl = Shop::SHOP_COLLECTION_ORGINAL_URL . $shop_id . '/' . $scollection_id;
 
-            $urlSrch->addCondition('urlrewrite_original', '=', Shop::SHOP_COLLECTION_ORGINAL_URL . $shop_id);
+            $urlSrch->addCondition('urlrewrite_original', '=', $orignalUrl);
             $rs = $urlSrch->getResultSet();
             $urlRow = FatApp::getDb()->fetch($rs);
             if ($urlRow) {
@@ -1024,12 +1025,14 @@ class ShopsController extends AdminBaseController
             Message::addErrorMessage(Labels::getLabel("MSG_INVALID_ACCESS", $this->adminLangId));
             FatUtility::dieJsonError(Message::getHtml());
         }
+        
+        $frm = $this->getCollectionGeneralForm($shop_id, $scollection_id);
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
         }
-        $frm = $this->getCollectionGeneralForm($shop_id, $scollection_id);
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         $record = new ShopCollection($scollection_id);
 
@@ -1044,7 +1047,7 @@ class ShopsController extends AdminBaseController
             FatApp::getDb()->deleteRecords(UrlRewrite::DB_TBL, array( 'smt' => 'urlrewrite_original = ?', 'vals' => array($shopOriginalUrl)));
         } else {
             $shop = new Shop($shop_id);
-            $shop->setupCollectionUrl($post['urlrewrite_custom'], $scollection_id);
+            $shop->setupCollectionUrl($post['urlrewrite_custom'], $collection_id);
         }
 
 
@@ -1053,16 +1056,17 @@ class ShopsController extends AdminBaseController
         if ($collection_id > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
-                if (!$row = ShopCollection::getAttributesByLangId($langId, $shop_id)) {
+                $row = ShopCollection::getCollectionGeneralDetail($shop_id, $collection_id, $langId, 'INNER JOIN');
+                if (!$row) {
                     $newTabLangId = $langId;
                     break;
                 }
             }
         } else {
             $collection_id = $record->getMainTableRecordId();
-            $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
+            $newTabLangId = $this->adminLangId;
         }
-
+        
         $this->set('msg', Labels::getLabel('MSG_Setup_Successful', $this->adminLangId));
         $this->set('shop_id', $shop_id);
         $this->set('collection_id', $collection_id);
@@ -1162,14 +1166,14 @@ class ShopsController extends AdminBaseController
         if ($scollection_id > 0) {
             $languages = Language::getAllNames();
             foreach ($languages as $langId => $langName) {
-                //	print_r(ShopCollection::getAttributesByLangId($langId,$scollection_id));
-                if (!$row = ShopCollection::getAttributesByLangId($langId, $scollection_id)) {
+                $row = ShopCollection::getCollectionGeneralDetail($post['shop_id'], $scollection_id, $langId, 'INNER JOIN');
+                if (!$row) {
                     $newTabLangId = $langId;
                     break;
                 }
             }
         } else {
-            $collection_id = $record->getMainTableRecordId();
+            $scollection_id = $record->getMainTableRecordId();
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 

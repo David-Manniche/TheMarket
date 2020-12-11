@@ -1,14 +1,14 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = array(
-        'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
-        'listserial' => Labels::getLabel('LBL_#', $adminLangId),
-        'scollection_identifier' => Labels::getLabel('LBL_Collection_Name', $adminLangId),
-        'scollection_active' => Labels::getLabel('LBL_Status', $adminLangId),
-        'action' => Labels::getLabel('LBL_Action', $adminLangId),
-    );
-    if (!$canEdit) {
-        unset($arr_flds['select_all']);
-    }
+    'select_all' => Labels::getLabel('LBL_Select_all', $adminLangId),
+    'listserial' => Labels::getLabel('LBL_#', $adminLangId),
+    'scollection_identifier' => Labels::getLabel('LBL_Collection_Name', $adminLangId),
+    'scollection_active' => Labels::getLabel('LBL_Status', $adminLangId),
+    'action' => Labels::getLabel('LBL_Action', $adminLangId),
+);
+if (!$canEdit) {
+    unset($arr_flds['select_all']);
+}
 $tbl = new HtmlElement(
     'table',
     array('width' => '100%', 'class' => 'table table--orders', 'id' => 'options')
@@ -17,7 +17,7 @@ $tbl = new HtmlElement(
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
     if ('select_all' == $key) {
-        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i>' . $val . '</label>', true);
+        $th->appendElement('th')->appendElement('plaintext', array(), '<label class="checkbox"><input type="checkbox" onclick="selectAll( $(this) )" class="selectAll-js"><i class="input-helper"></i></label>', true);
     } else {
         $th->appendElement('th', array(), $val);
     }
@@ -49,10 +49,10 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 $statusAct = ($canEdit === true) ? 'toggleCollectionStatus(event,this,' . applicationConstants::YES . ')' : 'toggleCollectionStatus(event,this,' . applicationConstants::NO . ')';
                 $statusClass = ($canEdit === false) ? 'disabled' : '';
-                    $str = '<label class="statustab -txt-uppercase">
+                $str = '<label class="statustab -txt-uppercase">
                      <input ' . $active . ' type="checkbox" id="switch' . $row['scollection_id'] . '" value="' . $row['scollection_id'] . '" onclick="' . $statusAct . '" class="switch-labels"/>
                     <i class="switch-handles ' . $statusClass . '"></i></label>';
-                    $td->appendElement('plaintext', array(), $str, true);
+                $td->appendElement('plaintext', array(), $str, true);
                 break;
 
                 // $td->appendElement('plaintext', array(), $activeInactiveArr[$row[$key]], true);
@@ -76,11 +76,11 @@ foreach ($arr_listing as $sn => $row) {
         }
     }
 }
-if (count($arr_listing) == 0) {?>
-<div class="sectionhead nopadding">
-    <h4><?php echo Labels::getLabel('LBL_No_Collection_found', $adminLangId); ?></h4>
-    <a href="javascript:void(0);" class="btn-default btn-sm" onclick="getShopCollectionGeneralForm(<?php echo $shopId; ?>, 0)"><?php echo Labels::getLabel('LBL_Add_Collection', $adminLangId); ?></a>
-</div>
+if (count($arr_listing) == 0) { ?>
+    <div class="sectionhead nopadding">
+        <h4><?php echo Labels::getLabel('LBL_No_Collection_found', $adminLangId); ?></h4>
+        <a href="javascript:void(0);" class="btn-default btn-sm" onclick="getShopCollectionGeneralForm(<?php echo $shopId; ?>, 0)"><?php echo Labels::getLabel('LBL_Add_Collection', $adminLangId); ?></a>
+    </div>
 <?php } else { ?>
     <div class="sectionhead nopadding">
         <h4><?php echo Labels::getLabel('LBL_Shop_Collections', $adminLangId); ?></h4>
@@ -105,16 +105,16 @@ if (count($arr_listing) == 0) {?>
         ?>
     </div>
     <?php
-        $frm = new Form('frmCollectionsListing', array('id' => 'frmCollectionsListing'));
-        $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
-        $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadCollectionList ); return(false);');
-        $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Shops', 'toggleBulkCollectionStatuses'));
-        $frm->addHiddenField('', 'status', '');
-        $frm->addHiddenField('', 'collection_shopId', $shopId);
+    $frm = new Form('frmCollectionsListing', array('id' => 'frmCollectionsListing'));
+    $frm->setFormTagAttribute('class', 'web_form last_td_nowrap actionButtons-js');
+    $frm->setFormTagAttribute('onsubmit', 'formAction(this, reloadCollectionList ); return(false);');
+    $frm->setFormTagAttribute('action', UrlHelper::generateUrl('Shops', 'toggleBulkCollectionStatuses'));
+    $frm->addHiddenField('', 'status', '');
+    $frm->addHiddenField('', 'collection_shopId', $shopId);
 
-        echo $frm->getFormTag();
-        echo $frm->getFieldHtml('status');
-        echo $frm->getFieldHtml('collection_shopId');
-        echo $tbl->getHtml(); ?>
-        </form>
+    echo $frm->getFormTag();
+    echo $frm->getFieldHtml('status');
+    echo $frm->getFieldHtml('collection_shopId');
+    echo $tbl->getHtml(); ?>
+    </form>
 <?php } ?>
