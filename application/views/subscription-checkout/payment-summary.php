@@ -97,10 +97,12 @@
                         $gatewayCount = 0;
                         foreach ($paymentMethods as $key => $val) {
                             if (in_array($val['plugin_code'], $excludePaymentGatewaysArr[applicationConstants::CHECKOUT_SUBSCRIPTION])) {
+                                unset($paymentMethods[$key]);
                                 continue;
                             }
                             $gatewayCount++;
                         }
+                        
                         if ($cartSummary['orderPaymentGatewayCharges']) { ?>
                             <div class="payment-area" <?php echo ($cartSummary['orderPaymentGatewayCharges'] <= 0) ? 'is--disabled' : ''; ?>>
                                 <?php if ($cartSummary['orderPaymentGatewayCharges'] && 0 < $gatewayCount && 0 < count($paymentMethods)) { ?>
