@@ -1026,6 +1026,15 @@ trait CustomCatalogProducts
         $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId());
         $this->canAddCustomCatalogProduct(true);
         $preqId = FatUtility::int($preqId);
+        $productType = 0;
+        if (0 < $preqId) {
+            $productReqContent = ProductRequest::getAttributesById($preqId, 'preq_content');
+            if (!empty($productReqContent)) {
+                $productData = json_decode($productReqContent, true);
+                $productType = array_key_exists('product_type', $productData) ? $productData['product_type'] : 0;
+            }
+        }
+        $this->set('productType', $productType);
         $this->set('preqId', $preqId);
         $this->_template->addJs(array('js/tagify.min.js', 'js/tagify.polyfills.min.js', 'js/cropper.js', 'js/cropper-main.js'));
         $this->set('includeEditor', true);
@@ -1163,6 +1172,7 @@ trait CustomCatalogProducts
         $this->set('msg', Labels::getLabel('LBL_Product_Setup_Successful', $this->siteLangId));
         $this->set('preqId', $prodReq->getMainTableRecordId());
         $this->set('productType', $post['product_type']);
+        $this->set('productTypeDigital', Product::PRODUCT_TYPE_DIGITAL);
         $this->_template->render(false, false, 'json-success.php');
     }
 
@@ -1460,6 +1470,7 @@ trait CustomCatalogProducts
             $rs = $srch->getResultSet();
             $productTags = FatApp::getDb()->fetchAll($rs);
         }
+        
         $this->set('productOptions', $productOptions);
         $this->set('productTags', $productTags);
         $this->set('preqId', $preqId);

@@ -730,9 +730,13 @@
 
 
     hideShippingTab = function (product_type, PRODUCT_TYPE_DIGITAL) {
+        var tabElement = $(".tabs_004").parent();
+        var contentElement = $("#tabs_004");
+        tabElement.show();
+        contentElement.show();
         if (product_type == PRODUCT_TYPE_DIGITAL) {
-            $(".tabs_004").parent().remove();
-            $("#tabs_004").remove();
+            tabElement.hide();
+            contentElement.hide();
         }
     }
 

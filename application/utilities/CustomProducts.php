@@ -43,12 +43,14 @@ trait CustomProducts
         }
 
         $srch->addMultipleFields(
-            array(    'product_id',
-            'product_identifier',
-            'product_active',
-            'product_approved',
-            'product_added_on',
-            'product_name')
+            array(
+                'product_id',
+                'product_identifier',
+                'product_active',
+                'product_approved',
+                'product_added_on',
+                'product_name'
+            )
         );
         $srch->addOrder('product_added_on', 'DESC');
         $srch->setPageNumber($page);
@@ -162,11 +164,11 @@ trait CustomProducts
         unset($post['product_id']);
         unset($post['lang_id']);
         $data_to_update = array(
-        'productlang_product_id' => $product_id,
-        'productlang_lang_id' => $lang_id,
-        'product_name' => $post['product_name'],
-        'product_description' => $post['product_description'],
-        'product_youtube_video' => $post['product_youtube_video'],
+            'productlang_product_id' => $product_id,
+            'productlang_lang_id' => $lang_id,
+            'product_name' => $post['product_name'],
+            'product_description' => $post['product_description'],
+            'product_youtube_video' => $post['product_youtube_video'],
         );
 
         $prodObj = new Product($product_id);
@@ -514,11 +516,10 @@ trait CustomProducts
             FatUtility::dieJsonError(Labels::getLabel("MSG_Please_select_a_file", $this->siteLangId));
         }
         $fileHandlerObj = new AttachedFile();
-        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)
-        ) {
+        if (!$res = $fileHandlerObj->saveImage($_FILES['cropped_image']['tmp_name'], AttachedFile::FILETYPE_PRODUCT_IMAGE, $product_id, $option_id, $_FILES['cropped_image']['name'], -1, $unique_record = false, $lang_id)) {
             FatUtility::dieJsonError($fileHandlerObj->getError());
         }
-        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?', 'vals' => array($product_id)));
 
         FatUtility::dieJsonSuccess(Labels::getLabel("MSG_Image_Uploaded_Successfully", $this->siteLangId));
     }
@@ -528,8 +529,8 @@ trait CustomProducts
         if (!User::canAddCustomProduct()) {
             FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
         }
-        $product_id = FatUtility :: int($product_id);
-        $image_id = FatUtility :: int($image_id);
+        $product_id = FatUtility::int($product_id);
+        $image_id = FatUtility::int($image_id);
         if (!$image_id || !$product_id) {
             Message::addErrorMessage(Labels::getLabel("LBL_Invalid_Request!", $this->siteLangId));
             FatUtility::dieJsonError(Message::getHtml());
@@ -546,7 +547,7 @@ trait CustomProducts
         if (!$productObj->deleteProductImage($product_id, $image_id)) {
             FatUtility::dieJsonError($productObj->getError());
         }
-        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?','vals' => array($product_id)));
+        FatApp::getDb()->updateFromArray('tbl_products', array('product_updated_on' => date('Y-m-d H:i:s')), array('smt' => 'product_id = ?', 'vals' => array($product_id)));
 
         FatUtility::dieJsonSuccess(Labels::getLabel('LBL_Image_removed_successfully.', $this->siteLangId));
     }
@@ -559,7 +560,7 @@ trait CustomProducts
 
         $productObj = new Product();
         $post = FatApp::getPostedData();
-        $product_id = FatUtility :: int($post['product_id']);
+        $product_id = FatUtility::int($post['product_id']);
         /* Validate product belongs to current logged seller[ */
         $productRow = Product::getAttributesById($product_id, array('product_seller_id'));
         if ($productRow['product_seller_id'] != $this->userParentId) {
@@ -693,8 +694,8 @@ trait CustomProducts
         $json = array();
         foreach ($countries as $key => $country) {
             $json[] = array(
-            'id' => $country['country_id'],
-            'name' => strip_tags(html_entity_decode(isset($country['country_name']) ? $country['country_name'] : $country['country_code'], ENT_QUOTES, 'UTF-8')),
+                'id' => $country['country_id'],
+                'name' => strip_tags(html_entity_decode(isset($country['country_name']) ? $country['country_name'] : $country['country_code'], ENT_QUOTES, 'UTF-8')),
 
             );
         }
@@ -725,8 +726,8 @@ trait CustomProducts
         $json = array();
         foreach ($shippingMethods as $key => $sMethod) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($sMethod['shippingapi_name'], ENT_QUOTES, 'UTF-8')),
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($sMethod['shippingapi_name'], ENT_QUOTES, 'UTF-8')),
 
             );
         }
@@ -757,8 +758,8 @@ trait CustomProducts
         $json = array();
         foreach ($shippingCompanies as $key => $sCompany) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($sCompany['scompany_name'], ENT_QUOTES, 'UTF-8')),
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($sCompany['scompany_name'], ENT_QUOTES, 'UTF-8')),
 
             );
         }
@@ -788,9 +789,9 @@ trait CustomProducts
         $json = array();
         foreach ($shipDurations as $key => $shipDuration) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($shipDuration['sduration_name'], ENT_QUOTES, 'UTF-8')),
-            'duraion' => ShippingDurations::getShippingDurationTitle($shipDuration, $this->siteLangId),
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($shipDuration['sduration_name'], ENT_QUOTES, 'UTF-8')),
+                'duraion' => ShippingDurations::getShippingDurationTitle($shipDuration, $this->siteLangId),
 
             );
         }
@@ -926,9 +927,9 @@ trait CustomProducts
         $json = array();
         foreach ($options as $key => $option) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($option['tag_name'], ENT_QUOTES, 'UTF-8')),
-            'tag_identifier' => strip_tags(html_entity_decode($option['tag_identifier'], ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($option['tag_name'], ENT_QUOTES, 'UTF-8')),
+                'tag_identifier' => strip_tags(html_entity_decode($option['tag_identifier'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));
@@ -996,9 +997,9 @@ trait CustomProducts
         unset($post['tag_id']);
         unset($post['lang_id']);
         $data = array(
-        'taglang_lang_id' => $lang_id,
-        'taglang_tag_id' => $tag_id,
-        'tag_name' => $post['tag_name'],
+            'taglang_lang_id' => $lang_id,
+            'taglang_tag_id' => $tag_id,
+            'tag_name' => $post['tag_name'],
         );
 
         $tagObj = new Tag($tag_id);
@@ -1151,7 +1152,7 @@ trait CustomProducts
         $userId = FatUtility::int($userId);
 
 
-        if (!$db->deleteRecords(ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES, array('smt' => ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX . 'prod_id = ? and   ' . ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX . 'user_id = ?', 'vals' => array($product_id, $userId) ))) {
+        if (!$db->deleteRecords(ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES, array('smt' => ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX . 'prod_id = ? and   ' . ShippingApi::DB_TBL_PRODUCT_SHIPPING_RATES_PREFIX . 'user_id = ?', 'vals' => array($product_id, $userId)))) {
             $this->error = $db->getError();
             return false;
         }
@@ -1164,16 +1165,16 @@ trait CustomProducts
         $this->removeProductShippingRates($product_id, $this->userParentId);
 
         if (!empty($data) && count($data) > 0) {
-            foreach ($data as $key => $val):
+            foreach ($data as $key => $val) :
                 if ((isset($val["country_id"]) && $val["country_id"] >= 0 || $val["country_id"] == -1) && $val["company_id"] > 0 && $val["processing_time_id"] > 0) {
                     $prodShipData = array(
-                    'pship_prod_id' => $product_id,
-                    'pship_user_id' => $this->userParentId,
-                    'pship_country' => (isset($val["country_id"]) && FatUtility::int($val["country_id"])) ? FatUtility::int($val["country_id"]) : 0,
-                    'pship_company' => (isset($val["company_id"]) && FatUtility::int($val["company_id"])) ? FatUtility::int($val["company_id"]) : 0,
-                    'pship_duration' => (isset($val["processing_time_id"]) && FatUtility::int($val["processing_time_id"])) ? FatUtility::int($val["processing_time_id"]) : 0,
-                    'pship_charges' => (1 > FatUtility::float($val["cost"]) ? 0 : FatUtility::float($val["cost"])),
-                    'pship_additional_charges' => FatUtility::float($val["additional_cost"]),
+                        'pship_prod_id' => $product_id,
+                        'pship_user_id' => $this->userParentId,
+                        'pship_country' => (isset($val["country_id"]) && FatUtility::int($val["country_id"])) ? FatUtility::int($val["country_id"]) : 0,
+                        'pship_company' => (isset($val["company_id"]) && FatUtility::int($val["company_id"])) ? FatUtility::int($val["company_id"]) : 0,
+                        'pship_duration' => (isset($val["processing_time_id"]) && FatUtility::int($val["processing_time_id"])) ? FatUtility::int($val["processing_time_id"]) : 0,
+                        'pship_charges' => (1 > FatUtility::float($val["cost"]) ? 0 : FatUtility::float($val["cost"])),
+                        'pship_additional_charges' => FatUtility::float($val["additional_cost"]),
                     );
                     if (isset($val["pship_id"])) {
                         $prodShipData['pship_id'] = FatUtility::int($val["pship_id"]);
@@ -1251,7 +1252,7 @@ trait CustomProducts
 
         $frm = new Form('frmLinks', array('id' => 'frmLinks'));
         $frm->addTextBox(Labels::getLabel('LBL_Product_Name', $this->siteLangId), 'product_name');
-        
+
         $fld1 = $frm->addTextBox(Labels::getLabel('LBL_Category', $this->siteLangId), 'choose_links');
         $fld2 = $frm->addHtml('', 'addNewOptionLink', '</a><div id="product_links_list" class="col-xs-10" ></div>');
         $fld1->attachField($fld2);
@@ -1304,7 +1305,7 @@ trait CustomProducts
         $frm = new Form('imageFrm', array('id' => 'imageFrm'));
         $frm->addSelectBox(Labels::getLabel('LBL_Image_File_Type', $this->siteLangId), 'option_id', $imgTypesArr, 0, array('class' => 'option'), '');
         $languagesAssocArr = Language::getAllNames();
-        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array( 0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId) ) + $languagesAssocArr, '', array('class' => 'language'), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->siteLangId), 'lang_id', array(0 => Labels::getLabel('LBL_All_Languages', $this->siteLangId)) + $languagesAssocArr, '', array('class' => 'language'), '');
         $fldImg = $frm->addFileUpload(Labels::getLabel('LBL_Photo(s)', $this->siteLangId), 'prod_image', array('id' => 'prod_image'));
         $fldImg->htmlBeforeField = '<div class="filefield">';
         $fldImg->htmlAfterField = '</div><span class="form-text text-muted">' . Labels::getLabel('LBL_Please_keep_image_dimensions_greater_than_500_x_500', $this->siteLangId) . '</span>';
@@ -1316,7 +1317,7 @@ trait CustomProducts
 
     private function getSeparateImageOptions($product_id, $lang_id)
     {
-        $imgTypesArr = array( 0 => Labels::getLabel('LBL_For_All_Options', $this->siteLangId) );
+        $imgTypesArr = array(0 => Labels::getLabel('LBL_For_All_Options', $this->siteLangId));
         $productOptions = Product::getProductOptions($product_id, $lang_id, true, 1);
 
         foreach ($productOptions as $val) {
@@ -1345,8 +1346,7 @@ trait CustomProducts
     {
         $langId = FatUtility::int($langId);
         $frm = new Form('frmCustomProductLang');
-        $frm->addHiddenField('', 'product_id')->requirements()->setRequired();
-        ;
+        $frm->addHiddenField('', 'product_id')->requirements()->setRequired();;
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'lang_id', Language::getAllNames(), $langId, array(), '');
         $frm->addRequiredField(Labels::getLabel('LBL_Product_Name', $langId), 'product_name');
         /* $frm->addTextArea( Labels::getLabel('LBL_Short_Description', $langId),'product_short_description');         */
@@ -1421,10 +1421,10 @@ trait CustomProducts
         }
 
         $displayInventoryTab = false;
-        if($prodId == 0){
+        if ($prodId == 0) {
             $displayInventoryTab = true;
         }
-        if($prodId > 0){
+        if ($prodId > 0) {
             $inventories = SellerProduct::getCatelogFromProductId($prodId);
             if (count($inventories) == 0) {
                 $available = Product::availableForAddToStore($prodId, $this->userParentId);
@@ -1816,7 +1816,7 @@ trait CustomProducts
         $json = array();
         foreach ($prodSpecGroup as $key => $group) {
             $json[] = array(
-            'name' => strip_tags(html_entity_decode($group['prodspec_group'], ENT_QUOTES, 'UTF-8'))
+                'name' => strip_tags(html_entity_decode($group['prodspec_group'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));

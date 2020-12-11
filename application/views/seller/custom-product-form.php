@@ -82,13 +82,12 @@ var  productCatId  =  <?php echo $prodCatId; ?>; */
     var ratioTypeRectangular = <?php echo AttachedFile::RATIO_TYPE_RECTANGULAR; ?>;
     $(document).ready(function() {
         <?php /* if ($prodId) { ?>
-    customProductForm(<?php echo $prodId;?>,<?php echo $prodCatId;?>);
-    <?php } else {?>
-    customProductForm();
-    <?php } */ ?>
+            customProductForm(<?php echo $prodId;?>,<?php echo $prodCatId;?>);
+            <?php } else {?>
+            customProductForm();
+            <?php } */ ?>
 
         customProductForm('<?php echo $productId; ?>');
         hideShippingTab('<?php echo $productType; ?>', '<?php echo Product::PRODUCT_TYPE_DIGITAL; ?>');
-
     });
 </script>
