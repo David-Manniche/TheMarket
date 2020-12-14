@@ -502,6 +502,7 @@ Bugs:
     => 046306 - Seller >> request >> shipping tab should be removed if we request for digital products
     => 046397	In case of image present with 0 id and 0 record id then default image displying wrong
     => 046393 - admin> seo> url rewriting> language column is coming which is having no use
+    => 046230 - when order is on pickup then on order detail page it's listing state and country code instead of name
     
 Enhancements:
     => Tax module upgrade
