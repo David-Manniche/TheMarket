@@ -66,7 +66,7 @@ if (count($arr_listing) == 0) {
 }
 echo $tbl->getHtml();
 /* echo FatUtility::createHiddenFormFromData ( $postedData, array (
-		'name' => 'frmUserSearchPaging','id'=>'pretend_search_form'
+        'name' => 'frmUserSearchPaging','id'=>'pretend_search_form'
 ) ); */
 echo isset($pagination) ? html_entity_decode($pagination) : '';
 ?>

@@ -774,6 +774,10 @@ function defaultSetUpLogin(frm, v) {
     });
 
     $.systemMessage = function(data, cls, autoClose) {
+		if ("" == data) {
+			return;
+		}
+		
         if (typeof autoClose == 'undefined' || autoClose == 'undefined') {
             autoClose = false;
         } else {

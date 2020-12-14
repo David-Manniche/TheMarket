@@ -403,12 +403,12 @@ class ProductsController extends MyAppController
         $selProdReviewObj->joinSellerProducts($this->siteLangId);
         $selProdReviewObj->joinSelProdRating();
         $selProdReviewObj->joinUser();
-        $selProdReviewObj->joinSelProdReviewHelpful();
+        // $selProdReviewObj->joinSelProdReviewHelpful();
         $selProdReviewObj->addCondition('sprating_rating_type', '=', SelProdRating::TYPE_PRODUCT);
         $selProdReviewObj->doNotCalculateRecords();
         $selProdReviewObj->doNotLimitRecords();
         $selProdReviewObj->addGroupBy('spr.spreview_product_id');
-        $selProdReviewObj->addGroupBy('sprh_spreview_id');
+        // $selProdReviewObj->addGroupBy('sprh_spreview_id');
         $selProdReviewObj->addCondition('spr.spreview_status', '=', SelProdReview::STATUS_APPROVED);
         $selProdReviewObj->addMultipleFields(array('spr.spreview_selprod_id', 'spr.spreview_product_id', "ROUND(AVG(sprating_rating),2) as prod_rating", "count(spreview_id) as totReviews"));
         $selProdRviewSubQuery = $selProdReviewObj->getQuery();

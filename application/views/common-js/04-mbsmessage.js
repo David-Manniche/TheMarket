@@ -1,5 +1,8 @@
 (function($){
 	$.mbsmessage=function(data, autoclose, cls){
+		if ("" == data) {
+			return;
+		}
 		$.mbsmessage.loading();
 		$.mbsmessage.fillMbsmessage(data, cls);
 		if(autoclose) $.mbsmessage.startTimer();

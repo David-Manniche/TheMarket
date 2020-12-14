@@ -242,8 +242,8 @@ if (!empty($orderDetail["thirdPartyorderInfo"]) && isset($orderDetail["thirdPart
                                                 $address1 = !empty($orderDetail['addr_address1']) ? $orderDetail['addr_address1'] : '';
                                                 $address2 = !empty($orderDetail['addr_address2']) ? ', ' . $orderDetail['addr_address2'] : '';
                                                 $city = !empty($orderDetail['addr_city']) ? '<br>' . $orderDetail['addr_city'] : '';
-                                                $state = !empty($orderDetail['state_code']) ? ', ' . $orderDetail['state_code'] : '';
-                                                $country = !empty($orderDetail['country_code']) ? ' ' . $orderDetail['country_code'] : '';
+                                                $state = !empty($orderDetail['state_name']) ? ', ' . $orderDetail['state_name'] : '';
+                                                $country = !empty($orderDetail['country_name']) ? ' ' . $orderDetail['country_name'] : '';
                                                 $zip = !empty($orderDetail['addr_zip']) ? '(' . $orderDetail['addr_zip'] . ')' : '';
 
                                                 echo $address1 . $address2 . $city . $state . $country . $zip;
