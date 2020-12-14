@@ -10,6 +10,11 @@ $arr_flds = array(
 if (!$canEdit) {
     unset($arr_flds['select_all'], $arr_flds['action']);
 }
+
+if (1 > FatApp::getConfig('CONF_LANG_SPECIFIC_URL', FatUtility::VAR_INT, 0)) {
+    unset($arr_flds['language_code']);
+}
+
 $tbl = new HtmlElement('table', array('width' => '100%', 'class' => 'table table-responsive'));
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arr_flds as $key => $val) {
