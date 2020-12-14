@@ -99,6 +99,21 @@ class OrderSubscriptionSearch extends SearchBase
         }
         $this->joinTable(SellerPackagePlans::DB_TBL, 'LEFT OUTER JOIN', 'spp.' . SellerPackagePlans::DB_TBL_PREFIX . 'id = oss.' . OrderSubscription::DB_TBL_PREFIX . 'plan_id ', 'spp');
     }
+    
+    public function joinPackage($langId = 0)
+    {
+        $this->joinTable(SellerPackages::DB_TBL, 'LEFT OUTER JOIN', 'spp.spplan_spackage_id = sp.spackage_id', 'sp');
+        if ($langId > 0) {
+            $this->joinTable(
+                    SellerPackages::DB_TBL_LANG,
+                    'LEFT OUTER JOIN',
+                    'sp_l.' . SellerPackages::DB_TBL_LANG_PREFIX . 'spackage_id = sp.' . SellerPackages::DB_TBL_PREFIX . 'id
+			AND sp_l.' . SellerPackages::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
+                    'sp_l'
+            );
+        }
+    }
+
     public function addStatusCondition($op_status)
     {
         if (is_array($op_status)) {

@@ -96,7 +96,7 @@ class SellerPackages extends MyAppModel
     }
     public static function getAllowedLimit($userId, $langId, $key = '')
     {
-        $columns = array("spackage_products_allowed", "spackage_inventory_allowed", "spackage_images_per_product");
+        $columns = array("ossubs_products_allowed", "ossubs_inventory_allowed", "ossubs_images_allowed");
         $currentActivePlan = OrderSubscription:: getUserCurrentActivePlanDetails($langId, $userId, $columns);
         
         if (!empty($key)) {

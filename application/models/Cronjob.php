@@ -564,13 +564,17 @@ class Cronjob extends FatModel
         $srch = new OrderSubscriptionSearch();
         $srch->joinOrders();
         $srch->joinOrderUser();
+        $srch->joinSubscription();
+        $srch->joinPackage();        
         $srch->addCondition('order_payment_status', '=', ORDERS::ORDER_PAYMENT_PAID);
         $srch->addCondition('ossubs_status_id', 'in', $statusArr);
         $srch->addCondition('ossubs_till_date', '<=', $endDate);
         $srch->addCondition('ossubs_till_date', '!=', '0000-00-00');
         $srch->addCondition('ossubs_type', '=', SellerPackages::PAID_TYPE);
         $srch->addCondition('user_autorenew_subscription', '=', 1);
-        $srch->addMultipleFields(array('order_user_id', 'order_language_id', 'order_language_code', 'order_currency_id', 'order_id', 'ossubs_id', 'ossubs_type', 'ossubs_price', 'ossubs_images_allowed', 'ossubs_products_allowed', 'ossubs_plan_id', 'ossubs_interval', 'ossubs_frequency', 'ossubs_commission'));
+        //$srch->addMultipleFields(array('order_user_id', 'order_language_id', 'order_language_code', 'order_currency_id', 'order_id', 'ossubs_id', 'ossubs_type', 'ossubs_price', 'ossubs_images_allowed', 'ossubs_products_allowed', 'ossubs_plan_id', 'ossubs_interval', 'ossubs_frequency', 'ossubs_commission'));*/
+        $srch->addMultipleFields(array('order_user_id', 'order_language_id', 'order_language_code', 'order_currency_id', 'order_id', 'ossubs_id', 'spackage_type', 'spplan_price', 'spackage_images_per_product', 'spackage_products_allowed','spackage_inventory_allowed', 'ossubs_plan_id', 'spplan_interval', 'spplan_frequency', 'spackage_commission_rate'));
+        
         /* $srch->addGroupBy('order_user_id');  */
         $srch->addOrder('ossubs_id', 'desc');
 
@@ -584,7 +588,7 @@ class Cronjob extends FatModel
             $userId = $activeSub['order_user_id'];
             $userBalance = User::getUserBalance($userId);
 
-            if ($userBalance < $activeSub['ossubs_price']) {
+            if ($userBalance < $activeSub['spplan_price']) {
                 $emailObj = new EmailHandler();
                 $emailObj->sendLowBalanceSubscriptionNotification($activeSub['order_language_id'], $userId, $activeSub['ossubs_price']);
                 continue;
@@ -652,8 +656,8 @@ class Cronjob extends FatModel
 
 
 
-            $orderData['order_net_amount'] = $activeSub['ossubs_price'];
-            $orderData['order_wallet_amount_charge'] = $activeSub['ossubs_price'];
+            $orderData['order_net_amount'] = $activeSub['spplan_price'];
+            $orderData['order_wallet_amount_charge'] = $activeSub['spplan_price'];
 
             // Discussin Required
             $orderData['order_cart_data'] = '';
@@ -682,14 +686,15 @@ class Cronjob extends FatModel
             $orderData['subscriptions'][SubscriptionCart::SUBSCRIPTION_CART_KEY_PREFIX_PRODUCT . $activeSub['ossubs_plan_id']] = array(
 
 
-            OrderSubscription::DB_TBL_PREFIX . 'price' => $activeSub['ossubs_price'],
-            OrderSubscription::DB_TBL_PREFIX . 'images_allowed' => $activeSub['ossubs_images_allowed'],
-            OrderSubscription::DB_TBL_PREFIX . 'products_allowed' => $activeSub['ossubs_products_allowed'],
+            OrderSubscription::DB_TBL_PREFIX . 'price' => $activeSub['spplan_price'],
+            OrderSubscription::DB_TBL_PREFIX . 'images_allowed' => $activeSub['spackage_images_per_product'],
+            OrderSubscription::DB_TBL_PREFIX . 'inventory_allowed' => $activeSub['spackage_inventory_allowed'],
+            OrderSubscription::DB_TBL_PREFIX . 'products_allowed' => $activeSub['spackage_products_allowed'],
             OrderSubscription::DB_TBL_PREFIX . 'plan_id' => $activeSub['ossubs_plan_id'],
-            OrderSubscription::DB_TBL_PREFIX . 'type' => $activeSub['ossubs_type'],
-            OrderSubscription::DB_TBL_PREFIX . 'interval' => $activeSub['ossubs_interval'],
-            OrderSubscription::DB_TBL_PREFIX . 'frequency' => $activeSub['ossubs_frequency'],
-            OrderSubscription::DB_TBL_PREFIX . 'commission' => $activeSub['ossubs_commission'],
+            OrderSubscription::DB_TBL_PREFIX . 'type' => $activeSub['spackage_type'],
+            OrderSubscription::DB_TBL_PREFIX . 'interval' => $activeSub['spplan_interval'],
+            OrderSubscription::DB_TBL_PREFIX . 'frequency' => $activeSub['spplan_frequency'],
+            OrderSubscription::DB_TBL_PREFIX . 'commission' => $activeSub['spackage_commission_rate'],
             OrderSubscription::DB_TBL_PREFIX . 'status_id' => FatApp::getConfig("CONF_DEFAULT_ORDER_STATUS"),
             'subscriptionsLangData' => $subscriptionLangData,
             );
@@ -721,7 +726,7 @@ class Cronjob extends FatModel
             if ($orderObj->addUpdateOrder($orderData, $activeSub['order_language_id'])) {
                 $order_id = $orderObj->getOrderId();
                 $orderPaymentObj = new OrderPayment($order_id);
-                $orderPaymentObj->chargeUserWallet($activeSub['ossubs_price']);
+                $orderPaymentObj->chargeUserWallet($activeSub['spplan_price']);
             }
         }
     }

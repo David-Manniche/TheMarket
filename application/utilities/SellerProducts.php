@@ -112,7 +112,7 @@ trait SellerProducts
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
-        if (0 == $selprod_id && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'spackage_inventory_allowed')) {
+        if (0 == $selprod_id && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'ossubs_inventory_allowed')) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
@@ -178,7 +178,7 @@ trait SellerProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if (0 == $selprod_id && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'spackage_inventory_allowed')) {
+        if (0 == $selprod_id && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'ossubs_inventory_allowed')) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $this->siteLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
@@ -2253,7 +2253,7 @@ trait SellerProducts
             Message::addErrorMessage(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'spackage_inventory_allowed')) {
+        if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'ossubs_inventory_allowed')) {
             Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit", $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
