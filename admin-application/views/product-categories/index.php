@@ -14,7 +14,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-9">
-                        <section class="section  section-height" id="listing">
+                        <section class="section section-height" id="listing">
                         </section>
                     </div>
                     <div class="col-md-3">
