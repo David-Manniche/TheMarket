@@ -2326,6 +2326,8 @@ class SellerController extends SellerBaseController
             'shoplang_shop_id' => $shop_id,
             'shoplang_lang_id' => $lang_id,
             'shop_name' => $post['shop_name'],
+            'shop_address_line_1' => $post['shop_address_line_1'],
+            'shop_address_line_2' => $post['shop_address_line_2'],
             'shop_city' => $post['shop_city'],
             'shop_contact_person' => $post['shop_contact_person'],
             'shop_description' => $post['shop_description'],
@@ -3638,6 +3640,8 @@ class SellerController extends SellerBaseController
         $frm->addHiddenField('', 'shop_id', $shop_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $lang_id), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addRequiredField(Labels::getLabel('LbL_Shop_Name', $lang_id), 'shop_name');
+        $frm->addRequiredField(Labels::getLabel('LBL_SHOP_ADDRESS_LINE_1', $lang_id), 'shop_address_line_1');
+        $frm->addTextBox(Labels::getLabel('LBL_SHOP_ADDRESS_LINE_2', $lang_id), 'shop_address_line_2');
         $frm->addTextBox(Labels::getLabel('Lbl_Shop_City', $lang_id), 'shop_city');
         $frm->addTextBox(Labels::getLabel('Lbl_Contact_Person', $lang_id), 'shop_contact_person');
         $frm->addTextarea(Labels::getLabel('Lbl_Description', $lang_id), 'shop_description');
