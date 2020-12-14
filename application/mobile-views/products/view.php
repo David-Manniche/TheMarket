@@ -79,6 +79,7 @@ foreach ($shippingRates as $sn => $row) {
 if (!empty($product)) {
     $product['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
     $product['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
+    $product['inclusiveTax'] = FatUtility::int(FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId());
     if (!empty($product['selprod_return_age'])) {
         $lbl = Labels::getLabel('LBL_{DAYS}_DAYS_RETURN_BACK_POLICY', $siteLangId);
         $returnAge = !empty($product['selprod_return_age']) ? $product['selprod_return_age'] : $product['shop_return_age'];
