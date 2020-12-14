@@ -507,6 +507,7 @@ Bugs:
     => 046230 - when order is on pickup then on order detail page it's listing state and country code instead of name
     => 046303 - on opening admin login screen- blank message is there
     => 046114 - if admin edit any subscription package then updates should not be applicable for already purchased packages.
+    => 046452 - authorize Aim payment method form submitting without form validation on order
 
 Enhancements:
     => Tax module upgrade
