@@ -139,6 +139,10 @@ $(document).ready(function () {
     });
 
     $.systemMessage = function(data, cls, autoClose = true) {
+		if ("" == data) {
+			return;
+		}
+		
         if (typeof autoClose == 'undefined' || autoClose == 'undefined') {
             autoClose = false;
         }
