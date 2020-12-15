@@ -40,13 +40,14 @@ class ShopsController extends MyAppController
 
         /* SubQuery, Shop have products[ */
         $prodShopSrch = new ProductSearch($this->siteLangId);
+        $prodShopSrch->addMultipleFields(array('distinct(shop_id)'));
         $prodShopSrch->setDefinedCriteria();
         $prodShopSrch->joinProductToCategory();
         $prodShopSrch->doNotCalculateRecords();
         $prodShopSrch->doNotLimitRecords();
         $prodShopSrch->joinSellerSubscription($this->siteLangId, true);
         $prodShopSrch->addSubscriptionValidCondition();
-        $prodShopSrch->addMultipleFields(array('distinct(shop_id)'));
+        
         //$rs = $prodShopSrch->getResultSet();
         /* $productRows = FatApp::getDb()->fetchAll($rs);
         $shopMainRootArr = array_unique(array_column($productRows,'shop_id')); */

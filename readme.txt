@@ -521,6 +521,7 @@ Enhancements:
     => Advanced search UI and Auto Suggestions.
     => Category Listing Page UI 
     => Notification Emails on/off conf setting. 
+    => Geo location updates - listed not available products.
     ------------TV-9.2.1.20200925------------------------
     => Enhance discount module added brand and shop discounts    
     ---------------TV-9.2.3.20201121--------------------

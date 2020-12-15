@@ -14,9 +14,9 @@
         </a>
     </div>
     <div class="products__body">
-        <?php if (true == $displayProductNotAvailableLable && null == $product['availableInLocation']) { ?>
+        <?php if (true == $displayProductNotAvailableLable && array_key_exists('availableInLocation', $product) && null == $product['availableInLocation']) { ?>
             <div class="not-available"><svg class="svg">
-            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info">
                     </use>
                 </svg> <?php echo Labels::getLabel('LBL_NOT_AVAILABLE', $siteLangId); ?></div>
         <?php } ?>
