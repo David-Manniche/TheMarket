@@ -555,6 +555,7 @@ $("document").ready(function () {
     }
 
     sendPayment = function (frm, dv = '') {
+        if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action');
         fcom.ajax(action, data, function (t) {

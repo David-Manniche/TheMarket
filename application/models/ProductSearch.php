@@ -1171,6 +1171,8 @@ class ProductSearch extends SearchBase
                     if (array_key_exists('ykGeoLat', $this->geoAddress) && $this->geoAddress['ykGeoLat'] != '' && array_key_exists('ykGeoLng', $this->geoAddress) && $this->geoAddress['ykGeoLng'] != '') {
                         $distanceInMiles = FatApp::getConfig('CONF_RADIUS_DISTANCE_IN_MILES', FatUtility::VAR_INT, 10);
                         $this->addFld('if(shop.distance <= ' . $distanceInMiles .  ', 1, null) as availableInLocation');
+                    } else {
+                        $this->addFld('null as availableInLocation');
                     }
                     break;
             }

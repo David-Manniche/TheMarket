@@ -64,6 +64,8 @@ if ($canonicalUrl == '') {
     var currencySymbolLeft = "' . $currencySymbolLeft . '";
     var currencySymbolRight = "' . $currencySymbolRight . '";
     var isUserDashboard = "' . $isUserDashboard . '";
+    var className = "' . FatApp::getController() . '";
+    var actionName = "' . FatApp::getAction() . '";
     if( CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES <= 0  ){
         CONF_TIME_AUTO_CLOSE_SYSTEM_MESSAGES = 3;
     }';
