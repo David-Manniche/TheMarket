@@ -14,7 +14,7 @@ class YkAppTest extends TestCase
     private $returnType = self::TYPE_BOOL;
     private $result = '';
     private $error = '';
-    public $reflectionClassInstance = '';
+    protected $classObj;
 
     public $langId = CONF_LANG_ID;
 
@@ -31,7 +31,6 @@ class YkAppTest extends TestCase
     {
         //Target our class
         $reflectionClass = new ReflectionClass($class);
-
         //Get the parameters of a constructor
         $reflectionClassParam = $reflectionClass->getConstructor()->getParameters();
         $reflectMethod = $reflectionClass->getMethod($method);
@@ -40,27 +39,28 @@ class YkAppTest extends TestCase
             $invalidParam = $this->validateParamType($reflectionClassParam, $constructorArgs);
 
             if (true === $invalidParam) {
+                $this->error = $this->getError();
                 return false;
             }
         }
 
         //Get the parameters of a method
         $reflectionParam = $reflectMethod->getParameters();
-
+        
         $invalidParam = $this->validateParamType($reflectionParam, $args);
 
         if (true === $invalidParam) {
-            return false;
-        }
-
-
-
-        if (method_exists($this, 'init') && false === $this->init()) {
+            $this->error = $this->getError();
             return false;
         }
 
         if (!$reflectMethod->isStatic()) {
             $reflectionClass = $reflectionClass->newInstanceArgs($constructorArgs);
+            $this->classObj = $reflectionClass;
+            if (method_exists($this, 'init') && false === $this->init()) {
+                $this->error = $reflectionClass->getError();
+                return false;
+            }
         }
 
         $reflectionMethod = new ReflectionMethod($class, $method);
