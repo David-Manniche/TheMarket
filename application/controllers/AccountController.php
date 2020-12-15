@@ -522,8 +522,10 @@ class AccountController extends LoggedUserController
 
             $pmRs = $pmSrch->getResultSet();
             $paymentMethods = FatApp::getDb()->fetchAll($pmRs);
+            $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
             /* ] */
             $this->set('paymentMethods', $paymentMethods);
+            $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
             $this->set('order_id', $order_id);
             $this->set('orderType', Orders::ORDER_WALLET_RECHARGE);
             $this->_template->render();
