@@ -523,6 +523,7 @@ Enhancements:
     => Enhance discount module added brand and shop discounts    
     ---------------TV-9.2.3.20201121--------------------
     => Labels management seperated in files for better Performance.
+    => 046487 - admin> seo> meta tags> blog post> on editing there is blank popup with save button
 
 Notes:
     

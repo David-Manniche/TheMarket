@@ -35,7 +35,7 @@ foreach ($arr_listing as $sn => $row) {
                         'a',
                         array(
                             'href' => 'javascript:void(0)', 'class' => 'btn btn-clean btn-sm btn-icon',
-                            'title' => 'Edit', "onclick" => "editMetaTagForm($metaId,'$metaType',$recordId)"
+                            'title' => 'Edit', "onclick" => "editMetaTagLangForm($metaId," . FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1) . ",'$metaType',$recordId)"
                         ),
                         '<i class="far fa-edit icon"></i>',
                         true
