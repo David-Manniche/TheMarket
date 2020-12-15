@@ -3500,7 +3500,7 @@ class Importexport extends ImportexportCommon
                 $prodData = Product::getAttributesById($productId, array('product_min_selling_price'));
 
                 if (array_key_exists('selprod_price', $selProdGenArr)) {
-                    if ($selProdGenArr['selprod_price'] < $prodData['product_min_selling_price']) {
+                    if (is_array($prodData) && array_key_exists('product_min_selling_price', $prodData) && $selProdGenArr['selprod_price'] < $prodData['product_min_selling_price']) {
                         $selProdGenArr['selprod_price'] = $prodData['product_min_selling_price'];
                     }
 

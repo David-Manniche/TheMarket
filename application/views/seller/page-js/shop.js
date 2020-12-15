@@ -43,7 +43,6 @@ $(document).on("change", ".state", function() {
     $(this).removeAttr("disabled");
 });
 
-
 (function() {
     var runningAjaxReq = false;
     var dv = '#shopFormBlock';
@@ -150,26 +149,6 @@ $(document).on("change", ".state", function() {
         fcom.ajax(fcom.makeUrl('Seller', 'shopLangForm', [shopId, langId, autoFillLangData]), '', function(t) {
             $(dv).html(t);
             fcom.setEditorLayout(langId);
-            var frm = $(dv + ' form')[0];
-            var validator = $(frm).validation({
-                errordisplay: 3
-            });
-            $(frm).submit(function(e) {
-                e.preventDefault();
-                if (validator.validate() == false) {
-                    return;
-                }
-                var data = fcom.frmData(frm);
-                fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupShopLang'), data, function(t) {
-                    runningAjaxReq = false;
-                    $.mbsmessage.close();
-                    if (t.langId > 0 && t.shopId > 0) {
-                        shopLangForm(t.shopId, t.langId);
-                        return;
-                    }
-                    returnAddressForm();
-                });
-            });
         });
     };
 
@@ -184,7 +163,7 @@ $(document).on("change", ".state", function() {
                 shopLangForm(t.shopId, t.langId);
                 return;
             }
-            shopForm();
+            returnAddressForm();
         });
     };
 

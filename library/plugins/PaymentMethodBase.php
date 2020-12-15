@@ -41,6 +41,8 @@ class PaymentMethodBase extends PluginBase
             'IFNULL(state_name, state_identifier) as state_name',
             'IFNULL(shop_name, shop_identifier) as shop_name',
             'shop_description',
+            'shop_address_line_1',
+            'shop_address_line_2',
             'user_dob',
             'shop_city',
             'country_code',

@@ -223,7 +223,6 @@ class StripeConnect extends PaymentMethodBase
      */
     public function initialFieldsValue(): array
     {
-        $name = explode(' ', $this->userData['user_name']);
         return [
             'email' => $this->userData['credential_email'],
             'business_profile' => [
@@ -235,8 +234,8 @@ class StripeConnect extends PaymentMethodBase
                 'support_address' => [
                     'city' => $this->userData['shop_city'],
                     'country' => strtoupper($this->userData['country_code']),
-                    'line1' => $name[0],
-                    'line2' => $this->userData['shop_name'],
+                    'line1' => $this->userData['shop_address_line_1'],
+                    'line2' => $this->userData['shop_address_line_2'],
                     'postal_code' => $this->userData['shop_postalcode'],
                     'state' => $this->userData['state_code'],
                 ],
