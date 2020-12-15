@@ -173,6 +173,7 @@ class FilterHelper extends FatUtility
             $brandSrch->addFld('0 as priority');
         }
         $brandSrch->addOrder('tb_l.brand_name');
+        $brandSrch->addCondition('brand_id', '!=', 'null');
         /* if needs to show product counts under brands[ */
         //$brandSrch->addFld('count(selprod_id) as totalProducts');
         /* ] */
