@@ -13,7 +13,7 @@ class ConfirmPayController extends MyAppController
             CommonHelper::redirectUserReferer();
         }
 
-        if (!UserAuthentication::isUserLogged()) {
+        if (!UserAuthentication::isUserLogged() && !UserAuthentication::isGuestUserLogged()) {
             Message::addErrorMessage(Labels::getLabel('MSG_Your_Session_seems_to_be_expired.', $this->siteLangId));
             if ($isAjaxCall) {
                 FatUtility::dieWithError(Message::getHtml());
