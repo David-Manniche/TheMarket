@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (isset($collection['categories']) && count($collection['categories'])) { ?>
-<section class="section bg-gray" role="category">
+<section class="section" role="category" style="background-color:#f3f4f5;">
     <div class="container">
         <div class="section-head">
             <?php echo ($collection['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $collection['collection_name'] .'</h2></div>' : ''; ?>

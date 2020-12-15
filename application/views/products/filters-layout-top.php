@@ -1,3 +1,5 @@
+
+<?php  die('ffff') ?>
 <div class="collection-listing filters-top">
 <div class="row align-items-center justify-content-between flex-column flex-md-row page-sort-wrap">
                     <div class="col mb-3 mb-md-0">

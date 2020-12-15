@@ -1,5 +1,4 @@
     .filters {
-        width: 280px;
         &__ele {
             padding: 1.5rem;
             width: 100%;
@@ -77,6 +76,7 @@
         align-items: center;
         font-size: 0.8rem;
         margin-top: 0.6rem;
+        margin-bottom: 0.875rem;
         .chip {
             white-space: nowrap;
             display: flex;
@@ -119,6 +119,40 @@
                 &:hover {
                     background: $brand-color;
                     color: $brand-color-inverse;
+                }
+            }
+        }
+    }
+    
+    .filter-left {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        grid-gap: 25px;
+    }
+    
+    .filter-top {
+        .filters_body {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-gap: 25px;
+        }
+        .collection-sidebar {
+            margin-bottom: 1.5rem;
+        }
+        .filters {
+            .sidebar-widget {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+                &:after {
+                    display: none;
+                }
+                &__head {
+                    border-radius: 2px;
+                    border: solid 1px #dee2e6;
+                    background-color: #fff;
+                    padding: 0.7rem;
+                    padding-#{$end-direction}: 35px;
                 }
             }
         }
