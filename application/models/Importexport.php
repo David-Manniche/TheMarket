@@ -1668,7 +1668,7 @@ class Importexport extends ImportexportCommon
 
                     if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && in_array($columnKey, array('credential_username', 'product_seller_id')) && 0 < $userId) {
                         if (!array_key_exists($userId, $userProdUploadLimit)) {
-                            $userProdUploadLimit[$userId] = SellerPackages::getAllowedLimit($userId, $langId, 'spackage_products_allowed');
+                            $userProdUploadLimit[$userId] = SellerPackages::getAllowedLimit($userId, $langId, 'ossubs_products_allowed');
                         }
                     }
                 }
@@ -3468,7 +3468,7 @@ class Importexport extends ImportexportCommon
 
                     if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && 0 < $userId) {
                         if (!array_key_exists($userId, $userProdUploadLimit)) {
-                            $userProdUploadLimit[$userId] = SellerPackages::getAllowedLimit($userId, $langId, 'spackage_inventory_allowed');
+                            $userProdUploadLimit[$userId] = SellerPackages::getAllowedLimit($userId, $langId, 'ossubs_inventory_allowed');
                         }
                     }
 
@@ -3500,7 +3500,7 @@ class Importexport extends ImportexportCommon
                 $prodData = Product::getAttributesById($productId, array('product_min_selling_price'));
 
                 if (array_key_exists('selprod_price', $selProdGenArr)) {
-                    if ($selProdGenArr['selprod_price'] < $prodData['product_min_selling_price']) {
+                    if (is_array($prodData) && array_key_exists('product_min_selling_price', $prodData) && $selProdGenArr['selprod_price'] < $prodData['product_min_selling_price']) {
                         $selProdGenArr['selprod_price'] = $prodData['product_min_selling_price'];
                     }
 
