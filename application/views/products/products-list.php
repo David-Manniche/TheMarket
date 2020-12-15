@@ -1,5 +1,10 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$colMdVal = isset($colMdVal) ? $colMdVal : 4; ?>
+$colMdVal = isset($colMdVal) ? $colMdVal : 4;
+$displayProductNotAvailableLable = false;
+if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+    $displayProductNotAvailableLable = true;
+}
+?>
 <div id="productsList" role="main-listing">
     <div class="product-listing" data-view="<?php echo $colMdVal; ?>">
         <?php if ($products) {
@@ -21,7 +26,13 @@ $colMdVal = isset($colMdVal) ? $colMdVal : 4; ?>
                             <span class="tag--soldout"><?php echo Labels::getLabel('LBL_SOLD_OUT', $siteLangId); ?></span>
                         <?php  } ?>
                         <div class="products__body">
-                            <?php $this->includeTemplate('_partial/collection-ui.php', array('product' => $product, 'siteLangId' => $siteLangId, 'showActionBtns' => $showActionBtns, 'isWishList' => $isWishList), false); ?>
+                            <?php if (true == $displayProductNotAvailableLable && array_key_exists('availableInLocation', $product) && null == $product['availableInLocation']) { ?>
+                                <div class="not-available"><svg class="svg">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info">
+                                        </use>
+                                    </svg> <?php echo Labels::getLabel('LBL_NOT_AVAILABLE', $siteLangId); ?></div>
+                            <?php } ?>
+                            <?php $this->includeTemplate('_partial/collection-ui.php', array('product' => $product,  'siteLangId' => $siteLangId, 'showActionBtns' => $showActionBtns, 'isWishList' => $isWishList), false); ?>
                             <div class="products__img">
                                 <?php $uploadedTime = AttachedFile::setTimeParam($product['product_updated_on']); ?>
                                 <a title="<?php echo $product['selprod_title']; ?>" href="<?php echo !isset($product['promotion_id']) ? UrlHelper::generateUrl('Products', 'View', array($product['selprod_id'])) : UrlHelper::generateUrl('Products', 'track', array($product['promotion_record_id'])) ?>">

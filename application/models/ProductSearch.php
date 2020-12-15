@@ -511,8 +511,13 @@ class ProductSearch extends SearchBase
 
                     if (true == $this->locationBasedInnerJoin) {
                         $shopCondition .= $locCondition;
+                        $this->addFld('1 as availableInLocation');
                     } else {
-                        $this->addFld('if ((1 ' . $locCondition . '), 1, null) as availableInLocation');
+                        if (!empty($locCondition)) {
+                            $this->addFld('if ((1 ' . $locCondition . '), 1, null) as availableInLocation');
+                        } else {
+                            $this->addFld('1 as availableInLocation');
+                        }
                     }
                     break;
             }
@@ -1144,7 +1149,7 @@ class ProductSearch extends SearchBase
         $this->joinTable('(' . $srch->getQuery() . ')', $joinCondition, 'shiploc.shiploc_shipzone_id = shippz.shipprozone_shipzone_id', 'shiploc');
     }
 
-    public function validateAndJoinDeliveryLocation($includeShipingProfileCheck = true)
+    public function validateAndJoinDeliveryLocation($includeShipingProfileCheck = false)
     {
         if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
             $prodGeoCondition = FatApp::getConfig('CONF_PRODUCT_GEO_LOCATION', FatUtility::VAR_INT, 0);
@@ -1155,6 +1160,7 @@ class ProductSearch extends SearchBase
                         $this->joinDeliveryLocations();
                         if (true == $includeShipingProfileCheck) {
                             $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
+                            $this->addFld('1 as availableInLocation');
                         } else {
                             $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', shipprofile.shippro_product_id, -1) as availableInLocation');
                         }
@@ -1163,7 +1169,8 @@ class ProductSearch extends SearchBase
                     break;
                 case applicationConstants::BASED_ON_RADIUS:
                     if (array_key_exists('ykGeoLat', $this->geoAddress) && $this->geoAddress['ykGeoLat'] != '' && array_key_exists('ykGeoLng', $this->geoAddress) && $this->geoAddress['ykGeoLng'] != '') {
-                        $this->addFld('shop.distance as availableInLocation');
+                        $distanceInMiles = FatApp::getConfig('CONF_RADIUS_DISTANCE_IN_MILES', FatUtility::VAR_INT, 10);
+                        $this->addFld('if(shop.distance <= ' . $distanceInMiles .  ', 1, null) as availableInLocation');
                     }
                     break;
             }

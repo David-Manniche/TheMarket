@@ -1534,12 +1534,18 @@ END,   special_price_found ) as special_price_found'
 
             switch ($sortBy) {
                 case 'keyword':
+                    if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+                        $srch->addOrder('availableInLocation', 'DESC');
+                    }
                     $srch->addOrder('keyword_relevancy', 'DESC');
                     break;
                 case 'price':
                     $srch->addOrder('theprice', $sortOrder);
                     break;
                 case 'popularity':
+                    if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+                        $srch->addOrder('availableInLocation', 'DESC');
+                    }
                     $srch->addOrder('selprod_sold_count', $sortOrder);
                     break;
                 case 'discounted':

@@ -506,6 +506,7 @@ Bugs:
     => 046393 - admin> seo> url rewriting> language column is coming which is having no use
     => 046230 - when order is on pickup then on order detail page it's listing state and country code instead of name
     => 046303 - on opening admin login screen- blank message is there
+    
 
 Enhancements:
     => Tax module upgrade
@@ -517,6 +518,7 @@ Enhancements:
     => Advanced search UI and Auto Suggestions.
     => Category Listing Page UI 
     => Notification Emails on/off conf setting. 
+    => Geo location updates - listed not available products.
     ------------TV-9.2.1.20200925------------------------
     => Enhance discount module added brand and shop discounts    
     ---------------TV-9.2.3.20201121--------------------
