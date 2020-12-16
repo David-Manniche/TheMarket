@@ -512,6 +512,7 @@ Bugs:
     => 046495 - when guest user checkout with digital product having 0 price getting error "Your_Session_seems_to_be_expired"
     => 046548 - on adding you tube link in innova editor it is not playing on https sites
     => 046576 - in guest user form name should me mandatory
+    => 046239 - as product is shared from detail page- share icon is getting swapped from the recently shared mode
 
 Enhancements:
     => Tax module upgrade
