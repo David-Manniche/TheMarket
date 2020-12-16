@@ -6,6 +6,7 @@ $statusArr = array(
 );
 
 foreach ($orders as $index => $orderProduct) {
+    $orders[$index]['orderstatus_color_code'] = applicationConstants::getClassColor($orderProduct['orderstatus_color_class']);
     $orders[$index]['product_image_url'] = UrlHelper::generateFullUrl('image', 'product', array($orderProduct['selprod_product_id'], "THUMB", $orderProduct['op_selprod_id'], 0, $siteLangId));
 }
 $data = array(
