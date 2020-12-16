@@ -23,10 +23,10 @@ class BadCategoriesReportController extends AdminBaseController
         $this->_template->render();
     }
     
-    public function export()
+    /* public function export()
     {
         $this->search('export');
-    }
+    } */
     
     private function getSearchForm()
     {

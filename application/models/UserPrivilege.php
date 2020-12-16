@@ -330,7 +330,7 @@ class UserPrivilege
         return true;
     }
 
-    public static function canSellerEditOptionValue($userId, $optionValueId, $langId)
+    /* public static function canSellerEditOptionValue($userId, $optionValueId, $langId)
     {
         $userId = FatUtility::int($userId);
         if (0 == $userId) {
@@ -341,7 +341,7 @@ class UserPrivilege
             return false;
         }
         return true;
-    }
+    } */
 
     public static function canEditSellerProductSpecification($specificationId, $productId)
     {

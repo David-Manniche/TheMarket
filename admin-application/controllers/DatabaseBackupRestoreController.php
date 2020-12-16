@@ -14,7 +14,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
         $backup_frm = $this->getBackupForm();
         $upload_frm = $this->getUploadForm();
         $post = FatApp::getPostedData();
-        
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($post['submit_backup'])) {
             $this->objPrivilege->canEditDatabaseBackupView();
             $settingsObj = new Settings();
@@ -22,7 +22,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
             Message::addMessage(Labels::getLabel('LBL_Database_backup_on_Server_created_Successfully', $this->adminLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
         }
-        
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($post['submit_upload'])) {
             $this->objPrivilege->canEditDatabaseBackupView();
             $ext = strrchr($_FILES['file']['name'], '.');
@@ -37,12 +37,12 @@ class DatabaseBackupRestoreController extends AdminBaseController
             Message::addMessage(Labels::getLabel('LBL_Database_Uploaded_Successfully', $this->adminLangId));
             FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
         }
-        
+
         $this->set('backup_frm', $backup_frm);
         $this->set('upload_frm', $upload_frm);
         $this->_template->render();
     }
-    
+
     public function search()
     {
         $this->objPrivilege->canViewDatabaseBackupView();
@@ -51,7 +51,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
         $this->set("arr_listing", $files_array);
         $this->_template->render(false, false);
     }
-    
+
     public function download($file)
     {
         $this->objPrivilege->canViewDatabaseBackupView();
@@ -59,7 +59,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
         if (isset($file) and trim($file) != "") {
             $settingsObj = new Settings();
             if (!$settingsObj->download_file($file)) {
-                Message::addErrorMessage($settingsObj->getError());
+                Message::addErrorMessage(Labels::getLabel('LBL_The_file_is_not_available_for_download.', $this->adminLangId));
                 FatApp::redirectUser(UrlHelper::generateUrl('DatabaseBackupRestore'));
             }
         }
@@ -69,7 +69,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
     {
         $this->objPrivilege->canViewDatabaseBackupView();
         $this->objPrivilege->canEditDatabaseBackupView();
-        
+
         if (isset($file) and trim($file) != "") {
             $settingsObj = new Settings();
             $settingsObj->restoreDatabase($file);
@@ -83,7 +83,7 @@ class DatabaseBackupRestoreController extends AdminBaseController
     {
         $this->objPrivilege->canViewDatabaseBackupView();
         $this->objPrivilege->canEditDatabaseBackupView();
-        
+
         if (isset($file) and trim($file) != "") {
             unlink(CONF_DB_BACKUP_DIRECTORY_FULL_PATH . $file);
         }
@@ -109,12 +109,12 @@ class DatabaseBackupRestoreController extends AdminBaseController
         $frm->addSubmitButton('', 'submit_upload', Labels::getLabel('LBL_Upload_on_server', $this->adminLangId));
         return $frm;
     }
-    
+
     public static function saveFile($fl, $name)
     {
         $dir = CONF_DB_BACKUP_DIRECTORY_FULL_PATH;
         if (!is_writable($dir)) {
-            Message::addErrorMessage(sprintf(Labels::getLabel('LBL_Directory_%s_is_not_writable', $langId), $dir));
+            Message::addErrorMessage(sprintf(Labels::getLabel('LBL_Directory_%s_is_not_writable', CommonHelper::getLangId()), $dir));
             return false;
         }
         $fname = preg_replace('/[^a-zA-Z0-9\/\-\_\.]/', '', $name);

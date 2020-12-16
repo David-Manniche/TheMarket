@@ -285,7 +285,7 @@ class StripeConnectPayController extends PaymentController
             $clientSecret = $response->client_secret;
             switch ($response->status) {
                 case 'succeeded':
-                    $successUrl = CommonHelper::generateFullUrl('custom', 'paymentSuccess', [$this->orderId, $tempToken]);
+                    $successUrl = CommonHelper::generateFullUrl('custom', 'paymentSuccess', [$this->orderId]);
                     $successMsg = Labels::getLabel('LBL_PAYMENT_SUCCEEDED._WAITING_FOR_CONFIRMATION', $this->siteLangId);
                     if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
                         $json['status'] = Plugin::RETURN_TRUE;

@@ -4,7 +4,7 @@ class CategoryRequestsController extends AdminBaseController
 {
     private $canView;
     private $canEdit;
-    
+
     public function __construct($action)
     {
         $ajaxCallArray = array('deleteRecord', 'form', 'langForm', 'search', 'setup', 'langSetup');
@@ -18,7 +18,7 @@ class CategoryRequestsController extends AdminBaseController
         $this->set("canView", $this->canView);
         $this->set("canEdit", $this->canEdit);
     }
-    
+
     public function index()
     {
         $this->objPrivilege->canViewCategoryRequests();
@@ -26,7 +26,7 @@ class CategoryRequestsController extends AdminBaseController
         $this->set("frmSearch", $frmSearch);
         $this->_template->render();
     }
-    
+
     private function getSearchForm()
     {
         $frm = new Form('frmCategoryReqSearch', array('id' => 'frmcategoryReqSearch'));
@@ -36,32 +36,32 @@ class CategoryRequestsController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-    
+
     public function search()
     {
         $this->objPrivilege->canViewCategoryRequests();
-        
+
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
         $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
         $post = $searchForm->getFormDataFromArray($data);
-        
+
         /* $categoryReqObj = new CategoryRequest(); */
         $srch = CategoryRequest::getSearchObject($this->adminLangId);
         $srch->addFld('cat.*');
-        
+
         if (!empty($post['keyword'])) {
             $srch->addCondition('cat.scategoryreq_identifier', 'like', '%' . $post['keyword'] . '%');
         }
-        
+
         $page = (empty($page) || $page <= 0) ? 1 : $page;
         $page = FatUtility::int($page);
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
-        
+
         $srch->addMultipleFields(array("cat_l.scategoryreq_name"));
-        
+
         $rs = $srch->getResultSet();
         $records = array();
         if ($rs) {
@@ -77,14 +77,14 @@ class CategoryRequestsController extends AdminBaseController
         $this->set('postedData', $post);
         $this->_template->render(false, false);
     }
-    
+
     public function form($categoryReqId = 0)
     {
         $this->objPrivilege->canEditCategoryRequests();
         $statusArr = CategoryRequest::getCategoryReqStatusArr($this->adminLangId);
         $categoryReqId = FatUtility::int($categoryReqId);
         $frm = $this->getForm($categoryReqId);
-        
+
         if (0 < $categoryReqId) {
             $data = CategoryRequest::getAttributesById($categoryReqId, array('scategoryreq_id', 'scategoryreq_identifier', 'scategoryreq_seller_id', 'scategoryreq_status'));
             if ($data === false) {
@@ -93,7 +93,7 @@ class CategoryRequestsController extends AdminBaseController
             $data['status'] = $data['scategoryreq_status'];
             $frm->fill($data);
         }
-    
+
         $this->set('languages', Language::getAllNames());
         $this->set('categoryReqId', $categoryReqId);
         $this->set('frmCategoryReq', $frm);
@@ -122,7 +122,7 @@ class CategoryRequestsController extends AdminBaseController
 
         $frm = $this->getForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
-        
+
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
@@ -130,21 +130,21 @@ class CategoryRequestsController extends AdminBaseController
 
         $categoryReqId = $post['scategoryreq_id'];
         unset($post['scategoryreq_id']);
-        
+
         $creqObj = new CategoryRequest();
         $sCategoryRequest = $creqObj->getAttributesById($categoryReqId);
-        
+
         if ($sCategoryRequest == false) {
             Message::addErrorMessage($this->str_invalid_request);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $statusArr = array(CategoryRequest::CATEGORY_REQUEST_APPROVED, CategoryRequest::CATEGORY_REQUEST_CANCELLED);
         if (!in_array($post['status'], $statusArr)) {
             Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Status_Request', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         $db = FatApp::getDb();
         $db->startTransaction();
         if (in_array($post['status'], $statusArr)) {
@@ -155,8 +155,8 @@ class CategoryRequestsController extends AdminBaseController
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
-        
-        $email = new EmailHandler();
+
+        /* $email = new EmailHandler();
         $sCategoryRequest['scategoryreq_status'] = $post['status'];
         $sCategoryRequest['scategoryreq_comments'] = $post['comments'];
         
@@ -164,32 +164,32 @@ class CategoryRequestsController extends AdminBaseController
             $db->rollbackTransaction();
             Message::addErrorMessage(Labels::getLabel('LBL_Email_Could_Not_Be_Sent', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
-        }
-        
+        } */
+
         $db->commitTransaction();
         $this->set('msg', Labels::getLabel('LBL_Status_Updated_Successfully', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
-    
+
     public function langForm($categoryReqId = 0, $lang_id = 0)
     {
         $this->objPrivilege->canEditCategoryRequests();
-        
+
         $categoryReqId = FatUtility::int($categoryReqId);
         $lang_id = FatUtility::int($lang_id);
-        
+
         if ($categoryReqId == 0 || $lang_id == 0) {
             FatUtility::dieWithError($this->str_invalid_request);
         }
-        
+
         $categoryReqLangFrm = $this->getLangForm($categoryReqId, $lang_id);
-            
+
         $langData = CategoryRequest::getAttributesByLangId($lang_id, $categoryReqId);
-        
+
         if ($langData) {
             $categoryReqLangFrm->fill($langData);
         }
-        
+
         $this->set('languages', Language::getAllNames());
         $this->set('categoryReqId', $categoryReqId);
         $this->set('scategoryreq_lang_id', $lang_id);
@@ -197,7 +197,7 @@ class CategoryRequestsController extends AdminBaseController
         $this->set('formLayout', Language::getLayoutDirection($lang_id));
         $this->_template->render(false, false);
     }
-    
+
     /* public function langSetup(){
     $this->objPrivilege->canEditCategoryRequests();
     $post=FatApp::getPostedData();
@@ -241,7 +241,7 @@ class CategoryRequestsController extends AdminBaseController
     $this->set('langId', $newTabLangId);
     $this->_template->render(false, false, 'json-success.php');
     } */
-    
+
     private function getLangForm($categoryReqId = 0, $lang_id = 0)
     {
         $frm = new Form('frmCategoryReqLang', array('id' => 'frmCategoryReqLang'));
@@ -251,11 +251,11 @@ class CategoryRequestsController extends AdminBaseController
         /* $frm->addSubmitButton('', 'btn_submit',Labels::getLabel('LBL_Update',$this->adminLangId)); */
         return $frm;
     }
-    
-    public function deleteRecord()
+
+    /* public function deleteRecord()
     {
         $this->objPrivilege->canEditCategoryRequests();
-        
+
         $categoryReqId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         if ($categoryReqId < 1) {
             Message::addErrorMessage($this->str_invalid_request_id);
@@ -267,35 +267,35 @@ class CategoryRequestsController extends AdminBaseController
             Message::addErrorMessage($this->str_invalid_request_id);
             FatUtility::dieJsonError(Message::getHtml());
         }
-        
-        
+
+
         if (!$categoryReqObj->deleteRecord(true)) {
             Message::addErrorMessage($categoryReqObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
         FatUtility::dieJsonSuccess($this->str_delete_record);
-    }
-    
+    } */
+
     public function autoComplete()
     {
         $pagesize = 10;
         $post = FatApp::getPostedData();
         $this->objPrivilege->canViewCategoryRequests();
-        
-        $srch = CategoryRequests::getSearchObject();
+
+        $srch = CategoryRequest::getSearchObject();
         $srch->addOrder('categoryReqIdentifier');
         $srch->joinTable(
-            CategoryRequests::DB_TBL . '_lang',
+            CategoryRequest::DB_TBL . '_lang',
             'LEFT OUTER JOIN',
             'scategoryreqlang_categoryReqId = categoryReqId AND scategoryreqlang_lang_id = ' . FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1)
         );
         $srch->addMultipleFields(array('categoryReqId, scategoryreq_name, categoryReqIdentifier'));
-        
+
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('scategoryreq_name', 'LIKE', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('categoryReqIdentifier', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
-        
+
         $srch->setPageSize($pagesize);
         $rs = $srch->getResultSet();
         $db = FatApp::getDb();
@@ -306,9 +306,9 @@ class CategoryRequestsController extends AdminBaseController
         $json = array();
         foreach ($options as $key => $option) {
             $json[] = array(
-            'id' => $key,
-            'name' => strip_tags(html_entity_decode($option['scategoryreq_name'], ENT_QUOTES, 'UTF-8')),
-            'categoryReqIdentifier' => strip_tags(html_entity_decode($option['categoryReqIdentifier'], ENT_QUOTES, 'UTF-8'))
+                'id' => $key,
+                'name' => strip_tags(html_entity_decode($option['scategoryreq_name'], ENT_QUOTES, 'UTF-8')),
+                'categoryReqIdentifier' => strip_tags(html_entity_decode($option['categoryReqIdentifier'], ENT_QUOTES, 'UTF-8'))
             );
         }
         die(json_encode($json));

@@ -642,7 +642,7 @@ trait CustomProducts
         }
         $prodSpecObj = new ProdSpecification($prodspec_id);
         if (!$prodSpecObj->deleteRecord(true)) {
-            Message::addErrorMessage(Labels::getLabel($ProdSpecObj->getError(), $this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel($prodSpecObj->getError(), $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 

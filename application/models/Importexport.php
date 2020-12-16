@@ -5705,13 +5705,13 @@ class Importexport extends ImportexportCommon
                     $colValue = (FatUtility::int($colValue) == 1) ? 'YES' : 'NO';
                 }
 
-                if ('urlrewrite_custom' == $columnKey) {
+                /* if ('urlrewrite_custom' == $columnKey) {
                     $colValue = isset($urlKeywords[ProductCategory::REWRITE_URL_PREFIX . $row['prodcat_id']]) ? $urlKeywords[ProductCategory::REWRITE_URL_PREFIX . $row['prodcat_id']] : '';
                 }
 
                 if ('prodcat_parent_identifier' == $columnKey) {
                     $colValue = array_key_exists($row['prodcat_parent'], $categoriesIdentifiers) ? $categoriesIdentifiers[$row['prodcat_parent']] : '';
-                }
+                } */
 
                 $sheetData[] = $this->parseContentForExport($colValue);
             }

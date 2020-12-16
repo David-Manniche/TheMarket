@@ -53,10 +53,10 @@ class ProductGroupProductSearch extends SearchBase
         if ($this->langId) {
             $langId = $this->langId;
         }
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
+        $this->joinTable(Product::DB_TBL, 'INNER JOIN', 'sp.selprod_product_id = p.product_id', 'p');
 
         if ($langId) {
-            $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = pl.productlang_product_id AND productlang_lang_id = ' . $langId, 'p_l');
+            $this->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = pl.productlang_product_id AND productlang_lang_id = ' . $langId, 'p_l');
         }
 
         $this->productsJoined = true;
@@ -69,10 +69,6 @@ class ProductGroupProductSearch extends SearchBase
             $langId = $this->langId;
         }
 
-        $srch->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id = pg.prodgroup_id', 'pg');
-    }
-
-    public function joinShops()
-    {
+        $this->joinTable(ProductGroup::DB_TBL, 'INNER JOIN', 'ptg.' . ProductGroup::DB_PRODUCT_TO_GROUP_PREFIX . 'prodgroup_id = pg.prodgroup_id', 'pg');
     }
 }

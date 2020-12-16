@@ -137,14 +137,14 @@ class ProductSearch extends SearchBase
             $this->addOptionCondition($criteria['optionvalue']);
         }
 
-        if (isset($criteria['collection_product_id']) && $criteria['collection_product_id'] > 0) {
+        /* if (isset($criteria['collection_product_id']) && $criteria['collection_product_id'] > 0) {
             $this->joinTable(
                 Collections::DB_TBL_COLLECTION_TO_SELPROD,
                 'INNER JOIN',
                 Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id = selprod_id and ' . Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id = ' . $criteria['collection_product_id']
             );
             $useTempTable = false;
-        }
+        } */
 
         if ($this->langId) {
             $this->joinTable(SellerProduct::DB_TBL_LANG, 'LEFT OUTER JOIN', 'msellprod.selprod_id = sprods_l.selprodlang_selprod_id AND sprods_l.selprodlang_lang_id = ' . $this->langId, 'sprods_l');
@@ -191,13 +191,13 @@ class ProductSearch extends SearchBase
 
         $srch = new SearchBase(SellerProduct::DB_TBL, 'sprods');
 
-        if (isset($criteria['collection_product_id']) && $criteria['collection_product_id'] > 0) {
+        /* if (isset($criteria['collection_product_id']) && $criteria['collection_product_id'] > 0) {
             $srch->joinTable(
                 Collections::DB_TBL_COLLECTION_TO_SELPROD,
                 'INNER JOIN',
                 Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'selprod_id = sprods.selprod_id and ' . Collections::DB_TBL_COLLECTION_TO_SELPROD_PREFIX . 'collection_id = ' . $criteria['collection_product_id']
             );
-        }
+        } */
 
         $shopCondition = '';
 

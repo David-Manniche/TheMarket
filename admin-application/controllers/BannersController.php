@@ -31,10 +31,10 @@ class BannersController extends AdminBaseController
         $this->objPrivilege->canViewBanners();
         $pagesize = FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10);
         $post = FatApp::getPostedData();
-        /* $searchForm = $this->getSearchForm();
+        // $searchForm = $this->getSearchForm();
         $data = FatApp::getPostedData();
-        $page = (empty($data['page']) || $data['page'] <= 0)?1:$data['page'];
-        $post = $searchForm->getFormDataFromArray($data); */
+        $page = (empty($data['page']) || $data['page'] <= 0) ? 1 : $data['page'];
+        // $post = $searchForm->getFormDataFromArray($data);
 
         $srch = BannerLocation::getSearchObject($this->adminLangId, false);
         $srch->addMultipleFields(array('blocation_banner_count', 'blocation_collection_id', 'blocation_banner_width', 'blocation_banner_height', 'blocation_id', 'blocation_promotion_cost', 'blocation_active', "IFNULL(blocation_name,blocation_identifier) as blocation_name"));

@@ -1165,7 +1165,7 @@ trait CustomCatalogProducts
 
         $siteDefaultLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         if (!$prodReq->saveProductRequestLangData($siteDefaultLangId, $autoUpdateOtherLangsData, $prodName, $prodDesc, $prodYouTubeUrl)) {
-            Message::addErrorMessage($prod->getError());
+            Message::addErrorMessage($prodReq->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
 

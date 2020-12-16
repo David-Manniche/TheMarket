@@ -82,7 +82,7 @@ class BlogPostCategory extends MyAppModel
         if ($rs) {
             while ($categories = FatApp::getDb()->fetch($rs)) {
                 $category_tree_array[] = $categories;
-                $category_tree_array = self::getCategoryStructure($categories['bpcategory_parent'], $category_tree_array);
+                $category_tree_array = $this->getCategoryStructure($categories['bpcategory_parent'], $category_tree_array);
             }
         }
         sort($category_tree_array);
@@ -139,7 +139,7 @@ class BlogPostCategory extends MyAppModel
         if ($records) {
             $name = $records['bpcategory_identifier'] . $seprator . $name_suffix;
             if ($records['bpcategory_parent'] > 0) {
-                $name = self::getParentTreeStructure($records['bpcategory_parent'], $level + 1, $name);
+                $name = $this->getParentTreeStructure($records['bpcategory_parent'], $level + 1, $name);
             }
         }
         return $name;
@@ -166,7 +166,7 @@ class BlogPostCategory extends MyAppModel
                 break;
             }
             if ($row['bpcategory_parent'] > 0) {
-                $return[$row['bpcategory_id']] = self::getParentTreeStructure($row['bpcategory_id']);
+                $return[$row['bpcategory_id']] = $this->getParentTreeStructure($row['bpcategory_id']);
             } else {
                 $return[$row['bpcategory_id']] = $row['bpcategory_identifier'];
             }
@@ -265,9 +265,10 @@ class BlogPostCategory extends MyAppModel
         );
         $srch->addCondition(static::DB_TBL_PREFIX . 'deleted', '=', 0);
         $srch->addMultipleFields(
-            array('bpcategory_id',
-            'IFNULL(bpcategory_name, bpcategory_identifier) AS bpcategory_name',
-            'GETBLOGCATCODE(bpcategory_id) AS bpcategory_code'
+            array(
+                'bpcategory_id',
+                'IFNULL(bpcategory_name, bpcategory_identifier) AS bpcategory_name',
+                'GETBLOGCATCODE(bpcategory_id) AS bpcategory_code'
             )
         );
 
@@ -292,9 +293,10 @@ class BlogPostCategory extends MyAppModel
         );
         $srch->addCondition(static::DB_TBL_PREFIX . 'featured', '=', 1);
         $srch->addMultipleFields(
-            array('bpcategory_id',
-            'IFNULL(bpcategory_name, bpcategory_identifier) AS bpcategory_name',
-            'GETBLOGCATCODE(bpcategory_id) AS bpcategory_code'
+            array(
+                'bpcategory_id',
+                'IFNULL(bpcategory_name, bpcategory_identifier) AS bpcategory_name',
+                'GETBLOGCATCODE(bpcategory_id) AS bpcategory_code'
             )
         );
 
@@ -327,7 +329,7 @@ class BlogPostCategory extends MyAppModel
         foreach ($records as $bpcategory_id => $bpcategory_identifier) {
             $name = $name_prefix . $seprator . $bpcategory_identifier;
             $return[$bpcategory_id] = $name;
-            $return += self::getBlogPostCatTreeStructure($bpcategory_id, $keywords, $level + 1, $name);
+            $return += $this->getBlogPostCatTreeStructure($bpcategory_id, $keywords, $level + 1, $name);
         }
         return $return;
     }
@@ -342,7 +344,7 @@ class BlogPostCategory extends MyAppModel
         $bpCatSrch = new BlogPostCategorySearch($langId);
         $bpCatSrch->doNotCalculateRecords();
         $bpCatSrch->doNotLimitRecords();
-        $bpCatSrch->addMultipleFields(array( 'bpcategory_id', 'ifNull(bpcategory_name,bpcategory_identifier) as bpcategory_name'));
+        $bpCatSrch->addMultipleFields(array('bpcategory_id', 'ifNull(bpcategory_name,bpcategory_identifier) as bpcategory_name'));
         $bpCatSrch->setParent($parentId);
         $bpCatSrch->addOrder('bpcategory_display_order', 'asc');
 
@@ -404,8 +406,8 @@ class BlogPostCategory extends MyAppModel
         $customUrl = UrlRewrite::getValidSeoUrl($seoUrl, $originalUrl);
 
         $seoUrlKeyword = array(
-        'urlrewrite_original' => $originalUrl,
-        'urlrewrite_custom' => $customUrl
+            'urlrewrite_original' => $originalUrl,
+            'urlrewrite_custom' => $customUrl
         );
         if (FatApp::getDb()->insertFromArray(UrlRewrite::DB_TBL, $seoUrlKeyword, false, array(), array('urlrewrite_custom' => $customUrl))) {
             return true;

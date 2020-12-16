@@ -309,7 +309,7 @@ class BlogPostsController extends AdminBaseController
                 }
             }
         } else {
-            $postId = $record->getMainTableRecordId();
+            $postId = $prodObj->getMainTableRecordId();
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 

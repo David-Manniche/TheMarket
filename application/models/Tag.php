@@ -76,7 +76,7 @@ class Tag extends MyAppModel
             $this->error = $record->getError();
             return false;
         }
-        return  $record->getMainTableRecordId();
+        return  $record->getId();
     }
 
     public function canRecordDelete($id)
