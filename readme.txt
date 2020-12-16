@@ -510,6 +510,7 @@ Bugs:
     => 046452 - authorize Aim payment method form submitting without form validation on order
     => 046487 - admin> seo> meta tags> blog post> on editing there is blank popup with save button
     => 046495 - when guest user checkout with digital product having 0 price getting error "Your_Session_seems_to_be_expired"
+    => 046548 - on adding you tube link in innova editor it is not playing on https sites
 
 Enhancements:
     => Tax module upgrade
