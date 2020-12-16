@@ -1,6 +1,3 @@
-
-
-<?php  die('ffff') ?>
 <div class="collection-listing filters-left">
             <sidebar class="collection-sidebar" id="collection-sidebar" data-close-on-click-outside="collection-sidebar">
                 <?php if (isset($shop)) { ?>
