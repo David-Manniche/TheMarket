@@ -522,8 +522,10 @@ class AccountController extends LoggedUserController
 
             $pmRs = $pmSrch->getResultSet();
             $paymentMethods = FatApp::getDb()->fetchAll($pmRs);
+            $excludePaymentGatewaysArr = applicationConstants::getExcludePaymentGatewayArr();
             /* ] */
             $this->set('paymentMethods', $paymentMethods);
+            $this->set('excludePaymentGatewaysArr', $excludePaymentGatewaysArr);
             $this->set('order_id', $order_id);
             $this->set('orderType', Orders::ORDER_WALLET_RECHARGE);
             $this->_template->render();
@@ -1584,10 +1586,25 @@ class AccountController extends LoggedUserController
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $srch->addCondition('uwlp_selprod_id', '=', $selprod_id);
-            $srch->addCondition('uwlp_uwlist_id', '=', $wish_list_id);
+            // $srch->addCondition('uwlp_uwlist_id', '=', $wish_list_id);
 
             $rs = $srch->getResultSet();
-            $row = $db->fetch($rs);
+            $row = $db->fetchAll($rs);
+            if (is_array($row)) {
+                foreach ($row as $key => $wishlistRow) {
+                    /* In case user wants to remove from wishlist. */
+                    if ($wishlistRow['uwlist_id'] == $wish_list_id) {
+                        continue;
+                    }
+
+                    /* In case user wants to add item in wishlist but remove from others as one item can be added in one wishlist only. */
+                    if (!$db->deleteRecords(UserWishList::DB_TBL_LIST_PRODUCTS, array('smt' => 'uwlp_uwlist_id = ? AND uwlp_selprod_id = ?', 'vals' => array($wishlistRow['uwlist_id'], $selprod_id)))) {
+                        continue;
+                    }
+                    unset($row[$key]);
+                }
+                $row = empty($row) ? false : $row;
+            }
         }
 
         $action = 'N'; //nothing happened
