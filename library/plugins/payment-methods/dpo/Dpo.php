@@ -15,7 +15,7 @@ class Dpo extends PaymentMethodBase
     private $paygateId = '';
     private $encryptionKey = '';
     private $payWeb3;
-    protected $response = '';
+    private $response = '';
 
     private const TXN_STATUS_NOT_DONE = 0;
     private const TXN_STATUS_APPROVED = 1;
