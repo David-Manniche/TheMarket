@@ -359,7 +359,7 @@ class MyAppController extends FatController
     {
         $siteLangId = FatUtility::int($langId);
         $frm = new Form('frmGuestLogin');
-        $frm->addTextBox(Labels::getLabel('LBL_Name', $siteLangId), 'user_name', '', array('placeholder' => Labels::getLabel('LBL_Name', $siteLangId)));
+        $frm->addRequiredField(Labels::getLabel('LBL_Name', $siteLangId), 'user_name', '', array('placeholder' => Labels::getLabel('LBL_Name', $siteLangId)));
         $fld = $frm->addEmailField(Labels::getLabel('LBL_EMAIL', $siteLangId), 'user_email', '', array('placeholder' => Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId)));
         $fld->requirement->setRequired(true);
 
