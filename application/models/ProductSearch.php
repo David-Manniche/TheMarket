@@ -514,7 +514,7 @@ class ProductSearch extends SearchBase
                         $this->addFld('1 as availableInLocation');
                     } else {
                         if (!empty($locCondition)) {
-                            $this->addFld('if ((1 ' . $locCondition . '), 1, null) as availableInLocation');
+                            $this->addFld('if ((1 ' . $locCondition . '), 1, 0) as availableInLocation');
                         } else {
                             $this->addFld('1 as availableInLocation');
                         }
@@ -1162,7 +1162,7 @@ class ProductSearch extends SearchBase
                             $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
                             $this->addFld('1 as availableInLocation');
                         } else {
-                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', shipprofile.shippro_product_id, -1) as availableInLocation');
+                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', ifnull(shipprofile.shippro_product_id,0), -1) as availableInLocation');
                         }
                     }
 
@@ -1170,10 +1170,14 @@ class ProductSearch extends SearchBase
                 case applicationConstants::BASED_ON_RADIUS:
                     if (array_key_exists('ykGeoLat', $this->geoAddress) && $this->geoAddress['ykGeoLat'] != '' && array_key_exists('ykGeoLng', $this->geoAddress) && $this->geoAddress['ykGeoLng'] != '') {
                         $distanceInMiles = FatApp::getConfig('CONF_RADIUS_DISTANCE_IN_MILES', FatUtility::VAR_INT, 10);
-                        $this->addFld('if(shop.distance <= ' . $distanceInMiles .  ', 1, null) as availableInLocation');
+                        $this->addFld('if(shop.distance <= ' . $distanceInMiles .  ', 1, 0) as availableInLocation');
+                    } else {
+                        $this->addFld('0 as availableInLocation');
                     }
                     break;
             }
+        } else {
+            $this->addFld('1 as availableInLocation');
         }
     }
 
