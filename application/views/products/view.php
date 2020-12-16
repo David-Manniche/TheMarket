@@ -294,7 +294,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
                                     <!-- Add To Cart [ -->
                                     <?php if ($product['in_stock']) {
-                                        if (true == $displayProductNotAvailableLable && array_key_exists('availableInLocation', $product) && null == $product['availableInLocation']) {  ?>
+                                        if (true == $displayProductNotAvailableLable && array_key_exists('availableInLocation', $product) && 0 == $product['availableInLocation']) {  ?>
                                             <div class="not-available">
                                                 <svg class="svg">
                                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info">
