@@ -18171,83 +18171,42 @@ html.quick-view--open {
   .filters-left .selected-filters {
     margin-bottom: 1.5rem; }
 
-.filters-top {
-  flex-direction: column; }
-  .filters-top .collection-sidebar {
-    margin-bottom: 2rem; }
+.filter-top .shop-information {
+  display: flex;
+  align-items: center; }
+  @media (max-width: 991.98px) {
+    .filter-top .shop-information {
+      flex-direction: column;
+      padding: 1rem;
+      align-items: center;
+      border: none;
+      border-radius: 0px; } }
+  .filter-top .shop-information .shop-logo {
+    margin: 0; }
     @media (max-width: 991.98px) {
-      .filters-top .collection-sidebar {
-        margin-bottom: 0; } }
-  .filters-top .filters {
-    width: 100%; }
-    .filters-top .filters_body {
-      display: grid;
-      grid-gap: 1rem;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-      @media (max-width: 991.98px) {
-        .filters-top .filters_body {
-          margin-bottom: 0;
-          grid-template-columns: repeat(1, 1fr); } }
-      .filters-top .filters_body .sidebar-widget {
-        border-radius: 4px;
-        padding: 0;
-        margin: 0;
-        background-color: #fff;
-        border: none;
-        position: relative; }
-        .filters-top .filters_body .sidebar-widget:after {
-          content: normal; }
-        .filters-top .filters_body .sidebar-widget__head {
-          border-radius: 2px;
-          border: solid 1px #dee2e6;
-          padding: 0.7rem;
-          padding-left: 35px; }
-          .filters-top .filters_body .sidebar-widget__head:before {
-            left: 1rem; }
-        .filters-top .filters_body .sidebar-widget__body {
-          padding: 1rem;
-          position: absolute;
-          z-index: 1;
-          top: 100%;
-          left: 0;
-          right: 0;
-          background-color: #fff; }
-  .filters-top .shop-information {
+      .filter-top .shop-information .shop-logo {
+        margin: 0 auto; } }
+  .filter-top .shop-information .shop-info {
     display: flex;
-    align-items: center; }
+    align-items: flex-start;
+    justify-content: space-between;
+    flex: 1;
+    text-align: right; }
     @media (max-width: 991.98px) {
-      .filters-top .shop-information {
+      .filter-top .shop-information .shop-info {
         flex-direction: column;
-        padding: 1rem;
-        align-items: center;
-        border: none;
-        border-radius: 0px; } }
-    .filters-top .shop-information .shop-logo {
-      margin: 0; }
+        align-items: center; } }
+    .filter-top .shop-information .shop-info .shop-name {
+      margin: 0 10px; }
       @media (max-width: 991.98px) {
-        .filters-top .shop-information .shop-logo {
-          margin: 0 auto; } }
-    .filters-top .shop-information .shop-info {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex: 1;
-      text-align: right; }
-      @media (max-width: 991.98px) {
-        .filters-top .shop-information .shop-info {
-          flex-direction: column;
-          align-items: center; } }
-      .filters-top .shop-information .shop-info .shop-name {
-        margin: 0 10px; }
-        @media (max-width: 991.98px) {
-          .filters-top .shop-information .shop-info .shop-name {
-            margin: 1rem 0; } }
-        .filters-top .shop-information .shop-info .shop-name .products__rating {
-          margin: 0;
-          padding: 0;
-          justify-content: flex-start; }
-      .filters-top .shop-information .shop-info .shop-btn-group {
-        margin: 0 10px; }
+        .filter-top .shop-information .shop-info .shop-name {
+          margin: 1rem 0; } }
+      .filter-top .shop-information .shop-info .shop-name .products__rating {
+        margin: 0;
+        padding: 0;
+        justify-content: flex-start; }
+    .filter-top .shop-information .shop-info .shop-btn-group {
+      margin: 0 10px; }
 
 .saved-cards {
   display: grid;
@@ -36128,7 +36087,7 @@ div.faqanswer {
   -webkit-transition: height 0.3s ease 0s;
   transition: height 0.3s ease 0s; }
 
-.filters-top .filter-content {
+.filter-top .filter-content {
   padding-top: 30px; }
 
 .filter-price-slider {
