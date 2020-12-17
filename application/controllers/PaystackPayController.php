@@ -42,6 +42,8 @@ class PaystackPayController extends PaymentController
         if (false === $this->plugin->init($this->userId)) {
             $this->setErrorAndRedirect($this->plugin->getError(), FatUtility::isAjaxCall());
         }
+        $this->secretKey = Plugin::ENV_PRODUCTION == $this->settings['env'] ? $this->settings['live_secret_key'] : $this->settings['secret_key'];
+        $this->publicKey = Plugin::ENV_PRODUCTION == $this->settings['env'] ? $this->settings['live_public_key'] : $this->settings['public_key'];
     }
 
     /**
@@ -153,10 +155,11 @@ class PaystackPayController extends PaymentController
      * @param  string $orderId
      * @return void
      */
-    private function logFailure($orderId, $msg = '')
+    private function logFailure(string $orderId, string $msg = '', array $response = [])
     {
+        $response = !empty($response) ? $response : $_REQUEST;
         $orderPaymentObj = new OrderPayment($orderId);
-        TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($_REQUEST));
+        TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($response));
 
         if (empty($msg)) {
             $msg = Labels::getLabel("MSG_PAYMENT_FAILED._{MSG}", $this->siteLangId);
@@ -166,6 +169,7 @@ class PaystackPayController extends PaymentController
         $orderPaymentObj->addOrderPaymentComments($msg);
         Message::addErrorMessage($msg);
         FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
+        die;
     }
 
     /**
@@ -185,5 +189,59 @@ class PaystackPayController extends PaymentController
             $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
         }
         return $frm;
+    }
+
+    /**
+     * webhook - Not in use curretly, it will be used when customer don't get redirected after transaction, i.e for backend process
+     *
+     * @return void
+     */
+    public function webhook()
+    {
+
+        $response = @file_get_contents("php://input");
+
+        $signature = (isset($_SERVER['HTTP_X_PAYSTACK_SIGNATURE']) ? $_SERVER['HTTP_X_PAYSTACK_SIGNATURE'] : '');
+
+        /* It is a good idea to log all events received. Add code *
+         * here to log the signature and body to db or file       */
+
+        if (!$signature) {
+            // only a post with paystack signature header gets our attention
+            exit();
+        }
+
+        // confirm the event's signature
+        if ($signature !== hash_hmac('sha512', $response, $this->secretKey)) {
+            // silently forget this ever happened
+            exit();
+        }
+
+        http_response_code(200);
+
+        $paymentResponse = json_decode($response, true);        
+        $orderId = $paymentResponse['data']['metadata']['order_id'];
+        $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
+        $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
+        $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+        if ($orderInfo) {
+            if ('charge.success' != $paymentResponse['event']) {
+                $msg = Labels::getLabel("MSG_PAYMENT_FAILED._{MSG}", $this->siteLangId);
+                $msg = CommonHelper::replaceStringData($msg, ['{MSG}' => $paymentResponse['event']]);
+                $this->logFailure($orderId, $msg, $paymentResponse);
+            }
+
+            $orderAmt = ($paymentResponse['data']['amount']) / 100;
+            $totalPaidMatch = ((float)$orderAmt == (float)$paymentAmount);
+            if (false === $totalPaidMatch) {
+                $msg = Labels::getLabel('MSG_PAYMENT_MISMATCH', $this->siteLangId);
+                $this->logFailure($orderId, $msg, $paymentResponse);
+            }
+            /* Unset Session Element On Payment Success.  */
+            unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME][self::KEY_NAME . '_access_code']);
+            unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME][self::KEY_NAME . '_reference']);
+            /* Unset Session Element On Payment Success.  */
+        }
+        exit();
     }
 }
