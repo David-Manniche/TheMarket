@@ -94,7 +94,7 @@
                         </div>
                     </div>
                     <?php 
-                    if (true === CommonHelper::isAppUser()) {
+                    if (false === CommonHelper::isAppUser()) {
                         if ($blogPostData['post_comment_opened']) { ?>
                             <?php echo $srchCommentsFrm->getFormHtml(); ?>
                             <div class="gap"></div>
