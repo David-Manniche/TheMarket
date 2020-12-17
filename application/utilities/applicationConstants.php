@@ -498,7 +498,7 @@ class applicationConstants
                 break;
             
             default:
-                return '#000';
+                return '#000000';
                 break;
         }
     }
