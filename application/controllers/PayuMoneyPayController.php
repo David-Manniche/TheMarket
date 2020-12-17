@@ -14,7 +14,7 @@ class PayuMoneyPayController extends PaymentController
     {
         return ['INR'];
     }
-    
+
     private function init(): void
     {
         if (false === $this->plugin->validateSettings($this->siteLangId)) {
@@ -55,6 +55,7 @@ class PayuMoneyPayController extends PaymentController
     public function callback()
     {
         $post = FatApp::getPostedData();
+        $request = '';
         foreach ($post as $key => $value) {
             $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
         }
@@ -67,7 +68,7 @@ class PayuMoneyPayController extends PaymentController
             switch ($post['status']) {
                 case 'success':
                     $receiver_match = (strtolower($post['key']) == strtolower($this->settings['merchant_key']));
-                    $total_paid_match = ((float)$post['amount'] == (float)$paymentGatewayCharge);
+                    $total_paid_match = ((float) $post['amount'] == (float) $paymentGatewayCharge);
                     $hash_string = $this->settings["salt"] . "|" . $post["status"] . "||||||||||" . $post["udf1"] . "|" . $post["email"] . "|" . $post["firstname"] . "|" . $post["productinfo"] . "|" . $post["amount"] . "|" . $post["txnid"] . "|" . $post["key"];
                     $reverse_hash = strtolower(hash('sha512', $hash_string));
                     $reverse_hash_match = ($post['hash'] == $reverse_hash);

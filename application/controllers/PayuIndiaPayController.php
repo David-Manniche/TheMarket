@@ -55,6 +55,7 @@ class PayuIndiaPayController extends PaymentController
     public function callback()
     {
         $post = FatApp::getPostedData();
+        $request = '';
         foreach ($post as $key => $value) {
             $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
         }
