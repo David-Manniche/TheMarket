@@ -202,7 +202,10 @@ class BlogController extends MyAppController
             Message::addErrorMessage($message);
             FatApp::redirectUser(UrlHelper::generateUrl('Blog'));
         }
-
+        $appUser = FatApp::getPostedData('appUser', FatUtility::VAR_INT, 0);
+        if (0 < $appUser) {
+            commonhelper::setAppUser();
+        }
         $post_images = AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BLOG_POST_IMAGE, $blogPostId, 0, $this->siteLangId);
         $this->set('post_images', $post_images);
 
@@ -299,7 +302,7 @@ class BlogController extends MyAppController
             $this->_template->addJs(array('js/masonry.pkgd.js'));
             $this->_template->addJs(array('js/slick.js'));
         }
-        $this->_template->render();
+        $this->_template->render(true, (!CommonHelper::isAppUser()));
     }
 
     public function setupPostComment()
