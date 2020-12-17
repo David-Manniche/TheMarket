@@ -7,7 +7,18 @@ class EditorController extends FatController
 
     public function demoPhoto($image = "", $w = 0, $h = 0)
     {
-        self::displayImage($image, 5, 5, true);
+        // self::displayImage($image, 5, 5, true);
+        $fileMimeType = mime_content_type($image);
+        $obj = new ImageResize($image);
+        $obj->setMaxDimensions($w, $h);
+        $obj->setResizeMethod(imageResize::IMG_RESIZE_EXTRA_ADDSPACE);
+
+        if ($fileMimeType != '') {
+            header("content-type: " . $fileMimeType);
+        } else {
+            header("Content-Type: " . $size['mime']);
+        }
+        $obj->displayImage(80, false);
     }
 
     public function editorImage($dir = '', $img = '')
@@ -26,10 +37,10 @@ class EditorController extends FatController
         if (!file_exists($pth)) {
             $pth =  'images/defaults/no_image.jpg';
         }
-        
+
         if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
             $ext = substr($pth, strlen($pth) - 3, strlen($pth));
-            if (in_array($ext, ['txt', 'pdf', 'zip' ])) {
+            if (in_array($ext, ['txt', 'pdf', 'zip'])) {
                 $this->loadAttachment($pth);
             }
 
@@ -43,14 +54,14 @@ class EditorController extends FatController
             exit;
         }
         $fileMimeType = mime_content_type($pth);
-       
+
         $ext = pathinfo($pth, PATHINFO_EXTENSION);
         if ($ext == "svg") {
             CommonHelper::editorSvg($pth);
             exit;
         }
 
-        if (in_array($ext, ['txt', 'pdf', 'zip' ])) {
+        if (in_array($ext, ['txt', 'pdf', 'zip'])) {
             $this->loadAttachment($pth);
         }
 

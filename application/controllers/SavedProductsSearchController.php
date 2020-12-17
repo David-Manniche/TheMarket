@@ -120,7 +120,7 @@ class SavedProductsSearchController extends LoggedUserController
 
         $savedSearch = new SavedSearchProduct($pssearch_id);
         if (!$savedSearch->deleteRecord()) {
-            Message::addErrorMessage($addressObj->getError());
+            Message::addErrorMessage($savedSearch->getError());
             FatUtility::dieWithError(Message::getHtml());
         }
 

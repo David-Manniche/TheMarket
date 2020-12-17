@@ -2073,7 +2073,7 @@ class SellerController extends SellerBaseController
         $shopObj = new Shop($shop_id);
         $shopObj->assignValues($data_to_save_arr);
         if (!$shopObj->save()) {
-            Message::addErrorMessage($record->getError());
+            Message::addErrorMessage($shopObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
@@ -4836,7 +4836,7 @@ class SellerController extends SellerBaseController
             $post = $srchFrm->getFormDataFromArray(FatApp::getPostedData());
 
             if (false === $post) {
-                FatUtility::dieJsonError(current($frm->getValidationErrors()));
+                FatUtility::dieJsonError(current($srchFrm->getValidationErrors()));
             } else {
                 unset($post['btn_submit'], $post['btn_clear']);
                 $srchFrm->fill($post);

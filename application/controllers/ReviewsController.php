@@ -315,7 +315,7 @@ class ReviewsController extends MyAppController
         $reviewId = FatUtility::int($reviewId);
 
         if ($sellerId <= 0) {
-            Message::addErrorMessage(Labels::getLabel('Msg_Invalid_Request', $siteLangId));
+            Message::addErrorMessage(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
             CommonHelper::redirectUserReferer();
         }
 

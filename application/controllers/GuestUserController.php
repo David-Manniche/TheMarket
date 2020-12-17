@@ -862,7 +862,7 @@ class GuestUserController extends MyAppController
 
         $userAuthObj = new UserAuthentication();
 
-        if (!$userAuthObj->checkResetLink($userId, trim($token), 'form')) {
+        if (!$userAuthObj->checkResetLink($userId, trim($token))) {
             Message::addErrorMessage($userAuthObj->getError());
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
         }
@@ -899,7 +899,7 @@ class GuestUserController extends MyAppController
 
         $userAuthObj = new UserAuthentication();
 
-        if (!$userAuthObj->checkResetLink($userId, trim($token), 'submit')) {
+        if (!$userAuthObj->checkResetLink($userId, trim($token))) {
             FatUtility::dieJsonError($userAuthObj->getError());
         }
 

@@ -696,7 +696,7 @@ class AccountController extends LoggedUserController
 
         $accountNumber = FatApp::getPostedData('ub_account_number', FatUtility::VAR_STRING, 0);
 
-        if ((string)$accountNumber != $post['ub_account_number']) {
+        if ((string) $accountNumber != $post['ub_account_number']) {
             $message = Labels::getLabel('MSG_Invalid_Account_Number', $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
@@ -871,8 +871,8 @@ class AccountController extends LoggedUserController
             $bankInfo = $this->bankInfo();
             $personalInfo = $this->personalInfo();
             $personalInfo['userImage'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'user', array($userId, 'SMALL', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
-            $this->set('personalInfo', empty($personalInfo) ? (object)array() : $personalInfo);
-            $this->set('bankInfo', empty($bankInfo) ? (object)array() : $bankInfo);
+            $this->set('personalInfo', empty($personalInfo) ? (object) array() : $personalInfo);
+            $this->set('bankInfo', empty($bankInfo) ? (object) array() : $bankInfo);
             $this->set('privacyPolicyLink', FatApp::getConfig('CONF_PRIVACY_POLICY_PAGE', FatUtility::VAR_STRING, ''));
             $this->set('hasDigitalProducts', $hasDigitalProducts);
             $this->set('splitPaymentMethods', $splitPaymentMethods);
@@ -1171,7 +1171,7 @@ class AccountController extends LoggedUserController
         $data = $userObj->getUserBankInfo();
 
         if (true === MOBILE_APP_API_CALL) {
-            $this->set('data', ['bankInfo' => (object)$data]);
+            $this->set('data', ['bankInfo' => (object) $data]);
             $this->_template->render();
         }
 
@@ -1220,7 +1220,7 @@ class AccountController extends LoggedUserController
         }
         $accountNumber = FatApp::getPostedData('ub_account_number', FatUtility::VAR_STRING, 0);
 
-        if ((string)$accountNumber != $post['ub_account_number']) {
+        if ((string) $accountNumber != $post['ub_account_number']) {
             $message = Labels::getLabel('MSG_Invalid_Account_Number', $this->siteLangId);
             FatUtility::dieJsonError($message);
         }
@@ -2047,7 +2047,7 @@ class AccountController extends LoggedUserController
         $post = FatApp::getPostedData();
         $pssearch_id = FatUtility::int($post['pssearch_id']);
 
-        $srch = new SearchBase(Product::DB_PRODUCT_SAVED_SEARCH);
+        $srch = new SearchBase(SavedSearchProduct::DB_TBL);
         $srch->addCondition('pssearch_id', '=', $pssearch_id);
         $rs = $srch->getResultSet();
         $row = FatApp::getDb()->fetch($rs);
@@ -2059,7 +2059,7 @@ class AccountController extends LoggedUserController
         $updateArray = array('pssearch_updated_on' => date('Y-m-d H:i:s'));
         $whr = array('smt' => 'pssearch_id = ?', 'vals' => array($pssearch_id));
 
-        if (!FatApp::getDb()->updateFromArray(Product::DB_PRODUCT_SAVED_SEARCH, $updateArray, $whr)) {
+        if (!FatApp::getDb()->updateFromArray(SavedSearchProduct::DB_TBL, $updateArray, $whr)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
@@ -3003,7 +3003,7 @@ class AccountController extends LoggedUserController
             $attachment = new AttachedFile();
             if ($attachment->saveImage(
                 $_FILES['photo']['tmp_name'],
-                AttachedFile::FILETYPE_USER_PHOTO,
+                AttachedFile::FILETYPE_USER_IMAGE,
                 UserAuthentication::getLoggedUserId(),
                 0,
                 $_FILES['photo']['name'],
@@ -3180,7 +3180,7 @@ class AccountController extends LoggedUserController
             FatUtility::dieWithError(Message::getHtml());
         }
         $productUrl = UrlHelper::generateUrl('products', 'view', array($selprod_id));
-        $productUrl = CommonHelper::base64encode(ltrim($productUrl, '/'));
+        $productUrl = base64_encode(ltrim($productUrl, '/'));
 
         $productSharingUrl = UrlHelper::generateFullUrl("custom", "referral", array($user_referral_code, $productUrl));
 
@@ -3556,7 +3556,7 @@ class AccountController extends LoggedUserController
         $userId = UserAuthentication::getLoggedUserId();
         $smt = array(
             'smt' => Notifications::DB_TBL_PREFIX . 'is_read = ? AND ' . Notifications::DB_TBL_PREFIX . 'user_id = ?',
-            'vals' => array(applicationConstants::NO, (int)$userId)
+            'vals' => array(applicationConstants::NO, (int) $userId)
         );
         $db = FatApp::getDb();
         if (!$db->updateFromArray(Notifications::DB_TBL, array(Notifications::DB_TBL_PREFIX . 'is_read' => 1), $smt)) {

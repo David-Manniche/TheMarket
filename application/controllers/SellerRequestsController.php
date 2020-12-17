@@ -239,7 +239,8 @@ class SellerRequestsController extends SellerBaseController
     {
         $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true);
         $post = FatApp::getPostedData();
-
+        $frm = $this->getCategoryForm();
+        $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());
@@ -332,7 +333,8 @@ class SellerRequestsController extends SellerBaseController
     {
         $this->userPrivilege->canEditSellerRequests(UserAuthentication::getLoggedUserId(), true);
         $post = FatApp::getPostedData();
-
+        $frm = $this->getBrandForm();
+        $post = $frm->getFormDataFromArray($post);
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieJsonError(Message::getHtml());

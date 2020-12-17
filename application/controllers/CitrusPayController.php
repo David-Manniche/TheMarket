@@ -53,6 +53,7 @@ class CitrusPayController extends PaymentController
         $orderId = (isset($post['TxId'])) ? $post['TxId'] : 0;
         $orderPaymentObj = new OrderPayment($orderId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
+        $request = '';
         foreach ($post as $key => $value) {
             $request .= '&' . $key . '=' . urlencode(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
         }
