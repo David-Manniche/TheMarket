@@ -93,43 +93,46 @@
                             <?php echo FatUtility::decodeHtmlEntities($blogPostData['post_description']); ?>
                         </div>
                     </div>
-                    <?php if ($blogPostData['post_comment_opened']) { ?>
-                        <?php echo $srchCommentsFrm->getFormHtml(); ?>
-                        <div class="gap"></div>
-                        <div class="comments rounded border" id="container--comments">
-                            <h2><?php echo ($commentsCount) ? sprintf(Labels::getLabel('Lbl_Comments(%s)', $siteLangId), $commentsCount) : Labels::getLabel('Lbl_Comments', $siteLangId); ?></h2>
-                            <div id="comments--listing"> </div>
-                            <div class="text-center m-4" id="loadMoreCommentsBtnDiv"></div>
-                        </div>
-                    <?php } ?>
-                    <?php if ($blogPostData['post_comment_opened'] && UserAuthentication::isUserLogged() && isset($postCommentFrm)) { ?>
-                        <div class="gap"></div>
-                        <div id="respond" class="comment-respond rounded">
-                            <h2><?php echo Labels::getLabel('Lbl_Leave_A_Comment', $siteLangId); ?></h2>
-                            <?php
-                            $postCommentFrm->setFormTagAttribute('class', 'form');
-                            $postCommentFrm->setFormTagAttribute('onsubmit', 'setupPostComment(this);return false;');
-                            $postCommentFrm->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_POSITION_NONE);
-                            $postCommentFrm->developerTags['colClassPrefix'] = 'col-md-';
-                            $postCommentFrm->developerTags['fld_default_col'] = 12;
-                            $nameFld = $postCommentFrm->getField('bpcomment_author_name');
-                            $nameFld->addFieldTagAttribute('readonly', true);
-                            $nameFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Name', $siteLangId));
-                            $nameFld->developerTags['col'] = 6;
-                            $emailFld = $postCommentFrm->getField('bpcomment_author_email');
-                            $emailFld->addFieldTagAttribute('readonly', true);
-                            $emailFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Email_Address', $siteLangId));
-                            $emailFld->developerTags['col'] = 6;
-                            $commentFld = $postCommentFrm->getField('bpcomment_content');
-                            $commentFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Message', $siteLangId));
+                    <?php 
+                    if (true === CommonHelper::isAppUser()) {
+                        if ($blogPostData['post_comment_opened']) { ?>
+                            <?php echo $srchCommentsFrm->getFormHtml(); ?>
+                            <div class="gap"></div>
+                            <div class="comments rounded border" id="container--comments">
+                                <h2><?php echo ($commentsCount) ? sprintf(Labels::getLabel('Lbl_Comments(%s)', $siteLangId), $commentsCount) : Labels::getLabel('Lbl_Comments', $siteLangId); ?></h2>
+                                <div id="comments--listing"> </div>
+                                <div class="text-center m-4" id="loadMoreCommentsBtnDiv"></div>
+                            </div>
+                        <?php } ?>
+                        <?php if ($blogPostData['post_comment_opened'] && UserAuthentication::isUserLogged() && isset($postCommentFrm)) { ?>
+                            <div class="gap"></div>
+                            <div id="respond" class="comment-respond rounded">
+                                <h2><?php echo Labels::getLabel('Lbl_Leave_A_Comment', $siteLangId); ?></h2>
+                                <?php
+                                $postCommentFrm->setFormTagAttribute('class', 'form');
+                                $postCommentFrm->setFormTagAttribute('onsubmit', 'setupPostComment(this);return false;');
+                                $postCommentFrm->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_POSITION_NONE);
+                                $postCommentFrm->developerTags['colClassPrefix'] = 'col-md-';
+                                $postCommentFrm->developerTags['fld_default_col'] = 12;
+                                $nameFld = $postCommentFrm->getField('bpcomment_author_name');
+                                $nameFld->addFieldTagAttribute('readonly', true);
+                                $nameFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Name', $siteLangId));
+                                $nameFld->developerTags['col'] = 6;
+                                $emailFld = $postCommentFrm->getField('bpcomment_author_email');
+                                $emailFld->addFieldTagAttribute('readonly', true);
+                                $emailFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Email_Address', $siteLangId));
+                                $emailFld->developerTags['col'] = 6;
+                                $commentFld = $postCommentFrm->getField('bpcomment_content');
+                                $commentFld->setFieldTagAttribute('placeholder', Labels::getLabel('LBL_Message', $siteLangId));
 
-                            $btnSubmitFld = $postCommentFrm->getField('btn_submit');
-                            $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
+                                $btnSubmitFld = $postCommentFrm->getField('btn_submit');
+                                $btnSubmitFld->setFieldTagAttribute('class', 'btn btn-brand btn-wide');
 
-                            echo $postCommentFrm->getFormHtml(); ?>
-                        </div>
+                                echo $postCommentFrm->getFormHtml(); ?>
+                            </div>
 
-                    <?php } ?>
+                        <?php }
+                    } ?>
 
                 </div>
             </div>
