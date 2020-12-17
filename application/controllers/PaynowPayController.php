@@ -168,6 +168,7 @@ class PaynowPayController extends PaymentController
         $orderPaymentObj->addOrderPaymentComments($msg);
         Message::addErrorMessage($msg);
         FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
+        die;
     }
 
     /**
