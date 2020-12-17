@@ -1175,6 +1175,12 @@ class ProductSearch extends SearchBase
                         $this->addFld('0 as availableInLocation');
                     }
                     break;
+                case applicationConstants::BASED_ON_CURRENT_LOCATION:
+
+                    break;
+                default:
+                    $this->addFld('1 as availableInLocation');
+                    break;
             }
         } else {
             $this->addFld('1 as availableInLocation');
