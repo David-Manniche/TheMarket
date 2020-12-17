@@ -1635,3 +1635,7 @@ ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- --- Paynow Payment Gateway--- --
 INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paynow', '13', 'Paynow', '0', '22');
 -- --- Paynow Payment Gateway--- --
+
+-- --- Paystack Payment Gateway--- --
+INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paystack', '13', 'Paystack', '0', '23');
+-- --- Paystack Payment Gateway--- --
