@@ -123,10 +123,7 @@ class Paynow extends PaymentMethodBase
         */
         //=== Create Request Body
         $this->buildRequestBody();
-        if (false === $this->doRequest(self::REQUEST_PAYMENT)) {
-            return false;
-        }
-        return true;
+        return $this->doRequest(self::REQUEST_PAYMENT);
     }
     
     /**
@@ -175,10 +172,7 @@ class Paynow extends PaymentMethodBase
      */
     public function validatePaymentResponse(string $paymentId): bool
     {
-        if (false === $this->doRequest(self::REQUEST_VALIDATE_PAYMENT, [$paymentId])) {
-            return false;
-        }
-        return true;
+        return $this->doRequest(self::REQUEST_VALIDATE_PAYMENT, [$paymentId]);
     }
 
     /**
