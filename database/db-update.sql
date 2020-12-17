@@ -1631,3 +1631,7 @@ UPDATE `tbl_email_templates` SET `etpl_body` = '<table width=\"100%\" align=\"ce
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
 ('MSG_INVALID_FATBIT_USERNAME', 1, 'Username Must Start With A Letter And Can Contain Only Alphanumeric Characters. Length Must Be Between 4 To 20 Characters', 1)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
+
+-- --- Paynow Payment Gateway--- --
+INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paynow', '13', 'Paynow', '0', '22');
+-- --- Paynow Payment Gateway--- --
