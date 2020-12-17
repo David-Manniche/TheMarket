@@ -573,8 +573,8 @@ class ProductsController extends MyAppController
         /*[ Product shipping cost */
         $shippingCost = 0;
         /*]*/
-
-        $product['moreSellersArr'] = $this->getMoreSeller($product['selprod_code'], $this->siteLangId, $product['selprod_user_id']);
+        $sellerId = (false === MOBILE_APP_API_CALL) ? $product['selprod_user_id'] : 0;
+        $product['moreSellersArr'] = $this->getMoreSeller($product['selprod_code'], $this->siteLangId, $sellerId);
         $product['selprod_return_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_RETURN, $this->siteLangId);
         $product['selprod_warranty_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_WARRANTY, $this->siteLangId);
         /* Form buy product[ */
