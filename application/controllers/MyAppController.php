@@ -812,7 +812,7 @@ class MyAppController extends FatController
     protected function getGoogleAutocompleteAddressForm()
     {
         $frm = new Form('googleAutocomplete');
-        $frm->addTextBox('', 'location');
+        $frm->addTextBox('', 'location', '', array('autocomplete' => 'off'));
         return $frm;
     }
 
