@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 if (isset($collection['products']) && count($collection['products'])) { ?>
-	<section class="section bg-second">
+	<section class="section" style="background-color:var(--secondary-color);color:var(--secondary-color-inverse);">
 		<div class="container">
 			<div class="section-head section--white--head">
 				<div class="section__heading">

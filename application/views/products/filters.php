@@ -1,5 +1,4 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-
 $currencySymbolLeft = isset($currencySymbolLeft) ? $currencySymbolLeft : CommonHelper::getCurrencySymbolLeft();
 $currencySymbolRight = isset($currencySymbolRight) ? $currencySymbolRight : CommonHelper::getCurrencySymbolRight();
 
@@ -54,13 +53,13 @@ if (isset($prodcat_code)) {
 <!-- ] -->
 
 <!--Categories Filters[ resetAll-->
-<div class="filters_body"> 
+<div class="filters_body" id="filters_body--js"> 
 <?php if (isset($categoriesArr) && $categoriesArr) { ?>
     <div class="sidebar-widget">
-        <div class="sidebar-widget__head" data-toggle="collapse" data-target="#category" aria-expanded="true">
+        <div class="sidebar-widget__head" data-toggle="collapse" data-target="#category" aria-expanded="true" aria-controls="category">
             <?php echo Labels::getLabel('LBL_Categories', $siteLangId); ?> 
         </div>
-        <div class="sidebar-widget__body collapse show" id="category" data-parent="#collection-sidebar">
+        <div class="sidebar-widget__body collapse show" id="category" >
         <?php if (!$shopCatFilters) { ?>
             <div id="accordian" class="cat-accordion toggle-target scrollbar-filters scroll" data-simplebar="init" data-simplebar-auto-hide="false">
             <ul>
@@ -168,10 +167,10 @@ if (isset($prodcat_code)) {
 <?php if (isset($priceArr) && $priceArr) { ?>
 
 <div class="sidebar-widget">
-    <div class="sidebar-widget__head filter-head-js collapsed" data-toggle="collapse" data-target="#price" aria-expanded="true">
+    <div class="sidebar-widget__head" data-toggle="collapse" data-target="#price" aria-expanded="true" aria-controls="price">
         <?php echo Labels::getLabel('LBL_Price', $siteLangId) . ' (' . (CommonHelper::getCurrencySymbolRight() ? CommonHelper::getCurrencySymbolRight() : CommonHelper::getCurrencySymbolLeft()) . ')'; ?>
     </div>
-    <div class="sidebar-widget__body collapse show" id="price" data-parent="#collection-sidebar">
+    <div class="sidebar-widget__body collapse show" id="price" >
         <div class="filter-content toggle-target">
             <div class="prices" id="perform_price">
                 <div id="rangeSlider"></div>
@@ -214,7 +213,7 @@ if (isset($prodcat_code)) {
 <div class="sidebar-widget">
     <div class="sidebar-widget__head" data-toggle="collapse" data-target="#brand" aria-expanded="true" >
         <?php echo Labels::getLabel('LBL_Brand', $siteLangId); ?></div>
-    <div class="sidebar-widget__body collapse show" id="brand" data-parent="#collection-sidebar">
+    <div class="sidebar-widget__body collapse show" id="brand" >
         <div class="scrollbar-filters" id="scrollbar-filters">
             <ul class="list-vertical brandFilter-js">
                 <?php foreach ($brandsArr as $brand) {
@@ -270,7 +269,7 @@ if (isset($prodcat_code)) {
 <div class="sidebar-widget">
     <div class="sidebar-widget__head" data-toggle="collapse" data-target="#option<?php echo $optionRow['option_id'];?>" aria-expanded="true">
         <?php echo ($optionRow['option_name']) ? $optionRow['option_name'] : $optionRow['option_identifier']; ?></div>
-    <div class="sidebar-widget__body collapse show" id="option<?php echo $optionRow['option_id'];?>" data-parent="#collection-sidebar">
+    <div class="sidebar-widget__body collapse show" id="option<?php echo $optionRow['option_id'];?>" >
         <ul class="list-vertical"><?php
                 }
                 $optionValueId = $optionRow['option_id'] . '_' . $optionRow['optionvalue_id'];
@@ -296,7 +295,7 @@ if (isset($prodcat_code)) {
             <div class="sidebar-widget">
                 <div class="sidebar-widget__head" data-toggle="collapse" data-target="#condition" aria-expanded="true">
                     <?php echo Labels::getLabel('LBL_Condition', $siteLangId); ?></div>
-                <div class="sidebar-widget__body collapse show"  id="condition" data-parent="#collection-sidebar">
+                <div class="sidebar-widget__body collapse show"  id="condition" >
                     <ul class="list-vertical">
                         <?php foreach ($conditionsArr as $condition) {
                 if (empty($condition) || $condition['selprod_condition'] == 0) {
@@ -328,7 +327,7 @@ if (isset($prodcat_code)) {
                 <div class="sidebar-widget__head  collapsed" data-toggle="collapse" data-target="#availability" aria-expanded="true">
                     <?php echo Labels::getLabel('LBL_Availability', $siteLangId); ?>
                 </div>
-                <div class="sidebar-widget__body collapse show" id="availability" data-parent="#collection-sidebar">
+                <div class="sidebar-widget__body collapse show" id="availability" >
                     <div class="toggle-target">
                         <ul class="listing--vertical listing--vertical-chcek">
                             <li><label class="checkbox availability" id="availability_1"><input name="out_of_stock"
@@ -357,6 +356,24 @@ if (isset($prodcat_code)) {
             });
 
             $("document").ready(function() {
+                
+                <?php if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) == FilterHelper::LAYOUT_TOP) { ?>
+                        $(window).resize(function(){                            
+                            var windowSize = $(window).width();
+                            if(windowSize > 992){                         
+                                $('#filters_body--js .sidebar-widget__body').removeClass('show');
+                                $('#filters_body--js .sidebar-widget__head').attr('aria-expanded',false);
+                                $('#filters_body--js .sidebar-widget__body').attr('data-parent','#collection-sidebar');
+                            }else{
+                                $('#filters_body--js .sidebar-widget__body').addClass('show');
+                                $('#filters_body--js .sidebar-widget__head').attr('aria-expanded',true);
+                                $('#filters_body--js .sidebar-widget__body').removeAttr('data-parent');
+                            }
+                        });
+                        $(window).trigger('resize');
+
+                <?php } ?>
+
                 var min = 0;
                 var max = 0; 
                 <?php
