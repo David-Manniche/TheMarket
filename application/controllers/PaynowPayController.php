@@ -4,8 +4,6 @@
 /**
  * Paynow - API's reference https://docs.paynow.pl/
  * Git - https://github.com/pay-now/paynow-php-sdk
- * Currency : https://paynow-app.com/faqs/what-currency-can-i-use/
- *
  */
 class PaynowPayController extends PaymentController
 {
