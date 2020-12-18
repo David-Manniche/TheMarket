@@ -50,8 +50,7 @@ class ProductCategory extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         $prodcatStatus = FatUtility::int($prodcatStatus);
-        $srch = new SearchBase(static::DB_TBL, 'm');
-        $srch->addOrder('m.prodcat_active', 'DESC');
+        $srch = new SearchBase(static::DB_TBL, 'm');        
 
         if ($includeChildCount) {
             $childSrchbase = new SearchBase(static::DB_TBL);
@@ -139,6 +138,7 @@ class ProductCategory extends MyAppModel
 
         foreach ($categoryArray as $categoryId) {
             $srch = ProductCategory::getSearchObject(false, 0, false, -1);
+            $srch->addOrder('m.prodcat_active', 'DESC');
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
             $srch->addMultipleFields(array('prodcat_id', 'GETCATCODE(`prodcat_id`) as prodcat_code', 'GETCATORDERCODE(`prodcat_id`) as prodcat_ordercode'));
@@ -167,6 +167,7 @@ class ProductCategory extends MyAppModel
         $prodCatId = FatUtility::int($prodCatId);
 
         $srch = ProductCategory::getSearchObject(false, 0, false);
+        $srch->addOrder('m.prodcat_active', 'DESC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addMultipleFields(array('prodcat_id', 'GETCATORDERCODE(`prodcat_id`) as prodcat_ordercode'));

@@ -792,6 +792,7 @@ class MetaTagsController extends AdminBaseController
         $controller = FatUtility::convertToType($tabsArr[$metaType]['controller'], FatUtility::VAR_STRING);
         $action = FatUtility::convertToType($tabsArr[$metaType]['action'], FatUtility::VAR_STRING);
         $srch = ProductCategory::getSearchObject(false, $this->adminLangId, false);
+        $srch->addOrder('m.prodcat_active', 'DESC');
 
         $srch->joinTable(MetaTag::DB_TBL, 'LEFT OUTER JOIN', "mt.meta_record_id = m.prodcat_id and mt.meta_controller = '$controller' and mt.meta_action = '$action' ", 'mt');
         $srch->joinTable(MetaTag::DB_TBL_LANG, 'LEFT OUTER JOIN', "mt_l.metalang_meta_id = mt.meta_id AND mt_l.metalang_lang_id = " . $this->adminLangId, 'mt_l');

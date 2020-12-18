@@ -148,6 +148,7 @@ class SellerRequestsController extends SellerBaseController
     private function getRequestedCatObj()
     {
         $srch = ProductCategory::getSearchObject(false, $this->siteLangId, false, -1);
+        $srch->addOrder('m.prodcat_active', 'DESC');
 
         $userArr = User::getAuthenticUserIds(UserAuthentication::getLoggedUserId(), $this->userParentId);
         $srch->addCondition('prodcat_seller_id', 'in', $userArr);

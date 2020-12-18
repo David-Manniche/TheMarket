@@ -699,6 +699,7 @@ trait CustomCatalogProducts
         $blockCount = $post['blockCount'];
         //$prodCatId = FatUtility::convertToType($prodCatId,FATUtility::VAR_INT);
         $srch = ProductCategory::getSearchObject(true, $this->siteLangId, true);
+        $srch->addOrder('m.prodcat_active', 'DESC');
         $srch->addMultipleFields(array('m.prodcat_id', 'IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
         $srch->addCondition('m.prodcat_deleted', '=', applicationConstants::NO);
         $srch->addCondition('m.prodcat_parent', '=', $prodCatId);
@@ -727,6 +728,7 @@ trait CustomCatalogProducts
             //$result['msg'] = Labels::getLabel('MSG_updated_successfully',$this->siteLangId);
         } else {
             $srch = ProductCategory::getSearchObject(false, $this->siteLangId, true);
+            $srch->addOrder('m.prodcat_active', 'DESC');
             $srch->addMultipleFields(array('m.prodcat_id', 'IFNULL(pc_l.prodcat_name,m.prodcat_identifier) as prodcat_name'));
             $srch->addCondition('m.prodcat_deleted', '=', applicationConstants::NO);
             $srch->addCondition('m.prodcat_id', '=', $prodCatId);

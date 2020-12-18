@@ -640,6 +640,7 @@ class Importexport extends ImportexportCommon
         }
 
         $srch = ProductCategory::getSearchObject(false, $langId, false);
+        $srch->addOrder('m.prodcat_active', 'DESC');
         $srch->addMultipleFields(array('prodcat_id', 'prodcat_identifier', 'prodcat_parent', 'IFNULL(prodcat_name,prodcat_identifier) as prodcat_name', 'prodcat_description', 'prodcat_featured', 'prodcat_active', 'prodcat_status', 'prodcat_deleted', 'prodcat_display_order'));
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -682,6 +683,7 @@ class Importexport extends ImportexportCommon
     public function exportCategoryMedia($langId)
     {
         $srch = ProductCategory::getSearchObject(false, false, false);
+        $srch->addOrder('m.prodcat_active', 'DESC');
         $srch->joinTable(AttachedFile::DB_TBL, 'INNER JOIN', 'prodcat_id = afile_record_id and ( afile_type = ' . AttachedFile::FILETYPE_CATEGORY_ICON . ' or afile_type = ' . AttachedFile::FILETYPE_CATEGORY_BANNER . ')');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();

@@ -104,6 +104,7 @@ class SavedSearchProduct extends MyAppModel
                     break;
                 case 'prodcat':
                     $productCategory = ProductCategory::getSearchObject(false, $langId);
+                    $productCategory->addOrder('m.prodcat_active', 'DESC');
                     $productCategory->addMultipleFields(array('IFNULL(prodcat_name,prodcat_identifier) as prodcat_name,prodcat_identifier'));
                     $productCategory->addCondition('prodcat_id', 'in', $row);
                     $rs = $productCategory->getResultSet();
