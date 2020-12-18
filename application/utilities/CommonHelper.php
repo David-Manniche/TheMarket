@@ -1322,6 +1322,10 @@ class CommonHelper extends FatUtility
         }
 
         $originalPrice = $product['selprod_price'];
+        if (1 > $originalPrice) {
+            return 0;
+        }
+        
         $specialPrice = $product['theprice'];
         $discount = (($originalPrice - $specialPrice) * 100) / $originalPrice;
         return $disVal = round($discount) . "% " . Labels::getLabel('LBL_Off', $langId);
