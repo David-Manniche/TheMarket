@@ -97,7 +97,7 @@ class Product extends MyAppModel
         return $srch;
     }
 
-    public static function requiredFields($prodType = PRODUCT::PRODUCT_TYPE_PHYSICAL)
+    public static function requiredFields($prodType = Product::PRODUCT_TYPE_PHYSICAL)
     {
         $arr = array(
             ImportexportCommon::VALIDATE_POSITIVE_INT => array(
@@ -128,7 +128,7 @@ class Product extends MyAppModel
             $arr[ImportexportCommon::VALIDATE_NOT_NULL][] = 'brand_identifier';
         }
 
-        if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
+        if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == Product::PRODUCT_TYPE_PHYSICAL) {
             $physical = array(
                 'product_dimension_unit_identifier',
                 'product_weight_unit_identifier',
@@ -150,7 +150,7 @@ class Product extends MyAppModel
         return $arr;
     }
 
-    public static function validateFields($columnIndex, $columnTitle, $columnValue, $langId, $prodType = PRODUCT::PRODUCT_TYPE_PHYSICAL)
+    public static function validateFields($columnIndex, $columnTitle, $columnValue, $langId, $prodType = Product::PRODUCT_TYPE_PHYSICAL)
     {
         $requiredFields = static::requiredFields($prodType);
         return ImportexportCommon::validateFields($requiredFields, $columnIndex, $columnTitle, $columnValue, $langId);
@@ -1176,7 +1176,7 @@ class Product extends MyAppModel
         $productSellerShiping['ps_user_id'] = $userId;
         $productSellerShiping['ps_from_country_id'] = $data_to_be_save['ps_from_country_id'];
         $productSellerShiping['ps_free'] = $data_to_be_save['ps_free'];
-        if (!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping)) {
+        if (!FatApp::getDb()->insertFromArray(Product::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping)) {
             return false;
         }
         return true;
@@ -1884,7 +1884,7 @@ END,   special_price_found ) as special_price_found'
             'ps_free' => $psFree,
             'ps_from_country_id' => $psCountryId
         );
-        if (!FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
+        if (!FatApp::getDb()->insertFromArray(Product::DB_TBL_PRODUCT_SHIPPING, $prodSellerShip, false, array(), $prodSellerShip)) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }

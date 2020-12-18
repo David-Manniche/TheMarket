@@ -39,7 +39,7 @@ class UserFavoriteProductSearch extends SearchBase
         }
 
         if ($isProductApproved) {
-            $this->addCondition('product_approved', '=', PRODUCT::APPROVED);
+            $this->addCondition('product_approved', '=', Product::APPROVED);
         }
 
         if ($isProductDeleted) {

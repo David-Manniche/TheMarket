@@ -1599,7 +1599,7 @@ class Importexport extends ImportexportCommon
         $this->validateCSVHeaders($csvFilePointer, $coloumArr, $langId);
 
         $errInSheet = false;
-        $prodType = PRODUCT::PRODUCT_TYPE_PHYSICAL;
+        $prodType = Product::PRODUCT_TYPE_PHYSICAL;
         while (($row = $this->getFileRow($csvFilePointer)) !== false) {
             $rowIndex++;
             $prodDataArr = $prodlangDataArr = $categoryIds = $prodShippingArr = array();
@@ -1832,7 +1832,7 @@ class Importexport extends ImportexportCommon
                             break;
                         case 'product_dimension_unit_identifier':
                             $columnKey = 'product_dimension_unit';
-                            if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
+                            if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == Product::PRODUCT_TYPE_PHYSICAL) {
                                 if (!array_key_exists($colValue, $lengthUnitsArr)) {
                                     $invalid = true;
                                 } else {
@@ -1848,7 +1848,7 @@ class Importexport extends ImportexportCommon
                             if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
                                 $colValue = '';
                             } else {
-                                if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
+                                if (FatApp::getConfig('CONF_PRODUCT_DIMENSIONS_ENABLE', FatUtility::VAR_INT, 0) && $prodType == Product::PRODUCT_TYPE_PHYSICAL) {
                                     if (!array_key_exists($colValue, $weightUnitsArr)) {
                                         $invalid = true;
                                     } else {
@@ -2041,7 +2041,7 @@ class Importexport extends ImportexportCommon
                                 $prodShippingArr['ps_from_country_id'] = FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0);
                                 $prodShippingArr['ps_free'] = 0;
                                 $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
-                                FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
+                                FatApp::getDb()->insertFromArray(Product::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
                             }
                         }
 
@@ -2052,7 +2052,7 @@ class Importexport extends ImportexportCommon
                                 'shippro_user_id' => $shippedByUserId
                             );
                             $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
-                            FatApp::getDb()->insertFromArray(PRODUCT::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
+                            FatApp::getDb()->insertFromArray(Product::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
                         }
 
                         if (!empty($shipProProdData)) {

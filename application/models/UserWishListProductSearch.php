@@ -79,7 +79,7 @@ class UserWishListProductSearch extends SearchBase
         }
 
         if ($isProductApproved) {
-            $this->addCondition('product_approved', '=', PRODUCT::APPROVED);
+            $this->addCondition('product_approved', '=', Product::APPROVED);
         }
 
         if ($isProductDeleted) {
@@ -118,7 +118,7 @@ class UserWishListProductSearch extends SearchBase
             $langId = $this->langId;
         }
 
-        $this->joinTable(PRODUCT::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT OUTER JOIN', 'ptc.ptc_product_id = p.product_id', 'ptc');
+        $this->joinTable(Product::DB_TBL_PRODUCT_TO_CATEGORY, 'LEFT OUTER JOIN', 'ptc.ptc_product_id = p.product_id', 'ptc');
         $this->joinTable(ProductCategory::DB_TBL, 'LEFT OUTER JOIN', 'c.prodcat_id = ptc.ptc_prodcat_id', 'c');
 
         $this->addCondition('c.prodcat_active', '=', applicationConstants::ACTIVE);
