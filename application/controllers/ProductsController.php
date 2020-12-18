@@ -1397,6 +1397,7 @@ class ProductsController extends MyAppController
         );
 
         $productCatSrchObj = ProductCategory::getSearchObject(false, $this->siteLangId);
+        $productCatSrchObj->addOrder('m.prodcat_active', 'DESC');
         $productCatSrchObj->doNotCalculateRecords();
         /* $productCatSrchObj->setPageSize(4); */
         $productCatSrchObj->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));

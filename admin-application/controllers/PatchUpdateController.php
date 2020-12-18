@@ -336,6 +336,7 @@ class PatchUpdateController extends AdminBaseController
     public function updateCategoryTable()
     {
         $srch = ProductCategory::getSearchObject();
+        $srch->addOrder('m.prodcat_active', 'DESC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $srch->addCondition('prodcat_parent', '=', 0);
@@ -483,5 +484,6 @@ class PatchUpdateController extends AdminBaseController
     public function updateCategoryRelations(int $prodCatId = 0)
     {
         ProductCategory::updateCategoryRelations($prodCatId);
+        echo 'Done';
     }
 }

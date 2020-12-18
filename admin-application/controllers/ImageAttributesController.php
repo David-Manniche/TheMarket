@@ -132,9 +132,10 @@ class ImageAttributesController extends AdminBaseController
                 break;
 			case AttachedFile::FILETYPE_CATEGORY_BANNER:
                 $srch = ProductCategory::getSearchObject(false, $this->adminLangId);
+                                $srch->addOrder('m.prodcat_active', 'DESC');
 				$srch->addCondition(ProductCategory::DB_TBL_PREFIX . 'deleted', '=', 0);
 				$srch->addFld('IFNULL(prodcat_name, prodcat_identifier) AS prodcat_name');
-				$srch->addCondition('prodcat_id', '=', $recordId);
+				$srch->addCondition('prodcat_id', '=', $recordId);                                
 				$srch->addOrder('prodcat_id', 'DESC');
 				$rs = $srch->getResultSet();
 				$records = FatApp::getDb()->fetch($rs);

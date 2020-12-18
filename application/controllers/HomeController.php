@@ -536,6 +536,7 @@ class HomeController extends MyAppController
         $collections = array();
 
         $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);
+        $productCatSrchObj->addOrder('m.prodcat_active', 'DESC');
         $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));
 
         $collectionObj = new CollectionSearch();
