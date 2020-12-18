@@ -38,7 +38,7 @@ if (0 < $opId) {
     }
 }
 
-$cartTotal = $shippingCharges = $totalVolumeDiscount = $totalRewardPointDiscount = $totalOrderDiscountTotal = $totalTax = 0;
+$cartTotal = $shippingCharges = $totalVolumeDiscount = $totalOrderDiscountTotal = $totalTax = 0;
 
 $taxOptionsTotal = array();
 
@@ -79,7 +79,6 @@ foreach ($childArr as $index => $childOrder) {
     $totalVolumeDiscount += $volumeDiscount;
 
     $rewardPointDiscount = CommonHelper::orderProductAmount($childOrder, 'REWARDPOINT');
-    $totalRewardPointDiscount += $rewardPointDiscount;
 
     $orderDiscountTotal = CommonHelper::orderProductAmount($childOrder, 'DISCOUNT');
     $totalOrderDiscountTotal += $orderDiscountTotal;
@@ -145,7 +144,7 @@ foreach ($childArr as $index => $childOrder) {
         );
     }
 
-    if (0 < $rewardPointDiscount) {
+    if (0 != $rewardPointDiscount) {
         $childArr[$index]['priceDetail'][] = array(
             'key' => Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId),
             'value' => CommonHelper::displayMoneyFormat($rewardPointDiscount),
@@ -231,10 +230,10 @@ if (!$primaryOrder) {
         ];
     }
 
-    if (0 < $totalRewardPointDiscount) {
+    if (0 != $orderDetail['order_reward_point_value']) {
         $data['orderSummary'][] = [
             'key' => Labels::getLabel('LBL_REWARD_POINTS', $siteLangId),
-            'value' => $totalRewardPointDiscount,
+            'value' => $orderDetail['order_reward_point_value'],
         ];
     }
 
