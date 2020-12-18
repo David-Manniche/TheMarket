@@ -1,26 +1,30 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
+<?php
+defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 if (isset($stripe)) {
     if (isset($stripe['secret_key']) && isset($stripe['publishable_key'])) {
-        if (!empty($stripe['secret_key']) && !empty($stripe['publishable_key'])) { ?>
+        if (!empty($stripe['secret_key']) && !empty($stripe['publishable_key'])) {
+            ?>
             <?php if (!FatUtility::isAjaxCall()) { ?>
-                    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-                    <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+                <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+                <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
             <?php } ?>
             <script type="text/javascript">
                 var publishable_key = '<?php echo $stripe['publishable_key']; ?>';
             </script>
-    <?php }
+            <?php
+        }
     }
 }
-if (isset($client_secret)) { ?>
+if (isset($client_secret)) {
+    ?>
     <script type="text/javascript">
         function loadCardConfirmation() {
             var stripe = Stripe(publishable_key);
             var clientSecret = '<?php echo $client_secret; ?>';
             stripe.confirmCardPayment(clientSecret, {
                 payment_method: '<?php echo $payment_method_id; ?>'
-            }).then(function(result) {
+            }).then(function (result) {
                 // console.log(result);
                 if (result.error) {
                     // PaymentIntent client secret was invalid
@@ -34,7 +38,7 @@ if (isset($client_secret)) { ?>
                             type: "POST",
                             url: '<?php echo UrlHelper::generateUrl('StripePay', 'StripeSuccess') ?>',
                             data: data,
-                            success: function(data) {
+                            success: function (data) {
                                 location.href = '<?php echo UrlHelper::generateUrl('custom', 'paymentSuccess', array($order_id), CONF_WEBROOT_URL); ?>';
                             }
                         });
@@ -46,19 +50,21 @@ if (isset($client_secret)) { ?>
                 }
             });
         }
-        $(document).ready(function() {
-            $('.cc-payment').addClass('payment-load');
+        $(document).ready(function () {
+    <!--$('.cc-payment').addClass('payment-load'); -->
             loadCardConfirmation();
         });
     </script>
-<?php exit;
-} else { ?>
+    <?php
+    exit;
+} else {
+    ?>
     <script>
-        (function($) {
+        (function ($) {
             var _this = false;
             var _subText = false;
 
-            loadStripe = function() {
+            loadStripe = function () {
                 try {
                     if (typeof publishable_key != typeof undefined) {
                         // this identifies your website in the createToken call below
@@ -87,7 +93,7 @@ if (isset($client_secret)) { ?>
 
                         }
                         $submit = true;
-                        $(document).on("submit", "#stripeCharge", function(event) {
+                        $(document).on("submit", "#stripeCharge", function (event) {
                             event.preventDefault();
                             var stripeToken = $("input[name='stripeToken']").val();
                             if ('' != stripeToken && 'undefined' != typeof stripeToken) {
@@ -132,172 +138,157 @@ if (isset($client_secret)) { ?>
 
                 } catch (e) {
                     // console.log(e.message);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         loadStripe();
                     }, 500);
                 }
             }
             loadStripe();
         })(jQuery);
-    </script>
+        </script>
 <?php } ?>
+    <section class="payment-section">
+        <div class="payable-amount">
+            
+            <div class="payable-amount__head">
+                <div class="payable-amount--header">
+                    <a href="#"><img src="images/back-icon.svg" /></a>        
+                    <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
+                </div>
+                <div class="payable-amount--decription">
+                    <h2><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></h2>
+                    <p><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <strong><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></p>
+                    <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>:<?php echo $orderInfo["invoice"]; ?></p>
+                </div>
+            </div>
 
-<div class="payment-page">
-    <div class="cc-payment">
-        <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
-        <div class="reff row">
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p class=""><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <strong><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></strong> </p>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p class=""><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>: <strong><?php echo $orderInfo["invoice"]; ?></strong></p>
-            </div>
-        </div>
-        <div class="payment-from container">
-            <?php if (!isset($error)) :
-                // $frm->setFormTagAttribute('onsubmit', 'sendPayment(this); return(false);');
-                $frm->setFormTagAttribute('id', 'stripeCharge');
-                $fld = $frm->getField('cc_number');
-                $fld->addFieldTagAttribute('class', 'p-cards');
-                $fld->addFieldTagAttribute('id', 'cc_number');
-                $fld = $frm->getField('cc_owner');
-                $fld->addFieldTagAttribute('id', 'cc_owner');
-                $fld = $frm->getField('cc_cvv');
-                $fld->addFieldTagAttribute('id', 'cc_cvv'); ?>
-                <?php echo $frm->getFormTag(); ?>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label"><?php echo Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $siteLangId); ?></label>
-                            </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $frm->getFieldHtml('cc_number'); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label"><?php echo Labels::getLabel('LBL_CARD_HOLDER_NAME', $siteLangId); ?></label>
-                            </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $frm->getFieldHtml('cc_owner'); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="field-set">
-							<div class="caption-wraper">
-								<label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_Month', $siteLangId); ?></label>
-							</div>
-							<div class="field-wraper">
-								<div class="field_cover">
-									<?php
-									$fld = $frm->getField('cc_expire_date_month');
-									$fld->addFieldTagAttribute('id', 'cc_expire_date_month');
-									$fld->addFieldTagAttribute('class', 'ccExpMonth  combobox required');
-									echo $fld->getHtml(); ?>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="field-set">
-							<div class="caption-wraper">
-								<label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_year', $siteLangId); ?></label>
-							</div>
-							<div class="field-wraper">
-								<div class="field_cover">
-									<?php
-									$fld = $frm->getField('cc_expire_date_year');
-									$fld->addFieldTagAttribute('id', 'cc_expire_date_year');
-									$fld->addFieldTagAttribute('class', 'ccExpYear combobox required');
-									echo $fld->getHtml(); ?>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="field-set">
-							<div class="caption-wraper">
-								<label class="field_label"><?php echo Labels::getLabel('LBL_CVV_SECURITY_CODE', $siteLangId); ?></label>
-							</div>
-							<div class="field-wraper">
-								<div class="field_cover">
-                                    <?php echo $frm->getFieldHtml('cc_cvv'); ?>
-                                </div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-                <?php /* 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label"></label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                        <label class="checkbox">
-                                            <?php
-                                                $fld = $frm->getField('cc_save_card');
-                                                $fld->addFieldTagAttribute('onclick','alert("|SAVE THIS CARD| Not Functional!");return false;');
-                                                $fldHtml = $fld->getHTML();
-                                                $fldHtml = str_replace("<label >","",$fldHtml);
-                                                $fldHtml = str_replace("</label>","",$fldHtml);
-                                                echo $fldHtml;
-                                                ?>
-                                            <i class="input-helper"></i>
-                                        </label>
+
+            <div class="payable-amount__body">
+                <?php
+                if (!isset($error)) :
+                    // $frm->setFormTagAttribute('onsubmit', 'sendPayment(this); return(false);');
+                    $frm->setFormTagAttribute('id', 'stripeCharge');
+                    $fld = $frm->getField('cc_number');
+                    $fld->addFieldTagAttribute('class', 'p-cards');
+                    $fld->addFieldTagAttribute('id', 'cc_number');
+                    $fld = $frm->getField('cc_owner');
+                    $fld->addFieldTagAttribute('id', 'cc_owner');
+                    $fld = $frm->getField('cc_cvv');
+                    $fld->addFieldTagAttribute('id', 'cc_cvv');
+                    ?>
+                    <?php echo $frm->getFormTag(); ?>
+                    <div class="payable-form__body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label"><?php echo Labels::getLabel('LBL_ENTER_CREDIT_CARD_NUMBER', $siteLangId); ?></label>
+                                    </div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                        <?php echo $frm->getFieldHtml('cc_number'); ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div> 
-                    */ ?>
-                <div class="total-pay"><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?> <small>(<?php echo Labels::getLabel('LBL_Total_Payable', $siteLangId); ?>)</small> </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label"></label>
-                            </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php 
-                                        $btn = $frm->getField('btn_submit'); 
-                                        $btn->addFieldTagAttribute('class', 'btn btn-brand');
-                                        $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
-                                    echo $frm->getFieldHtml('btn_submit'); ?>
-                                    <?php if (FatUtility::isAjaxCall()) { ?>
-                                        <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-brand">
-                                            <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
-                                        </a>
-                                    <?php } else { ?>
-                                        <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel',$siteLangId);?></a>
-                                    <?php } ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label"><?php echo Labels::getLabel('LBL_CARD_HOLDER_NAME', $siteLangId); ?></label>
+                                    </div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                        <?php echo $frm->getFieldHtml('cc_owner'); ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_Month', $siteLangId); ?></label>
+                                    </div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                            <?php
+                                            $fld = $frm->getField('cc_expire_date_month');
+                                            $fld->addFieldTagAttribute('id', 'cc_expire_date_month');
+                                            $fld->addFieldTagAttribute('class', 'ccExpMonth  combobox required');
+                                            echo $fld->getHtml();
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_year', $siteLangId); ?></label>
+                                    </div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover">
+                                            <?php
+                                            $fld = $frm->getField('cc_expire_date_year');
+                                            $fld->addFieldTagAttribute('id', 'cc_expire_date_year');
+                                            $fld->addFieldTagAttribute('class', 'ccExpYear combobox required');
+                                            echo $fld->getHtml();
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                        
+                        </div>
+                        <div class="row">
+                               <div class="col-md-4">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label"><?php echo Labels::getLabel('LBL_CVV_SECURITY_CODE', $siteLangId); ?></label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                            <?php echo $frm->getFieldHtml('cc_cvv'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                        </div>
+                         <?php echo $frm->getExternalJs(); ?>
+                        <?php else : ?>
+                        <div class="alert alert--danger"><?php echo $error ?></div>
+                        <?php endif; ?>
+                        <div id="ajax_message"></div>
+                   </div>
+                   
+                     <div class="payable-form__footer">
+                            <div class="row">
+                               <div class="col-md-6">                                    
+                                   <?php
+                                   $btn = $frm->getField('btn_submit');
+                                   $btn->addFieldTagAttribute('class', 'btn btn-brand');                                   
+                                   $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
+                                   $btn->addFieldTagAttribute('onclick', "$(this).closest('.payment-section').find('form').submit();");
+                                   echo $frm->getFieldHtml('btn_submit');
+                                   ?> 
+                               </div>
+                               <div class="col-md-6">
+                                   <?php if (FatUtility::isAjaxCall()) { ?>
+                                            <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-brand">
+                                            <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
+                                            </a>
+                                   <?php } else { ?>
+                                       <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+                                   <?php } ?>                        
+                               </div>
+                           </div>  
+                    </div> 
+                    
                 </form>
-                <?php echo $frm->getExternalJs(); ?>
-            <?php else : ?>
-                <div class="alert alert--danger"><?php echo $error ?></div>
-            <?php endif; ?>
-            <div id="ajax_message"></div>
+            </div>
         </div>
     </div>
 </div>
+</section>
