@@ -4,8 +4,6 @@
 /**
  * Paynow - API's reference https://docs.paynow.pl/
  * Git - https://github.com/pay-now/paynow-php-sdk
- * Currency : https://paynow-app.com/faqs/what-currency-can-i-use/
- *
  */
 class PaynowPayController extends PaymentController
 {
@@ -143,6 +141,11 @@ class PaynowPayController extends PaymentController
             $this->logFailure($orderId, $msg);
         }
         /* End Recording Payment in DB */
+
+        /* Unset Session Element On Payment Success.  */
+        unset($_SESSION[UserAuthentication::SESSION_ELEMENT_NAME][self::KEY_NAME . '_paymentId']);
+        /* Unset Session Element On Payment Success.  */
+
         FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
     }
     
@@ -165,6 +168,7 @@ class PaynowPayController extends PaymentController
         $orderPaymentObj->addOrderPaymentComments($msg);
         Message::addErrorMessage($msg);
         FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
+        die;
     }
 
     /**

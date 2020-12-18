@@ -123,10 +123,7 @@ class Paynow extends PaymentMethodBase
         */
         //=== Create Request Body
         $this->buildRequestBody();
-        if (false === $this->doRequest(self::REQUEST_PAYMENT)) {
-            return false;
-        }
-        return true;
+        return $this->doRequest(self::REQUEST_PAYMENT);
     }
     
     /**
@@ -153,7 +150,6 @@ class Paynow extends PaymentMethodBase
         $customerEmail = !isset($orderInfo['customer_email']) || empty($orderInfo['customer_email']) ? $this->userData['credential_email'] : $orderInfo['customer_email'];
 
         $returnUrl = UrlHelper::generateFullUrl(self::KEY_NAME . 'Pay', "paymentSuccess", [$this->orderId]); /* The URL that the buyer will be redirected to, after making payment. This URL overrides return_url value from PoS configuration. */
-        $paymentAmount = 'PLN' == $this->systemCurrencyCode ? $paymentAmount * 100 : $paymentAmount;
 
         $this->requestBody = [
             "amount" => $this->formatPaymentAmount($paymentAmount),
@@ -176,10 +172,7 @@ class Paynow extends PaymentMethodBase
      */
     public function validatePaymentResponse(string $paymentId): bool
     {
-        if (false === $this->doRequest(self::REQUEST_VALIDATE_PAYMENT, [$paymentId])) {
-            return false;
-        }
-        return true;
+        return $this->doRequest(self::REQUEST_VALIDATE_PAYMENT, [$paymentId]);
     }
 
     /**
