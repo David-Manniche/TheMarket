@@ -152,12 +152,12 @@ if (isset($client_secret)) {
             
             <div class="payable-amount__head">
                 <div class="payable-amount--header">
-                    <a href="#"><img src="images/back-icon.svg" /></a>        
+                    <a href="#"><img src="<?php echo CONF_WEBROOT_URL; ?>images/back-icon.svg" /></a>        
                     <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
                 </div>
                 <div class="payable-amount--decription">
                     <h2><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></h2>
-                    <p><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <strong><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></p>
+                    <p><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></p>
                     <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>:<?php echo $orderInfo["invoice"]; ?></p>
                 </div>
             </div>
@@ -168,6 +168,7 @@ if (isset($client_secret)) {
                 if (!isset($error)) :
                     // $frm->setFormTagAttribute('onsubmit', 'sendPayment(this); return(false);');
                     $frm->setFormTagAttribute('id', 'stripeCharge');
+                    $frm->setFormTagAttribute('class', 'form form--payment');
                     $fld = $frm->getField('cc_number');
                     $fld->addFieldTagAttribute('class', 'p-cards');
                     $fld->addFieldTagAttribute('id', 'cc_number');
@@ -207,7 +208,7 @@ if (isset($client_secret)) {
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-6">
                                 <div class="field-set">
                                     <div class="caption-wraper">
                                         <label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_Month', $siteLangId); ?></label>
@@ -224,7 +225,7 @@ if (isset($client_secret)) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-6">
                                 <div class="field-set">
                                     <div class="caption-wraper">
                                         <label class="field_label"><?php echo Labels::getLabel('LBL_Expiry_year', $siteLangId); ?></label>
@@ -243,7 +244,7 @@ if (isset($client_secret)) {
                             </div>                        
                         </div>
                         <div class="row">
-                               <div class="col-md-4">
+                               <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="caption-wraper">
                                             <label class="field_label"><?php echo Labels::getLabel('LBL_CVV_SECURITY_CODE', $siteLangId); ?></label>
@@ -274,13 +275,13 @@ if (isset($client_secret)) {
                                    echo $frm->getFieldHtml('btn_submit');
                                    ?> 
                                </div>
-                               <div class="col-md-6">
+                               <div class="col-md-6 d-md-block d-none">
                                    <?php if (FatUtility::isAjaxCall()) { ?>
                                             <a href="javascript:void(0);" onclick="loadPaymentSummary()" class="btn btn-outline-brand">
                                             <?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?>
                                             </a>
                                    <?php } else { ?>
-                                       <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+                                       <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-gray"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
                                    <?php } ?>                        
                                </div>
                            </div>  
