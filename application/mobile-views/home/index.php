@@ -75,6 +75,11 @@ foreach ($collections as $collectionIndex => $collectionData) {
             $collections[$collectionIndex]['testimonials'][$index]['user_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'testimonial', array($testimonial['testimonial_id'], $siteLangId, 'THUMB')), CONF_IMG_CACHE_TIME, '.jpg');
         }
     } elseif (array_key_exists('banners', $collectionData) && isset($collectionData['banners']['banners'])) {
+        if (1 > count($collectionData['banners']['banners'])) {
+            $collectionData['banners']['banners'] = (object)[];
+            continue;
+        }
+        
         foreach ($collectionData['banners']['banners'] as $index => $banner) {
             $uploadedTime = AttachedFile::setTimeParam($banner['banner_updated_on']);
             $urlTypeData = CommonHelper::getUrlTypeData($banner['banner_url']);

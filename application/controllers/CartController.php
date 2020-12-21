@@ -113,7 +113,8 @@ class CartController extends MyAppController
 
             if (true === MOBILE_APP_API_CALL) {
                 $cartObj->removeProductShippingMethod();
-
+                $cartObj->removeUsedRewardPoints();
+                
                 $loggedUserId = UserAuthentication::getLoggedUserId(true);
 
                 $billingAddressDetail = array();
