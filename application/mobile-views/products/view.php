@@ -145,6 +145,7 @@ $product['selprod_return_policies'] = !empty($product['selprod_return_policies']
 $product['selprod_warranty_policies'] = !empty($product['selprod_warranty_policies']) ? $product['selprod_warranty_policies'] : (object)array();
 
 $fulfillmentLabel = Labels::getLabel('LBL_INVALID_FULFILLMENT', $siteLangId);
+$icon = 'freeshipping';
 switch ($fulfillmentType) {
     case Shipping::FULFILMENT_SHIP:
         $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
