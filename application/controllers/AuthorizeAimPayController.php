@@ -37,7 +37,7 @@ class AuthorizeAimPayController extends PaymentController
         $this->settings = $this->plugin->getSettings();
     }
     
-    public function charge($orderId = '')
+    public function charge($orderId)
     {
         if (empty($orderId)) {
             FatUtility::exitWIthErrorCode(404);
