@@ -1639,3 +1639,11 @@ INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_co
 -- --- Paystack Payment Gateway--- --
 INSERT IGNORE INTO `tbl_plugins` (`plugin_identifier`, `plugin_type`, `plugin_code`, `plugin_active`, `plugin_display_order`) VALUES ('Paystack', '13', 'Paystack', '0', '23');
 -- --- Paystack Payment Gateway--- --
+
+-- --- Authorize Aim Payment Gateway Code Deprecated And No Update For Those Fixes --- --
+DELETE tp, tpl, tps
+FROM tbl_plugins tp
+LEFT JOIN tbl_plugins_lang tpl ON tpl.pluginlang_plugin_id = tp.plugin_id
+LEFT JOIN tbl_plugin_settings tps ON tps.pluginsetting_plugin_id = tp.plugin_id
+WHERE tp.plugin_code = 'AuthorizeAim';
+-- --- Authorize Aim Payment Gateway Code Deprecated And No Update For Those Fixes --- --
