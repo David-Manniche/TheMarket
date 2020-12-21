@@ -1011,6 +1011,7 @@ class ImportexportCommon extends FatModel
     public function getAllCategoryIdentifiers($byId = true, $catIdOrIdentifier = false)
     {
         $srch = ProductCategory::getSearchObject(false, false, false);
+        $srch->addOrder('m.prodcat_active', 'DESC');
         $srch->doNotCalculateRecords();
         if ($catIdOrIdentifier) {
             $srch->setPageSize(1);

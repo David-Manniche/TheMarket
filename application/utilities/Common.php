@@ -130,6 +130,7 @@ class Common
             /* ] */
 
             $catSrch = ProductCategory::getSearchObject(false, $siteLangId);
+            $catSrch->addOrder('m.prodcat_active', 'DESC');
             $catSrch->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as category_name'));
             $catSrch->addOrder('category_name');
             $catSrch->doNotCalculateRecords();

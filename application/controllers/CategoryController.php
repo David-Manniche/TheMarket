@@ -11,6 +11,7 @@ class CategoryController extends MyAppController
     {
         /* $categoriesArr = ProductCategory::getTreeArr($this->siteLangId, 0, true, false, true); */
 		$productCategory = ProductCategory::getSearchObject(false, $this->siteLangId, true);
+                $productCategory->addOrder('m.prodcat_active', 'DESC');
 		$productCategory->addCondition('prodcat_parent', '=', 0);
 		$productCategory->addCondition('prodcat_deleted', '=', 0);
 		$productCategory->addOrder('prodcat_ordercode');
@@ -357,6 +358,7 @@ class CategoryController extends MyAppController
             trigger_error(Labels::getLabel('LBL_Brand_Id_not_Specified', CommonHelper::getLangId()), E_USER_ERROR);
         }
         $srch = productCategory::getSearchObject($langId);
+        $srch->addOrder('m.prodcat_active', 'DESC');
         $srch->addCondition('prodcat_name', '=', $categoryName);
         if ($categoryId) {
             $srch->addCondition('prodcat_id', '!=', $categoryId);

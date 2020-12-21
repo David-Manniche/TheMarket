@@ -37,6 +37,7 @@ class Navigation
         
         /* Product category requests */
         $categoryReqSrchObj = ProductCategory::getSearchObject(false, 0, false, ProductCategory::REQUEST_PENDING);
+        $categoryReqSrchObj->addOrder('m.prodcat_active', 'DESC');
         $categoryReqSrchObj->addMultipleFields(array('count(prodcat_id) as countOfRec'));
         $categoryReqResult = $db->fetch($categoryReqSrchObj->getResultset());
         $categoryReqCount = FatUtility::int($categoryReqResult['countOfRec']);
