@@ -1162,7 +1162,7 @@ class ProductSearch extends SearchBase
                             $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
                             $this->addFld('1 as availableInLocation');
                         } else {
-                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', ifnull(shipprofile.shippro_product_id,0), -1) as availableInLocation');
+                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', ifnull(shipprofile.shippro_product_id,0), 1) as availableInLocation');
                         }
                     }
 
