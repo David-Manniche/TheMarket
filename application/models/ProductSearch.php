@@ -1162,7 +1162,7 @@ class ProductSearch extends SearchBase
                             $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
                             $this->addFld('1 as availableInLocation');
                         } else {
-                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', ifnull(shipprofile.shippro_product_id,0), -1) as availableInLocation');
+                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', ifnull(shipprofile.shippro_product_id,0), 1) as availableInLocation');
                         }
                     }
 
@@ -1212,6 +1212,13 @@ class ProductSearch extends SearchBase
         $srch->joinTable(ShippingProfile::DB_TBL, 'INNER JOIN', 'sppro.shippro_shipprofile_id = spprof.shipprofile_id and spprof.shipprofile_active = ' . applicationConstants::YES, 'spprof');
         $srch->joinTable(ShippingProfileZone::DB_TBL, 'INNER JOIN', 'shippz.shipprozone_shipprofile_id = spprof.shipprofile_id', 'shippz');
         $srch->joinTable(ShippingZone::DB_TBL, 'INNER JOIN', 'shipz.shipzone_id = shippz.shipprozone_shipzone_id and shipz.shipzone_active = ' . applicationConstants::YES, 'shipz');
+        $srch->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = tp.product_id', 'psbs');
+
+        $joinCondition = 'if(tp.product_seller_id = 0, (if(psbs.psbs_user_id > 0, sppro.shippro_user_id = psbs.psbs_user_id, sppro.shippro_user_id = 0)), (sppro.shippro_user_id = psbs.psbs_user_id))';
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $joinCondition = 'sppro.shippro_user_id = 0';
+        }
+        $srch->addDirectCondition($joinCondition);
 
         $tempSrch = ShippingZone::getZoneLocationSearchObject();
         $tempSrch->addDirectCondition("(shiploc_country_id = '-1' or (shiploc_country_id = '" . $countryId . "' and (shiploc_state_id = '-1' or shiploc_state_id = '" . $stateId . "')) )");
