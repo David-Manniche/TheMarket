@@ -79,7 +79,7 @@
         <?php if (Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) { ?>
             <li>
                 <div class="certified-box">
-                    <?php $icon = $fulfillmentType == Shipping::FULFILMENT_PICKUP ? 'pickup' : 'freeshipping'; ?>
+                    <?php $icon = $fulfillmentType == Shipping::FULFILMENT_PICKUP ? 'item_pickup' : 'freeshipping'; ?>
                     <i class="icn">
                         <svg class="svg">
                             <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $icon; ?>" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#<?php echo $icon; ?>">

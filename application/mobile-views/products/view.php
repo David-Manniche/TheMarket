@@ -145,23 +145,26 @@ $product['selprod_return_policies'] = !empty($product['selprod_return_policies']
 $product['selprod_warranty_policies'] = !empty($product['selprod_warranty_policies']) ? $product['selprod_warranty_policies'] : (object)array();
 
 $fulfillmentLabel = Labels::getLabel('LBL_INVALID_FULFILLMENT', $siteLangId);
-$icon = 'freeshipping';
+$icon = CONF_WEBROOT_URL . 'images/';
 switch ($fulfillmentType) {
     case Shipping::FULFILMENT_SHIP:
         $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
-        $icon = 'freeshipping';
+        $icon .= 'shipping_30x30.png';
         break;
     case Shipping::FULFILMENT_PICKUP:
         $fulfillmentLabel = Labels::getLabel('LBL_PICKUP_ONLY', $siteLangId);
-        $icon = 'pickup';
+        $icon .= 'item_pickup_30x30.png';
         break;
     case Shipping::FULFILMENT_ALL:
         $fulfillmentLabel = Labels::getLabel('LBL_SHIPPMENT_AND_PICKUP', $siteLangId);
-        $icon = 'freeshipping';
+        $icon .= 'shipping_30x30.png';
+        break;
+    default:
+        $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
+        $icon .= 'shipping_30x30.png';
         break;
 }
 
-$icon = CONF_WEBROOT_URL . 'images/retina/sprite.svg#' . $icon;
 $product['productPolicies'][] = array(
     'title' => $fulfillmentLabel,
     'isSvg' => Plugin::RETURN_TRUE,
