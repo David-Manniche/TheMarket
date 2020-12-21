@@ -797,7 +797,9 @@ class ProductSearch extends SearchBase
                 $this->addCondition('brand_id', '=', $brandId);
             } elseif (is_array($brand) && 0 < count($brand)) {
                 $brand = array_filter(array_unique($brand));
-                $this->addDirectCondition('brand_id IN (' . implode(',', $brand) . ')');
+                if (!empty($brand)) {
+                    $this->addDirectCondition('brand_id IN (' . implode(',', $brand) . ')');
+                }
             } else {
                 if (!empty($brand)) {
                     $brand = explode(",", $brand);

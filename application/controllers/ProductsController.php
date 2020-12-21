@@ -801,7 +801,9 @@ class ProductsController extends MyAppController
         $langId = FatUtility::int($langId);
 
         $moreSellerSrch = new ProductSearch($langId);
+        $moreSellerSrch->setGeoAddress();
         $moreSellerSrch->addMoreSellerCriteria($selprodCode, $userId);
+        $moreSellerSrch->validateAndJoinDeliveryLocation();
         /*$moreSellerSrch->addMultipleFields(array( 'selprod_id', 'selprod_user_id', 'selprod_price', 'special_price_found', 'theprice', 'shop_id', 'shop_name' ,'IF(selprod_stock > 0, 1, 0) AS in_stock'));*/
         $moreSellerSrch->addMultipleFields(
             array('selprod_id', 'selprod_user_id', 'selprod_price', 'special_price_found', 'theprice', 'shop_id', 'shop_name', 'product_seller_id', 'product_id', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city', 'selprod_cod_enabled', 'product_cod_enabled', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_min_order_qty', 'selprod_available_from')
@@ -863,10 +865,12 @@ class ProductsController extends MyAppController
 
         $srch = new ProductSearch($langId);
         $join_price = 1;
+        $srch->setGeoAddress();
         $srch->setDefinedCriteria($join_price);
         $srch->joinProductToCategory();
         $srch->joinSellerSubscription();
         $srch->addSubscriptionValidCondition();
+        $srch->validateAndJoinDeliveryLocation();
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addMultipleFields(
             array(
@@ -989,9 +993,11 @@ class ProductsController extends MyAppController
             $loggedUserId = UserAuthentication::getLoggedUserId();
         }
         $prodSrch = new ProductSearch($this->siteLangId);
+        $prodSrch->setGeoAddress();
         $prodSrch->setDefinedCriteria();
         $prodSrch->joinSellerSubscription();
         $prodSrch->addSubscriptionValidCondition();
+        $prodSrch->validateAndJoinDeliveryLocation();
         $prodSrch->joinProductToCategory();
         $prodSrch->doNotCalculateRecords();
         $prodSrch->doNotLimitRecords();
