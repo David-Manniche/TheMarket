@@ -583,7 +583,7 @@ class HomeController extends MyAppController
                     $banners = BannerLocation::getPromotionalBanners($collection_id, $langId);
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
-                        $collections[$i]['banners'] = $banners;
+                        $collections[$i]['banners'] = is_array($banners) && 0 < count($banners) ? $banners : (object)[];
                     } else {
                         $collections[$collection['collection_id']] = $collection;
                         $collections[$collection['collection_id']]['banners'] = $banners;
