@@ -78,9 +78,8 @@ $(document).ready(function(){
 	};
 	
 	clearSearch = function(){
-		document.frmUserSearch.reset();
-		document.frmUserSearch.user_id.value = '';
-		searchUsers( document.frmUserSearch );
+		document.frmUserRequestSearch.reset();		
+		searchUserRequests( document.frmUserRequestSearch );
 	};
 	
 	/* deleteUserRequest = function (reqId){
