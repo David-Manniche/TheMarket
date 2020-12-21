@@ -31,7 +31,7 @@ if (isset($client_secret)) {
                     location.href = '<?php echo $cancelBtnUrl; ?>';
                 } else {
                     if (result.paymentIntent.status === 'succeeded') {
-
+                        
                         var data = 'order_id=<?php echo $order_id ?>&payment_intent_id=<?php echo $payment_intent_id ?>&is_ajax_request=yes';
 
                         $.ajax({
@@ -151,19 +151,16 @@ if (isset($client_secret)) {
         <div class="payable-amount">
             
             <div class="payable-amount__head">
-                <div class="payable-amount--header">
-                    <a href="#"><img src="<?php echo CONF_WEBROOT_URL; ?>images/back-icon.svg" /></a>        
+                <div class="payable-amount--header">              
                     <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
                 </div>
                 <div class="payable-amount--decription">
                     <h2><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></h2>
-                    <p><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></p>
+                    <p><?php echo Labels::getLabel('LBL_Total_Payable', $siteLangId); ?></p>
                     <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>:<?php echo $orderInfo["invoice"]; ?></p>
                 </div>
             </div>
-
-
-            <div class="payable-amount__body">
+            <div class="payable-amount__body payment-from">
                 <?php
                 if (!isset($error)) :
                     // $frm->setFormTagAttribute('onsubmit', 'sendPayment(this); return(false);');
@@ -257,12 +254,9 @@ if (isset($client_secret)) {
                                     </div>
                                 </div> 
                         </div>
-                         <?php echo $frm->getExternalJs(); ?>
-                        <?php else : ?>
-                        <div class="alert alert--danger"><?php echo $error ?></div>
-                        <?php endif; ?>
+                         <?php echo $frm->getExternalJs(); ?>                       
                         <div id="ajax_message"></div>
-                   </div>
+                    </div>
                    
                      <div class="payable-form__footer">
                             <div class="row">
@@ -270,8 +264,7 @@ if (isset($client_secret)) {
                                    <?php
                                    $btn = $frm->getField('btn_submit');
                                    $btn->addFieldTagAttribute('class', 'btn btn-brand');                                   
-                                   $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
-                                   $btn->addFieldTagAttribute('onclick', "$(this).closest('.payment-section').find('form').submit();");
+                                   $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));                      
                                    echo $frm->getFieldHtml('btn_submit');
                                    ?> 
                                </div>
@@ -288,8 +281,9 @@ if (isset($client_secret)) {
                     </div> 
                     
                 </form>
+                <?php else : ?>
+                    <div class="alert alert--danger"><?php echo $error ?></div>
+                <?php endif; ?>
             </div>
         </div>
-    </div>
-</div>
 </section>

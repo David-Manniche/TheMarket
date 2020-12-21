@@ -1,6 +1,5 @@
 var sendPayment = function (frm) {
     if (!$(frm).validate()) return;
-    $("#load").html(fcom.getLoader());
     var data = fcom.frmData(frm);
     var action = $(frm).attr('action');
     fcom.ajax(action, data, function (t) {
@@ -17,8 +16,7 @@ var sendPayment = function (frm) {
             }
         } catch (exc) {
             console.log(t);
-        }
-        $("#load").html("");
+        }   
     });
 };
 

@@ -141,7 +141,7 @@ class StripePayController extends PaymentController
 
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         $this->set('exculdeMainHeaderDiv', true);
-        if (FatUtility::isAjaxCall()) {
+        if (FatUtility::isAjaxCall() && !isset($_POST['chargeAjax'])) {
             $json['html'] = $this->_template->render(false, false, 'stripe-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
