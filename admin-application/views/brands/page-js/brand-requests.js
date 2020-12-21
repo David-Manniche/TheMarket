@@ -143,7 +143,8 @@ $(document).on('change','.prefDimensions-js',function(){
 	};
 
 	clearSearch = function(){
-		document.frmSearch.reset();
+        document.frmSearch.reset();
+        $("input[name='user_id']").val("");
 		searchProductBrands(document.frmSearch);
 	};
 
