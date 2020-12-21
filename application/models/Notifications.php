@@ -46,7 +46,7 @@ class Notifications extends MyAppModel
             /* require_once(CONF_INSTALLATION_PATH . 'library/APIs/notifications/pusher.php');
             $pusher = new Pusher($google_push_notification_api_key); */
             foreach ($fcmDeviceIds as $pushNotificationApiToken) {
-                $message = array( 'text' => $data['unotification_body'], 'type' => $data['unotification_type']);
+                $message = array('title' => FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->commonLangId, FatUtility::VAR_STRING, 'Yo!Kart'), 'text' => $data['unotification_body'], 'type' => $data['unotification_type']);
                 self::sendPushNotification($google_push_notification_api_key, $pushNotificationApiToken['uauth_fcm_id'], $message);
                 /* $pusher->notify($pushNotificationApiToken['uauth_fcm_id'], array('text'=>$data['unotification_body'],'type'=>$data['unotification_type'])); */
             }
@@ -60,7 +60,7 @@ class Notifications extends MyAppModel
         $url = "https://fcm.googleapis.com/fcm/send";
 
         $notification = $data;
-        $arrayToSend = array('to' => $deviceToken, 'notification' => $notification, 'priority' => 'high');
+        $arrayToSend = array('to' => $deviceToken, 'data' => $notification, 'priority' => 'high');
         $json = json_encode($arrayToSend);
         $headers = array();
         $headers[] = 'Content-Type: application/json';
