@@ -3022,6 +3022,22 @@ class EmailHandler extends FatModel
         }
 
         $this->sendSms($tpl, FatApp::getConfig('CONF_SITE_PHONE'), $vars, $langId);
+
+        /* Send Success Notification To Buyer With Bank Transfer Order Placed.  */
+        $msg = Labels::getLabel('APP_ORDER_#{ORDER-ID}_PLACED_USING_BANK_TRANFER_PAYMENT_METHOD', $langId);
+        $msg = CommonHelper::replaceStringData($msg, ['{ORDER-ID}' => $d['order_id']]);
+        $notificationObj = new Notifications();
+        $notificationDataArr = array(
+            'unotification_user_id' => $d["order_user_id"],
+            'unotification_body' => $msg,
+            'unotification_type' => 'ORDER_PAYMENT_TRANSFERRED_TO_BANK'
+        );
+        if (!$notificationObj->addNotification($notificationDataArr)) {
+            $this->error = $notificationObj->getError();
+            return false;
+        }
+        /* Send Success Notification To Buyer With Bank Transfer Order Placed.  */
+
         return true;
     }
 }

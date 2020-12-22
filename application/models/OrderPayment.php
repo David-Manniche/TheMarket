@@ -172,6 +172,7 @@ class OrderPayment extends Orders
                 $userName = User::getAttributesById($orderDetails['order_user_id'], 'user_name');
                 $emailNotificationData = [
                     'user_name' => $userName,
+                    'order_user_id' => $orderInfo['order_user_id'],
                     'order_id' => $paymentOrderId,
                     'payment_method' => $paymentMethodName,
                     'transaction_id' => $txnId,
