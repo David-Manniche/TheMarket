@@ -3028,7 +3028,7 @@ class EmailHandler extends FatModel
         $msg = CommonHelper::replaceStringData($msg, ['{ORDER-ID}' => $d['order_id']]);
         $notificationObj = new Notifications();
         $notificationDataArr = array(
-            'unotification_user_id' => $d["user_id"],
+            'unotification_user_id' => $d["order_user_id"],
             'unotification_body' => $msg,
             'unotification_type' => 'ORDER_PAYMENT_TRANSFERRED_TO_BANK'
         );
