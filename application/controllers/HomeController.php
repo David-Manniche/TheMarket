@@ -416,7 +416,7 @@ class HomeController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Unable_to_update_file', $langId));
             }
             $fileName = $langCode . '.json';
-            $filePath = Labels::JSON_FILE_DIR_NAME . '/' . Labels::TYPE_APP . '/' . $fileName;
+            $filePath = Labels::JSON_FILE_DIR_NAME . '/' . Labels::TYPE_APP . '/AP/' . $fileName;
 
             AttachedFile::downloadAttachment($filePath, $fileName);
             exit;
