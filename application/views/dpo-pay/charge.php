@@ -40,7 +40,7 @@ if (null != $btn) {
         var action = $(frm).attr('action');
         var submitBtn = $("form#paymentForm-js input[type='submit']");
         $.mbsmessage(langLbl.processing, false, 'alert--process alert');
-        submitBtn.attr('disabled', 'disabled');
+        submitBtn.attr('disabled', 'disabled');        
         fcom.ajax(action, data, function(res) {
             var json = $.parseJSON(res);
             if (1 > json.status) {
@@ -49,6 +49,7 @@ if (null != $btn) {
                 return false;
             }
             $("#paymentFormElement-js").replaceWith(json.html);
+            $("#paymentFormElement-js").removeClass('text-center');
             $("form#paymentForm-js").submit();
         });
     }
