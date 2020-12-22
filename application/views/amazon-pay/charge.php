@@ -1,27 +1,30 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
-<div class="payment-page">
-    <div class="cc-payment">
-        <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
-        <div class="reff row">
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p class=""><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <strong><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></strong> </p>
+<section class="payment-section">
+    <div class="payable-amount">            
+        <div class="payable-amount__head">
+            <div class="payable-amount--header">              
+                <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p class=""><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>: <strong><?php echo $orderInfo["invoice"]; ?></strong></p>
+            <div class="payable-amount--decription">
+                <h2><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></h2>
+                <p><?php echo Labels::getLabel('LBL_Total_Payable', $siteLangId); ?></p>
+                <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>:<?php echo $orderInfo["invoice"]; ?></p>
             </div>
         </div>
-        <div class="payment-from container">
-            <p id="paymentStatus"></p>
-            <?php
-            if (isset($error))
-                echo '<div class="alert alert--danger"><p>' . $error . '</p></div>';
-            if (isset($success))
-                echo '<div class="alert alert--success" ><p>Your payment has been successfull.</p></div>';
-            if (strlen($orderId) > 0 && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) echo '<div class="text-center" style="margin-top:40px;" id="AmazonPayButton"></div>';
-            ?>
+        <div class="payable-amount__body payment-from">      
+            <div class="payable-form__body" id="paymentFormElement-js">
+                <p id="paymentStatus"></p>
+                <?php
+                if (isset($error))
+                    echo '<div class="alert alert--danger"><p>' . $error . '</p></div>';
+                if (isset($success))
+                    echo '<div class="alert alert--success" ><p>Your payment has been successfull.</p></div>';
+                if (strlen($orderId) > 0 && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) echo '<div class="text-center" style="margin-top:40px;" id="AmazonPayButton"></div>';
+                ?>
+            </div>  
         </div>
     </div>
-</div>
+</section>
 <?php
 if (isset($amazon) && strlen($orderId) > 0 && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
     if (strlen($amazon['merchant_id']) > 0 && strlen($amazon['access_key']) > 0 && strlen($amazon['secret_key']) > 0 && strlen($amazon['client_id']) > 0 && strlen(FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_STRING, '0'))) {

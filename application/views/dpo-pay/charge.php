@@ -13,33 +13,26 @@ if (null != $btn) {
     $btn->setFieldTagAttribute('class', "d-none");
 }
 ?>
-
-<div class="payment-page">
-    <div class="cc-payment">
-        <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class=" row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <p class=""><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <strong><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></strong> </p>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <p class=""><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>: <strong><?php echo $orderInfo["invoice"]; ?></strong></p>
-                    </div>
+<section class="payment-section">
+        <div class="payable-amount">            
+            <div class="payable-amount__head">
+                <div class="payable-amount--header">              
+                    <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
+                </div>
+                <div class="payable-amount--decription">
+                    <h2><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></h2>
+                    <p><?php echo Labels::getLabel('LBL_Total_Payable', $siteLangId); ?></p>
+                    <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>:<?php echo $orderInfo["invoice"]; ?></p>
                 </div>
             </div>
-        </div>
-        <div class="divider"></div>
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="text-center" id="paymentFormElement-js">
-                    <h6><?php echo Labels::getLabel('LBL_REDIRECTING_TO_PAYMENT_PAGE...', $siteLangId); ?></h6>
-                    <?php echo $frm->getFormHtml(); ?>
-                </div>
+            <div class="payable-amount__body payment-from">      
+                    <div class="payable-form__body" id="paymentFormElement-js">
+                       <h6><?php echo Labels::getLabel('LBL_REDIRECTING_TO_PAYMENT_PAGE...', $siteLangId); ?></h6>
+                        <?php echo $frm->getFormHtml(); ?>
+                    </div>  
             </div>
         </div>
-    </div>
-</div>
+</section>
 <script type="text/javascript">
     $("form#paymentForm-js").submit();
     function confirmOrder(frm) {

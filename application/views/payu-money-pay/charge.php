@@ -1,28 +1,32 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
-<div class="payment-page">
-    <div class="cc-payment">
-        <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
-        <div class="reff row">
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p class=""><?php echo Labels::getLabel('LBL_Payable_Amount', $siteLangId); ?> : <strong><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></strong> </p>
+<section class="payment-section">
+    <div class="payable-amount">            
+        <div class="payable-amount__head">
+            <div class="payable-amount--header">              
+                <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <p class=""><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>: <strong><?php echo $orderInfo["invoice"]; ?></strong></p>
+            <div class="payable-amount--decription">
+                <h2><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></h2>
+                <p><?php echo Labels::getLabel('LBL_Total_Payable', $siteLangId); ?></p>
+                <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>:<?php echo $orderInfo["invoice"]; ?></p>
             </div>
         </div>
-        <div class="payment-from container">
-            <?php if (!isset($error)) : ?>
-                <p><?php echo Labels::getLabel('L_We_are_redirecting_payment_page', $siteLangId); ?>:</p>
-                <?php echo $frm->getFormHtml() ?>
-            <?php else : ?>
-                <div class="alert alert--danger"><?php echo $error ?></div>
-            <?php endif; ?>
+        <div class="payable-amount__body payment-from">      
+            <div class="payable-form__body" id="paymentFormElement-js">
+                <?php if (!isset($error)) : ?>
+                    <h6><?php echo Labels::getLabel('LBL_REDIRECTING_TO_PAYMENT_PAGE...', $siteLangId); ?></h6>
+                    <?php echo $frm->getFormHtml(); ?>
+                <?php else : ?>
+                    <div class="alert alert--danger"><?php echo $error ?></div>
+                <?php endif; ?>
+            </div>  
         </div>
     </div>
-</div>
+</section>
+
 <script type="text/javascript">
-    $(document).ready(function(){
-        setTimeout(function() {
+    $(document).ready(function () {
+        setTimeout(function () {
             $('form[name="frmPayuMoney"]').submit();
         }, 2000);
     });
