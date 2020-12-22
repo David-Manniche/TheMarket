@@ -28,7 +28,7 @@
 /application/views/designer/*
 /public/application_top.php
 /node_modules
-/public/apple-app-site-association
+/public/apple-app-site-association/*
 package-lock.json
 /.well-known
 
