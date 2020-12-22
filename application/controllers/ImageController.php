@@ -1230,7 +1230,7 @@ class ImageController extends FatController
                 AttachedFile::displayImage($image_name, $w, $h, 'seller-bg.png');
                 break;
             case 'DEFAULT':
-                AttachedFile::displayOriginalImage($image_name);
+                AttachedFile::displayOriginalImage($image_name, 'seller-bg.png');
                 break;
         }
     }
