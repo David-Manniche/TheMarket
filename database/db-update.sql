@@ -2019,3 +2019,4 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("APP_MATERIAL_CALENDAR_SUNDAY", 1, "S", 2)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- ---- ANDROID NEW LANG LABELS ---- --
+-- ----------------------TV-9.2.3.20201222--------------------------
