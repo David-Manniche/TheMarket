@@ -778,8 +778,8 @@ class Cronjob extends FatModel
         }
 
         foreach ($row as $val) {
-            $cartDetails = json_decode($val["usercart_details"], true);
-            if (count($cartDetails) == 0) {
+            $cartDetails = !empty($val["usercart_details"]) ? json_decode($val["usercart_details"], true) : [];
+            if (is_array($cartDetails) && count($cartDetails) == 0) {
                 continue;
             }
             $phone = !empty($val['user_phone']) ? $val['user_dial_code'] . $val['user_phone'] : '';

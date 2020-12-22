@@ -957,9 +957,13 @@ class CommonHelper extends FatUtility
     }
 
     public static function getRandomPassword($n)
-    {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    {          
         $pass = '';
+        if ($n > 4) {
+            $n = $n - 4;
+            $pass = 'Yk@1';
+        }
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         for ($i = 0; $i < $n; $i++) {
             $pass .= substr($chars, rand(0, strlen($chars) - 1), 1);
         }
@@ -1322,6 +1326,10 @@ class CommonHelper extends FatUtility
         }
 
         $originalPrice = $product['selprod_price'];
+        if (1 > $originalPrice) {
+            return 0;
+        }
+        
         $specialPrice = $product['theprice'];
         $discount = (($originalPrice - $specialPrice) * 100) / $originalPrice;
         return $disVal = round($discount) . "% " . Labels::getLabel('LBL_Off', $langId);

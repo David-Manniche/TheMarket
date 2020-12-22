@@ -91,9 +91,10 @@ class CollectionsController extends MyAppController
         /* ] */
 
         $productSrchObj = new ProductSearch($this->siteLangId);
+        $productSrchObj->setGeoAddress();
         $productSrchObj->setDefinedCriteria();
         $productSrchObj->joinProductToCategory($this->siteLangId);
-
+        $productSrchObj->validateAndJoinDeliveryLocation();
 
         $productSrchObj->doNotCalculateRecords();
         // $productSrchObj->setPageSize(10);

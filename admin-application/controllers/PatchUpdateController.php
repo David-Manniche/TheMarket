@@ -484,5 +484,6 @@ class PatchUpdateController extends AdminBaseController
     public function updateCategoryRelations(int $prodCatId = 0)
     {
         ProductCategory::updateCategoryRelations($prodCatId);
+        echo 'Done';
     }
 }

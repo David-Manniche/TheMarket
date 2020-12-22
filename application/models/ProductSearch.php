@@ -56,7 +56,7 @@ class ProductSearch extends SearchBase
         }
 
         if ($isProductApproved) {
-            $this->addCondition('product_approved', '=', PRODUCT::APPROVED);
+            $this->addCondition('product_approved', '=', Product::APPROVED);
         }
     }
 
@@ -206,7 +206,7 @@ class ProductSearch extends SearchBase
             $shopCondition = ' and ts.shop_id = ' . FatApp::getDb()->quoteVariable($shopId);
         }
 
-        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'tp.product_id = sprods.selprod_product_id AND tp.product_active = ' . applicationConstants::ACTIVE . ' and tp.product_deleted = ' . applicationConstants::NO . ' and tp.product_approved = ' . PRODUCT::APPROVED, 'tp');
+        $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'tp.product_id = sprods.selprod_product_id AND tp.product_active = ' . applicationConstants::ACTIVE . ' and tp.product_deleted = ' . applicationConstants::NO . ' and tp.product_approved = ' . Product::APPROVED, 'tp');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'tu.user_id = sprods.selprod_user_id AND tu.user_is_supplier = ' . applicationConstants::YES, 'tu');
         $srch->joinTable(User::DB_TBL_CRED, 'INNER JOIN', 'tuc.credential_user_id = tu.user_id and tuc.credential_active = ' . applicationConstants::ACTIVE . ' and tuc.credential_verified = ' . applicationConstants::YES, 'tuc');
         $srch->joinTable(Shop::DB_TBL, 'INNER JOIN', 'ts.shop_user_id = tu.user_id and ts.shop_active = ' . applicationConstants::YES . ' AND ts.shop_supplier_display_status = ' . applicationConstants::YES . $shopCondition, 'ts');
@@ -797,7 +797,9 @@ class ProductSearch extends SearchBase
                 $this->addCondition('brand_id', '=', $brandId);
             } elseif (is_array($brand) && 0 < count($brand)) {
                 $brand = array_filter(array_unique($brand));
-                $this->addDirectCondition('brand_id IN (' . implode(',', $brand) . ')');
+                if (!empty($brand)) {
+                    $this->addDirectCondition('brand_id IN (' . implode(',', $brand) . ')');
+                }
             } else {
                 if (!empty($brand)) {
                     $brand = explode(",", $brand);
@@ -1162,7 +1164,7 @@ class ProductSearch extends SearchBase
                             $this->addHaving('shippingProfile', 'IS NOT', 'mysql_func_null', 'and', true);
                             $this->addFld('1 as availableInLocation');
                         } else {
-                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', ifnull(shipprofile.shippro_product_id,0), -1) as availableInLocation');
+                            $this->addFld('if(p.product_type = ' . Product::PRODUCT_TYPE_PHYSICAL . ', ifnull(shipprofile.shippro_product_id,0), 1) as availableInLocation');
                         }
                     }
 
@@ -1212,6 +1214,13 @@ class ProductSearch extends SearchBase
         $srch->joinTable(ShippingProfile::DB_TBL, 'INNER JOIN', 'sppro.shippro_shipprofile_id = spprof.shipprofile_id and spprof.shipprofile_active = ' . applicationConstants::YES, 'spprof');
         $srch->joinTable(ShippingProfileZone::DB_TBL, 'INNER JOIN', 'shippz.shipprozone_shipprofile_id = spprof.shipprofile_id', 'shippz');
         $srch->joinTable(ShippingZone::DB_TBL, 'INNER JOIN', 'shipz.shipzone_id = shippz.shipprozone_shipzone_id and shipz.shipzone_active = ' . applicationConstants::YES, 'shipz');
+        $srch->joinTable(Product::DB_PRODUCT_SHIPPED_BY_SELLER, 'LEFT OUTER JOIN', 'psbs.psbs_product_id = tp.product_id', 'psbs');
+
+        $joinCondition = 'if(tp.product_seller_id = 0, (if(psbs.psbs_user_id > 0, sppro.shippro_user_id = psbs.psbs_user_id, sppro.shippro_user_id = 0)), (sppro.shippro_user_id = psbs.psbs_user_id))';
+        if (FatApp::getConfig('CONF_SHIPPED_BY_ADMIN_ONLY', FatUtility::VAR_INT, 0)) {
+            $joinCondition = 'sppro.shippro_user_id = 0';
+        }
+        $srch->addDirectCondition($joinCondition);
 
         $tempSrch = ShippingZone::getZoneLocationSearchObject();
         $tempSrch->addDirectCondition("(shiploc_country_id = '-1' or (shiploc_country_id = '" . $countryId . "' and (shiploc_state_id = '-1' or shiploc_state_id = '" . $stateId . "')) )");
