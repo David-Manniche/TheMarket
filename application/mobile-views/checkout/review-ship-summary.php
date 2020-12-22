@@ -32,8 +32,12 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                         $product['shopUrl'] = UrlHelper::generateFullUrl('Shops', 'View', array($product['shop_id']));
                         $product['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "THUMB", $product['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
 
-                        $selectedRates = isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : (object)[];
-                        $data['rates']['data'] = [$selectedRates];
+                        $selectedRates = isset($selectedShippingProducts[$product['selprod_id']]) ? $selectedShippingProducts[$product['selprod_id']] : [];
+                        if (array_key_exists('mshipapi_cost', $selectedRates)) {
+                            $selectedRates['mshipapi_cost'] = CommonHelper::displayMoneyFormat($selectedRates['mshipapi_cost'], false, false, false);
+                        }
+                        
+                        $data['rates']['data'] = [(object)$selectedRates];
 
                         $data['products'][] = $product;
                     }
