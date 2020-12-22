@@ -1655,3 +1655,7 @@ LEFT JOIN tbl_states ts ON ts.state_country_id = tc.country_id
 LEFT JOIN tbl_states_lang tsl ON tsl.statelang_state_id = ts.state_id
 WHERE `country_code` = 'ZZ' OR country_code = 'AA' OR country_code = 'YY' OR country_code = 'qw';
 -- --- Remove Invalid Country Code Rows --- --
+
+-- ---- Currency Value Size ---- -- 
+ALTER TABLE `tbl_currency` CHANGE `currency_value` `currency_value` DECIMAL(20,8) NOT NULL;
+-- ---- Currency Value Size ---- -- 
