@@ -1,9 +1,6 @@
 .header-supplier {
     .logo-bar {
         padding: 10px 0;
-        @include media-breakpoint-down(sm) {
-            & {}
-        }
         .logo {
             margin: 0;
             img {
@@ -137,11 +134,11 @@
 }
 
 .banner {
-    background-repeat: no-repeat;
+    background-repeat: repeat;
     background-position: center;
     position: relative;
     background-attachment: fixed;
-    background-size: cover;
+    background-size: 25%;
     background-color: var(--brand-color);
     color: var(--brand-color-inverse);
     &:after {
