@@ -22,6 +22,8 @@ if (0 < $productsCount) {
         } else {
             $type = 'available';
         }
+        $product['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
+        $product['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
         $productsArr[$type][] = $product;
     }
 }
@@ -31,6 +33,8 @@ foreach ($saveForLaterProducts as &$slProduct) {
     $slProduct['imageUrl'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($slProduct['product_id'], "THUMB", $slProduct['selprod_id'], 0, $siteLangId)), CONF_IMG_CACHE_TIME, '.jpg');
     $productsArr['saveForLater'][] = $slProduct;
 }
+
+$cartSummary['orderNetAmount'] = CommonHelper::displayMoneyFormat($cartSummary['orderNetAmount'], false, false, false);
 
 $data = array(
     'products' => $productsArr,

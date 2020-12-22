@@ -6,7 +6,7 @@ class TransactionFailureLog extends MyAppModel
     public const DB_TBL_PREFIX = 'txnlog_';
 
     public const LOG_TYPE_CHECKOUT = 1;
-    
+
     /**
      * __construct
      *
@@ -20,7 +20,7 @@ class TransactionFailureLog extends MyAppModel
             [self::DB_TBL_PREFIX . 'id']
         );
     }
-    
+
     /**
      * getLogTypes
      *
@@ -32,7 +32,7 @@ class TransactionFailureLog extends MyAppModel
             self::LOG_TYPE_CHECKOUT
         ];
     }
-    
+
     /**
      * saveResponse
      *
@@ -55,10 +55,10 @@ class TransactionFailureLog extends MyAppModel
         ];
         $self = new self();
         $self->assignValues($data);
-        
+
         if (!$self->save()) {
             $error = $self->getError();
-            return false; 
+            return false;
         }
         return true;
     }
