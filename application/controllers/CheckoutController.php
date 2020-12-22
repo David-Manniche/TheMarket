@@ -16,6 +16,15 @@ class CheckoutController extends MyAppController
             FatApp::redirectUser(UrlHelper::generateUrl('Cart'));
         }
 
+        if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
+            $geoAddress = Address::getYkGeoData();
+            if (!array_key_exists('ykGeoLat', $geoAddress) || $geoAddress['ykGeoLat'] == '' || !array_key_exists('ykGeoLng', $geoAddress) || $geoAddress['ykGeoLng'] == '') {
+                $this->errMessage = Labels::getLabel('MSG_PLEASE_CONFIGURE_YOUR_LOCATION', $this->siteLangId);
+                LibHelper::exitWithError($this->errMessage, false, true);
+                FatApp::redirectUser(UrlHelper::generateUrl('Cart'));
+            }
+        }
+
         if (UserAuthentication::isGuestUserLogged()) {
             $user_is_buyer = User::getAttributesById(UserAuthentication::getLoggedUserId(), 'user_is_buyer');
             if (!$user_is_buyer) {
@@ -1702,7 +1711,7 @@ class CheckoutController extends MyAppController
             Message::addErrorMessage($this->errMessage);
             FatUtility::dieWithError(Message::getHtml());
         }
-        
+
         if (true === $return) {
             return true;
         }
