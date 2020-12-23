@@ -159,8 +159,8 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
                             <ul>
                                 <li class="list__item">
                                     <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
-                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-brand btn--filters-control saveSearch-js"><i class="icn">
-                                        </i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-brand btn--filters-control saveSearch-js">
+                                    <i class="icn fas fa-file-download d-md-none"></i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
                                     <?php } ?>
                                 </li>
                                 <li>

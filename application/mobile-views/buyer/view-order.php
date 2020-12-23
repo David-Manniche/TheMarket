@@ -137,7 +137,7 @@ foreach ($childArr as $index => $childOrder) {
         $childArr[$index]['priceDetail'] = array_merge($childArr[$index]['priceDetail'], $taxCharges);
     }
 
-    if (0 < $orderDiscountTotal) {
+    if (0 != $orderDiscountTotal) {
         $childArr[$index]['priceDetail'][] = array(
             'key' => Labels::getLabel('LBL_Discount', $siteLangId),
             'value' => CommonHelper::displayMoneyFormat($orderDiscountTotal),
