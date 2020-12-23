@@ -305,9 +305,19 @@ body {
 
 .payable-form__footer {
     background-color: #fff;
-    input.btn {
-        background: $brand-color;
-        color: $brand-color-inverse;
+    input.btn-secondary {
+        background: $secondary-color;
+        color: $secondary-color-inverse;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        &:focus {
+            outline: none;
+        }
+    }
+    input.btn-primary {
+        background: $primary-color;
+        color: $primary-color-inverse;
         text-align: center;
         border: none;
         cursor: pointer;
@@ -325,6 +335,23 @@ body {
         outline: none;
         &.btn-outline-gray {
             color: #868686;
+        }
+    }
+}
+
+.payment-area {
+    input.btn-secondary {
+        background: $secondary-color;
+        color: $secondary-color-inverse;
+        &:focus {
+            outline: none;
+        }
+    }
+    input.btn-primary {
+        background: $primary-color;
+        color: $primary-color-inverse;
+        &:focus {
+            outline: none;
         }
     }
 }

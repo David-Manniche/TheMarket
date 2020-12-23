@@ -11975,7 +11975,7 @@ form.custom-form {
 
 /* Ion.RangeSlider
 // css version 2.0.3
-// © 2013-2014 Denis Ineshin | IonDen.com
+// ┬⌐ 2013-2014 Denis Ineshin | IonDen.com
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // RangeSlider */
@@ -12131,8 +12131,8 @@ form.custom-form {
 
 /* Ion.RangeSlider, Simple Skin
 // css version 2.0.3
-// © Denis Ineshin, 2014    https://github.com/IonDen
-// © guybowden, 2014        https://github.com/guybowden
+// ┬⌐ Denis Ineshin, 2014    https://github.com/IonDen
+// ┬⌐ guybowden, 2014        https://github.com/guybowden
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // Skin details */
@@ -37066,13 +37066,21 @@ body {
 
 .payable-form__footer {
   background-color: #fff; }
-  .payable-form__footer input.btn, .payable-form__footer .form select.btn, .form .payable-form__footer select.btn, .payable-form__footer .form .btn.custom-select, .form .payable-form__footer .btn.custom-select, .payable-form__footer .form textarea.btn, .form .payable-form__footer textarea.btn {
-    background: var(--brand-color);
-    color: var(--brand-color-inverse);
+  .payable-form__footer input.btn-secondary, .payable-form__footer .form select.btn-secondary, .form .payable-form__footer select.btn-secondary, .payable-form__footer .form .btn-secondary.custom-select, .form .payable-form__footer .btn-secondary.custom-select, .payable-form__footer .form textarea.btn-secondary, .form .payable-form__footer textarea.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--secondary-color-inverse);
     text-align: center;
     border: none;
     cursor: pointer; }
-    .payable-form__footer input.btn:focus, .payable-form__footer .form select.btn:focus, .form .payable-form__footer select.btn:focus, .payable-form__footer .form .btn.custom-select:focus, .form .payable-form__footer .btn.custom-select:focus, .payable-form__footer .form textarea.btn:focus, .form .payable-form__footer textarea.btn:focus {
+    .payable-form__footer input.btn-secondary:focus, .payable-form__footer .form select.btn-secondary:focus, .form .payable-form__footer select.btn-secondary:focus, .payable-form__footer .form .btn-secondary.custom-select:focus, .form .payable-form__footer .btn-secondary.custom-select:focus, .payable-form__footer .form textarea.btn-secondary:focus, .form .payable-form__footer textarea.btn-secondary:focus {
+      outline: none; }
+  .payable-form__footer input.btn-primary, .payable-form__footer .form select.btn-primary, .form .payable-form__footer select.btn-primary, .payable-form__footer .form .btn-primary.custom-select, .form .payable-form__footer .btn-primary.custom-select, .payable-form__footer .form textarea.btn-primary, .form .payable-form__footer textarea.btn-primary {
+    background: var(--primary-color);
+    color: var(--primary-color-inverse);
+    text-align: center;
+    border: none;
+    cursor: pointer; }
+    .payable-form__footer input.btn-primary:focus, .payable-form__footer .form select.btn-primary:focus, .form .payable-form__footer select.btn-primary:focus, .payable-form__footer .form .btn-primary.custom-select:focus, .form .payable-form__footer .btn-primary.custom-select:focus, .payable-form__footer .form textarea.btn-primary:focus, .form .payable-form__footer textarea.btn-primary:focus {
       outline: none; }
   .payable-form__footer .btn {
     width: 100%;
@@ -37084,6 +37092,17 @@ body {
     outline: none; }
     .payable-form__footer .btn.btn-outline-gray {
       color: #868686; }
+
+.payment-area input.btn-secondary, .payment-area .form select.btn-secondary, .form .payment-area select.btn-secondary, .payment-area .form .btn-secondary.custom-select, .form .payment-area .btn-secondary.custom-select, .payment-area .form textarea.btn-secondary, .form .payment-area textarea.btn-secondary {
+  background: var(--secondary-color);
+  color: var(--secondary-color-inverse); }
+  .payment-area input.btn-secondary:focus, .payment-area .form select.btn-secondary:focus, .form .payment-area select.btn-secondary:focus, .payment-area .form .btn-secondary.custom-select:focus, .form .payment-area .btn-secondary.custom-select:focus, .payment-area .form textarea.btn-secondary:focus, .form .payment-area textarea.btn-secondary:focus {
+    outline: none; }
+.payment-area input.btn-primary, .payment-area .form select.btn-primary, .form .payment-area select.btn-primary, .payment-area .form .btn-primary.custom-select, .form .payment-area .btn-primary.custom-select, .payment-area .form textarea.btn-primary, .form .payment-area textarea.btn-primary {
+  background: var(--primary-color);
+  color: var(--primary-color-inverse); }
+  .payment-area input.btn-primary:focus, .payment-area .form select.btn-primary:focus, .form .payment-area select.btn-primary:focus, .payment-area .form .btn-primary.custom-select:focus, .form .payment-area .btn-primary.custom-select:focus, .payment-area .form textarea.btn-primary:focus, .form .payment-area textarea.btn-primary:focus {
+    outline: none; }
 
 @media screen and (max-width: 767px) {
   .payable-amount {
