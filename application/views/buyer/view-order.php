@@ -299,11 +299,11 @@ if (!$print) { ?>
                                     <th>
                                         <?php echo Labels::getLabel('LBL_Price', $siteLangId); ?>
                                     </th>
-                                    <?php if ($shippingCharges > 0) { ?>
-                                        <th>
+                                    <th>
+                                        <?php if ($shippingCharges > 0) { ?>
                                             <?php echo Labels::getLabel('LBL_Shipping_Charges', $siteLangId); ?>
-                                        </th>
-                                    <?php } ?>
+                                        <?php } ?>
+                                    </th>
                                     <th>
                                         <?php echo Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId); ?>
                                     </th>
@@ -419,11 +419,11 @@ if (!$print) { ?>
                                         <td>
                                             <?php echo CommonHelper::displayMoneyFormat($childOrder['op_unit_price'], true, false, true, false, true); ?>
                                         </td>
-                                        <?php if ($shippingCharges > 0) { ?>
-                                            <td>
-                                                <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?>
-                                            </td>
-                                        <?php } ?>
+                                        <td>
+                                            <?php if ($shippingCharges > 0) { ?>
+                                                    <?php echo CommonHelper::displayMoneyFormat(CommonHelper::orderProductAmount($childOrder, 'shipping'), true, false, true, false, true); ?>
+                                            <?php } ?>
+                                        </td>
                                         <td>
                                             <?php echo CommonHelper::displayMoneyFormat($volumeDiscount, true, false, true, false, true); ?>
                                         </td>
