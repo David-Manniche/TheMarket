@@ -7747,7 +7747,7 @@ a.text-dark:hover, a.text-dark:focus {
   border-bottom: solid 1px #dee2e6; }
   .header .top-bar {
     padding: 0;
-    fill: #fff;
+    fill: currentColor;
     background: var(--brand-color);
     color: var(--brand-color-inverse);
     transition: all 300ms linear 0s;
@@ -7758,14 +7758,12 @@ a.text-dark:hover, a.text-dark:focus {
       display: grid;
       align-items: center;
       grid-template-columns: minmax(auto, 30%) 1fr; }
-      @media (max-width: 767.98px) {
-        .header .top-bar__inner {
-          grid-template-columns: auto; } }
       .header .top-bar__inner .location {
         display: block;
         white-space: nowrap;
         text-overflow: ellipsis;
-        overflow: hidden; }
+        overflow: hidden;
+        padding: 6px 0; }
     .header .top-bar a {
       color: inherit;
       padding: 6px 0.8rem; }
@@ -8650,7 +8648,7 @@ a.text-dark:hover, a.text-dark:focus {
         height: 20px;
         max-width: 100%; }
   .social a {
-    color: var(--primary-color); }
+    color: var(--brand-color); }
 
 .bottom-footer .fixed-container {
   padding: 0 15%; }

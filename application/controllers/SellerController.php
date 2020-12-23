@@ -535,9 +535,9 @@ class SellerController extends SellerBaseController
         }
         /* ] */
 
-        /* if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
+        if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-        } */
+        }
 
         $charges = $orderObj->getOrderProductChargesArr($op_id);
         $orderDetail['charges'] = $charges;
@@ -839,6 +839,10 @@ class SellerController extends SellerBaseController
             }
         }
         /* ] */
+        
+        if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
+            $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
+        }
 
         $frm = $this->getOrderCommentsForm($orderDetail, $processingStatuses);
         $post = $frm->getFormDataFromArray($post);
