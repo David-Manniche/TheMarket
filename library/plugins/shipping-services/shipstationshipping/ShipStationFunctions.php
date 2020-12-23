@@ -62,8 +62,8 @@ trait ShipStationFunctions
         $this->resp = curl_exec($ch);
         if (false === $this->resp) {
             throw new Exception(curl_error($ch));
-        } else if (false === $this->errorDescription($this->resp)) {
-            return false;
+        } else if (false === $this->validateResponse($this->resp)) {
+            throw new Exception($this->resp);
         }
 
         curl_close($ch);
@@ -175,12 +175,12 @@ trait ShipStationFunctions
     }
 
     /**
-     * errorDescription
+     * validateResponse
      *
      * @param  string $response
      * @return bool
      */
-    private function errorDescription(string $response): bool
+    private function validateResponse(string $response): bool
     {
         $errors = [
             "400 Bad Request",
@@ -201,7 +201,6 @@ trait ShipStationFunctions
         ];
 
         if (in_array($response, $errors)) {
-            $this->error = $response;
             return false;
         }
         return true;
