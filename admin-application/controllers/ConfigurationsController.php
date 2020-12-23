@@ -1797,7 +1797,7 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .= '</ul>';
 
-                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"></div>';
+                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"><small>'.Labels::getLabel('MSG_PLEASE_UPLOAD_WHITE_PNG_IMAGE', $this->adminLangId).'</small></div>';
 
                 $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Watermark_Image', $this->adminLangId) . '</h3><div class="logoWrap"><div class="uploaded--image">';
 

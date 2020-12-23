@@ -8,7 +8,7 @@
                 <div class="payable-amount--decription">
                     <h2><?php echo CommonHelper::displayMoneyFormat($paymentAmount) ?></h2>
                     <p><?php echo Labels::getLabel('LBL_Total_Payable', $siteLangId); ?></p>
-                    <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>:<?php echo $orderInfo["invoice"]; ?></p>
+                    <p><?php echo Labels::getLabel('LBL_Order_Invoice', $siteLangId); ?>: <?php echo $orderInfo["invoice"]; ?></p>
                 </div>
             </div>
             <div class="payable-amount__body payment-from">
