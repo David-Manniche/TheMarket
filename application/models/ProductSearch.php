@@ -1039,8 +1039,33 @@ class ProductSearch extends SearchBase
         if ($joinSeller) {
             $this->joinSellers();
         }
-        $this->joinSellerOrder();
-        $this->joinSellerOrderSubscription($langId, $includeDateCondition);
+
+        if (!$this->sellerUserJoined) {
+            trigger_error(Labels::getLabel('ERR_Seller_must_joined.', CommonHelper::getLangId()), E_USER_ERROR);
+        }
+
+        $validDateCondition = '';
+        if ($includeDateCondition) {
+            $validDateCondition = " and oss.ossubs_till_date >= '" . date('Y-m-d') . "'";
+        }
+
+        if (FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0)) {
+            $srch = new searchBase(Orders::DB_TBL, 'o');
+            $srch->joinTable(OrderSubscription::DB_TBL, 'INNER JOIN', 'o.order_id = oss.ossubs_order_id and oss.ossubs_status_id =' . FatApp::getConfig('CONF_DEFAULT_SUBSCRIPTION_PAID_ORDER_STATUS') . $validDateCondition, 'oss');
+            if ($langId > 0) {
+                $srch->joinTable(OrderSubscription::DB_TBL_LANG, 'LEFT OUTER JOIN', 'oss.ossubs_id = ossl.' . OrderSubscription::DB_TBL_LANG_PREFIX . 'ossubs_id AND ossubslang_lang_id = ' . $langId, 'ossl');
+            }
+            $srch->addCondition('o.order_type', '=', ORDERS::ORDER_SUBSCRIPTION);
+            $srch->addCondition('o.order_payment_status', '=', 1);
+            $srch->doNotCalculateRecords();
+            $srch->doNotLimitRecords();
+            $srch->addGroupBy('o.order_user_id');
+            $srch->addMultipleFields(array('oss.*', 'order_user_id', 'order_id', 'order_type'));
+            $this->joinTable('(' . $srch->getQuery() . ')', 'INNER JOIN', 'oss.order_user_id=seller_user.user_id', 'oss');
+        }
+
+        /* $this->joinSellerOrder();
+        $this->joinSellerOrderSubscription($langId, $includeDateCondition); */
 
         //$this->addSubscriptionValidCondition();
     }
