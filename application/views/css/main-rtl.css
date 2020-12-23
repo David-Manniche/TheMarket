@@ -36972,17 +36972,16 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  color: #fff;
   padding-top: 2rem;
   padding-bottom: 1rem;
-  background: #ff3a59; }
+  background: var(--brand-color);
+  color: var(--brand-color-inverse); }
 
 .payable-amount--decription {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  color: #fff;
   padding-top: 1rem;
   padding-bottom: 1rem; }
 
@@ -37001,10 +37000,10 @@ body {
 .form--payment .caption-wraper .field_label {
   font-size: .9rem;
   font-weight: 600;
-  color: #333;
   letter-spacing: 0.3px;
   margin: 0;
-  display: block; }
+  display: block;
+  color: #2e384d; }
   @media (max-width: 767.98px) {
     .form--payment .caption-wraper .field_label {
       font-size: 1rem; } }
@@ -37023,7 +37022,6 @@ body {
   border-radius: 0;
   padding: 0;
   font-size: 16px;
-  color: #8b90a6;
   outline: none; }
   @media (max-width: 767.98px) {
     .form--payment .field_cover input, .form--payment .field_cover .form select, .form .form--payment .field_cover select, .form--payment .field_cover .form .custom-select, .form .form--payment .field_cover .custom-select, .form--payment .field_cover .form textarea, .form .form--payment .field_cover textarea {
@@ -37045,9 +37043,9 @@ body {
   cursor: pointer;
   padding: 0;
   font-size: 16px;
-  color: #8b90a6;
   padding-right: 35px;
-  background-image: url(../../images/select-arrow.png);
+  background-image: url(../../images/select-arrow-2.png);
+  background-size: 17px 6px;
   background-repeat: no-repeat;
   background-position: center right;
   -webkit-appearance: none;
@@ -37071,9 +37069,9 @@ body {
 .payable-form__footer {
   background-color: #fff; }
   .payable-form__footer input.btn, .payable-form__footer .form select.btn, .form .payable-form__footer select.btn, .payable-form__footer .form .btn.custom-select, .form .payable-form__footer .btn.custom-select, .payable-form__footer .form textarea.btn, .form .payable-form__footer textarea.btn {
-    background: #ff3a59;
+    background: var(--brand-color);
+    color: var(--brand-color-inverse);
     text-align: center;
-    color: #fff;
     border: none;
     cursor: pointer; }
     .payable-form__footer input.btn:focus, .payable-form__footer .form select.btn:focus, .form .payable-form__footer select.btn:focus, .payable-form__footer .form .btn.custom-select:focus, .form .payable-form__footer .btn.custom-select:focus, .payable-form__footer .form textarea.btn:focus, .form .payable-form__footer textarea.btn:focus {
