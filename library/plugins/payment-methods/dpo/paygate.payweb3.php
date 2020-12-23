@@ -244,7 +244,7 @@ class PayGate_PayWeb3
     public function handleInitiateResponse()
     {
         if (array_key_exists('ERROR', $this->initiateResponse)) {
-            $this->lastError = $this->initiateResponse['ERROR'];
+            $this->lastError = $this->errorCodesDescription($this->initiateResponse['ERROR']);
             unset($this->initiateResponse);
             return false;
         }
@@ -365,5 +365,71 @@ class PayGate_PayWeb3
             $this->lastError = 'cURL is NOT installed on this server. http://php.net/manual/en/curl.setup.php';
             return false;
         }
+    }
+    
+    /**
+     * errorCodesDescription
+     *
+     * @param  string $errorCode
+     * @return string
+     */
+    private function errorCodesDescription(string $errorCode): string
+    {
+        $errors = [
+            'DATA_AMT_NUM' => 'Amount is not a number',
+            'DATA_AMT_ZERO' => 'Amount value is zero',
+            'DATA_CHK' => 'Checksum calculated incorrectly',
+            'DATA_CREF' => 'No transaction reference',
+            'DATA_PS_CUR' => 'Invalid Currency',
+            'DATA_PS_PNAS' => 'Process Now set as "no" but Process Now Amount supplied',
+            'DATA_PS_PYNAS' => 'Process Now set as "yes" but Process Now Amount not supplied',
+            'DATA_PS_PNAMT_NUM' => 'Process Now Amount not a valid number',
+            'DATA_PS_PNAMT_ZERO' => 'Process Now Amount is zero',
+            'DATA_DTTM' => 'Transaction date invalid',
+            'DATA_INS' => 'Error creating record for transaction request',
+            'DATA_PS' => 'Not all required fields have been posted to PaySubs',
+            'DATA_PS_PROC' => 'Incorrect Value for Process field',
+            'DATA_PS_VER' => 'Incorrect version',
+            'DATA_URL' => 'No return url',
+            'ND_INV_PGID' => 'Invalid PayGate ID',
+            'NOT_LIVE_PM' => 'No available payment methods',
+            'NO_TRANS_DATA' => 'No transaction data found',
+            'PAYSUBS_VAL_ERR' => 'Date ranges not valid',
+            'PGID_NOT_EN' => 'PayGate ID not enabled, there are no available payment methods or there are no available currencies',
+            'TXN_CAN' => 'Transaction has already been cancelled',
+            'TXN_CMP' => 'Transaction has already been completed',
+            'TXN_PRC' => 'Transaction is older than 30 minutes or there has been an error processing it',
+            'CNTRY_INVALID' => 'Invalid Country',
+            'DATA_AMT_NUM' => 'Amount is not a number',
+            'DATA_AMT_ZERO' => 'Amount value is zero',
+            'DATA_CHK' => 'Checksum calculated incorrectly',
+            'DATA_CREF' => 'No transaction reference',
+            'DATA_DTTM' => 'Transaction date invalid',
+            'DATA_INS' => 'Error creating record for transaction request',
+            'DATA_PAY_REQ_ID' => 'Pay request ID missing or invalid',
+            'DATA_PM' => 'Pay Method or Pay Method Detail fields invalid',
+            'DATA_PW' => 'Not all required fields have been posted to PayWeb',
+            'DATA_REGION' => 'No Country or Locale',
+            'DATA_URL' => 'No return url',
+            'INVALID_VAULT' => 'Vault value invalid',
+            'INVALID_VAULT_ID' => 'Vault ID invalid',
+            'INV_EMAIL' => 'Invalid Email address',
+            'LOCALE_INVALID' => 'Invalid Locale',
+            'ND_INV_PGID' => 'Invalid PayGate ID',
+            'NOT_LIVE_PM' => 'No available payment methods',
+            'NO_TRANS_DATA' => 'No transaction data found',
+            'PAYVAULT_NOT_EN' => 'PayVault not enabled',
+            'PGID_NOT_EN' => 'PayGate ID not enabled, there are no available payment methods or there are no available currencies',
+            'TXN_CAN' => 'Transaction has already been cancelled',
+            'TXN_CMP' => 'Transaction has already been completed',
+            'TXN_PRC' => 'Transaction is older than 30 minutes or there has been an error processing it',
+            'VAULT_NOT_ACCEPTED' => 'Card types enabled on terminal not available for vaulting',
+        ];
+
+        if (array_key_exists($errorCode, $errors)) {
+            $errorCode = $errors[$errorCode];
+        }
+
+        return $errorCode;
     }
 }

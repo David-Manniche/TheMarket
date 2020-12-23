@@ -216,14 +216,14 @@ if (!$primaryOrder) {
         ];
     }
 
-    if (0 < $totalOrderDiscountTotal) {
+    if (0 != $totalOrderDiscountTotal) {
         $data['orderSummary'][] = [
             'key' => Labels::getLabel('LBL_Discount', $siteLangId),
             'value' => $totalOrderDiscountTotal,
         ];
     }
 
-    if (0 < $totalVolumeDiscount) {
+    if (0 != $totalVolumeDiscount) {
         $data['orderSummary'][] = [
             'key' => Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId),
             'value' => $totalVolumeDiscount,

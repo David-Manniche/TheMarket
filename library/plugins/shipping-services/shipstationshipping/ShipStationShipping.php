@@ -406,14 +406,14 @@ class ShipStationShipping extends ShippingServicesBase
                     break;
             }
 
-            if (array_key_exists('Message', $this->getResponse(true))) {
+            if (array_key_exists('Message', (array)$this->getResponse(true))) {
                 $this->error = (true === $formatError) ? $this->getResponse(true) : $this->resp;
                 if (true === $formatError) {
                     $this->error = $this->formatError();
                 }
                 return false;
             }
-
+            
             return true;
         } catch (Exception $e) {
             $this->error = $e->getMessage();
