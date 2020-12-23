@@ -757,7 +757,7 @@ class ProductSearch extends SearchBase
                 foreach ($arr_keywords as $value) {
                     $cnd->attachCondition('product_tags_string', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%');
-                    $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%');
+                   /*  $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%'); */
                     $cnd->attachCondition('brand_name', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('prodcat_name', 'LIKE', '%' . $value . '%');
                 }
@@ -766,8 +766,7 @@ class ProductSearch extends SearchBase
             if ($useRelevancy === true) {
                 $obj->addFld(
                     "IF(product_isbn LIKE $strKeyword, 15, 0)
-                + IF(selprod_title LIKE $strKeyword, 4, 0)
-                + IF(product_name LIKE $strKeyword, 4, 0)
+                + IF(selprod_title LIKE $strKeyword, 4, 0)                
                 + IF(product_tags_string LIKE $strKeyword, 4, 0)
                 AS keyword_relevancy"
                 );
