@@ -33,7 +33,7 @@
                             <?php
                             $btn = $frm->getField('btn_submit');
                             $btn->addFieldTagAttribute('onclick', 'razorpaySubmit(this)');
-                            $btn->addFieldTagAttribute('class', 'btn btn-brand');
+                            $btn->addFieldTagAttribute('class', 'btn btn-secondary');
                             $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
                             echo $frm->getFieldHtml('btn_submit');
                             ?> 
