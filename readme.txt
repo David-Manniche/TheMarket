@@ -516,6 +516,7 @@ Bugs:
     => 046803 - admin> brand request listing- on selecting any user email id and filtering it lists only that seller requests but on clearing filter there is no result
     => 046761 - admin> gdpr requests> clear search button is not working
     => 046939 - add product tag giving error
+    => 045816 - seller getting ship option on pickup order
 -----------------------TV-9.2.3.20201222---------------------
 Enhancements:
     => Tax module upgrade
