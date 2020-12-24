@@ -35,6 +35,10 @@ class MyAppController extends FatController
             $this->setApiVariables();
         }
 
+        if (0 < FatApp::getPostedData('appUser', FatUtility::VAR_INT, 0)) {
+            CommonHelper::setAppUser();
+        }
+
         $this->set('siteLangId', $this->siteLangId);
         $this->set('siteLangCode', $this->siteLangCode);
         $this->set('siteCurrencyId', $this->siteCurrencyId);
@@ -359,7 +363,7 @@ class MyAppController extends FatController
     {
         $siteLangId = FatUtility::int($langId);
         $frm = new Form('frmGuestLogin');
-        $frm->addTextBox(Labels::getLabel('LBL_Name', $siteLangId), 'user_name', '', array('placeholder' => Labels::getLabel('LBL_Name', $siteLangId)));
+        $frm->addRequiredField(Labels::getLabel('LBL_Name', $siteLangId), 'user_name', '', array('placeholder' => Labels::getLabel('LBL_Name', $siteLangId)));
         $fld = $frm->addEmailField(Labels::getLabel('LBL_EMAIL', $siteLangId), 'user_email', '', array('placeholder' => Labels::getLabel('LBL_EMAIL_ADDRESS', $siteLangId)));
         $fld->requirement->setRequired(true);
 
@@ -805,6 +809,11 @@ class MyAppController extends FatController
 
     public function accessLocation()
     {
+        if (true === CommonHelper::isAppUser()) {
+            /* Restrict to open location popup in case of app webview. */
+            FatUtility::dieJsonSuccess(Labels::getLabel('LBL_APP_ACCESS', $this->siteLangId));
+        }
+
         $this->set('frm', $this->getGoogleAutocompleteAddressForm());
         $this->_template->render(false, false, '_partial/access-location.php');
     }
@@ -812,7 +821,7 @@ class MyAppController extends FatController
     protected function getGoogleAutocompleteAddressForm()
     {
         $frm = new Form('googleAutocomplete');
-        $frm->addTextBox('', 'location');
+        $frm->addTextBox('', 'location', '', array('autocomplete' => 'off'));
         return $frm;
     }
 

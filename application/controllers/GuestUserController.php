@@ -334,8 +334,15 @@ class GuestUserController extends MyAppController
         $showNewsLetterCheckBox = 0 < $signUpWithPhone ? false : true;
 
         $frm = $this->getRegistrationForm($showNewsLetterCheckBox, $signUpWithPhone);
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        
+        $userName = FatApp::getPostedData('user_username', FatUtility::VAR_STRING, '');
+        if (empty($userName) || false === ValidateElement::fatbitUsername($userName)) {
+            $message = Labels::getLabel("MSG_INVALID_FATBIT_USERNAME", $this->siteLangId);
+            LibHelper::exitWithError($message, false, true);
+            FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm', array(applicationConstants::YES)));
+        }
 
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
         if ($post == false) {
             $message = Labels::getLabel(current($frm->getValidationErrors()), $this->siteLangId);
             LibHelper::exitWithError($message, false, true);
@@ -862,7 +869,7 @@ class GuestUserController extends MyAppController
 
         $userAuthObj = new UserAuthentication();
 
-        if (!$userAuthObj->checkResetLink($userId, trim($token), 'form')) {
+        if (!$userAuthObj->checkResetLink($userId, trim($token))) {
             Message::addErrorMessage($userAuthObj->getError());
             FatApp::redirectUser(UrlHelper::generateUrl('GuestUser', 'loginForm'));
         }
@@ -899,7 +906,7 @@ class GuestUserController extends MyAppController
 
         $userAuthObj = new UserAuthentication();
 
-        if (!$userAuthObj->checkResetLink($userId, trim($token), 'submit')) {
+        if (!$userAuthObj->checkResetLink($userId, trim($token))) {
             FatUtility::dieJsonError($userAuthObj->getError());
         }
 

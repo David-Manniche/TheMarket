@@ -62,6 +62,8 @@ trait ShipStationFunctions
         $this->resp = curl_exec($ch);
         if (false === $this->resp) {
             throw new Exception(curl_error($ch));
+        } else if (false === $this->validateResponse($this->resp)) {
+            throw new Exception($this->resp);
         }
 
         curl_close($ch);
@@ -170,5 +172,37 @@ trait ShipStationFunctions
     {
         $this->endpoint = 'orders/markasshipped';
         return $this->post($requestParam);
+    }
+
+    /**
+     * validateResponse
+     *
+     * @param  string $response
+     * @return bool
+     */
+    private function validateResponse(string $response): bool
+    {
+        $errors = [
+            "400 Bad Request",
+            "401 Unauthorized",
+            "403 Forbidden",
+            "404 Not Found",
+            "429 Too Many Requests",
+            "500 Internal Server Error",
+            "502 Bad Gateway",
+            "503 Service Unavailable",
+            "504 Gateway Timeout",
+            "SSL/TLS Error",
+            "Invalid XML Error",
+            "Remote Name Error",
+            "Object Reference Error",
+            "Input String Error",
+            "Inner Exception Error",
+        ];
+
+        if (in_array($response, $errors)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -285,7 +285,7 @@ class StripeConnectPayController extends PaymentController
             $clientSecret = $response->client_secret;
             switch ($response->status) {
                 case 'succeeded':
-                    $successUrl = CommonHelper::generateFullUrl('custom', 'paymentSuccess', [$this->orderId, $tempToken]);
+                    $successUrl = CommonHelper::generateFullUrl('custom', 'paymentSuccess', [$this->orderId]);
                     $successMsg = Labels::getLabel('LBL_PAYMENT_SUCCEEDED._WAITING_FOR_CONFIRMATION', $this->siteLangId);
                     if (FatUtility::isAjaxCall() || true === MOBILE_APP_API_CALL) {
                         $json['status'] = Plugin::RETURN_TRUE;
@@ -432,18 +432,20 @@ class StripeConnectPayController extends PaymentController
             // $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
             return;
         }
-
+        
+        $orderId = isset($payload['data']['object']['metadata']['order_id']) ? $payload['data']['object']['metadata']['order_id'] : '';
         $status = isset($payload['data']['object']['status']) ? $payload['data']['object']['status'] : Labels::getLabel("MSG_FAILURE", $this->siteLangId);
         if ($payload['type'] != "payment_intent.succeeded") {
             // $msg = Labels::getLabel('MSG_UNABLE_TO_CHARGE_:_{STATUS}', $this->siteLangId);
             // $msg = CommonHelper::replaceStringData($msg, ['{STATUS}' => $status]);
+            $recordId = empty($orderId) ? time() : $orderId;
+            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $recordId, $payloadStr);
             return;
         }
 
-        $orderId = isset($payload['data']['object']['metadata']['order_id']) ? $payload['data']['object']['metadata']['order_id'] : '';
         $paymentIntendId = isset($payload['data']['object']['id']) ? $payload['data']['object']['id'] : '';
-
         if (empty($orderId) || empty($paymentIntendId)) {
+            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, time(), $payloadStr);
             // $msg = Labels::getLabel('MSG_INVALID_REQUEST', $this->siteLangId);
             return;
         }
@@ -452,12 +454,14 @@ class StripeConnectPayController extends PaymentController
         $this->orderInfo = $this->getOrderInfo($this->orderId);
         if ($this->orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
             // $msg = Labels::getLabel('MSG_INVALID_ORDER._ALREADY_PAID_OR_CANCELLED', $this->siteLangId);
+            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, $payloadStr);
             return;
         }
 
         $chargeResponse = isset($payload['data']['object']['charges']['data']) ? current($payload['data']['object']['charges']['data']) : [];
         if (empty($chargeResponse)) {
             // $msg = Labels::getLabel('MSG_INVALID_ORDER_CHARGE', $this->siteLangId);
+            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, $payloadStr);
             return;
         }
 

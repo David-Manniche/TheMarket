@@ -228,11 +228,11 @@ $(document).ready(function () {
         fcom.updateWithAjax(fcom.makeUrl('shippingZoneRates', 'setup'), data, function (t) {
             $("input[name='btn_submit']").removeAttr('disabled');
             var profileId = $('input[name="profile_id"]').val();            
+			searchZone(profileId);
             if (t.langId > 0) {
                 editRateLangForm(t.zoneId, t.rateId, t.langId);
                 return;
             }
-            searchZone(profileId);
             searchProductsSection(profileId);
             $(document).trigger('close.facebox');
         });

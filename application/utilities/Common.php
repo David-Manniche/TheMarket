@@ -130,6 +130,7 @@ class Common
             /* ] */
 
             $catSrch = ProductCategory::getSearchObject(false, $siteLangId);
+            $catSrch->addOrder('m.prodcat_active', 'DESC');
             $catSrch->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as category_name'));
             $catSrch->addOrder('category_name');
             $catSrch->doNotCalculateRecords();
@@ -254,20 +255,20 @@ class Common
         return $frm;
     }
 
-    public static function brandFilters($template)
+    /* public static function brandFilters($template)
     {
         $brandSrch = clone $prodSrchObj;
         $brandSrch->addGroupBy('brand_id');
         $brandSrch->addOrder('brand_name');
         $brandSrch->addMultipleFields(array('brand_id', 'IFNULL(brand_name, brand_identifier) as brand_name'));
         /* if needs to show product counts under brands[ */
-        //$brandSrch->addFld('count(selprod_id) as totalProducts');
-        /* ] */
+    //$brandSrch->addFld('count(selprod_id) as totalProducts');
+    /* ] *//*
         //echo $brandSrch->getQuery(); die();
         $brandRs = $brandSrch->getResultSet();
-        $brandsArr = $db->fetchAll($brandRs);
+        $brandsArr = FatApp::getDb()->fetchAll($brandRs);
         $template->set('brandsArr', $brandsArr);
-    }
+    } */
 
     public static function userMessages($template)
     {

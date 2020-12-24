@@ -98,9 +98,13 @@ $(document).ready(function () {
         setSlider();
     });
 
-    if (CONF_ENABLE_GEO_LOCATION && isUserDashboard == 0 && CONF_MAINTENANCE == 0) {
+    if (CONF_ENABLE_GEO_LOCATION && isUserDashboard == 0 && CONF_MAINTENANCE == 0 &&  ( getCookie('_ykGeoDisabled') != 1 || className == 'CheckoutController' || className == 'CartController' )) {
         accessLocation();
     }
+});
+
+$(document).on('afterClose.facebox',$('.location-permission').closest("#facebox"), function(){
+    setCookie('_ykGeoDisabled', 1, 0.5);
 });
 
 /* for search form */
@@ -613,10 +617,10 @@ function accessLocation(force = false) {
                 try {
                     var json = $.parseJSON(t);
                     if (1 > json.status) {
-                        $(document).trigger('close.facebox');
                         $.mbsmessage(json.msg, false, 'alert--danger');
-                        return false;
                     }
+                    $(document).trigger('close.facebox');
+                    return false;
                 } catch (exc) {
                     $.facebox(t, 'location-popup-width');
                     googleAddressAutocomplete();

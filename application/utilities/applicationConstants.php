@@ -480,4 +480,26 @@ class applicationConstants
             3 => applicationConstants::CLASS_WARNING
         );
     }
+
+    public static function getClassColor(string $class): string
+    {
+        switch ($class) {
+            case applicationConstants::CLASS_INFO:
+                return '#5578eb';
+                break;
+            case applicationConstants::CLASS_SUCCESS:
+                return '#1dc9b7';
+                break;
+            case applicationConstants::CLASS_DANGER:
+                return '#fd397a';
+                break;
+            case applicationConstants::CLASS_WARNING:
+                return '#ffb822';
+                break;
+            
+            default:
+                return '#000000';
+                break;
+        }
+    }
 }

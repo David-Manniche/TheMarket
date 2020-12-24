@@ -1358,7 +1358,7 @@ class BrandsController extends AdminBaseController
         //FatUtility::dieJsonSuccess(Message::getHtml());
     }
 
-    public function exportBrandsForm()
+    /* public function exportBrandsForm()
     {
         $this->objPrivilege->canViewBrands();
         $frm = $this->getImportExportForm($this->adminLangId, 'EXPORT');
@@ -1388,5 +1388,5 @@ class BrandsController extends AdminBaseController
         $frm = $this->getImportExportForm($this->adminLangId, 'IMPORT_MEDIA');
         $this->set('frm', $frm);
         $this->_template->render(false, false);
-    }
+    } */
 }

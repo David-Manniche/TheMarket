@@ -121,12 +121,82 @@ if (array_key_exists('brand_id', $postedData) && $postedData['brand_id'] > 0) {
 <?php $this->includeTemplate('_partial/productsSearchForm.php', array('frmProductSearch' => $frmProductSearch, 'siteLangId' => $siteLangId, 'recordCount' => $recordCount, 'pageTitle' => (isset($pageTitle)) ? $pageTitle : 'Products'), false);  ?>
 <section class="section">
     <div class="container">
-        <?php
-        if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) == FilterHelper::LAYOUT_TOP) {
-            require_once('filters-layout-top.php');
-        } else {
-            require_once('filters-layout-left.php');
-        } ?>
+    <div class="collection-listing <?php echo FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) == FilterHelper::LAYOUT_TOP ? 'filter-top': 'filter-left';?>">
+
+            <?php
+                /*
+                if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) == FilterHelper::LAYOUT_TOP) {
+                    require_once('filters-layout-top.php');
+                } else {
+                    require_once('filters-layout-left.php');
+                } 
+                */
+                require_once('filters-layout.php');
+            
+            ?>
+
+            <main class="collection-content">
+			    <button  class="btn btn-float link__filter btn--filters-control" data-trigger="collection-sidebar"><i class="icn">
+                                            <svg class="svg">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter" href="<?php echo CONF_WEBROOT_URL;?>images/retina/sprite.svg#filter"></use>
+                                            </svg>
+                                        </i></button>
+                <div class="row align-items-center justify-content-between flex-column flex-md-row page-sort-wrap">
+                    <div class="col mb-3 mb-md-0">
+                        <div class="total-products">
+                            <h4>
+                                <?php echo isset($scollection_name) && !empty($scollection_name) ? $scollection_name : '';?>
+                                <span class="hide_on_no_product">
+                                    <small class="text-muted">
+										<span id="total_records"><?php echo $recordCount; ?></span> <?php echo Labels::getLabel('LBL_ITEM(S)', $siteLangId);?>
+									</small>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div id="top-filters" class="page-sort hide_on_no_product">
+                            <ul>
+                                <li class="list__item">
+                                    <?php if (!(UserAuthentication::isUserLogged()) || (UserAuthentication::isUserLogged() && (User::isBuyer()))) { ?>
+                                    <a href="javascript:void(0)" onclick="saveProductSearch()" class="btn btn-brand btn--filters-control saveSearch-js">
+                                    <i class="icn fas fa-file-download d-md-none"></i><span class="txt"><?php echo Labels::getLabel('LBL_Save_Search', $siteLangId); ?></span></a>
+                                    <?php } ?>
+                                </li>
+                                <li>
+                                    <?php echo $frmProductSearch->getFieldHtml('sortBy'); ?></li>
+                                <li>
+                                    <?php echo $frmProductSearch->getFieldHtml('pageSize'); ?></li>
+                                   
+                                <li class="d-none d-md-block">
+                                    <div class="list-grid-toggle switch--link-js">
+                                        <div class="icon">
+                                            <div class="icon-bar"></div>
+                                            <div class="icon-bar"></div>
+                                            <div class="icon-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="listing-products -listing-products ">
+                    <?php 
+                    $productsData = array(
+                        'products' => $products,
+                        'page' => $page,
+                        'pageCount' => $pageCount,
+                        'postedData' => $postedData,
+                        'recordCount' => $recordCount,
+                        'siteLangId' => $siteLangId,
+                        'colMdVal' => 4
+                    );
+                    $this->includeTemplate('products/products-list.php', $productsData, false); ?> 
+                </div>
+            </main>
+
+        </div>
     </div>
 </section>
 <section>

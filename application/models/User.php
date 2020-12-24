@@ -135,9 +135,9 @@ class User extends MyAppModel
             )
         );
 
-        if (0 < $this->parentId) {
+        /* if (0 < $this->parentId) {
             $this->addCondition('user_parent', '=', $this->parentId);
-        }
+        } */
     }
 
     public static function getUserTypesArr($langId)
@@ -713,7 +713,7 @@ class User extends MyAppModel
             'user_profile_info' => $data['user_profile_info'],
             'user_products_services' => $data['user_products_services'],
         );
-        if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $assignValues, array('smt' => static::DB_TBL_PREFIX . 'id = ? ', 'vals' => array((int)$userId)))) {
+        if (!FatApp::getDb()->updateFromArray(static::DB_TBL, $assignValues, array('smt' => static::DB_TBL_PREFIX . 'id = ? ', 'vals' => array((int) $userId)))) {
             $this->error = FatApp::getDb()->getError();
             echo $this->error;
             die;
@@ -825,7 +825,7 @@ class User extends MyAppModel
         $assignValues = array(
             static::DB_TBL_CRED_PREFIX . 'password' => UserAuthentication::encryptPassword($data['user_password'])
         );
-        if (!FatApp::getDb()->updateFromArray(static::DB_TBL_CRED, $assignValues, array('smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ? ', 'vals' => array((int)$userId)))) {
+        if (!FatApp::getDb()->updateFromArray(static::DB_TBL_CRED, $assignValues, array('smt' => static::DB_TBL_CRED_PREFIX . 'user_id = ? ', 'vals' => array((int) $userId)))) {
             $this->error = FatApp::getDb()->getError();
             echo $this->error;
             die;
@@ -909,11 +909,11 @@ class User extends MyAppModel
         }
 
         if (!FatApp::getDb()->deleteRecords(static::DB_TBL_USR_RETURN_ADDR, array('smt' => 'ura_user_id = ?', 'vals' => array($this->mainTableRecordId)))) {
-            $this->error = $db->getError();
+            $this->error = FatApp::getDb()->getError();
             return false;
         }
         if (!FatApp::getDb()->deleteRecords(static::DB_TBL_USR_RETURN_ADDR_LANG, array('smt' => 'uralang_user_id = ?', 'vals' => array($this->mainTableRecordId)))) {
-            $this->error = $db->getError();
+            $this->error = FatApp::getDb()->getError();
             return false;
         }
         return true;
@@ -1020,8 +1020,8 @@ class User extends MyAppModel
         foreach ($data['fieldIdsArr'] as $key => $fieldId) {
             if (isset($data['sformfield_' . $fieldId]) && $data['sformfield_' . $fieldId] != '') {
                 $arr = array(
-                    'sfreqvalue_request_id' => (int)$supplier_request_id,
-                    'sfreqvalue_formfield_id' => (int)$fieldId,
+                    'sfreqvalue_request_id' => (int) $supplier_request_id,
+                    'sfreqvalue_formfield_id' => (int) $fieldId,
                     'sfreqvalue_text' => $data['sformfield_' . $fieldId],
                 );
                 $record->assignValues($arr);
@@ -1077,7 +1077,7 @@ class User extends MyAppModel
         if (!FatApp::getDb()->updateFromArray(
             static::DB_TBL_USR_SUPP_REQ,
             $assignValues,
-            array('smt' => 'usuprequest_id = ? ', 'vals' => array((int)$srequest_id))
+            array('smt' => 'usuprequest_id = ? ', 'vals' => array((int) $srequest_id))
         )) {
             $this->error = $this->db->getError();
             return false;
@@ -1163,7 +1163,7 @@ class User extends MyAppModel
         if (!FatApp::getDb()->updateFromArray(
             static::DB_TBL_USR_CATALOG_REQ,
             $assignValues,
-            array('smt' => 'scatrequest_id = ? ', 'vals' => array((int)$scatrequest_id))
+            array('smt' => 'scatrequest_id = ? ', 'vals' => array((int) $scatrequest_id))
         )) {
             $this->error = $this->db->getError();
             return false;
@@ -1181,7 +1181,7 @@ class User extends MyAppModel
         }
 
         $assignValues = ['scatrequest_deleted' => 1];
-        if (!FatApp::getDb()->updateFromArray(static::DB_TBL_USR_CATALOG_REQ, $assignValues, ['smt' => 'scatrequest_id = ? ', 'vals' => array((int)$scatrequest_id)])) {
+        if (!FatApp::getDb()->updateFromArray(static::DB_TBL_USR_CATALOG_REQ, $assignValues, ['smt' => 'scatrequest_id = ? ', 'vals' => array((int) $scatrequest_id)])) {
             $this->error = $this->db->getError();
             return false;
         }
@@ -2220,7 +2220,7 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-        FatApp::getDb()->deleteRecords(static::DB_TBL_USR_MOBILE_TEMP_TOKEN, array('smt' => static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id = ?', 'vals' => array((int)$this->mainTableRecordId)));
+        FatApp::getDb()->deleteRecords(static::DB_TBL_USR_MOBILE_TEMP_TOKEN, array('smt' => static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id = ?', 'vals' => array((int) $this->mainTableRecordId)));
         $assignValues = array(
             static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id' => $this->mainTableRecordId,
             static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'token' => $generatedToken,
@@ -2259,7 +2259,7 @@ class User extends MyAppModel
             $this->error = Labels::getLabel('ERR_INVALID_REQUEST_USER_NOT_INITIALIZED', $this->commonLangId);
             return false;
         }
-        if (FatApp::getDb()->deleteRecords(static::DB_TBL_USR_MOBILE_TEMP_TOKEN, array('smt' => static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id = ?', 'vals' => array((int)$this->mainTableRecordId)))) {
+        if (FatApp::getDb()->deleteRecords(static::DB_TBL_USR_MOBILE_TEMP_TOKEN, array('smt' => static::DB_TBL_USR_MOBILE_TEMP_TOKEN_PREFIX . 'user_id = ?', 'vals' => array((int) $this->mainTableRecordId)))) {
             return true;
         }
     }
@@ -2321,7 +2321,7 @@ class User extends MyAppModel
                 ]
             );
             $values = static::getUserAuthFcmFormattedData($userType, $fcmDeviceId, $deviceOs);
-            $where = array('smt' => 'uauth_user_id = ? and uauth_token = ?', 'vals' => array((int)$this->mainTableRecordId, $appToken));
+            $where = array('smt' => 'uauth_user_id = ? and uauth_token = ?', 'vals' => array((int) $this->mainTableRecordId, $appToken));
         } else {
             FatApp::getDb()->deleteRecords(
                 UserAuthentication::DB_TBL_USER_AUTH,
@@ -2330,7 +2330,7 @@ class User extends MyAppModel
                     'vals' => array($appToken)
                 ]
             );
-            $values = static::getUserAuthFcmFormattedData($userType, $fcmDeviceId, $deviceOs, (int)$this->mainTableRecordId, $appToken);
+            $values = static::getUserAuthFcmFormattedData($userType, $fcmDeviceId, $deviceOs, (int) $this->mainTableRecordId, $appToken);
             $where = array('smt' => 'uauth_fcm_id = ?', 'vals' => [$fcmDeviceId]);
         }
         return UserAuthentication::updateFcmDeviceToken($values, $where);
@@ -2565,7 +2565,7 @@ class User extends MyAppModel
 
         $rewardsRecord = new UserRewards();
         $referralUserName = User::getAttributesById($referredUserId, "user_name");
-        $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Your_Referral_{username}_registered.", $langId);
+        $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Your_Referral_{username}_registered.", CommonHelper::getLangId());
         $urpComments = str_replace("{username}", $referralUserName, $urpComments);
         $rewardsRecord->assignValues(
             array(
@@ -2584,7 +2584,7 @@ class User extends MyAppModel
         } else {
             $this->error = $rewardsRecord->getError();
         }
-        $where = array('smt' => 'user_id = ?', 'vals' => array($userId));
+        $where = array('smt' => 'user_id = ?', 'vals' => array($referrerUserId));
         FatApp::getDb()->updateFromArray(static::DB_TBL, array('user_updated_on' => date('Y-m-d  H:i:s')), $where);
     }
 
@@ -2794,7 +2794,7 @@ class User extends MyAppModel
         $CONF_REGISTRATION_REFERRAL_REWARD_POINTS = FatApp::getConfig("CONF_REGISTRATION_REFERRAL_REWARD_POINTS", FatUtility::VAR_INT, 0);
 
         $rewardsRecord = new UserRewards();
-        $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Registered_through_referral_link_of_your_friend_{referrerusername}.", $langId);
+        $urpComments = Labels::getLabel("LBL_Signup_Reward_Points._Registered_through_referral_link_of_your_friend_{referrerusername}.", $this->commonLangId);
         $urpComments = str_replace("{referrerusername}", $referrerUserName, $urpComments);
         $rewardsRecord->assignValues(
             array(

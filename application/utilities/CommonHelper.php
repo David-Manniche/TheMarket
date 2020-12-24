@@ -88,12 +88,13 @@ class CommonHelper extends FatUtility
         return self::$_appToken;
     }
 
-    public static function getLangId()
+    public static function getLangId(): int
     {
-        if (1 > self::$_lang_id) {
-            return FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        $langId = FatUtility::int(self::$_lang_id);
+        if (1 > $langId) {
+            return FatUtility::int(FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1));
         }
-        return self::$_lang_id;
+        return $langId;
     }
 
     public static function setLangId($langId)
@@ -956,9 +957,13 @@ class CommonHelper extends FatUtility
     }
 
     public static function getRandomPassword($n)
-    {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    {          
         $pass = '';
+        if ($n > 4) {
+            $n = $n - 4;
+            $pass = 'Yk@1';
+        }
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         for ($i = 0; $i < $n; $i++) {
             $pass .= substr($chars, rand(0, strlen($chars) - 1), 1);
         }
@@ -1321,6 +1326,10 @@ class CommonHelper extends FatUtility
         }
 
         $originalPrice = $product['selprod_price'];
+        if (1 > $originalPrice) {
+            return 0;
+        }
+        
         $specialPrice = $product['theprice'];
         $discount = (($originalPrice - $specialPrice) * 100) / $originalPrice;
         return $disVal = round($discount) . "% " . Labels::getLabel('LBL_Off', $langId);

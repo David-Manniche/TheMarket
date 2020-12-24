@@ -1745,7 +1745,7 @@ class Cart extends FatModel
 
     public function getCarrierShipmentServicesList($cartKey, $carrier_id = 0, $lang_id = 0)
     {
-        $servicesList = array();
+        /* $servicesList = array();
 
         $servicesList[0] = Labels::getLabel('MSG_Select_Services', $lang_id);
 
@@ -1754,11 +1754,6 @@ class Cart extends FatModel
                 $code = $value->serviceCode;
                 $price = $value->shipmentCost + $value->otherCost;
                 $name = $value->serviceName;
-                /* if ($products[$prodKey]['shop_eligible_for_free_shipping'] > 0 && $products[$prodKey]['psbs_user_id'] > 0) {
-                    $displayPrice = Labels::getLabel('LBL_Free_Shipping', $lang_id);
-                } else {
-                    $displayPrice = CommonHelper::displayMoneyFormat($price);
-                } */
                 $displayPrice = CommonHelper::displayMoneyFormat($price);
                 $label = $name . " (" . $displayPrice . " )";
                 $servicesList[$code . "-" . $price] = $label;
@@ -1766,7 +1761,7 @@ class Cart extends FatModel
         }
 
         $products = $this->getProducts($this->cart_lang_id);
-        $prodKey = $this->getProductByKey($cartKey);
+        $prodKey = $this->getProductByKey($cartKey); */
 
         return $this->getCarrierShipmentServices($cartKey, $carrier_id, $lang_id);
     }

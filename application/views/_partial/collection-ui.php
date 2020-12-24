@@ -11,6 +11,7 @@ if ($controllerName = 'Products' && isset($action) && $action == 'view') {
     }
 }
 
+
 if ($showAddToFavorite) { ?>
     <div class="favourite-wrapper <?php /* echo $staticCollectionClass; */ ?>">
     <?php if (true ==  $showActionBtns) { ?>

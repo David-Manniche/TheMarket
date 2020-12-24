@@ -510,7 +510,17 @@ Bugs:
     => 046452 - authorize Aim payment method form submitting without form validation on order
     => 046487 - admin> seo> meta tags> blog post> on editing there is blank popup with save button
     => 046495 - when guest user checkout with digital product having 0 price getting error "Your_Session_seems_to_be_expired"
+    => 046548 - on adding you tube link in innova editor it is not playing on https sites
+    => 046576 - in guest user form name should me mandatory
+    => 046239 - as product is shared from detail page- share icon is getting swapped from the recently shared mode
+    => 046803 - admin> brand request listing- on selecting any user email id and filtering it lists only that seller requests but on clearing filter there is no result
+    => 046761 - admin> gdpr requests> clear search button is not working
+    => 046939 - add product tag giving error
+    => 045816 - seller getting ship option on pickup order
+    => 046920	when location is set for current location then under all shops- blank shop is listing 
+    => 047025 - subscription page load with header in Custom Product Setup inventory tab
 
+-----------------------TV-9.2.3.20201222---------------------
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.

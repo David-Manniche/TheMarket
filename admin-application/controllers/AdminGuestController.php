@@ -219,7 +219,7 @@ class AdminGuestController extends FatController
             $this->_template->render(false, false, 'json-error.php', true, false);
         }
         $emaiHandObj = new EmailHandler();
-        $emaiHandObj->sendSms('admin_forgot_password', FatApp::getConfig('CONF_SITE_PHONE'), $replacements, $langId);
+        $emaiHandObj->sendSms('admin_forgot_password', FatApp::getConfig('CONF_SITE_PHONE'), $replacements, $this->adminLangId);
 
         $this->set('msg', Labels::getLabel('MSG_YOUR_PASSWORD_RESET_INSTRUCTIONS_TO_YOUR_EMAIL', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php', true, false);

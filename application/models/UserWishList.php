@@ -83,9 +83,14 @@ class UserWishList extends MyAppModel
     {
         $excludeWishList = FatUtility::int($excludeWishList);
         $userId = FatUtility::int($userId);
-        if (!$userId) {
+        if (1 > $userId) {
             trigger_error(Labels::getLabel('MSG_Invalid_Argument_Passed!', CommonHelper::getLangId()), E_USER_ERROR);
         }
+
+        /* This function return default wish list id and also create default wishlist if not created. */
+        $wishList = new UserWishList();
+        $wishList->getWishListId($userId, UserWishList::TYPE_DEFAULT_WISHLIST);
+        /* This function return default wish list id and also create default wishlist if not created. */
 
         $srchWishlist = new UserWishListProductSearch();
         $srchWishlist->joinSellerProducts();

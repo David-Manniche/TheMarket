@@ -57,7 +57,7 @@ class PayFortPayController extends PaymentController
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'pay-fort-pay/charge.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'pay-fort-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
         $this->_template->render(true, false);

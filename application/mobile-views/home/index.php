@@ -50,7 +50,6 @@ foreach ($collections as $collectionIndex => $collectionData) {
             $collections[$collectionIndex]['products'][$index]['product_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('image', 'product', array($product['product_id'], "CLAYOUT3", $product['selprod_id'], 0, $siteLangId)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $collections[$collectionIndex]['products'][$index]['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
             $collections[$collectionIndex]['products'][$index]['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
-            $collections[$collectionIndex]['products'][$index]['isAvailble'] = (true == $displayProductNotAvailableLable && array_key_exists('availableInLocation', $product) && null == $product['availableInLocation']) ? applicationConstants::NO : applicationConstants::YES;
         }
     } elseif (array_key_exists('categories', $collectionData)) {
         foreach ($collectionData['categories'] as $index => $category) {
@@ -75,7 +74,7 @@ foreach ($collections as $collectionIndex => $collectionData) {
         foreach ($collectionData['testimonials'] as $index => $testimonial) {
             $collections[$collectionIndex]['testimonials'][$index]['user_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'testimonial', array($testimonial['testimonial_id'], $siteLangId, 'THUMB')), CONF_IMG_CACHE_TIME, '.jpg');
         }
-    } elseif (array_key_exists('banners', $collectionData) && isset($collectionData['banners']['banners'])) {
+    } elseif (array_key_exists('banners', $collectionData) && 0 < count((array)$collectionData['banners']) && array_key_exists('banners', $collectionData['banners'])) {
         foreach ($collectionData['banners']['banners'] as $index => $banner) {
             $uploadedTime = AttachedFile::setTimeParam($banner['banner_updated_on']);
             $urlTypeData = CommonHelper::getUrlTypeData($banner['banner_url']);
@@ -86,7 +85,7 @@ foreach ($collections as $collectionIndex => $collectionData) {
                     'urlType' => applicationConstants::URL_TYPE_EXTERNAL
                 );
             }
-            
+
             $collections[$collectionIndex]['banners']['banners'][$index]['banner_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($banner['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
 
             $collections[$collectionIndex]['banners']['banners'][$index]['banner_url'] = ($urlTypeData['urlType'] == applicationConstants::URL_TYPE_EXTERNAL ? $banner['banner_url'] : $urlTypeData['recordId']);

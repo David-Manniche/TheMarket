@@ -43,6 +43,7 @@ class ProductsController extends MyAppController
 
         if ($validateBrand && array_key_exists('keyword', $get)) {
             $prodSrchObj = new ProductSearch(0);
+            $prodSrchObj->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name'));
             $prodSrchObj->joinSellerProducts(0, '', ['doNotJoinSpecialPrice' => true], true);
             $prodSrchObj->joinSellers();
             $prodSrchObj->setGeoAddress();
@@ -54,7 +55,6 @@ class ProductsController extends MyAppController
             $prodSrchObj->addSubscriptionValidCondition();
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->setPageSize(1);
-            $prodSrchObj->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name'));
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->addHaving('brand_name', 'like', trim($get['keyword']));
             $brandRs = $prodSrchObj->getResultSet();
@@ -352,9 +352,11 @@ class ProductsController extends MyAppController
         }
 
         $templateName = 'filters.php';
+        /*
         if (FatApp::getConfig('CONF_FILTERS_LAYOUT', FatUtility::VAR_INT, 1) == FilterHelper::LAYOUT_TOP) {
             $templateName = 'filters-top.php';
         }
+        */
         echo $this->_template->render(false, false, 'products/' . $templateName, true);
         exit;
     }
@@ -573,8 +575,8 @@ class ProductsController extends MyAppController
         /*[ Product shipping cost */
         $shippingCost = 0;
         /*]*/
-
-        $product['moreSellersArr'] = $this->getMoreSeller($product['selprod_code'], $this->siteLangId, $product['selprod_user_id']);
+        $sellerId = (false === MOBILE_APP_API_CALL) ? $product['selprod_user_id'] : 0;
+        $product['moreSellersArr'] = $this->getMoreSeller($product['selprod_code'], $this->siteLangId, $sellerId);
         $product['selprod_return_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_RETURN, $this->siteLangId);
         $product['selprod_warranty_policies'] = SellerProduct::getSelprodPolicies($product['selprod_id'], PolicyPoint::PPOINT_TYPE_WARRANTY, $this->siteLangId);
         /* Form buy product[ */
@@ -799,7 +801,9 @@ class ProductsController extends MyAppController
         $langId = FatUtility::int($langId);
 
         $moreSellerSrch = new ProductSearch($langId);
+        $moreSellerSrch->setGeoAddress();
         $moreSellerSrch->addMoreSellerCriteria($selprodCode, $userId);
+        $moreSellerSrch->validateAndJoinDeliveryLocation();
         /*$moreSellerSrch->addMultipleFields(array( 'selprod_id', 'selprod_user_id', 'selprod_price', 'special_price_found', 'theprice', 'shop_id', 'shop_name' ,'IF(selprod_stock > 0, 1, 0) AS in_stock'));*/
         $moreSellerSrch->addMultipleFields(
             array('selprod_id', 'selprod_user_id', 'selprod_price', 'special_price_found', 'theprice', 'shop_id', 'shop_name', 'product_seller_id', 'product_id', 'shop_country_l.country_name as shop_country_name', 'shop_state_l.state_name as shop_state_name', 'shop_city', 'selprod_cod_enabled', 'product_cod_enabled', 'IF(selprod_stock > 0, 1, 0) AS in_stock', 'selprod_min_order_qty', 'selprod_available_from')
@@ -861,10 +865,12 @@ class ProductsController extends MyAppController
 
         $srch = new ProductSearch($langId);
         $join_price = 1;
+        $srch->setGeoAddress();
         $srch->setDefinedCriteria($join_price);
         $srch->joinProductToCategory();
         $srch->joinSellerSubscription();
         $srch->addSubscriptionValidCondition();
+        $srch->validateAndJoinDeliveryLocation();
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         $srch->addMultipleFields(
             array(
@@ -987,9 +993,11 @@ class ProductsController extends MyAppController
             $loggedUserId = UserAuthentication::getLoggedUserId();
         }
         $prodSrch = new ProductSearch($this->siteLangId);
+        $prodSrch->setGeoAddress();
         $prodSrch->setDefinedCriteria();
         $prodSrch->joinSellerSubscription();
         $prodSrch->addSubscriptionValidCondition();
+        $prodSrch->validateAndJoinDeliveryLocation();
         $prodSrch->joinProductToCategory();
         $prodSrch->doNotCalculateRecords();
         $prodSrch->doNotLimitRecords();
@@ -1395,6 +1403,7 @@ class ProductsController extends MyAppController
         );
 
         $productCatSrchObj = ProductCategory::getSearchObject(false, $this->siteLangId);
+        $productCatSrchObj->addOrder('m.prodcat_active', 'DESC');
         $productCatSrchObj->doNotCalculateRecords();
         /* $productCatSrchObj->setPageSize(4); */
         $productCatSrchObj->addMultipleFields(array('prodcat_id', 'COALESCE(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));

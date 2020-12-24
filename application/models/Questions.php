@@ -38,7 +38,7 @@ class Questions extends MyAppModel
         }
 
         if ($active == true) {
-            $srch->addCondition('q.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::active);
+            $srch->addCondition('q.' . static::DB_TBL_PREFIX . 'active', '=', applicationConstants::ACTIVE);
         }
 
         if ($deleted == true) {

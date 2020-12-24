@@ -2265,7 +2265,7 @@ class Orders extends MyAppModel
         return $digitalDownloads;
     }
 
-    public function searchOrderProducts($criteria = array(), $langId = 0)
+    public static function searchOrderProducts($criteria = array(), $langId = 0)
     {
         $srch = static::getOrderProductSearchObject($langId);
 
@@ -2276,7 +2276,7 @@ class Orders extends MyAppModel
             switch ($key) {
                 case 'id':
                 case 'op_id':
-                    $op_id = FatUtility::int($op_id);
+                    $op_id = FatUtility::int($val);
                     $srch->addCondition('op.op_id', '=', $op_id);
                     break;
                 case 'order':

@@ -92,7 +92,7 @@
                             $li->appendElement("a", array('title' => Labels::getLabel('LBL_Product_Images', $siteLangId), 'onclick' => 'customProductImages(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fas fa-images"></i>', true);
                         }
 
-                        if ($canEditShipProfile && $row['product_added_by_admin_id'] && $row['psbs_user_id'] && $row['product_type'] == PRODUCT::PRODUCT_TYPE_PHYSICAL) {
+                        if ($canEditShipProfile && $row['product_added_by_admin_id'] && $row['psbs_user_id'] && $row['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
                             $li = $ul->appendElement("li");
                             $li->appendElement("a", array('title' => Labels::getLabel('LBL_Edit_Shipping', $siteLangId), 'onclick' => 'sellerShippingForm(' . $row['product_id'] . ')', 'href' => 'javascript:void(0)'), '<i class="fa fa-truck"></i>', true);
                         }

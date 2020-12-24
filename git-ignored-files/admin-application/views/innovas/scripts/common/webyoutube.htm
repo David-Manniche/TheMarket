@@ -461,7 +461,7 @@
             var vimeoRegexMatches = vimeoRegex.exec(inputUrl);
             if (youRegexMatches != null && youRegexMatches.length >= 7) {
                 var youMatch = youRegexMatches[6];
-                var youUrl = 'http://www.youtube.com/embed/' + youMatch;
+                var youUrl = 'https://www.youtube.com/embed/' + youMatch;
                 return youUrl;
             }
             if (vimeoRegexMatches != null && vimeoRegexMatches.length >= 7) {

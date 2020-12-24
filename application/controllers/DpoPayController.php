@@ -156,6 +156,7 @@ class DpoPayController extends PaymentController
      * getPaymentForm
      *
      * @param  string $orderId
+     * @param  bool $processRequest
      * @return object
      */
     private function getPaymentForm(string $orderId, bool $processRequest = false): object

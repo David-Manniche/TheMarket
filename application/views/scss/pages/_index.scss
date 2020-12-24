@@ -145,10 +145,12 @@
     position: relative;
     display: flex;
     @include media-breakpoint-down(md) {
-        & {
-            padding-left: 0;
-            padding-right: 0;
-        }
+        padding-left: 0;
+        padding-right: 0;
+    }
+    @include media-breakpoint-down(sm) {
+        overflow: hidden;
+        overflow-x: auto;
     }
     .slick-arrow {
         width: 48px;
@@ -177,6 +179,11 @@
         padding: 0 1rem;
         -webkit-transition: all 0.5s ease-in-out;
         transition: all 0.5s ease-in-out;
+        @include media-breakpoint-down(sm) {
+            width: 60%;
+            flex: 0 0 60%;
+            max-width: 60%;
+        }
         &.slick-slide {
             opacity: 0.4;
             filter: grayscale(100);
@@ -342,5 +349,13 @@
     }
     .faq_data {
         margin-top: 2rem;
+    }
+}
+
+.home {
+    .section:not([style*="background"])+ {
+        .section:not([style*="background"]) {
+            padding-top: 0px;
+        }
     }
 }

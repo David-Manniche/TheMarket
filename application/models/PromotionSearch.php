@@ -94,7 +94,7 @@ class PromotionSearch extends SearchBase
         }
     }
 
-    public function joinPromotionsLogForCount($fromDate = '', $todate = '', $groupBy = 'plog_promotion_id')
+    public function joinPromotionsLogForCount($fromDate = '', $toDate = '', $groupBy = 'plog_promotion_id')
     {
         $srch = new SearchBase(Promotion::DB_TBL_LOGS, 'i');
         $srch->addMultipleFields(array('i.plog_promotion_id', 'sum(i.plog_impressions) as impressions', 'sum(i.plog_clicks) as clicks', 'sum(i.plog_orders) as orders', 'plog_date'));
@@ -107,7 +107,7 @@ class PromotionSearch extends SearchBase
             $srch->addCondition('i.plog_date', '>=', $fromDate . ' 00:00:00');
         }
 
-        if ($todate != '') {
+        if ($toDate != '') {
             $toDate = FatDate::convertDatetimeToTimestamp($toDate);
             $toDate = date('Y-m-d', strtotime($toDate));
             $srch->addCondition('i.plog_date', '<=', $todate . ' 23:59:59');

@@ -59,7 +59,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                                 <div class="favourite-wrapper favourite-wrapper-detail ">
                                                     <?php include(CONF_THEME_PATH . '_partial/collection-ui.php'); ?>
                                                     <div class="dropdown">
-                                                        <a class="dropdown-toggle no-after share-icon" data-display="static" href="javascript:void(0)" data-toggle="dropdown">
+                                                        <a class="no-after share-icon" data-display="static" href="javascript:void(0)" data-toggle="dropdown">
                                                             <i class="icn">
                                                                 <svg class="svg">
                                                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#share">
@@ -294,7 +294,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 
                                     <!-- Add To Cart [ -->
                                     <?php if ($product['in_stock']) {
-                                        if (true == $displayProductNotAvailableLable && array_key_exists('availableInLocation', $product) && null == $product['availableInLocation']) {  ?>
+                                        if (true == $displayProductNotAvailableLable && array_key_exists('availableInLocation', $product) && 0 == $product['availableInLocation']) {  ?>
                                             <div class="not-available">
                                                 <svg class="svg">
                                                     <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info" href="<?php echo CONF_WEBROOT_URL; ?>images/retina/sprite.svg#info">

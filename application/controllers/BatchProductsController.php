@@ -6,7 +6,7 @@ class BatchProductsController extends LoggedUserController
     {
         parent::__construct($action);
         $_SESSION[UserAuthentication::SESSION_ELEMENT_NAME]['activeTab'] = 'S';
-        
+
         if (!User::canAccessSupplierDashboard()) {
             FatApp::redirectUser(UrlHelper::generateUrl('Account', 'supplierApprovalForm'));
         }
@@ -32,7 +32,7 @@ class BatchProductsController extends LoggedUserController
         }
         $srch = new ProductGroupSearch($this->siteLangId);
         $srch->addOrder('prodgroup_name');
-        $srch->addMultipleFields(array( 'prodgroup_id', 'IFNULL(prodgroup_name, prodgroup_identifier) as prodgroup_name', 'prodgroup_active' ));
+        $srch->addMultipleFields(array('prodgroup_id', 'IFNULL(prodgroup_name, prodgroup_identifier) as prodgroup_name', 'prodgroup_active'));
         $srch->addCondition('prodgroup_user_id', '=', $userId);
         $pageSize = FatApp::getConfig('CONF_PAGE_SIZE');
 
@@ -98,10 +98,10 @@ class BatchProductsController extends LoggedUserController
 
         $prodGroupObj = new ProductGroup($prodgroup_id);
         $dataToSaveArr = array(
-        'prodgroup_identifier' => $post['prodgroup_identifier'],
-        'prodgroup_price' => $post['prodgroup_price'],
-        'prodgroup_active' => $post['prodgroup_active'],
-        'prodgroup_user_id' => $userId
+            'prodgroup_identifier' => $post['prodgroup_identifier'],
+            'prodgroup_price' => $post['prodgroup_price'],
+            'prodgroup_active' => $post['prodgroup_active'],
+            'prodgroup_user_id' => $userId
         );
         $prodGroupObj->assignValues($dataToSaveArr);
 
@@ -157,7 +157,7 @@ class BatchProductsController extends LoggedUserController
         }
 
         if ($lang_id <= 0 || $prodgroup_id <= 0) {
-            Message::addErrorMessag(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
+            Message::addErrorMessage(Labels::getLabel('LBL_Invalid_Request', $this->siteLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
@@ -171,9 +171,9 @@ class BatchProductsController extends LoggedUserController
 
         $prodGroupObj = new ProductGroup($prodgroup_id);
         $dataToSaveArr = array(
-        'prodgrouplang_prodgroup_id' => $prodgroup_id,
-        'prodgrouplang_lang_id' => $lang_id,
-        'prodgroup_name' => $post['prodgroup_name']
+            'prodgrouplang_prodgroup_id' => $prodgroup_id,
+            'prodgrouplang_lang_id' => $lang_id,
+            'prodgroup_name' => $post['prodgroup_name']
         );
 
         if (!$prodGroupObj->updateLangData($lang_id, $dataToSaveArr)) {
@@ -209,7 +209,7 @@ class BatchProductsController extends LoggedUserController
         $this->_template->render(false, false, 'json-success.php');
     }
 
-    public function langForm($prodgroup_id, $lang_id)
+    public function langForm($prodgroup_id, $lang_id = 0, $autoFillLangData = 0)
     {
         $userId = UserAuthentication::getLoggedUserId();
         $prodgroup_id = FatUtility::int($prodgroup_id);
@@ -228,7 +228,7 @@ class BatchProductsController extends LoggedUserController
         /* ] */
 
         $frm = $this->getBatchLangForm($prodgroup_id, $lang_id);
-        
+
         if (0 < $autoFillLangData) {
             $updateLangDataobj = new TranslateLangData(ProductGroup::DB_TBL_LANG);
             $translatedData = $updateLangDataobj->getTranslatedData($prodgroup_id, $lang_id);
@@ -445,8 +445,7 @@ class BatchProductsController extends LoggedUserController
             0,
             true,
             $lang_id
-        )
-        ) {
+        )) {
             Message::addErrorMessage($fileHandlerObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
@@ -520,7 +519,7 @@ class BatchProductsController extends LoggedUserController
         $frm->addHiddenField('', 'prodgroup_id', $prodgroup_id);
         $frm->addSelectBox('Language', 'lang_id', Language::getAllNames(), '', array(), '');
 
-        $fld = $frm->addButton('', 'prodgroup_image', Labels::getLabel('LBL_Upload_File', $lang_id), array('class' => 'prodgroup-Js btn btn-brand btn-sm', 'id' => 'prodgroup_image', 'data-prodgroup_id' => $prodgroup_id ));
+        $fld = $frm->addButton('', 'prodgroup_image', Labels::getLabel('LBL_Upload_File', $lang_id), array('class' => 'prodgroup-Js btn btn-brand btn-sm', 'id' => 'prodgroup_image', 'data-prodgroup_id' => $prodgroup_id));
         return $frm;
     }
 
@@ -541,7 +540,7 @@ class BatchProductsController extends LoggedUserController
         $frm->addHiddenField('', 'prodgroup_id', $prodgroup_id);
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $lang_id), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
         $frm->addTextBox(Labels::getLabel('LBL_Name', $lang_id), 'prodgroup_name')->requirements()->setRequired();
-        
+
         $siteLangId = FatApp::getConfig('conf_default_site_lang', FatUtility::VAR_INT, 1);
         $translatorSubscriptionKey = FatApp::getConfig('CONF_TRANSLATOR_SUBSCRIPTION_KEY', FatUtility::VAR_STRING, '');
 

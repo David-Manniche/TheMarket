@@ -535,9 +535,9 @@ class SellerController extends SellerBaseController
         }
         /* ] */
 
-        /* if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
+        if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
-        } */
+        }
 
         $charges = $orderObj->getOrderProductChargesArr($op_id);
         $orderDetail['charges'] = $charges;
@@ -839,6 +839,10 @@ class SellerController extends SellerBaseController
             }
         }
         /* ] */
+        
+        if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
+            $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
+        }
 
         $frm = $this->getOrderCommentsForm($orderDetail, $processingStatuses);
         $post = $frm->getFormDataFromArray($post);
@@ -2073,7 +2077,7 @@ class SellerController extends SellerBaseController
         $shopObj = new Shop($shop_id);
         $shopObj->assignValues($data_to_save_arr);
         if (!$shopObj->save()) {
-            Message::addErrorMessage($record->getError());
+            Message::addErrorMessage($shopObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
 
@@ -4836,7 +4840,7 @@ class SellerController extends SellerBaseController
             $post = $srchFrm->getFormDataFromArray(FatApp::getPostedData());
 
             if (false === $post) {
-                FatUtility::dieJsonError(current($frm->getValidationErrors()));
+                FatUtility::dieJsonError(current($srchFrm->getValidationErrors()));
             } else {
                 unset($post['btn_submit'], $post['btn_clear']);
                 $srchFrm->fill($post);

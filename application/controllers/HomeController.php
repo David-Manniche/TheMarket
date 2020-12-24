@@ -74,7 +74,6 @@ class HomeController extends MyAppController
         }
 
         if (true === MOBILE_APP_API_CALL) {
-            $this->set('displayProductNotAvailableLable', $displayProductNotAvailableLable);
             $this->_template->render();
             die;
         }
@@ -417,7 +416,7 @@ class HomeController extends MyAppController
                 FatUtility::dieJsonError(Labels::getLabel('MSG_Unable_to_update_file', $langId));
             }
             $fileName = $langCode . '.json';
-            $filePath = Labels::JSON_FILE_DIR_NAME . '/' . Labels::TYPE_APP . '/' . $fileName;
+            $filePath = Labels::JSON_FILE_DIR_NAME . '/' . Labels::TYPE_APP . '/AP/' . $fileName;
 
             AttachedFile::downloadAttachment($filePath, $fileName);
             exit;
@@ -537,6 +536,7 @@ class HomeController extends MyAppController
         $collections = array();
 
         $productCatSrchObj = ProductCategory::getSearchObject(false, $langId);
+        $productCatSrchObj->addOrder('m.prodcat_active', 'DESC');
         $productCatSrchObj->addMultipleFields(array('prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_description'));
 
         $collectionObj = new CollectionSearch();
@@ -583,7 +583,7 @@ class HomeController extends MyAppController
                     $banners = BannerLocation::getPromotionalBanners($collection_id, $langId);
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
-                        $collections[$i]['banners'] = $banners;
+                        $collections[$i]['banners'] = is_array($banners) && 0 < count($banners) ? $banners : (object)[];
                     } else {
                         $collections[$collection['collection_id']] = $collection;
                         $collections[$collection['collection_id']]['banners'] = $banners;

@@ -31,10 +31,10 @@ class UserRewards extends MyAppModel
     {
         $rewardsRecord = new UserRewards();
         $rewarPointArr = array(
-        'urp_user_id' => $userId,
-        'urp_points' => '-' . $rewardPointUsed,
-        'urp_used_order_id' => $orderId,
-        'urp_comments' => 'Reward Points used in checkout with order ID ' . $orderId,
+            'urp_user_id' => $userId,
+            'urp_points' => '-' . $rewardPointUsed,
+            'urp_used_order_id' => $orderId,
+            'urp_comments' => 'Reward Points used in checkout with order ID ' . $orderId,
         );
         $rewardsRecord->assignValues($rewarPointArr);
         if (!$rewardsRecord->save()) {
@@ -56,7 +56,7 @@ class UserRewards extends MyAppModel
     {
         $urpId = FatUtility::int($urpId);
         if (1 > $urpId) {
-            trigger_error(Labels::getLabel(Labels::getLabel('ERR_Invalid_Request', CommonHelper::getLangId())), E_USER_ERROR);
+            trigger_error(Labels::getLabel('ERR_Invalid_Request', CommonHelper::getLangId()), E_USER_ERROR);
         }
 
         $srch = static::getSearchObject();
@@ -71,12 +71,12 @@ class UserRewards extends MyAppModel
 
         if ($result['urp_points'] > 0) {
             $assignValues = array(
-            'urpbreakup_urp_id' => $result['urp_id'],
-            'urpbreakup_referral_user_id' => $result['urp_referral_user_id'],
-            'urpbreakup_points' => $result['urp_points'],
-            'urpbreakup_expiry' => $result['urp_date_expiry'],
-            'urpbreakup_used_order_id' => $result['urp_used_order_id'],
-            'urpbreakup_used' => 0,
+                'urpbreakup_urp_id' => $result['urp_id'],
+                'urpbreakup_referral_user_id' => $result['urp_referral_user_id'],
+                'urpbreakup_points' => $result['urp_points'],
+                'urpbreakup_expiry' => $result['urp_date_expiry'],
+                'urpbreakup_used_order_id' => $result['urp_used_order_id'],
+                'urpbreakup_used' => 0,
             );
 
             $obj = new UserRewardBreakup();
@@ -119,11 +119,11 @@ class UserRewards extends MyAppModel
                         FatApp::getDb()->updateFromArray(UserRewardBreakup::DB_TBL, $updateValues, $whr);
 
                         $insertValuesArr = array(
-                        'urpbreakup_urp_id' => $val['urpbreakup_urp_id'],
-                        'urpbreakup_points' => $difference,
-                        'urpbreakup_expiry' => $val['urpbreakup_expiry'],
-                        'urpbreakup_used' => 0,
-                        'urpbreakup_referral_user_id' => $val['urpbreakup_referral_user_id']
+                            'urpbreakup_urp_id' => $val['urpbreakup_urp_id'],
+                            'urpbreakup_points' => $difference,
+                            'urpbreakup_expiry' => $val['urpbreakup_expiry'],
+                            'urpbreakup_used' => 0,
+                            'urpbreakup_referral_user_id' => $val['urpbreakup_referral_user_id']
                         );
                         FatApp::getDb()->insertFromArray(UserRewardBreakup::DB_TBL, $insertValuesArr);
                         $userRewardPoints = 0;

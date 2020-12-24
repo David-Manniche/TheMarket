@@ -9,7 +9,7 @@ $arr_flds = array(
     'blocation_active' => Labels::getLabel('LBL_Status', $adminLangId),
     'action' => '',
 );
-if (!$canEdit) {
+if (!$canEdit || empty($arr_listing)) {
     unset($arr_flds['select_all'], $arr_flds['action']);
 }
 

@@ -38,7 +38,7 @@ if (0 < $opId) {
     }
 }
 
-$cartTotal = $shippingCharges = $totalVolumeDiscount = $totalRewardPointDiscount = $totalOrderDiscountTotal = $totalTax = 0;
+$cartTotal = $shippingCharges = $totalVolumeDiscount = $totalOrderDiscountTotal = $totalTax = 0;
 
 $taxOptionsTotal = array();
 
@@ -49,6 +49,7 @@ $canCancelOrder = true;
 $canReturnRefund = true;
 
 foreach ($childArr as $index => $childOrder) {
+    $childArr[$index]['orderstatus_color_code'] = applicationConstants::getClassColor($childOrder['orderstatus_color_class']);
     $rating = isset($childArr[$index]['prod_rating']) ? $childArr[$index]['prod_rating'] : 0;
     $childArr[$index]['prod_rating'] =  (1 == $defaultOrderStatus || (isset($childArr[$index]['spreview_status']) && $childArr[$index]['spreview_status'] == 1)) ? $rating : 0;
     $childArr[$index]['reviewsAllowed'] =  $reviewAllowed;
@@ -78,7 +79,6 @@ foreach ($childArr as $index => $childOrder) {
     $totalVolumeDiscount += $volumeDiscount;
 
     $rewardPointDiscount = CommonHelper::orderProductAmount($childOrder, 'REWARDPOINT');
-    $totalRewardPointDiscount += $rewardPointDiscount;
 
     $orderDiscountTotal = CommonHelper::orderProductAmount($childOrder, 'DISCOUNT');
     $totalOrderDiscountTotal += $orderDiscountTotal;
@@ -137,14 +137,14 @@ foreach ($childArr as $index => $childOrder) {
         $childArr[$index]['priceDetail'] = array_merge($childArr[$index]['priceDetail'], $taxCharges);
     }
 
-    if (0 < $orderDiscountTotal) {
+    if (0 != $orderDiscountTotal) {
         $childArr[$index]['priceDetail'][] = array(
             'key' => Labels::getLabel('LBL_Discount', $siteLangId),
             'value' => CommonHelper::displayMoneyFormat($orderDiscountTotal),
         );
     }
 
-    if (0 < $rewardPointDiscount) {
+    if (0 != $rewardPointDiscount) {
         $childArr[$index]['priceDetail'][] = array(
             'key' => Labels::getLabel('LBL_Reward_Point_Discount', $siteLangId),
             'value' => CommonHelper::displayMoneyFormat($rewardPointDiscount),
@@ -216,24 +216,24 @@ if (!$primaryOrder) {
         ];
     }
 
-    if (0 < $totalOrderDiscountTotal) {
+    if (0 != $totalOrderDiscountTotal) {
         $data['orderSummary'][] = [
             'key' => Labels::getLabel('LBL_Discount', $siteLangId),
             'value' => $totalOrderDiscountTotal,
         ];
     }
 
-    if (0 < $totalVolumeDiscount) {
+    if (0 != $totalVolumeDiscount) {
         $data['orderSummary'][] = [
             'key' => Labels::getLabel('LBL_Volume/Loyalty_Discount', $siteLangId),
             'value' => $totalVolumeDiscount,
         ];
     }
 
-    if (0 < $totalRewardPointDiscount) {
+    if (0 != $orderDetail['order_reward_point_value']) {
         $data['orderSummary'][] = [
             'key' => Labels::getLabel('LBL_REWARD_POINTS', $siteLangId),
-            'value' => $totalRewardPointDiscount,
+            'value' => $orderDetail['order_reward_point_value'],
         ];
     }
 

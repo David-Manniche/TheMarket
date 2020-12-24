@@ -60,7 +60,7 @@ class MessageSearch extends SearchBase
 
         $fields = array('tfto.user_id as message_to_user_id', 'tfto.user_name as message_to_name', 'tfto_c.credential_email as message_to_email', 'tfto_c.credential_username as message_to_username');
         $this->joinTable(User::DB_TBL, 'LEFT OUTER JOIN', 'ttm.message_to = tfto.user_id', 'tfto');
-        $this->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tfto_c.credential_user_id = tfto.user_id', 'tfto_c');       
+        $this->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tfto_c.credential_user_id = tfto.user_id', 'tfto_c');
         if (true == $joinShop && $langId > 0) {
             $this->joinTable(Shop::DB_TBL, 'LEFT OUTER JOIN', 'tftos.shop_user_id = if(tfto.user_parent > 0, tfto.user_parent, tfto.user_id)', 'tftos');
             $this->joinTable(Shop::DB_TBL_LANG, 'LEFT OUTER JOIN', 'tftos_l.shoplang_shop_id = tftos.shop_id and tftos_l.shoplang_lang_id = ' . $langId, 'tftos_l');
@@ -111,7 +111,7 @@ class MessageSearch extends SearchBase
 
         $this->joinTable(Orders::DB_TBL_ORDERS_STATUS, 'LEFT OUTER JOIN', 'top.op_status_id = tops.orderstatus_id', 'tops');
         if ($langId > 0) {
-            $this->joinTable(Shop::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'tops_l.orderstatuslang_orderstatus_id = top.op_status_id and  tops_l.orderstatuslang_lang_id = ' . $langId, 'tops_l');
+            $this->joinTable(Orders::DB_TBL_ORDERS_STATUS_LANG, 'LEFT OUTER JOIN', 'tops_l.orderstatuslang_orderstatus_id = top.op_status_id and  tops_l.orderstatuslang_lang_id = ' . $langId, 'tops_l');
             $this->addMultipleFields(array('IFNULL(tops_l.orderstatus_name,tops.orderstatus_identifier) as orderstatus_name'));
         } else {
             $this->addMultipleFields(array('tops.orderstatus_identifier as orderstatus_name'));

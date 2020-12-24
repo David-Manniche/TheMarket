@@ -381,6 +381,7 @@ class AttachedFile extends MyAppModel
 
     private function updateFileToDb($fileType, $recordId, $recordSubid, $fileLoc, $name, $langId, $screen, $displayOrder, $uniqueRecord, $aspectRatio = 0)
     {
+        $defaultLangIdForErrors = ($langId == 0) ? $this->commonLangId : $langId;
         $this->assignValues(
             array(
                 'afile_type' => $fileType,
@@ -878,7 +879,7 @@ class AttachedFile extends MyAppModel
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+        // curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 200);
         curl_setopt($ch, CURLOPT_AUTOREFERER, false);
         curl_setopt($ch, CURLOPT_HEADER, 0);

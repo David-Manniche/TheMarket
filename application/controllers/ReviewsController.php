@@ -315,7 +315,7 @@ class ReviewsController extends MyAppController
         $reviewId = FatUtility::int($reviewId);
 
         if ($sellerId <= 0) {
-            Message::addErrorMessage(Labels::getLabel('Msg_Invalid_Request', $siteLangId));
+            Message::addErrorMessage(Labels::getLabel('Msg_Invalid_Request', $this->siteLangId));
             CommonHelper::redirectUserReferer();
         }
 
@@ -480,7 +480,7 @@ class ReviewsController extends MyAppController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $this->set('reviewId', $reviewId);
-        $this->set('msg', Labels::getLabel('MSG_Setup_Successfull', $this->siteLangId));
+        $this->set('msg', Labels::getLabel('MSG_SETUP_SUCCESSFULLY', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

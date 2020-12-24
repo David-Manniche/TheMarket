@@ -49,7 +49,7 @@ class SellerPackagePlans extends MyAppModel
     {
         $langId = FatUtility::convertToType($langId, FatUtility::VAR_INT);
         if (!$langId) {
-            trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', CommonHelper::getLangId), E_USER_ERROR);
+            trigger_error(Labels::getLabel('MSG_Language_Id_not_specified.', CommonHelper::getLangId()), E_USER_ERROR);
             return false;
         }
         return array(

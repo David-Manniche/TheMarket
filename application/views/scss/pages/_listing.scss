@@ -140,7 +140,7 @@
             height: 3rem;
             display: block;
             position: fixed;
-            bottom: 10px;
+            bottom: 85px;
             #{$end-direction}: 10px;
             z-index: 1051;
             border-radius: 50%;
@@ -321,7 +321,7 @@
     transition: height 0.3s ease 0s;
 }
 
-.filters-top {
+.filter-top {
     .filter-content {
         padding-top: 30px;
     }
