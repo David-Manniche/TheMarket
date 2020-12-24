@@ -3,13 +3,13 @@ class ShippingRate extends MyAppModel
 {
     const DB_TBL = 'tbl_shipping_rates';
     const DB_TBL_PREFIX = 'shiprate_';
-    
+
     const DB_TBL_LANG = 'tbl_shipping_rates_lang';
     const DB_TBL_LANG_PREFIX = 'shipratelang_';
-    
+
     const CONDITION_TYPE_PRICE = 1;
     const CONDITION_TYPE_WEIGHT = 2;
-    
+
 
     public function __construct($id = 0)
     {
@@ -24,13 +24,13 @@ class ShippingRate extends MyAppModel
             $srch->joinTable(
                 static::DB_TBL_LANG,
                 'LEFT OUTER JOIN',
-                'ratelang.'.static::DB_TBL_LANG_PREFIX .'shiprate_id = srate.'.static::tblFld('id').' and ratelang.'.static::DB_TBL_LANG_PREFIX .'lang_id = '.$langId,
+                'ratelang.' . static::DB_TBL_LANG_PREFIX . 'shiprate_id = srate.' . static::tblFld('id') . ' and ratelang.' . static::DB_TBL_LANG_PREFIX . 'lang_id = ' . $langId,
                 'ratelang'
             );
         }
         return $srch;
     }
-    
+
     public static function getConditionTypes($langId)
     {
         return array(

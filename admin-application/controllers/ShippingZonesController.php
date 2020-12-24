@@ -198,6 +198,14 @@ class ShippingZonesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        $shippingProfileId = $shippingProfData['shipprozone_shipprofile_id'];
+        $allZones = ShippingProfileZone::getAttributesByProfileId($shippingProfileId, null, true);
+        if (is_array($allZones) && 1 == count($allZones)) {
+            $msg = Labels::getLabel('MSG_PLEASE_MAINTAIN_ATLEASE_ONE_SHIPPING_ZONE', $this->adminLangId);
+            Message::addErrorMessage($msg);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
         $sObj = new ShippingProfileZone($shipprozoneId);
         if (!$sObj->deleteRecord()) {
             Message::addErrorMessage($sObj->getError());

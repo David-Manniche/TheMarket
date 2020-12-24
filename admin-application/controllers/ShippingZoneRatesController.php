@@ -150,6 +150,51 @@ class ShippingZoneRatesController extends AdminBaseController
     public function deleteRate($rateId)
     {
         $this->objPrivilege->canEditShippingManagement();
+
+        $srch = ShippingRate::getSearchObject(0);
+        $srch->joinTable(
+            ShippingZone::DB_TBL,
+            'LEFT OUTER JOIN',
+            'tsz.' . ShippingZone::DB_TBL_PREFIX . 'id = srate.' . ShippingRate::DB_TBL_PREFIX . 'shipprozone_id',
+            'tsz'
+        );
+        $srch->joinTable(
+            ShippingRate::DB_TBL,
+            'LEFT OUTER JOIN',
+            'tsr.' . ShippingRate::DB_TBL_PREFIX . 'shipprozone_id = tsz.' . ShippingZone::DB_TBL_PREFIX . 'id',
+            'tsr'
+        );
+        $srch->addMultipleFields(['tsr.*']);
+        $srch->addCondition('srate.shiprate_id', '=', $rateId);
+        $rs = $srch->getResultSet();
+        $rates = FatApp::getDb()->fetchAll($rs);
+        
+        if (is_array($rates) && !empty($rates)) {
+            $canDelete = false;
+            $withoutCondtionCount = 0;
+            $conditional = false;
+            foreach ($rates as $rate) {
+                if ($rateId == $rate['shiprate_id'] && 0 != $rate['shiprate_condition_type']) {
+                    $conditional = true;
+                    break;
+                }
+
+                if (0 == $rate['shiprate_condition_type']) {
+                    $withoutCondtionCount++;
+                }
+            }
+
+            if (0 == $withoutCondtionCount || 1 < $withoutCondtionCount || true === $conditional) {
+                $canDelete = true;
+            }
+
+            if (false === $canDelete) {
+                $msg = Labels::getLabel('MSG_PLEASE_MAINTAIN_ATLEASE_ONE_SHIPPING_RATE_WITHOUT_CONDITION', $this->adminLangId);
+                Message::addErrorMessage($msg);
+                FatUtility::dieJsonError(Message::getHtml());
+            }
+        }
+
         $sObj = new ShippingRate($rateId);
         if (!$sObj->deleteRecord(true)) {
             Message::addErrorMessage($sObj->getError());
