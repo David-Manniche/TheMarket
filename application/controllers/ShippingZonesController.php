@@ -154,6 +154,7 @@ class ShippingZonesController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $shipZoneId = $sObj->getMainTableRecordId();
+        ShippingProfile::setDefaultRates($shipZoneId, $post['shipzone_profile_id']);
 
         $db = FatApp::getDb();
         $db->startTransaction();

@@ -152,7 +152,8 @@ class ShippingZonesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $shipZoneId = $sObj->getMainTableRecordId();
-
+        ShippingProfile::setDefaultRates($shipZoneId, $post['shipzone_profile_id']);
+        
         $db = FatApp::getDb();
         $db->startTransaction();
         $shipProZoneId = (isset($post['shipprozone_id'])) ? $post['shipprozone_id'] : 0;

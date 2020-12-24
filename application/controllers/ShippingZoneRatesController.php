@@ -77,6 +77,9 @@ class ShippingZoneRatesController extends SellerBaseController
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
 
+        $shipProfileId = ShippingProfileZone::getAttributesById($post['shiprate_shipprozone_id'], 'shipprozone_shipprofile_id');
+        ShippingProfile::setDefaultRates($post['shiprate_shipprozone_id'], $shipProfileId);
+
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->siteLangId));
         $this->set('zoneId', $post['shiprate_shipprozone_id']);
         $this->set('rateId', $rateId);
@@ -168,7 +171,6 @@ class ShippingZoneRatesController extends SellerBaseController
         $srch->addCondition('srate.shiprate_id', '=', $rateId);
         $rs = $srch->getResultSet();
         $rates = FatApp::getDb()->fetchAll($rs);
-        
         if (is_array($rates) && !empty($rates)) {
             $canDelete = false;
             $withoutCondtionCount = 0;
@@ -200,6 +202,7 @@ class ShippingZoneRatesController extends SellerBaseController
             Message::addErrorMessage($sObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
+
         $this->set('msg', Labels::getLabel('LBL_Rate_Deleted_Successfully', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

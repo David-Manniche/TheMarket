@@ -69,10 +69,12 @@ class ShippingZoneRatesController extends AdminBaseController
                 }
             }
         } else {
-            $rateId = $record->getMainTableRecordId();
             $newTabLangId = FatApp::getConfig('CONF_ADMIN_DEFAULT_LANG', FatUtility::VAR_INT, 1);
         }
-        
+
+        $shipProfileId = ShippingProfileZone::getAttributesById($post['shiprate_shipprozone_id'], 'shipprozone_shipprofile_id');
+        ShippingProfile::setDefaultRates($post['shiprate_shipprozone_id'], $shipProfileId);
+
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->adminLangId));
         $this->set('zoneId', $post['shiprate_shipprozone_id']);
         $this->set('rateId', $rateId);
