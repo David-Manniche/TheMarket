@@ -904,7 +904,7 @@ trait SellerProducts
         }
 
         $this->set('selprod_id', $selprod_id);
-        $this->set('msg', Labels::getLabel('MSG_Setup_Successfull', $this->siteLangId));
+        $this->set('msg', Labels::getLabel('MSG_SETUP_SUCCESSFULLY', $this->siteLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 

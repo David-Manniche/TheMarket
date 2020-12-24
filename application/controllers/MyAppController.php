@@ -809,6 +809,11 @@ class MyAppController extends FatController
 
     public function accessLocation()
     {
+        if (true === CommonHelper::isAppUser()) {
+            /* Restrict to open location popup in case of app webview. */
+            FatUtility::dieJsonSuccess(Labels::getLabel('LBL_APP_ACCESS', $this->siteLangId));
+        }
+
         $this->set('frm', $this->getGoogleAutocompleteAddressForm());
         $this->_template->render(false, false, '_partial/access-location.php');
     }
