@@ -2020,3 +2020,5 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- ---- ANDROID NEW LANG LABELS ---- --
 -- ----------------------TV-9.2.3.20201222--------------------------
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_Setup_Successfull';
