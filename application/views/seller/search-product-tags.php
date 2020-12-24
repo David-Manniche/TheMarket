@@ -66,6 +66,7 @@ $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 <?php if (count($arr_listing) > 0) { ?>
 <script>
 var productsArr = [<?php echo '"'.implode('","', $productsArr).'"' ?>];
+var whitelist;
 $("document").ready(function() {
     getTagsAutoComplete = function(){
         var list = [];
@@ -80,8 +81,7 @@ $("document").ready(function() {
         });
         return list;
     }
-    var whitelist = getTagsAutoComplete();
-    console.log(whitelist);
+    whitelist = getTagsAutoComplete();
     $.each(productsArr, function( index, value ) {
         tagify = new Tagify(document.querySelector('input[name=tag_name'+value+']'), {
                whitelist : whitelist,
