@@ -1227,10 +1227,10 @@ class ImageController extends FatController
             case 'THUMB':
                 $w = 100;
                 $h = 100;
-                AttachedFile::displayImage($image_name, $w, $h);
+                AttachedFile::displayImage($image_name, $w, $h, 'seller-bg.png');
                 break;
             case 'DEFAULT':
-                AttachedFile::displayOriginalImage($image_name);
+                AttachedFile::displayOriginalImage($image_name, 'seller-bg.png');
                 break;
         }
     }

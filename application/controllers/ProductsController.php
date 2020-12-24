@@ -43,6 +43,7 @@ class ProductsController extends MyAppController
 
         if ($validateBrand && array_key_exists('keyword', $get)) {
             $prodSrchObj = new ProductSearch(0);
+            $prodSrchObj->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name'));
             $prodSrchObj->joinSellerProducts(0, '', ['doNotJoinSpecialPrice' => true], true);
             $prodSrchObj->joinSellers();
             $prodSrchObj->setGeoAddress();
@@ -54,7 +55,6 @@ class ProductsController extends MyAppController
             $prodSrchObj->addSubscriptionValidCondition();
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->setPageSize(1);
-            $prodSrchObj->addMultipleFields(array('brand_id', 'COALESCE(tb_l.brand_name, brand.brand_identifier) as brand_name'));
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->addHaving('brand_name', 'like', trim($get['keyword']));
             $brandRs = $prodSrchObj->getResultSet();
