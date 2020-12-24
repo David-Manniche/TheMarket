@@ -1540,7 +1540,7 @@ class SellerProductsController extends AdminBaseController
         }
 
         $this->set('selprod_id', $selprod_id);
-        $this->set('msg', Labels::getLabel('MSG_Setup_Successfull', $this->adminLangId));
+        $this->set('msg', Labels::getLabel('MSG_SETUP_SUCCESSFULLY', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }
 
