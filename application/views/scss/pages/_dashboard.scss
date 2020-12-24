@@ -767,6 +767,11 @@
         -webkit-transition: padding 0.5s ease-in-out;
         transition: padding 0.5s ease-in-out;
     }
+    .ui-widget.ui-widget-content {
+        max-height: 308px;
+        overflow: hidden;
+        overflow-y: auto;
+    }
 }
 
 .sidebar-is-expanded {

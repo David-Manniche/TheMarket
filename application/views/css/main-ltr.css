@@ -11975,7 +11975,7 @@ form.custom-form {
 
 /* Ion.RangeSlider
 // css version 2.0.3
-// © 2013-2014 Denis Ineshin | IonDen.com
+// ┬⌐ 2013-2014 Denis Ineshin | IonDen.com
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // RangeSlider */
@@ -12131,8 +12131,8 @@ form.custom-form {
 
 /* Ion.RangeSlider, Simple Skin
 // css version 2.0.3
-// © Denis Ineshin, 2014    https://github.com/IonDen
-// © guybowden, 2014        https://github.com/guybowden
+// ┬⌐ Denis Ineshin, 2014    https://github.com/IonDen
+// ┬⌐ guybowden, 2014        https://github.com/guybowden
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // Skin details */
@@ -33285,6 +33285,10 @@ a.ui-button:active,
   padding-left: 70px;
   -webkit-transition: padding 0.5s ease-in-out;
   transition: padding 0.5s ease-in-out; }
+.my-dashboard .ui-widget.ui-widget-content {
+  max-height: 308px;
+  overflow: hidden;
+  overflow-y: auto; }
 
 .sidebar-is-expanded .sidebar {
   width: 280px; }
