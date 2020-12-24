@@ -152,7 +152,6 @@ class ShippingZonesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $shipZoneId = $sObj->getMainTableRecordId();
-        ShippingProfile::setDefaultRates($shipZoneId, $post['shipzone_profile_id']);
         
         $db = FatApp::getDb();
         $db->startTransaction();
@@ -169,7 +168,8 @@ class ShippingZonesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $shipProZoneId = $spObj->getMainTableRecordId();
-
+        ShippingProfile::setDefaultRates($shipProZoneId, $post['shipzone_profile_id']);
+        
         if ($shipZoneId > 0) {
             if (!$this->eligibleForUpdateLocations($shipZoneId, $post)) {
                 $db->rollbackTransaction();

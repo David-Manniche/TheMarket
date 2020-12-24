@@ -156,15 +156,15 @@ class ShippingZoneRatesController extends SellerBaseController
     {
         $srch = ShippingRate::getSearchObject(0);
         $srch->joinTable(
-            ShippingZone::DB_TBL,
+            ShippingProfileZone::DB_TBL,
             'LEFT OUTER JOIN',
-            'tsz.' . ShippingZone::DB_TBL_PREFIX . 'id = srate.' . ShippingRate::DB_TBL_PREFIX . 'shipprozone_id',
-            'tsz'
+            'tspz.' . ShippingProfileZone::DB_TBL_PREFIX . 'id = srate.' . ShippingRate::DB_TBL_PREFIX . 'shipprozone_id',
+            'tspz'
         );
         $srch->joinTable(
             ShippingRate::DB_TBL,
             'LEFT OUTER JOIN',
-            'tsr.' . ShippingRate::DB_TBL_PREFIX . 'shipprozone_id = tsz.' . ShippingZone::DB_TBL_PREFIX . 'id',
+            'tsr.' . ShippingRate::DB_TBL_PREFIX . 'shipprozone_id = tspz.' . ShippingProfileZone::DB_TBL_PREFIX . 'id',
             'tsr'
         );
         $srch->addMultipleFields(['tsr.*']);
