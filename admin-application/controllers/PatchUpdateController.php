@@ -428,6 +428,7 @@ class PatchUpdateController extends AdminBaseController
             ('', '', 0, 0, 1, 0),
             ('Brands', 'index', 0, 0, 1, 0),
             ('Shops', 'index', 0, 0, 1, 0),
+            ('Blog', 'index', 0, 0, 1, 0),
             ('Products', 'index', 0, 0, 1, 0)");
             FatApp::getDb()->query("DELETE FROM `tbl_attached_files` WHERE `afile_type` in (1,2,3,4,5,7,8,9,10,11,12,13,14,22,23,24,25,26,27,28,29,30,32,33,41,42,43,48,50,52,53)");
 
