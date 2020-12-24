@@ -617,10 +617,10 @@ function accessLocation(force = false) {
                 try {
                     var json = $.parseJSON(t);
                     if (1 > json.status) {
-                        $(document).trigger('close.facebox');
                         $.mbsmessage(json.msg, false, 'alert--danger');
-                        return false;
                     }
+                    $(document).trigger('close.facebox');
+                    return false;
                 } catch (exc) {
                     $.facebox(t, 'location-popup-width');
                     googleAddressAutocomplete();

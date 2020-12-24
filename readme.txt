@@ -517,7 +517,9 @@ Bugs:
     => 046761 - admin> gdpr requests> clear search button is not working
     => 046939 - add product tag giving error
     => 045816 - seller getting ship option on pickup order
-    => 047025 - subscription page load with header in Custom Product Setup inventory tab 
+    => 046920	when location is set for current location then under all shops- blank shop is listing 
+    => 047025 - subscription page load with header in Custom Product Setup inventory tab
+
 -----------------------TV-9.2.3.20201222---------------------
 Enhancements:
     => Tax module upgrade
