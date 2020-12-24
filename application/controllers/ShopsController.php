@@ -41,7 +41,9 @@ class ShopsController extends MyAppController
         /* SubQuery, Shop have products[ */
         $prodShopSrch = new ProductSearch($this->siteLangId);
         $prodShopSrch->addMultipleFields(array('distinct(shop_id)'));
+        $prodShopSrch->setGeoAddress();
         $prodShopSrch->setDefinedCriteria();
+        $prodShopSrch->validateAndJoinDeliveryLocation();
         $prodShopSrch->joinProductToCategory();
         $prodShopSrch->doNotCalculateRecords();
         $prodShopSrch->doNotLimitRecords();
