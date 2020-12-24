@@ -1540,6 +1540,10 @@ class Importexport extends ImportexportCommon
                     $colValue = (!empty($row['shippro_shipprofile_id']) && array_key_exists($row['shippro_shipprofile_id'], $shippingProfiles) ? $shippingProfiles[$row['shippro_shipprofile_id']] : '');
                 }
 
+                if ('shipping_profile_id' == $columnKey) {
+                    $colValue = (!empty($row['shippro_shipprofile_id']) ? $row['shippro_shipprofile_id'] : '');
+                }
+
                 /* if ('product_dimension_unit_identifier' == $columnKey) {
                     $colValue = (!empty($row['product_dimension_unit']) && array_key_exists($row['product_dimension_unit'], $lengthUnitsArr) ? $lengthUnitsArr[$row['product_dimension_unit']] : '');
                 } */
@@ -1576,9 +1580,7 @@ class Importexport extends ImportexportCommon
             $prodTypeIdentifierArr = $this->array_change_key_case_unicode(array_flip($prodTypeIdentifierArr), CASE_LOWER);
         }
 
-        if (!$this->settings['CONF_USE_SHIPPING_PROFILE_ID']) {
-            $shippingProfiles = $this->getShippingProfileArr(false);
-        }
+        $shippingProfiles = $this->getShippingProfileArr($this->settings['CONF_USE_SHIPPING_PROFILE_ID']);
 
         if (!$this->settings['CONF_USE_SHIPPING_PACKAGE_ID']) {
             $shippingPackages = $this->getShippingPackageArr();
@@ -1815,6 +1817,12 @@ class Importexport extends ImportexportCommon
                                 }
                             }
                             break;
+                        case 'shipping_profile_id':
+                            $columnKey = 'shippro_shipprofile_id';
+                            if (!array_key_exists($colValue, $shippingProfiles)) {
+                                $invalid = true;
+                            }
+                            break;
                         case 'shipping_profile_identifier':
                             $columnKey = 'shippro_shipprofile_id';
                             if (Product::PRODUCT_TYPE_DIGITAL == $prodType) {
@@ -1932,13 +1940,11 @@ class Importexport extends ImportexportCommon
             if (false === $errorInRow && count($prodDataArr)) {
                 $prodDataArr['product_added_on'] = date('Y-m-d H:i:s');
                 $prodDataArr['product_added_by_admin_id'] = (1 > $userId) ? applicationConstants::YES : applicationConstants::NO;
-
                 $shippro_shipprofile_id = 0;
                 if (array_key_exists('shippro_shipprofile_id', $prodDataArr)) {
                     $shippro_shipprofile_id = $prodDataArr['shippro_shipprofile_id'];
                     unset($prodDataArr['shippro_shipprofile_id']);
                 }
-
                 $newRecord = false;
                 if (!empty($prodData) && $prodData['product_id'] && (!$sellerId || ($sellerId && $prodData['product_seller_id'] == $sellerId))) {
                     unset($prodData['product_seller_id']);
@@ -1954,7 +1960,6 @@ class Importexport extends ImportexportCommon
                         CommonHelper::writeToCSVFile($this->CSVfileObj, array($rowIndex, ($colIndex + 1), $errMsg));
                         continue;
                     }
-
                     $where = array('smt' => 'product_id = ?', 'vals' => array($productId));
                     $this->db->updateFromArray(Product::DB_TBL, $prodDataArr, $where);
 
@@ -2015,7 +2020,6 @@ class Importexport extends ImportexportCommon
 
                 if (!empty($productId)) {
                     $prodSepc['ps_product_id'] = $productId;
-
                     $productSpecificsObj = new ProductSpecifics($productId);
                     $productSpecificsObj->assignValues($prodSepc);
                     $prodSepcData = $productSpecificsObj->getFlds();
@@ -2046,13 +2050,13 @@ class Importexport extends ImportexportCommon
                                 FatApp::getDb()->insertFromArray(Product::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
                             }
                         }
-
                         if ($shippro_shipprofile_id > 0) {
                             $shipProProdData = array(
                                 'shippro_shipprofile_id' => $shippro_shipprofile_id,
                                 'shippro_product_id' => $productId,
                                 'shippro_user_id' => $shippedByUserId
                             );
+
                             $productSellerShiping = array_merge($productSellerShiping, $prodShippingArr);
                             FatApp::getDb()->insertFromArray(Product::DB_TBL_PRODUCT_SHIPPING, $productSellerShiping, false, array(), $productSellerShiping);
                         }
