@@ -86,7 +86,8 @@ $(document).ready(function(){
         var tag_name = e.detail.tag.title;
         if(tag_id == ''){
             var data = 'tag_id=0&tag_identifier='+tag_name
-            fcom.updateWithAjax(fcom.makeUrl('Tags', 'setup'), data, function(t) {
+            fcom.updateWithAjax(fcom.makeUrl('Tags', 'setup'), data, function(t) {                
+                whitelist.push({'id':t.tagId,value:tag_name});
                 var dataLang = 'tag_id='+t.tagId+'&tag_name='+tag_name+'&lang_id=0';
                 fcom.updateWithAjax(fcom.makeUrl('Tags', 'langSetup'), dataLang, function(t2) {
                     fcom.updateWithAjax(fcom.makeUrl('Products', 'updateProductTag'), 'product_id='+product_id+'&tag_id='+t.tagId, function(t3) {
