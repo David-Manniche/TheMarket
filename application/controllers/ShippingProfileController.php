@@ -122,7 +122,13 @@ class ShippingProfileController extends SellerBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
 
+        if (1 > $profileId) {
+            $shipProZoneId = ShippingProfile::setDefaultZone(UserAuthentication::getLoggedUserId(), $spObj->getMainTableRecordId());
+            ShippingProfile::setDefaultRates($shipProZoneId, $spObj->getMainTableRecordId());
+        }
+
         $profileId = $spObj->getMainTableRecordId();
+
         $this->set('msg', Labels::getLabel('LBL_Updated_Successfully', $this->siteLangId));
         $this->set('profileId', $profileId);
         $this->_template->render(false, false, 'json-success.php');

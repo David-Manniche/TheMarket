@@ -152,7 +152,7 @@ class ShippingZonesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $shipZoneId = $sObj->getMainTableRecordId();
-
+        
         $db = FatApp::getDb();
         $db->startTransaction();
         $shipProZoneId = (isset($post['shipprozone_id'])) ? $post['shipprozone_id'] : 0;
@@ -168,7 +168,8 @@ class ShippingZonesController extends AdminBaseController
             FatUtility::dieJsonError(Message::getHtml());
         }
         $shipProZoneId = $spObj->getMainTableRecordId();
-
+        ShippingProfile::setDefaultRates($shipProZoneId, $post['shipzone_profile_id']);
+        
         if ($shipZoneId > 0) {
             if (!$this->eligibleForUpdateLocations($shipZoneId, $post)) {
                 $db->rollbackTransaction();
@@ -195,6 +196,14 @@ class ShippingZonesController extends AdminBaseController
 
         if (false == $shippingProfData) {
             Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+
+        $shippingProfileId = $shippingProfData['shipprozone_shipprofile_id'];
+        $allZones = ShippingProfileZone::getAttributesByProfileId($shippingProfileId, null, true);
+        if (is_array($allZones) && 1 == count($allZones)) {
+            $msg = Labels::getLabel('MSG_PLEASE_MAINTAIN_ATLEASE_ONE_SHIPPING_ZONE', $this->adminLangId);
+            Message::addErrorMessage($msg);
             FatUtility::dieJsonError(Message::getHtml());
         }
 

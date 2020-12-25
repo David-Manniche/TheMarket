@@ -174,22 +174,20 @@ trait SellerProducts
         $selprod_id = FatUtility::int($selprod_id);
         $product_id = FatUtility::int($product_id);
         if (!$product_id) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::exitWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
         }
 
         if (0 == $selprod_id && FatApp::getConfig('CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE', FatUtility::VAR_INT, 0) && SellerProduct::getActiveCount($this->userParentId) >= SellerPackages::getAllowedLimit($this->userParentId, $this->siteLangId, 'ossubs_inventory_allowed')) {
-            Message::addErrorMessage(Labels::getLabel("MSG_You_have_crossed_your_package_limit.", $this->siteLangId));
+            LibHelper::exitWithError(Labels::getLabel('MSG_You_have_crossed_your_package_limit', $this->siteLangId), false, true);
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
 
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
-            Message::addErrorMessage(Labels::getLabel("MSG_Please_buy_subscription", $this->siteLangId));
+            LibHelper::exitWithError(Labels::getLabel('MSG_Please_buy_subscription', $this->siteLangId), false, true);            
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
-        if ($selprod_id == 0 && !UserPrivilege::canSellerAddProductInCatalog($product_id, $this->userParentId)) {
-            Message::addErrorMessage(Labels::getLabel("LBL_Please_Upgrade_your_package_to_add_new_products", $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+        if ($selprod_id == 0 && !UserPrivilege::canSellerAddProductInCatalog($product_id, $this->userParentId)) {            
+            LibHelper::exitWithError(Labels::getLabel('LBL_Please_Upgrade_your_package_to_add_new_products', $this->siteLangId), false);
         }
 
         $productRow = Product::getProductDataById($this->siteLangId, $product_id, array('IFNULL(product_name, product_identifier) as product_name', 'product_active', 'product_seller_id', 'product_added_by_admin_id', 'product_cod_enabled', 'product_type', 'product_approved', 'product_min_selling_price'));
@@ -199,19 +197,17 @@ trait SellerProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($productRow['product_active'] != applicationConstants::ACTIVE) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Catalog_is_no_more_active', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+        if ($productRow['product_active'] != applicationConstants::ACTIVE) {           
+            LibHelper::exitWithError(Labels::getLabel('MSG_Catalog_is_no_more_active', $this->siteLangId), false);
         }
 
-        if ($productRow['product_approved'] != applicationConstants::YES) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Catalog_is_not_yet_approved', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+        if ($productRow['product_approved'] != applicationConstants::YES) {        
+            LibHelper::exitWithError(Labels::getLabel('MSG_Catalog_is_not_yet_approved', $this->siteLangId), false);
+
         }
 
         if (($productRow['product_seller_id'] != $this->userParentId) && $productRow['product_added_by_admin_id'] == 0) {
-            Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-            FatUtility::dieWithError(Message::getHtml());
+            LibHelper::exitWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId), false);
         }
         $productLangRow = Product::getProductDataById(CommonHelper::getLangId(), $product_id, array('product_identifier'));
 
@@ -221,14 +217,11 @@ trait SellerProducts
         if ($selprod_id) {
             $sellerProductRow = SellerProduct::getAttributesById($selprod_id, null, true, true);
             if (!$sellerProductRow) {
-                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId));
-                FatUtility::dieWithError(Message::getHtml());
+                LibHelper::exitWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId), false);
             }
 
             if ($sellerProductRow['selprod_user_id'] != $this->userParentId) {
-                Message::addErrorMessage(Labels::getLabel('MSG_Invalid_Access', $this->siteLangId));
-
-                FatUtility::dieWithError(Message::getHtml());
+                LibHelper::exitWithError(Labels::getLabel('MSG_Invalid_Request', $this->siteLangId), false);
             }
             $urlRewriteData = UrlRewrite::getAttributesById($sellerProductRow['selprod_urlrewrite_id']);
             $urlSrch = UrlRewrite::getSearchObject();

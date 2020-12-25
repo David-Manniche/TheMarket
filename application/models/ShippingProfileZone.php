@@ -16,14 +16,16 @@ class ShippingProfileZone extends MyAppModel
         return $srch;
     }
 
-    public static function getAttributesByProfileId($recordId, $attr = null)
+    public static function getAttributesByProfileId($recordId, $attr = null, $multiRows = false)
     {
         $recordId = FatUtility::convertToType($recordId, FatUtility::VAR_INT);
         $db = FatApp::getDb();
 
         $srch = new SearchBase(static::DB_TBL);
         $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
+        if (false === $multiRows) {
+            $srch->setPageSize(1);
+        }
         $srch->addCondition(static::tblFld('shipprofile_id'), '=', $recordId);
 
         if (null != $attr) {
@@ -35,7 +37,11 @@ class ShippingProfileZone extends MyAppModel
         }
 
         $rs = $srch->getResultSet();
-        $row = $db->fetch($rs);
+        if (false === $multiRows) {
+            $row = $db->fetch($rs);
+        } else {
+            return $db->fetchAll($rs);
+        }
 
         if (!is_array($row)) {
             return false;
