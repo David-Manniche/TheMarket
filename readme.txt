@@ -520,6 +520,7 @@ Bugs:
     => 046920	when location is set for current location then under all shops- blank shop is listing    
 -----------------------TV-9.2.3.20201222---------------------
     => 047026	File name validation when used s3 bucket
+    => 047061	Promotional banners issue on product detail page
 Enhancements:
     => Tax module upgrade
     => Test cases classes enhancements.
