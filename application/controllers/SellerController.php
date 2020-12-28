@@ -839,7 +839,7 @@ class SellerController extends SellerBaseController
             }
         }
         /* ] */
-        
+
         if ($orderDetail["opshipping_fulfillment_type"] == Shipping::FULFILMENT_PICKUP) {
             $processingStatuses = array_diff($processingStatuses, (array) FatApp::getConfig("CONF_DEFAULT_SHIPPING_ORDER_STATUS"));
         }
@@ -1674,10 +1674,26 @@ class SellerController extends SellerBaseController
                 Message::addErrorMessage($db->getError());
                 FatUtility::dieWithError(Message::getHtml());
             }
+            $whr = array('smt' => 'shippro_product_id = ? and shippro_user_id = ?', 'vals' => array($product_id, $userId));
+            if (!$db->deleteRecords(ShippingProfileProduct::DB_TBL, $whr)) {
+                Message::addErrorMessage($db->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
         } elseif ($shippedBy == 'seller') {
             $data = array('psbs_product_id' => $product_id, 'psbs_user_id' => $userId);
             if (!$db->insertFromArray(Product::DB_PRODUCT_SHIPPED_BY_SELLER, $data)) {
                 Message::addErrorMessage($db->getError());
+                FatUtility::dieWithError(Message::getHtml());
+            }
+            $defaultProfileId = ShippingProfile::getDefaultProfileId($userId);
+            $shipProProdData = array(
+                'shippro_shipprofile_id' => $defaultProfileId,
+                'shippro_product_id' => $product_id,
+                'shippro_user_id' => $this->userParentId
+            );
+            $spObj = new ShippingProfileProduct();
+            if (!$spObj->addProduct($shipProProdData)) {
+                Message::addErrorMessage($spObj->getError());
                 FatUtility::dieWithError(Message::getHtml());
             }
         } else {
