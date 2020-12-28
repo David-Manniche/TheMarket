@@ -519,6 +519,7 @@ Bugs:
     => 045816 - seller getting ship option on pickup order
     => 046920	when location is set for current location then under all shops- blank shop is listing 
     => 047025 - subscription page load with header in Custom Product Setup inventory tab
+    => 047008 - rewards are not deducting from buyer account
 
 -----------------------TV-9.2.3.20201222---------------------
 Enhancements:
