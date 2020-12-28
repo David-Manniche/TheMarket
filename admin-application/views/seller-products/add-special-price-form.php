@@ -1,7 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $selProdId = (!empty($data['splprice_selprod_id']) ? $data['splprice_selprod_id'] : 0);
 $frm = SellerProduct::specialPriceForm($adminLangId);
-$prodName = $frm->addTextBox(Labels::getLabel('LBL_Product', $adminLangId), 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $adminLangId)));
+$prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $adminLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $adminLangId)));
+//$prodName = $frm->addTextBox(Labels::getLabel('LBL_Product', $adminLangId), 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $adminLangId)));
 $prodName->requirements()->setRequired();
 
 $startDate = $frm->getField('splprice_start_date');
