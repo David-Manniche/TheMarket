@@ -37,7 +37,7 @@ class TranslateLangData
             $languages = Language::getAllNames(false);
             unset($languages[$this->fromLangId]);
         }
-        
+
         $this->toLangQueryString = strtolower("&to=" . implode("&to=", array_column($languages, 'language_code')));
         $langArr = array_change_key_case(array_flip(array_column($languages, 'language_code', 'language_id')));
         if (empty($langArr)) {
@@ -78,7 +78,7 @@ class TranslateLangData
             $this->error = $this->translateObj->getError();
             return false;
         }
-        
+
         if (isset($response['error'])) {
             $this->error = $response['error']['message'];
             return false;
@@ -88,6 +88,7 @@ class TranslateLangData
 
         $translatedDataToUpdate = [];
         foreach ($convertedLangsData as $lang => $langData) {
+            $lang = strtolower($lang);
             $dataToupdate = array_combine(array_keys($data), $langData);
             $langRecordData = [];
             if (array_key_exists('langIdCol', $this->langTablePrimaryFields)) {
@@ -106,7 +107,7 @@ class TranslateLangData
         if (!$recordData = $this->getRecordData($recordId)) {
             return false;
         }
-        
+
         if (empty($recordData)) {
             $this->error = Labels::getLabel('MSG_PLEASE_PROVIDE_DATA_IN_DEFAULT_LANGUAGE_TO_TRANSLATE', CommonHelper::getLangId());
             return false;
@@ -127,11 +128,12 @@ class TranslateLangData
             $this->error = $response['error']['message'];
             return false;
         }
-        
+
         $convertedLangsData = $this->formatTranslatedData($response, count($langArr));
 
         $translatedDataToUpdate = [];
         foreach ($convertedLangsData as $lang => $langData) {
+            $lang = strtolower($lang);
             $langRecordData = [
                 $this->langTablePrimaryFields['recordIdCol'] => $recordId,
                 $this->langTablePrimaryFields['langIdCol'] => $langArr[$lang],
