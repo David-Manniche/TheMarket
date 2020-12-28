@@ -141,8 +141,8 @@ if (!empty($product)) {
     $product['productUrl'] = UrlHelper::generateFullUrl('Products', 'View', array($product['selprod_id']));
 }
 
-$product['selprod_return_policies'] = !empty($product['selprod_return_policies']) ? $product['selprod_return_policies'] : (object)array();
-$product['selprod_warranty_policies'] = !empty($product['selprod_warranty_policies']) ? $product['selprod_warranty_policies'] : (object)array();
+$product['selprod_return_policies'] = !empty($product['selprod_return_policies']) ? $product['selprod_return_policies'] : (object) array();
+$product['selprod_warranty_policies'] = !empty($product['selprod_warranty_policies']) ? $product['selprod_warranty_policies'] : (object) array();
 
 $fulfillmentLabel = Labels::getLabel('LBL_INVALID_FULFILLMENT', $siteLangId);
 $icon = CONF_WEBROOT_URL . 'images/';
@@ -181,8 +181,8 @@ if (!empty($product['moreSellersArr']) && 0 < count($product['moreSellersArr']))
 }
 
 $productDetailPageBanner = [];
-if (isset($banners['Product_Detail_Page_Banner']) && $banners['Product_Detail_Page_Banner']['blocation_active'] && count($banners['Product_Detail_Page_Banner']['banners'])) {
-    foreach ($banners['Product_Detail_Page_Banner']['banners'] as &$val) {
+if (isset($banners) && $banners['blocation_active'] && count($banners['banners'])) {
+    foreach ($banners['banners'] as &$val) {
         $bannerImageUrl = '';
         if (!AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BANNER, $val['banner_id'], 0, $siteLangId)) {
             continue;
@@ -209,14 +209,14 @@ if (isset($banners['Product_Detail_Page_Banner']) && $banners['Product_Detail_Pa
             $val['banner_url_type'] = $urlTypeData['urlType'];
         }
     }
-    $productDetailPageBanner = $banners['Product_Detail_Page_Banner']['banners'];
+    $productDetailPageBanner = $banners['banners'];
 }
 
 $data = array(
-    'reviews' => empty($reviews) ? (object)array() : $reviews,
+    'reviews' => empty($reviews) ? (object) array() : $reviews,
     'codEnabled' => (true === $codEnabled ? 1 : 0),
     // 'shippingRates' => $shippingRates,
-    'shippingDetails' => empty($shippingDetails) ? (object)array() : $shippingDetails,
+    'shippingDetails' => empty($shippingDetails) ? (object) array() : $shippingDetails,
     'optionRows' => $optionRows,
     'productSpecifications' => array(
         'title' => Labels::getLabel('LBL_Specifications', $siteLangId),
@@ -225,14 +225,14 @@ $data = array(
     'banners' => $productDetailPageBanner,
     'product' => array(
         'title' => Labels::getLabel('LBL_Detail', $siteLangId),
-        'data' => empty($product) ? (object)array() : $product,
+        'data' => empty($product) ? (object) array() : $product,
     ),
     'shop_rating' => round($shop_rating, 1),
-    'shop' => empty($shop) ? (object)array() : $shop,
+    'shop' => empty($shop) ? (object) array() : $shop,
     'shopTotalReviews' => $shopTotalReviews,
     'productImagesArr' => array_values($productImagesArr),
     'volumeDiscountRows' => $volumeDiscountRows,
-    'socialShareContent' => empty($socialShareContent) ? (object)array() : $socialShareContent,
+    'socialShareContent' => empty($socialShareContent) ? (object) array() : $socialShareContent,
     'buyTogether' => array(
         'title' => Labels::getLabel('LBL_Product_Add-ons', $siteLangId),
         'data' => $upsellProducts,
@@ -252,6 +252,6 @@ $data = array(
 );
 
 
-if (empty((array)$product)) {
+if (empty((array) $product)) {
     $status = applicationConstants::OFF;
 }

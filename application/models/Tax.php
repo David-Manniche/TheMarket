@@ -349,9 +349,12 @@ class Tax extends MyAppModel
             $message = Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId);
             if (isset($shopInfo['shop_identifier'])) {
                 $message .= '(' . $shopInfo['shop_identifier'] . ')';
+                $message .= '( Product Id-' . $productId . ')';
             }
+            SystemLog::set($message);
+            $status = (!CONF_DEVELOPMENT_MODE) ? true : false;
             return $data = [
-                'status' => false,
+                'status' => $status,
                 'msg' => $message,
                 'tax' => $tax,
                 'rate' => 0,
@@ -394,8 +397,10 @@ class Tax extends MyAppModel
 
             $error = '';
             if (false === PluginHelper::includePlugin($pluginKey, Plugin::getDirectory(Plugin::TYPE_TAX_SERVICES), $error, $langId)) {
+                SystemLog::set($error);
+                $status = (!CONF_DEVELOPMENT_MODE) ? true : false;
                 return $data = [
-                    'status' => false,
+                    'status' => $status,
                     'msg' => $error,
                     'tax' => $tax,
                     'rate' => 0,
@@ -440,8 +445,10 @@ class Tax extends MyAppModel
 
             $taxApi = new $pluginKey($langId, $fromAddress, $toAddress);
             if (false === $taxApi->init()) {
+                SystemLog::set($taxApi->getError());
+                $status = (!CONF_DEVELOPMENT_MODE) ? true : false;
                 return $data = [
-                    'status' => false,
+                    'status' => $status,
                     'msg' => $taxApi->getError(),
                     'tax' => $tax,
                     'rate' => 0,
@@ -454,9 +461,10 @@ class Tax extends MyAppModel
             $taxRates = $taxApi->getRates($itemsArr, $shippingItems, $buyerId);
 
             if (false == $taxRates['status']) {
-                //@todo Log Errors
+                SystemLog::set($taxRates['msg'] . '( Product Id-' . $productId . ')');
+                $status = (!CONF_DEVELOPMENT_MODE) ? true : false;
                 $data = [
-                    'status' => false,
+                    'status' => $status,
                     'msg' => $taxRates['msg'],
                     'tax' => $tax,
                     'rate' => 0,
@@ -500,8 +508,11 @@ class Tax extends MyAppModel
         }
 
         if (0 < $activatedTaxServiceId) {
+            SystemLog::set(Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId) . '( Product Id-' . $productId . ')');
+            $status = (!CONF_DEVELOPMENT_MODE) ? true : false;
+
             return $data = [
-                'status' => false,
+                'status' => $status,
                 'msg' => Labels::getLabel('MSG_INVALID_TAX_CATEGORY', $langId),
                 'tax' => $tax,
                 'rate' => 0,

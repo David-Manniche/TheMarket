@@ -310,14 +310,13 @@ class AttachedFile extends MyAppModel
         /* ] */
         $path = $path . $date_wise_path;
 
+        $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9]/', '', $name);
         if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
             $fileExt = pathinfo($name, PATHINFO_EXTENSION);
             $fileExt = strtolower($fileExt);
             if ('zip' == $fileExt) {
                 $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9.]/', '', $name);
             }
-        } else {
-            $saveName = time() . '-' . preg_replace('/[^a-zA-Z0-9]/', '', $name);
         }
 
         if (!file_exists($path)) {

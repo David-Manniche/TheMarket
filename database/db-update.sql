@@ -2022,3 +2022,36 @@ ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- ----------------------TV-9.2.3.20201222--------------------------
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_Setup_Successfull';
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_system_logs`
+--
+
+CREATE TABLE `tbl_system_logs` (
+  `slog_id` int(11) NOT NULL,
+  `slog_type` int(11) NOT NULL,
+  `slog_details` text NOT NULL,
+  `slog_created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_system_logs`
+--
+ALTER TABLE `tbl_system_logs`
+  ADD PRIMARY KEY (`slog_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_system_logs`
+--
+ALTER TABLE `tbl_system_logs`
+  MODIFY `slog_id` int(11) NOT NULL AUTO_INCREMENT;
+-- -------------------------------------TV-9.2.4.20201228---------------------------  
