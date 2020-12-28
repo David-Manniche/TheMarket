@@ -2054,3 +2054,4 @@ ALTER TABLE `tbl_system_logs`
 --
 ALTER TABLE `tbl_system_logs`
   MODIFY `slog_id` int(11) NOT NULL AUTO_INCREMENT;
+-- -------------------------------------TV-9.2.4.20201228---------------------------  
