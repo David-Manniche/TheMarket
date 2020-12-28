@@ -863,7 +863,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
 
         if ($errInSheet) {
@@ -1007,7 +1007,7 @@ class Importexport extends ImportexportCommon
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -1167,7 +1167,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -1367,7 +1367,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -2111,7 +2111,7 @@ class Importexport extends ImportexportCommon
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
 
         if ($errInSheet) {
@@ -2274,7 +2274,7 @@ class Importexport extends ImportexportCommon
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -2437,7 +2437,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -2641,7 +2641,7 @@ class Importexport extends ImportexportCommon
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -2901,7 +2901,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -3171,7 +3171,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -3626,7 +3626,7 @@ class Importexport extends ImportexportCommon
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -3837,7 +3837,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -3987,7 +3987,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -4146,7 +4146,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -4265,7 +4265,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -4413,7 +4413,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -4536,7 +4536,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -4686,7 +4686,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -4847,7 +4847,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -5014,7 +5014,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -5169,7 +5169,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -5339,7 +5339,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -5506,7 +5506,7 @@ class Importexport extends ImportexportCommon
         CommonHelper::writeToCSVFile($this->CSVfileObj, array(), true);
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
@@ -5662,7 +5662,7 @@ class Importexport extends ImportexportCommon
 
 
         if (CommonHelper::checkCSVFile($this->CSVfileName)) {
-            $success['CSVfileUrl'] = FatUtility::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
+            $success['CSVfileUrl'] = UrlHelper::generateFullUrl('custom', 'downloadLogFile', array($this->CSVfileName), CONF_WEBROOT_FRONTEND);
         }
         if ($errInSheet) {
             $success['msg'] = Labels::getLabel('LBL_Error!_Please_check_error_log_sheet.', $langId);
