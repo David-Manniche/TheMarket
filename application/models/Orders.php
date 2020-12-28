@@ -1319,10 +1319,12 @@ class Orders extends MyAppModel
             $isReferrerRewarded = false;
             $isReferralRewarded = false;
 
+            $walletSelected = array_key_exists("order_is_wallet_selected" , $orderInfo) ? FatUtility::int($orderInfo["order_is_wallet_selected"]) : 0;
+
             $paymentMethodRow = Plugin::getAttributesById($orderInfo['order_pmethod_id']);
 
             /* Use Reward Point [ */
-            if (is_array($paymentMethodRow) && !empty($paymentMethodRow) && in_array(strtolower($paymentMethodRow['plugin_code']), ['cashondelivery', 'payatstore']) && $orderInfo['order_reward_point_used'] > 0) {
+            if (0 < $walletSelected || (is_array($paymentMethodRow) && !empty($paymentMethodRow) && !in_array(strtolower($paymentMethodRow['plugin_code']), ['cashondelivery', 'payatstore']) && $orderInfo['order_reward_point_used'] > 0)) {
                 UserRewards::debit($orderInfo['order_user_id'], $orderInfo['order_reward_point_used'], $orderId, $orderInfo['order_language_id']);
             }
             /*]*/

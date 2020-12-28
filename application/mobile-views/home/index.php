@@ -1,8 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 
+$appScreenType = CommonHelper::getAppScreenType();
+$resType = $appScreenType == applicationConstants::SCREEN_IPAD ? 'TABLET' : 'MOBILE';
+
 foreach ($slides as $index => $slideDetail) {
     $uploadedTime = AttachedFile::setTimeParam($slideDetail['slide_img_updated_on']);
-    $slides[$index]['slide_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'slide', array($slideDetail['slide_id'], applicationConstants::SCREEN_MOBILE, $siteLangId, 'MOBILE')) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+    $slides[$index]['slide_image_url'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'slide', array($slideDetail['slide_id'], $appScreenType, $siteLangId, $resType)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
     $urlTypeData = CommonHelper::getUrlTypeData($slideDetail['slide_url']);
 
     $slides[$index]['slide_url'] = $slides[$index]['slide_url_type'] = $slides[$index]['slide_url_title'] = "";
@@ -86,7 +89,7 @@ foreach ($collections as $collectionIndex => $collectionData) {
                 );
             }
 
-            $collections[$collectionIndex]['banners']['banners'][$index]['banner_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($banner['banner_id'], $siteLangId, applicationConstants::SCREEN_MOBILE)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $collections[$collectionIndex]['banners']['banners'][$index]['banner_image'] = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Banner', 'HomePageBannerTopLayout', array($banner['banner_id'], $siteLangId, CommonHelper::getAppScreenType())) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
 
             $collections[$collectionIndex]['banners']['banners'][$index]['banner_url'] = ($urlTypeData['urlType'] == applicationConstants::URL_TYPE_EXTERNAL ? $banner['banner_url'] : $urlTypeData['recordId']);
             $collections[$collectionIndex]['banners']['banners'][$index]['banner_url_type'] = $urlTypeData['urlType'];

@@ -15,12 +15,14 @@ class CommonHelper extends FatUtility
     private static $_default_currency_symbol_left;
     private static $_default_currency_symbol_right;
     private static $_appToken;
+    private static $_appScreen = applicationConstants::SCREEN_MOBILE;
 
     public static function initCommonVariables($isAdmin = false)
     {
         self::$_ip = self::getClientIp();
         self::$_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
         self::$_lang_id = FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1);
+        self::$_currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
         self::$_currency_id = FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1);
 
         if (!$isAdmin) {
@@ -31,6 +33,10 @@ class CommonHelper extends FatUtility
 
                 if (!empty($_SERVER['HTTP_X_CURRENCY_ID'])) {
                     self::$_currency_id = FatUtility::int($_SERVER['HTTP_X_CURRENCY_ID']);
+                }
+
+                if (!empty($_SERVER['HTTP_X_SCREEN_TYPE'])) {
+                    self::$_appScreen = FatUtility::int($_SERVER['HTTP_X_SCREEN_TYPE']);
                 }
             } else {
                 if (isset($_COOKIE['defaultSiteLang'])) {
@@ -145,6 +151,11 @@ class CommonHelper extends FatUtility
     public static function userAgent()
     {
         return self::$_user_agent;
+    }
+
+    public static function getAppScreenType()
+    {
+        return self::$_appScreen;
     }
 
     public static function getClientIp()

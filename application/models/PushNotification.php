@@ -174,8 +174,12 @@ class PushNotification extends MyAppModel
         $srch->addGroupBy('uauth_fcm_id');
         $rs = $srch->getResultSet();
         $tokenData = FatApp::getDb()->fetchAll($rs);
-        $lastToken = end($tokenData);
-        $lastUserAccessTime = $lastToken['uauth_last_access'];
+        
+        $lastUserAccessTime = date('Y-m-d H:i:s');
+        if (is_array($tokenData) && !empty($tokenData)) {
+            $lastToken = end($tokenData);
+            $lastUserAccessTime = $lastToken['uauth_last_access'];
+        }
         
         $deviceTokens = [];
         foreach ($tokenData as $data) {
