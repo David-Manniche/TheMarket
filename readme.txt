@@ -520,6 +520,7 @@ Bugs:
     => 046920	when location is set for current location then under all shops- blank shop is listing 
     => 047025 - subscription page load with header in Custom Product Setup inventory tab
     => 047008 - rewards are not deducting from buyer account
+    => 047085 - when Mpesa is used then on proceeding to payment gateway it displays processing button on payment gateway and reward apply button
 
 -----------------------TV-9.2.3.20201222---------------------
 Enhancements:

@@ -46,7 +46,7 @@ echo $frm->getFormTag(); ?>
             return;
         }
         if (!me.validate()) return;
-        var btnEle = $("input[type='submit']");
+        var btnEle = $("input[type='submit']", frm);
         var btnText = btnEle.val();
         btnEle.val(langLbl.processing).attr('disabled', 'disabled');
         $.mbsmessage(langLbl.processing, false, 'alert--process');
