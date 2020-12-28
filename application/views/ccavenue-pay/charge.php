@@ -1,4 +1,10 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage'); 
+$btn = $frm->getField('btn_submit');
+if (null != $btn) {
+    $btn->developerTags['noCaptionTag'] = true;
+    $btn->setFieldTagAttribute('class', "btn btn-brand btn-wide");
+}
+?>
 <script>
     window.onload = function() {
         var d = new Date().getTime();

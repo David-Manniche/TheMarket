@@ -558,12 +558,19 @@ $("document").ready(function () {
         if (!$(frm).validate()) return;
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action');
+        var submitBtn = $('input[type=submit]', frm);
+        var btnText = submitBtn.val();
+        submitBtn.attr('disabled', 'disabled');
+        submitBtn.val(submitBtn.data('processing-text'));
+        $.mbsmessage(langLbl.processing, false, 'alert--process alert');
         fcom.ajax(action, data, function (t) {
+            submitBtn.val(btnText);
             // debugger;
             try {
                 var json = $.parseJSON(t);
                 if (typeof json.status != 'undefined' && 1 > json.status) {
-                    $.systemMessage(json.msg, 'alert--danger');
+                    submitBtn.removeAttr('disabled');
+                    $.mbsmessage(json.msg, true, 'alert--danger');
                     return false;
                 }
                 if (typeof json.html != 'undefined') {

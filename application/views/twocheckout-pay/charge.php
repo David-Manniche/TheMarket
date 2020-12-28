@@ -212,10 +212,6 @@ $frm->setFormTagAttribute('id', 'twocheckout');
 
                         $(document).on("submit", "#twocheckout", function(event) {
                             event.preventDefault();
-                            var stripeToken = $("input[name='stripeToken']").val();
-                            if ('' != stripeToken && 'undefined' != typeof stripeToken) {
-                                return;
-                            }
                             $(this).data('requestRunning', false);
                             tokenRequest();
                         });

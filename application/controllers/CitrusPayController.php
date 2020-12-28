@@ -29,16 +29,26 @@ class CitrusPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        if (!$orderInfo['id']) {
-            FatUtility::exitWIthErrorCode(404);
-        } elseif ($orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
-            $frm = $this->getPaymentForm($orderId);
-            $this->set('frm', $frm);
-            $this->set('paymentAmount', $paymentAmount);
-        } else {
-            $this->set('error', Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
+        
+        if (!empty($orderInfo) && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
+            $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+            $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
         }
+
+        $frm = $this->getPaymentForm($orderId);
+        $postOrderId = FatApp::getPostedData('orderId', FatUtility::VAR_STRING, '');
+        $processRequest = false;
+        if (!empty($postOrderId) && $orderId = $postOrderId) {
+            $frm = $this->getPaymentForm($orderId, true);
+            $processRequest = true;
+        }
+
+        $frm->fill(['orderId' => $orderId]);
+        $this->set('frm', $frm);
+        $this->set('processRequest', $processRequest);
+
         $this->set('orderInfo', $orderInfo);
+        $this->set('paymentAmount', $paymentAmount);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'citrus-pay/charge-ajax.php', true, false);
@@ -84,7 +94,7 @@ class CitrusPayController extends PaymentController
     }
 
 
-    private function getPaymentForm($orderId)
+    private function getPaymentForm(string $orderId, bool $processRequest = false)
     {
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
@@ -102,26 +112,33 @@ class CitrusPayController extends PaymentController
         }
         $actionUrl = $actionUrl . "$vanityUrl";
 
-        $frm = new Form('frm-citrus-payment', array('id' => 'frm-citrus-payment', 'action' => $actionUrl, 'class' => "form form--normal"));
+        $actionUrl = false === $processRequest ? UrlHelper::generateUrl(self::KEY_NAME . 'Pay', 'charge', array($orderId)) : $actionUrl;
 
-        $frm->addHiddenField('', 'merchantTxnId', $orderId);
-        $frm->addHiddenField('', 'orderAmount', $paymentGatewayCharge);
-        $frm->addHiddenField('', 'currency', "INR");
-        $frm->addHiddenField('', 'secSignature', $secSignature);
-        $frm->addHiddenField('', 'returnUrl', UrlHelper::generateFullUrl('CitrusPay', 'callback'));
-        $frm->addHiddenField('', 'email', $orderInfo["customer_email"]);
-        $frm->addHiddenField('', 'phoneNumber', $orderInfo["customer_phone"]);
-        $frm->addHiddenField('', 'addressState', $orderInfo["customer_billing_state"]);
-        $frm->addHiddenField('', 'addressCity', $orderInfo["customer_billing_city"]);
-        $frm->addHiddenField('', 'addressStreet1', $orderInfo["customer_billing_address_1"]);
-        $frm->addHiddenField('', 'addressStreet2', $orderInfo["customer_billing_address_2"]);
-        $frm->addHiddenField('', 'addressCountry', $orderInfo["customer_billing_country"]);
-        $frm->addHiddenField('', 'addressZip', $orderInfo["customer_billing_postcode"]);
-        $custName = explode(" ", $orderInfo["customer_name"]);
-        $firstName = $lastName = !empty($custName[0]) ? $custName[0] : '';
-        $lastName = !empty($custName[1]) ? $custName[1] : '';
-        $frm->addHiddenField('', 'firstName', $firstName);
-        $frm->addHiddenField('', 'lastName', $lastName);
+        $frm = new Form('frm-citrus-payment', array('id' => 'frm-citrus-payment', 'action' => $actionUrl, 'class' => "form form--normal"));
+        $frm->addHiddenField('', 'orderId');
+
+        if (false === $processRequest) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
+        } else {
+            $frm->addHiddenField('', 'merchantTxnId', $orderId);
+            $frm->addHiddenField('', 'orderAmount', $paymentGatewayCharge);
+            $frm->addHiddenField('', 'currency', "INR");
+            $frm->addHiddenField('', 'secSignature', $secSignature);
+            $frm->addHiddenField('', 'returnUrl', UrlHelper::generateFullUrl('CitrusPay', 'callback'));
+            $frm->addHiddenField('', 'email', $orderInfo["customer_email"]);
+            $frm->addHiddenField('', 'phoneNumber', $orderInfo["customer_phone"]);
+            $frm->addHiddenField('', 'addressState', $orderInfo["customer_billing_state"]);
+            $frm->addHiddenField('', 'addressCity', $orderInfo["customer_billing_city"]);
+            $frm->addHiddenField('', 'addressStreet1', $orderInfo["customer_billing_address_1"]);
+            $frm->addHiddenField('', 'addressStreet2', $orderInfo["customer_billing_address_2"]);
+            $frm->addHiddenField('', 'addressCountry', $orderInfo["customer_billing_country"]);
+            $frm->addHiddenField('', 'addressZip', $orderInfo["customer_billing_postcode"]);
+            $custName = explode(" ", $orderInfo["customer_name"]);
+            $firstName = $lastName = !empty($custName[0]) ? $custName[0] : '';
+            $lastName = !empty($custName[1]) ? $custName[1] : '';
+            $frm->addHiddenField('', 'firstName', $firstName);
+            $frm->addHiddenField('', 'lastName', $lastName);
+        }
         return $frm;
     }
 }

@@ -3,7 +3,8 @@ var sendPayment = function(frm){
 	var data = fcom.frmData(frm);
 	var action = $(frm).attr('action');
 	var btnText = $('input[type=submit]').val();
-	$('input[type=submit]').val($('input[type=submit]').data('processing-text'));
+    $('input[type=submit]').val($('input[type=submit]').data('processing-text'));
+    $.mbsmessage(langLbl.processing, false, 'alert--process alert');
 	fcom.ajax(action, data, function(t) {
 		$('input[type=submit]').val("Processing..");
 		try{

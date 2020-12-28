@@ -52,11 +52,6 @@ class DpoPayController extends PaymentController
      */
     public function charge($orderId)
     {
-        if ($orderId == '') {
-            $msg = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
-            $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
-        }
-
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();

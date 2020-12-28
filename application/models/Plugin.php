@@ -45,7 +45,7 @@ class Plugin extends MyAppModel
         self::TYPE_ADVERTISEMENT_FEED,
         self::TYPE_SMS_NOTIFICATION,
         self::TYPE_TAX_SERVICES,
-        self::TYPE_FULL_TEXT_SEARCH,
+        // self::TYPE_FULL_TEXT_SEARCH, /* NOT IN USE */
         self::TYPE_SPLIT_PAYMENT_METHOD,
         self::TYPE_SHIPPING_SERVICES,
         self::TYPE_SHIPMENT_TRACKING,
@@ -90,7 +90,7 @@ class Plugin extends MyAppModel
             self::TYPE_ADVERTISEMENT_FEED => Labels::getLabel('LBL_ADVERTISEMENT_FEED', $langId),
             self::TYPE_SMS_NOTIFICATION => Labels::getLabel('LBL_SMS_NOTIFICATION', $langId),
             self::TYPE_TAX_SERVICES => Labels::getLabel('LBL_TAX_SERVICES', $langId),
-            self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId),
+            // self::TYPE_FULL_TEXT_SEARCH => Labels::getLabel('LBL_FULL_TEXT_SEARCH', $langId), /* NOT IN USE */
             self::TYPE_SPLIT_PAYMENT_METHOD => Labels::getLabel('LBL_SPLIT_PAYMENT_METHODS', $langId),
             self::TYPE_REGULAR_PAYMENT_METHOD => Labels::getLabel('LBL_REGULAR_PAYMENT_METHODS', $langId),
             self::TYPE_SHIPPING_SERVICES => Labels::getLabel('LBL_SHIPPING_SERVICES', $langId),
@@ -112,7 +112,7 @@ class Plugin extends MyAppModel
             self::TYPE_PUSH_NOTIFICATION => "push-notification",
             self::TYPE_ADVERTISEMENT_FEED => "advertisement-feed",
             self::TYPE_SMS_NOTIFICATION => "sms-notification",
-            self::TYPE_FULL_TEXT_SEARCH => "full-text-search",
+            // self::TYPE_FULL_TEXT_SEARCH => "full-text-search", /* NOT IN USE */
             self::TYPE_TAX_SERVICES => "tax",
             self::TYPE_SPLIT_PAYMENT_METHOD => "payment-methods",
             self::TYPE_REGULAR_PAYMENT_METHOD => "payment-methods",

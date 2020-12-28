@@ -35,14 +35,22 @@ class CcavenuePayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        if (!$orderInfo['id']) {
-            FatUtility::exitWIthErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
-            $frm = $this->getPaymentForm($orderId);
-            $this->set('frm', $frm);
-        } else {
-            $this->set('error', Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
+        if (!empty($orderInfo) && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
+            $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+            $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
         }
+
+        $frm = $this->getPaymentForm($orderId);
+        $postOrderId = FatApp::getPostedData('orderId', FatUtility::VAR_STRING, '');
+        $processRequest = false;
+        if (!empty($postOrderId) && $orderId = $postOrderId) {
+            $frm = $this->getPaymentForm($orderId, true);
+            $processRequest = true;
+        }
+
+        $frm->fill(['orderId' => $orderId]);
+        $this->set('frm', $frm);
+        $this->set('processRequest', $processRequest);
 
         $this->set('paymentAmount', $paymentAmount);
         $this->set('orderInfo', $orderInfo);
@@ -128,40 +136,47 @@ class CcavenuePayController extends PaymentController
         }
     }
 
-    private function getPaymentForm($orderId)
+    private function getPaymentForm(string $orderId, bool $processRequest = false)
     {
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        $frm = new Form('frm-ccavenue', array('id' => 'frm-ccavenue', 'action' => UrlHelper::generateFullUrl('CcavenuePay', 'iframe', array($orderId)), 'class' => "form form--normal"));
+        $actionUrl = false === $processRequest ? UrlHelper::generateUrl(self::KEY_NAME . 'Pay', 'charge', array($orderId)) : UrlHelper::generateFullUrl(self::KEY_NAME . 'Pay', 'iframe', array($orderId));
 
-        $frm->addHiddenField('', 'tid', "", array("id" => "tid"));
-        $frm->addHiddenField('', 'merchant_id', $this->settings["merchant_id"]);
-        $frm->addHiddenField('', 'order_id', $orderInfo['invoice']);
-        $frm->addHiddenField('', 'amount', $paymentGatewayCharge);
-        $frm->addHiddenField('', 'merchant_param1', $orderId);
-        //$frm->addHiddenField('', 'currency', $orderInfo["order_currency_code"]);
-        $frm->addHiddenField('', 'language', "EN");
-        $frm->addHiddenField('', 'redirect_url', UrlHelper::generateFullUrl('CcavenuePay', 'callback'));
-        $frm->addHiddenField('', 'cancel_url', CommonHelper::getPaymentCancelPageUrl());
-        //$frm->addHiddenField('', 'item_name_1', $order_payment_gateway_description);
-        $frm->addHiddenField('', 'billing_name', $orderInfo["customer_billing_name"]);
-        $frm->addHiddenField('', 'billing_address', $orderInfo["customer_billing_address_1"] . ', ' . $orderInfo["customer_billing_address_2"]);
-        $frm->addHiddenField('', 'billing_city', $orderInfo["customer_billing_city"]);
-        $frm->addHiddenField('', 'billing_state', $orderInfo["customer_billing_state"]);
-        $frm->addHiddenField('', 'billing_zip', $orderInfo["customer_billing_postcode"]);
-        $frm->addHiddenField('', 'billing_country', $orderInfo['customer_billing_country']);
-        $frm->addHiddenField('', 'billing_tel', $orderInfo['customer_billing_phone']);
-        $frm->addHiddenField('', 'billing_email', $orderInfo['customer_email']);
-        $frm->addHiddenField('', 'delivery_name', $orderInfo["customer_shipping_name"]);
-        $frm->addHiddenField('', 'delivery_address', $orderInfo["customer_shipping_address_1"] . ', ' . $orderInfo["customer_shipping_address_2"]);
-        $frm->addHiddenField('', 'delivery_city', $orderInfo["customer_shipping_city"]);
-        $frm->addHiddenField('', 'delivery_state', $orderInfo["customer_shipping_state"]);
-        $frm->addHiddenField('', 'delivery_zip', $orderInfo["customer_shipping_postcode"]);
-        $frm->addHiddenField('', 'delivery_country', $orderInfo['customer_shipping_country']);
-        $frm->addHiddenField('', 'delivery_tel', $orderInfo['customer_shipping_phone']);
-        $frm->addHiddenField('', 'integration_type', 'iframe_normal');
+        $frm = new Form('frm-ccavenue', array('id' => 'frm-ccavenue', 'action' => $actionUrl, 'class' => "form form--normal"));
+        $frm->addHiddenField('', 'orderId');
+
+        if (false === $processRequest) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
+        } else {
+            $frm->addHiddenField('', 'tid', "", array("id" => "tid"));
+            $frm->addHiddenField('', 'merchant_id', $this->settings["merchant_id"]);
+            $frm->addHiddenField('', 'order_id', $orderInfo['invoice']);
+            $frm->addHiddenField('', 'amount', $paymentGatewayCharge);
+            $frm->addHiddenField('', 'merchant_param1', $orderId);
+            //$frm->addHiddenField('', 'currency', $orderInfo["order_currency_code"]);
+            $frm->addHiddenField('', 'language', "EN");
+            $frm->addHiddenField('', 'redirect_url', UrlHelper::generateFullUrl('CcavenuePay', 'callback'));
+            $frm->addHiddenField('', 'cancel_url', CommonHelper::getPaymentCancelPageUrl());
+            //$frm->addHiddenField('', 'item_name_1', $order_payment_gateway_description);
+            $frm->addHiddenField('', 'billing_name', $orderInfo["customer_billing_name"]);
+            $frm->addHiddenField('', 'billing_address', $orderInfo["customer_billing_address_1"] . ', ' . $orderInfo["customer_billing_address_2"]);
+            $frm->addHiddenField('', 'billing_city', $orderInfo["customer_billing_city"]);
+            $frm->addHiddenField('', 'billing_state', $orderInfo["customer_billing_state"]);
+            $frm->addHiddenField('', 'billing_zip', $orderInfo["customer_billing_postcode"]);
+            $frm->addHiddenField('', 'billing_country', $orderInfo['customer_billing_country']);
+            $frm->addHiddenField('', 'billing_tel', $orderInfo['customer_billing_phone']);
+            $frm->addHiddenField('', 'billing_email', $orderInfo['customer_email']);
+            $frm->addHiddenField('', 'delivery_name', $orderInfo["customer_shipping_name"]);
+            $frm->addHiddenField('', 'delivery_address', $orderInfo["customer_shipping_address_1"] . ', ' . $orderInfo["customer_shipping_address_2"]);
+            $frm->addHiddenField('', 'delivery_city', $orderInfo["customer_shipping_city"]);
+            $frm->addHiddenField('', 'delivery_state', $orderInfo["customer_shipping_state"]);
+            $frm->addHiddenField('', 'delivery_zip', $orderInfo["customer_shipping_postcode"]);
+            $frm->addHiddenField('', 'delivery_country', $orderInfo['customer_shipping_country']);
+            $frm->addHiddenField('', 'delivery_tel', $orderInfo['customer_shipping_phone']);
+            $frm->addHiddenField('', 'integration_type', 'iframe_normal');
+        }
         return $frm;
     }
 

@@ -2,11 +2,12 @@
 
 $button_confirm = Labels::getLabel('LBL_CONFIRM', $siteLangId);
 if (!isset($error)) { ?>
-    <p><?php echo Labels::getLabel('MSG_CONFIRM_TO_PROCEED_FOR_PAYMENT_?', $siteLangId); ?></p>
-    <?php echo $frm->getFormHtml(); ?>
-    <div class="gap"></div>
-    <input type="submit" onclick="razorpaySubmit(this);" value="<?php echo $button_confirm; ?>" data-processing-text='<?php echo Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId); ?>' class="btn btn-brand" />
-    <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>
+    <div class="text-center">
+        <p><?php echo Labels::getLabel('LBL_PROCEED_TO_PAYMENT_?', $siteLangId); ?></p>
+        <?php echo $frm->getFormHtml(); ?>
+        <div class="gap"></div>
+        <input type="submit" onclick="razorpaySubmit(this);" value="<?php echo $button_confirm; ?>" data-processing-text='<?php echo Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId); ?>' class="btn btn-brand" />
+    </div>
 <?php
 } else { ?>
     <div class="alert alert--danger"><?php echo $error; ?></div>

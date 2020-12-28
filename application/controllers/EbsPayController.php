@@ -36,8 +36,8 @@ class EbsPayController extends PaymentController
         }
 
         $ebs = array(
-        'account_id' => trim($this->settings['accountId']),
-        'secret_key' => trim($this->settings['secretKey'])
+            'account_id' => trim($this->settings['accountId']),
+            'secret_key' => trim($this->settings['secretKey'])
         );
         $this->set('ebs', $ebs);
 
@@ -50,15 +50,24 @@ class EbsPayController extends PaymentController
         $payableAmount = $this->formatPayableAmount($paymentAmount);
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        if (!$orderInfo['id']) {
-            FatUtility::exitWithErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
-            $frm = $this->getPaymentForm($orderId);
-            $this->set('frm', $frm);
-            $this->set('success', true);
-        } else {
-            $this->error = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+        if (!empty($orderInfo) && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
+            $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+            $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
         }
+
+        $frm = $this->getPaymentForm($orderId);
+        $postOrderId = FatApp::getPostedData('orderId', FatUtility::VAR_STRING, '');
+        $processRequest = false;
+        if (!empty($postOrderId) && $orderId = $postOrderId) {
+            $frm = $this->getPaymentForm($orderId, true);
+            $processRequest = true;
+        }
+
+        $frm->fill(['orderId' => $orderId]);
+        $this->set('frm', $frm);
+        $this->set('processRequest', $processRequest);
+
+        $this->set('success', true);
         $this->set('paymentAmount', $paymentAmount);
         $this->set('orderInfo', $orderInfo);
         if ($this->error) {
@@ -86,67 +95,74 @@ class EbsPayController extends PaymentController
         $amount = number_format($amount, 2, '.', '');
         return $amount * 100;
     }
-    
-    private function getPaymentForm($orderId)
+
+    private function getPaymentForm(string $orderId, bool $processRequest = false)
     {
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        /* $frm = new Form('frmPaymentForm', array('id' => 'frmPaymentForm', 'action' => 'https://secure.ebs.in/pg/ma/sale/pay/', 'class' => "form form--normal")); */
-        $frm = new Form('payment', array('id' => 'frmPaymentForm', 'action' => self::PRODUCTION_URL, 'class' => "form form--normal"));
-        if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
-            $mode = "LIVE";
+        $actionUrl = false === $processRequest ? UrlHelper::generateUrl(self::KEY_NAME . 'Pay', 'charge', array($orderId)) : self::PRODUCTION_URL;
+
+        $frm = new Form('payment', array('id' => 'frmPaymentForm', 'action' => $actionUrl, 'class' => "form form--normal"));
+        $frm->addHiddenField('', 'orderId');
+
+        if (false === $processRequest) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
         } else {
-            $mode = "TEST";
-        }
-
-        $order_payment_gateway_description = sprintf(Labels::getLabel('M_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
-        $return_url = UrlHelper::generateFullUrl('ebsPay', 'callback');
-
-        $dataToPost = [
-            'account_id' => $this->settings["accountId"],
-            'address' => $orderInfo["customer_billing_address_1"] . ' ' . $orderInfo["customer_billing_address_2"],
-            'amount' => $paymentAmount,
-            'channel' => 0,
-            'city' => $orderInfo["customer_billing_city"],
-            'country' => $orderInfo["customer_billing_country_code"],
-            'currency' => $this->systemCurrencyCode,
-            'description' => $order_payment_gateway_description,
-            'display_currency' => $this->systemCurrencyCode,
-            'display_currency_rates' => applicationConstants::YES,
-            'email' => $orderInfo['customer_email'],
-            'mode' => $mode,
-            'name' => $orderInfo["customer_name"],
-            'phone' => $orderInfo['customer_billing_phone'],
-            'postal_code' => $orderInfo["customer_billing_postcode"],
-            'reference_no' => $orderId,
-            'return_url' => $return_url . '?DR={DR}',
-            'ship_address' => $orderInfo["customer_shipping_address_1"] . ' ' . $orderInfo["customer_shipping_address_2"],
-            'ship_city' => $orderInfo["customer_shipping_city"],
-            'ship_country' => $orderInfo["customer_shipping_country_code"],
-            'ship_name' => $orderInfo["customer_shipping_name"],
-            'ship_phone' => $orderInfo['customer_shipping_phone'],
-            'ship_postal_code' => $orderInfo["customer_shipping_postcode"],
-            'ship_state' => $orderInfo["customer_shipping_state"],
-            'state' => $orderInfo["customer_billing_state"],
-        ];
-
-        $hashData = $this->settings["secretKey"]; //Pass your Registered Secret Key
-        foreach ($dataToPost as $key => $value) {
-            if (strlen($value) > 0) {
-                $hashData .= '|'.$value;
+            if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
+                $mode = "LIVE";
+            } else {
+                $mode = "TEST";
             }
-            $frm->addHiddenField('', $key, $value);
+
+            $order_payment_gateway_description = sprintf(Labels::getLabel('M_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
+            $return_url = UrlHelper::generateFullUrl('ebsPay', 'callback');
+
+            $dataToPost = [
+                'account_id' => $this->settings["accountId"],
+                'address' => $orderInfo["customer_billing_address_1"] . ' ' . $orderInfo["customer_billing_address_2"],
+                'amount' => $paymentAmount,
+                'channel' => 0,
+                'city' => $orderInfo["customer_billing_city"],
+                'country' => $orderInfo["customer_billing_country_code"],
+                'currency' => $this->systemCurrencyCode,
+                'description' => $order_payment_gateway_description,
+                'display_currency' => $this->systemCurrencyCode,
+                'display_currency_rates' => applicationConstants::YES,
+                'email' => $orderInfo['customer_email'],
+                'mode' => $mode,
+                'name' => $orderInfo["customer_name"],
+                'phone' => $orderInfo['customer_billing_phone'],
+                'postal_code' => $orderInfo["customer_billing_postcode"],
+                'reference_no' => $orderId,
+                'return_url' => $return_url . '?DR={DR}',
+                'ship_address' => $orderInfo["customer_shipping_address_1"] . ' ' . $orderInfo["customer_shipping_address_2"],
+                'ship_city' => $orderInfo["customer_shipping_city"],
+                'ship_country' => $orderInfo["customer_shipping_country_code"],
+                'ship_name' => $orderInfo["customer_shipping_name"],
+                'ship_phone' => $orderInfo['customer_shipping_phone'],
+                'ship_postal_code' => $orderInfo["customer_shipping_postcode"],
+                'ship_state' => $orderInfo["customer_shipping_state"],
+                'state' => $orderInfo["customer_billing_state"],
+            ];
+
+            $hashData = $this->settings["secretKey"]; //Pass your Registered Secret Key
+            foreach ($dataToPost as $key => $value) {
+                if (strlen($value) > 0) {
+                    $hashData .= '|' . $value;
+                }
+                $frm->addHiddenField('', $key, $value);
+            }
+            $secure_hash = '';
+            if (strlen($hashData) > 0) {
+                $secure_hash = strtoupper(hash("sha512", $hashData)); //for SHA512
+                //$secure_hash = strtoupper(hash("sha1",$hashData));//for SHA1
+                //$secure_hash = strtoupper(md5($hashData));//for MD5
+                $frm->addHiddenField('', 'secure_hash', $secure_hash);
+            }
+            $frm->setJsErrorDisplay('afterfield');
         }
-        $secure_hash = '';
-        if (strlen($hashData) > 0) {
-            $secure_hash = strtoupper(hash("sha512",$hashData));//for SHA512
-            //$secure_hash = strtoupper(hash("sha1",$hashData));//for SHA1
-            //$secure_hash = strtoupper(md5($hashData));//for MD5
-            $frm->addHiddenField('', 'secure_hash', $secure_hash);
-        }
-        $frm->setJsErrorDisplay('afterfield');
         return $frm;
     }
 
@@ -155,7 +171,7 @@ class EbsPayController extends PaymentController
         $get = FatApp::getQueryStringData();
         if (isset($get['DR'])) {
             include_once CONF_INSTALLATION_PATH . 'library/payment-plugins/ebs/Rc43.php';
-            
+
             $secret_key = $this->settings["secretKey"];
             $DR = preg_replace("/\s/", "+", $get['DR']);
             $rc4 = new Crypt_RC4($secret_key);
@@ -177,7 +193,7 @@ class EbsPayController extends PaymentController
                 FatApp::redirectUser(UrlHelper::generateUrl('custom', 'paymentSuccess', array($orderId)));
             } else {
                 TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($response));
-                $orderPaymentObj->addOrderPaymentComments(serialize($response));                
+                $orderPaymentObj->addOrderPaymentComments(serialize($response));
                 FatApp::redirectUser(CommonHelper::getPaymentFailurePageUrl());
             }
         }

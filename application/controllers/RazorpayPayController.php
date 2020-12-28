@@ -31,14 +31,14 @@ class RazorpayPayController extends PaymentController
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
-        if (!$orderInfo['id']) {
-            FatUtility::exitWithErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
-            $frm = $this->getPaymentForm($orderId);
-            $this->set('frm', $frm);
-        } else {
-            $this->set('error', Labels::getLabel('M_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
+
+        if (!empty($orderInfo) && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
+            $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+            $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
         }
+
+        $frm = $this->getPaymentForm($orderId);
+        $this->set('frm', $frm);
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
         if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
@@ -121,7 +121,7 @@ class RazorpayPayController extends PaymentController
         }
     }
 
-    private function getPaymentForm($orderId)
+    private function getPaymentForm(string $orderId)
     {
         $frm = new Form('razorpay-form', array('id' => 'razorpay-form', 'action' => UrlHelper::generateFullUrl('RazorpayPay', 'callback'), 'class' => "form form--normal"));
 

@@ -43,27 +43,35 @@ class TwocheckoutPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        if (!$orderInfo['id']) {
-            FatUtility::exitWIthErrorCode(404);
-        } elseif ($orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
-            $frm = $this->getPaymentForm($orderId);
-            $this->set('frm', $frm);
+        if (!empty($orderInfo) && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
+            $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+            $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
+        }
 
-            if ($this->paymentType != 'HOSTED') {
-                /***
-                 * Adding here because we want these values in the js script
-                 **/
-                $this->set('sellerId', $this->settings['sellerId']);
-                $this->set('publishableKey', $this->settings['publishableKey']);
-                $this->set('privateKey', $this->settings['privateKey']);
-                if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
-                    $this->set('transaction_mode', 'production');
-                } else {
-                    $this->set('transaction_mode', 'sandbox');
-                }
+        $frm = $this->getPaymentForm($orderId);
+        $postOrderId = FatApp::getPostedData('orderId', FatUtility::VAR_STRING, '');
+        $processRequest = false;
+        if (!empty($postOrderId) && $orderId = $postOrderId) {
+            $frm = $this->getPaymentForm($orderId, true);
+            $processRequest = true;
+        }
+
+        $frm->fill(['orderId' => $orderId]);
+        $this->set('frm', $frm);
+        $this->set('processRequest', $processRequest);
+
+        if ($this->paymentType != 'HOSTED') {
+            /***
+             * Adding here because we want these values in the js script
+             **/
+            $this->set('sellerId', $this->settings['sellerId']);
+            $this->set('publishableKey', $this->settings['publishableKey']);
+            $this->set('privateKey', $this->settings['privateKey']);
+            if (FatApp::getConfig('CONF_TRANSACTION_MODE', FatUtility::VAR_BOOLEAN, false) == true) {
+                $this->set('transaction_mode', 'production');
+            } else {
+                $this->set('transaction_mode', 'sandbox');
             }
-        } else {
-            $this->set('error', Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
         }
 
         $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
@@ -103,7 +111,7 @@ class TwocheckoutPayController extends PaymentController
         $StringToHash = strtoupper(md5($hashSecretWord . $hashSid . $hashOrder . $request['total']));
 
         if ($StringToHash == $request['key'] && (float)$request['total'] == (float)$orderPaymentAmount) {
-            if ($request['credit_card_processed'] == 'Y') {               
+            if ($request['credit_card_processed'] == 'Y') {
                 /* Recording Payment in DB */
                 $orderPaymentObj->addOrderPayment($this->settings["plugin_code"], $request['invoice_id'], $orderPaymentAmount, Labels::getLabel("LBL_Received_Payment", $this->siteLangId), json_encode($request));
                 /* End Recording Payment in DB */
@@ -216,7 +224,7 @@ class TwocheckoutPayController extends PaymentController
                             /* End Recording Payment in DB */
                         }
                     } else {
-                        $json['error'] = $error;
+                        $json['error'] = $exception;
                     }
                 } else {
                     $json['error'] = $exception['errorMsg'];
@@ -231,64 +239,71 @@ class TwocheckoutPayController extends PaymentController
         echo json_encode($json);
     }
 
-    private function getPaymentForm($orderId)
+    private function getPaymentForm(string $orderId, bool $processRequest = false)
     {
         // $this->paymentType = $this->settings['payment_type']; // Form Submission from own server code not working.
         $this->paymentType = 'HOSTED';
         if ($this->paymentType == 'HOSTED') { /* check admin controller for confirmation */
-            return $this->getHostedCheckoutForm($orderId);
+            return $this->getHostedCheckoutForm($orderId, $processRequest);
         } else {
-            return $this->getAPICheckoutForm($orderId);
+            return $this->getAPICheckoutForm($orderId, $processRequest);
         }
     }
 
-    private function getHostedCheckoutForm($orderId)
+    private function getHostedCheckoutForm(string $orderId, bool $processRequest = false)
     {
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $payment_gateway_charge = $orderPaymentObj->getOrderPaymentGatewayAmount();
         /* Retrieve Primary Info corresponding to your order */
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
+
         $actionUrl = $this->plugin::PRODUCTION_URL . '/checkout/purchase';
-        
+        $actionUrl = false === $processRequest ? UrlHelper::generateUrl('TwocheckoutPay', 'charge', array($orderId)) : $actionUrl;
+
         $frm = new Form('frmTwoCheckout', array('id' => 'frmTwoCheckout', 'action' => $actionUrl, 'class' => "form form--normal"));
+        $frm->addHiddenField('', 'orderId');
 
-        $frm->addHiddenField('', 'sid', $this->settings["sellerId"]);
-        $frm->addHiddenField('', 'mode', '2CO'); //it should always be 2CO (We're using hosted payment approach)
-        $txnid = $orderInfo["invoice"];
-        $frm->addHiddenField('', 'li_0_name', 'Payment for Order - Invoice #' . $txnid);
-        $frm->addHiddenField('', 'li_0_price', $payment_gateway_charge);
-        $frm->addHiddenField('', 'li_0_product_id', $orderId); //in our case it is order id
-        $frm->addHiddenField('', 'li_0_tangible', 'N'); //no need of charging or calculating shipping as we have already handled the same at our end.
-        $frm->addHiddenField('', 'currency_code', $orderInfo["order_currency_code"]);
-        $frm->addHiddenField('', 'merchant_order_id', $txnid);
-        $frm->addHiddenField('', 'purchase_step', 'payment-method');
-        $frm->addHiddenField('', 'x_receipt_link_url', UrlHelper::generateFullUrl(self::KEY_NAME . 'Pay', 'callback', [], '', false));
-        /**
-         * Pre-populate Billing Information
-         **/
-        $frm->addHiddenField('', 'card_holder_name', FatUtility::decodeHtmlEntities($orderInfo['customer_name'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'street_address', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_1'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'street_address2', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_2'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'city', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'state', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_state'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'zip', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'country', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_country'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'email', FatUtility::decodeHtmlEntities($orderInfo['customer_email'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'phone', FatUtility::decodeHtmlEntities($orderInfo['customer_phone'], ENT_QUOTES, 'UTF-8'));
+        if (false === $processRequest) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
+        } else {
+            $frm->addHiddenField('', 'sid', $this->settings["sellerId"]);
+            $frm->addHiddenField('', 'mode', '2CO'); //it should always be 2CO (We're using hosted payment approach)
+            $txnid = $orderInfo["invoice"];
+            $frm->addHiddenField('', 'li_0_name', 'Payment for Order - Invoice #' . $txnid);
+            $frm->addHiddenField('', 'li_0_price', $payment_gateway_charge);
+            $frm->addHiddenField('', 'li_0_product_id', $orderId); //in our case it is order id
+            $frm->addHiddenField('', 'li_0_tangible', 'N'); //no need of charging or calculating shipping as we have already handled the same at our end.
+            $frm->addHiddenField('', 'currency_code', $orderInfo["order_currency_code"]);
+            $frm->addHiddenField('', 'merchant_order_id', $txnid);
+            $frm->addHiddenField('', 'purchase_step', 'payment-method');
+            $frm->addHiddenField('', 'x_receipt_link_url', UrlHelper::generateFullUrl(self::KEY_NAME . 'Pay', 'callback', [], '', false));
+            /**
+             * Pre-populate Billing Information
+             **/
+            $frm->addHiddenField('', 'card_holder_name', FatUtility::decodeHtmlEntities($orderInfo['customer_name'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'street_address', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_1'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'street_address2', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_address_2'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'city', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_city'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'state', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_state'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'zip', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_postcode'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'country', FatUtility::decodeHtmlEntities($orderInfo['customer_billing_country'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'email', FatUtility::decodeHtmlEntities($orderInfo['customer_email'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'phone', FatUtility::decodeHtmlEntities($orderInfo['customer_phone'], ENT_QUOTES, 'UTF-8'));
 
-        /**
-         * Pre-populate Shipping Information
-         **/
-        $frm->addHiddenField('', 'ship_name', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_name'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'ship_street_address', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_1'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'ship_street_address2', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_2'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'ship_city', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_city'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'ship_state', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_state'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'ship_zip', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_postcode'], ENT_QUOTES, 'UTF-8'));
-        $frm->addHiddenField('', 'ship_country', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_country'], ENT_QUOTES, 'UTF-8'));
-        
-        if (Plugin::ENV_SANDBOX == $this->settings['env']) {
-            $frm->addHiddenField('', 'demo', 'Y');
+            /**
+             * Pre-populate Shipping Information
+             **/
+            $frm->addHiddenField('', 'ship_name', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_name'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'ship_street_address', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_1'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'ship_street_address2', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_address_2'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'ship_city', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_city'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'ship_state', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_state'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'ship_zip', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_postcode'], ENT_QUOTES, 'UTF-8'));
+            $frm->addHiddenField('', 'ship_country', FatUtility::decodeHtmlEntities($orderInfo['customer_shipping_country'], ENT_QUOTES, 'UTF-8'));
+
+            if (Plugin::ENV_SANDBOX == $this->settings['env']) {
+                $frm->addHiddenField('', 'demo', 'Y');
+            }
         }
         return $frm;
     }

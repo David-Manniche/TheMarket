@@ -1,4 +1,9 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage'); ?>
+<?php defined('SYSTEM_INIT') or die('Invalid Usage'); 
+$btn = $frm->getField('btn_submit');
+if (null != $btn) {
+    $btn->setWrapperAttribute('class', "d-none");
+}
+?>
 <div class="payment-page">
     <div class="cc-payment">
         <?php $this->includeTemplate('_partial/paymentPageLogo.php', array('siteLangId' => $siteLangId)); ?>
@@ -24,8 +29,6 @@
 </div>
 <script type="text/javascript">
     $(function() {
-        setTimeout(function() {
-            $('form[name="frmPaytm"]').submit()
-        }, 2000);
+        $('form[name="frmPaytm"]').submit()
     });
 </script>

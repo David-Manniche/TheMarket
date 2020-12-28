@@ -38,17 +38,25 @@ class PaytmPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
         $orderInfo = $orderPaymentObj->getOrderPrimaryinfo();
 
-        if (!$orderInfo['id']) {
-            FatUtility::exitWIthErrorCode(404);
-        } elseif ($orderInfo && $orderInfo["order_payment_status"] == Orders::ORDER_PAYMENT_PENDING) {
-            $frm = $this->getPaymentForm($orderId);
-            $this->set('frm', $frm);
-            $this->set('paymentAmount', $paymentAmount);
-        } else {
-            $this->set('error', Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId));
+        if (!empty($orderInfo) && $orderInfo["order_payment_status"] != Orders::ORDER_PAYMENT_PENDING) {
+            $msg = Labels::getLabel('MSG_INVALID_ORDER_PAID_CANCELLED', $this->siteLangId);
+            $this->setErrorAndRedirect($msg, FatUtility::isAjaxCall());
         }
 
+        $frm = $this->getPaymentForm($orderId);
+        $postOrderId = FatApp::getPostedData('orderId', FatUtility::VAR_STRING, '');
+        $processRequest = false;
+        if (!empty($postOrderId) && $orderId = $postOrderId) {
+            $frm = $this->getPaymentForm($orderId, true);
+            $processRequest = true;
+        }
+
+        $frm->fill(['orderId' => $orderId]);
+        $this->set('frm', $frm);
+        $this->set('processRequest', $processRequest);
+
         $this->set('orderInfo', $orderInfo);
+        $this->set('paymentAmount', $paymentAmount);
         $this->set('exculdeMainHeaderDiv', true);
         if (FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'paytm-pay/charge-ajax.php', true, false);
@@ -142,7 +150,7 @@ class PaytmPayController extends PaymentController
         return json_decode($server_output, true);
     }
 
-    private function getPaymentForm($orderId)
+    private function getPaymentForm(string $orderId, bool $processRequest = false)
     {
         $orderPaymentObj = new OrderPayment($orderId, $this->siteLangId);
         $paymentGatewayCharge = $orderPaymentObj->getOrderPaymentGatewayAmount();
@@ -153,29 +161,37 @@ class PaytmPayController extends PaymentController
         } else {
             $action_url = $this->testEnvironmentUrl . "/process";
         }
+
+        $action_url = false === $processRequest ? UrlHelper::generateUrl(self::KEY_NAME . 'Pay', 'charge', array($orderId)) : $action_url;
+
         $orderPaymentGatewayDescription = sprintf(Labels::getLabel('MSG_Order_Payment_Gateway_Description', $this->siteLangId), $orderInfo["site_system_name"], $orderInfo['invoice']);
 
         $frm = new Form('frmPaytm', array('id' => 'frmPaytm', 'action' => $action_url, 'class' => "form form--normal"));
+        $frm->addHiddenField('', 'orderId');
 
-        $parameters = array(
-            "MID" => $this->settings["merchant_id"],
-            "ORDER_ID" => date("ymdhis") . "_" . $orderId,
-            "CUST_ID" => $orderInfo['customer_id'],
-            "TXN_AMOUNT" => $paymentGatewayCharge,
-            "CHANNEL_ID" => $this->settings['merchant_channel_id'],
-            "INDUSTRY_TYPE_ID" => $this->settings['merchant_industry_type'],
-            "WEBSITE" => $this->settings['merchant_website'],
-            "MOBILE_NO" => $orderInfo['customer_phone'],
-            "EMAIL" => $orderInfo['customer_email'],
-            "CALLBACK_URL" => UrlHelper::generateFullUrl('PaytmPay', 'callback'),
-            "ORDER_DETAILS" => $orderPaymentGatewayDescription,
-        );
+        if (false === $processRequest) {
+            $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
+        } else {
+            $parameters = array(
+                "MID" => $this->settings["merchant_id"],
+                "ORDER_ID" => date("ymdhis") . "_" . $orderId,
+                "CUST_ID" => $orderInfo['customer_id'],
+                "TXN_AMOUNT" => $paymentGatewayCharge,
+                "CHANNEL_ID" => $this->settings['merchant_channel_id'],
+                "INDUSTRY_TYPE_ID" => $this->settings['merchant_industry_type'],
+                "WEBSITE" => $this->settings['merchant_website'],
+                "MOBILE_NO" => $orderInfo['customer_phone'],
+                "EMAIL" => $orderInfo['customer_email'],
+                "CALLBACK_URL" => UrlHelper::generateFullUrl('PaytmPay', 'callback'),
+                "ORDER_DETAILS" => $orderPaymentGatewayDescription,
+            );
 
-        $checkSumHash = getChecksumFromArray($parameters, $this->settings['merchant_key']);
+            $checkSumHash = getChecksumFromArray($parameters, $this->settings['merchant_key']);
 
-        $frm->addHiddenField('', 'CHECKSUMHASH', $checkSumHash);
-        foreach ($parameters as $paramkey => $paramval) {
-            $frm->addHiddenField('', $paramkey, $paramval);
+            $frm->addHiddenField('', 'CHECKSUMHASH', $checkSumHash);
+            foreach ($parameters as $paramkey => $paramval) {
+                $frm->addHiddenField('', $paramkey, $paramval);
+            }
         }
         return $frm;
     }
