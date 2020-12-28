@@ -538,6 +538,7 @@ Enhancements:
     => Enhance discount module added brand and shop discounts    
     ---------------TV-9.2.3.20201121--------------------
     => Labels management seperated in files for better Performance.
+    => Added system log in backgroud for tax modules.
 
 Notes:
     

@@ -14,20 +14,21 @@ class HomeController extends AdminBaseController
 
     public function index()
     {
+        SystemLog::clearOldLog();
         $accountId = false;
         $this->set('configuredAnalytics', false);
         $this->set('objPrivilege', $this->objPrivilege);
 
         $analyticArr = array(
-        'clientId' => FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID", FatUtility::VAR_STRING, ''),
-        'clientSecretKey' => FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY", FatUtility::VAR_STRING, ''),
-        'redirectUri' => UrlHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
-        'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID", FatUtility::VAR_STRING, '')
+            'clientId' => FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID", FatUtility::VAR_STRING, ''),
+            'clientSecretKey' => FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY", FatUtility::VAR_STRING, ''),
+            'redirectUri' => UrlHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
+            'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID", FatUtility::VAR_STRING, '')
         );
 
 
         // simple Caching with:        
-        $dashboardInfoCache = FatCache::get('dashboardInfoCache'.$this->adminLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+        $dashboardInfoCache = FatCache::get('dashboardInfoCache' . $this->adminLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
         //$dashboardInfo = array();
         if (!$dashboardInfoCache) {
             include_once CONF_INSTALLATION_PATH . 'library/analytics/analyticsapi.php';
@@ -109,7 +110,7 @@ class HomeController extends AdminBaseController
                 $signupsChartData[$val["duration"]] = $val["value"];
             }
 
-            $affiliateSignupsData = $statsObj->getDashboardLast12MonthsSummary($this->adminLangId, 'signups', array( 'user_is_affiliate' => 1 ), 6);
+            $affiliateSignupsData = $statsObj->getDashboardLast12MonthsSummary($this->adminLangId, 'signups', array('user_is_affiliate' => 1), 6);
             $affiliateSignupsChartData = array();
             foreach ($affiliateSignupsData as $key => $val) {
                 $affiliateSignupsChartData[$val["duration"]] = $val["value"];
@@ -216,8 +217,10 @@ class HomeController extends AdminBaseController
                 $srch->setPageSize(10);
                 $srch->addOrder('shop_created_on', 'DESC');
                 $srch->addMultipleFields(
-                    array('IFNULL(shop_name, shop_identifier) as shop_name',
-                    'credential_username as shop_owner_username', 'shop_created_on', 'shop_active')
+                    array(
+                        'IFNULL(shop_name, shop_identifier) as shop_name',
+                        'credential_username as shop_owner_username', 'shop_created_on', 'shop_active'
+                    )
                 );
 
                 $rs = $srch->getResultSet();
@@ -231,8 +234,10 @@ class HomeController extends AdminBaseController
                 $cnd = $srch->addCondition('u.user_is_supplier', '=', 1);
                 $cnd->attachCondition('u.user_is_buyer', '=', 1);
                 $srch->addMultipleFields(
-                    array('user_name', 'credential_username', 'credential_email', 'user_phone',
-                    'user_regdate', 'user_is_buyer', 'user_is_supplier')
+                    array(
+                        'user_name', 'credential_username', 'credential_email', 'user_phone',
+                        'user_regdate', 'user_is_buyer', 'user_is_supplier'
+                    )
                 );
                 $srch->setPageNumber(1);
                 $srch->setPageSize(10);
@@ -301,12 +306,12 @@ class HomeController extends AdminBaseController
 
         include_once CONF_INSTALLATION_PATH . 'library/analytics/analyticsapi.php';
         $analyticArr = array(
-        'clientId' => FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID"),
-        'clientSecretKey' => FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY"),
-        'redirectUri' => UrlHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
-        'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID")
+            'clientId' => FatApp::getConfig("CONF_ANALYTICS_CLIENT_ID"),
+            'clientSecretKey' => FatApp::getConfig("CONF_ANALYTICS_SECRET_KEY"),
+            'redirectUri' => UrlHelper::generateFullUrl('configurations', 'redirect', array(), '', false),
+            'googleAnalyticsID' => FatApp::getConfig("CONF_ANALYTICS_ID")
         );
-       
+
         $dashboardInfoCache = FatCache::get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
         //$result = $cache->get("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId);
         if (!$dashboardInfoCache) {
@@ -323,37 +328,37 @@ class HomeController extends AdminBaseController
                     }
                     $accountId = $analytics->setAccountId(FatApp::getConfig("CONF_ANALYTICS_ID"));
                     switch (strtoupper($type)) {
-                    case 'TOP_COUNTRIES':
-                        $result = $analytics->getTopCountries($interval, 9);
+                        case 'TOP_COUNTRIES':
+                            $result = $analytics->getTopCountries($interval, 9);
 
-                        break;
-                    case 'TOP_REFERRERS':
-                        $result = $analytics->getTopReferrers($interval, 9);
-                        break;
-                    case 'TOP_SEARCH_KEYWORD':
-                        //$result=$analytics->getSearchTerm($interval,9);
-                        $statsObj = new Statistics();
-                        $result = $statsObj->getTopSearchKeywords($interval, 10);
-                        break;
-                    case 'TRAFFIC_SOURCE':
-                        $result = $analytics->getTrafficSource($interval);
-                        break;
-                    case 'VISITORS_STATS':
-                        $result = $analytics->getVisitsByDate();
-                        break;
-                    case 'TOP_PRODUCTS':
-                        $statsObj = new Statistics();
-                        $result = $statsObj->getTopProducts($interval, $this->adminLangId, 10);
-                        break;
+                            break;
+                        case 'TOP_REFERRERS':
+                            $result = $analytics->getTopReferrers($interval, 9);
+                            break;
+                        case 'TOP_SEARCH_KEYWORD':
+                            //$result=$analytics->getSearchTerm($interval,9);
+                            $statsObj = new Statistics();
+                            $result = $statsObj->getTopSearchKeywords($interval, 10);
+                            break;
+                        case 'TRAFFIC_SOURCE':
+                            $result = $analytics->getTrafficSource($interval);
+                            break;
+                        case 'VISITORS_STATS':
+                            $result = $analytics->getVisitsByDate();
+                            break;
+                        case 'TOP_PRODUCTS':
+                            $statsObj = new Statistics();
+                            $result = $statsObj->getTopProducts($interval, $this->adminLangId, 10);
+                            break;
                     }
                 } catch (exception $e) {
                     echo $e->getMessage();
                 }
             }
             if (!empty($result)) {
-                FatCache::set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, serialize($result), '.txt');   
+                FatCache::set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, serialize($result), '.txt');
             }
-           // $cache->set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, $result, 6 * 60 * 60);
+            // $cache->set("dashboardInfo_" . $type . '_' . $interval . '_' . $this->adminLangId, $result, 6 * 60 * 60);
         } else {
             $result = unserialize($dashboardInfoCache);
         }
