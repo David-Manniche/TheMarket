@@ -1,114 +1,139 @@
+var selected_products = [];
 $(document).ready(function(){
-    $('.dvFocus-js').hide();
     searchUpsellProducts(document.frmSearch);
     $('#upsell-products').on('click', '.remove_upsell', function() {
         $(this).closest('li').remove();
     });
+    
+    $("select[name='product_name']").select2({
+        closeOnSelect: true,
+        dir: layoutDirection,
+        allowClear: true,
+        placeholder: $("select[name='product_name']").attr('placeholder'),
+        ajax: {
+            url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
+            dataType: 'json',
+            delay: 250,
+            method: 'post',
+            data: function (params) {
+                return {
+                    keyword: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.products,
+                    pagination: {
+                        more: params.page < data.pageCount
+                    }
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 0,
+        templateResult: function (result)
+        {
+            return result.name;
+        },
+        templateSelection: function (result)
+        {
+            return result.name || result.text;
+        }
+    }).on('select2:selecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');        
+        var item  = e.params.args.data;
+        $("#"+parentForm+" input[name='selprod_id']").val(item.id);
+            fcom.ajax(fcom.makeUrl('SellerProducts', 'getUpsellProductsList', [item.id]), '', function(t) {
+                var ans = $.parseJSON(t);
+                $('#upsell-products').empty();
+                for (var key in ans.upsellProducts) {
+                    $("#upsell-products").append(
+                        "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></span></li>"
+                    );
+                }
+        });
+  
+    }).on('select2:unselecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');
+        $("#" + parentForm + " input[name='selprod_id']").val('');
+    });
+    
+    $("select[name='products_upsell']").select2({
+        closeOnSelect: true,
+        dir: layoutDirection,
+        allowClear: true,
+        placeholder: $("select[name='products_upsell']").attr('placeholder'),
+        ajax: {
+            url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
+            dataType: 'json',
+            delay: 250,
+            method: 'post',
+            data: function (params) {
+                var parentForm = $("select[name='products_upsell']").closest('form').attr('id');
+                return {
+                    keyword: params.term, // search term
+                    page: params.page,
+                    fIsAjax: 1,
+                    selProdId: $("#" + parentForm + " input[name='selprod_id']").val(),
+                    selected_products: selected_products
+                };
+            },
+            beforeSend:
+                    function (xhr, opts) {
+                        var parentForm = $("select[name='products_upsell']").closest('form').attr('id');
+                        var selprod_id = $("#" + parentForm + " input[name='selprod_id']").val();
+                        if (1 > selprod_id)
+                        {
+                            xhr.abort();
+                        }
+                        $('input[name="selected_products[]"]').each(function () {
+                            selected_products.push($(this).val());
+                        });
+
+                    },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.products,
+                    pagination: {
+                        more: params.page < data.pageCount
+                    }
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 0,
+        templateResult: function (result)
+        {
+            return  (typeof result.product_identifier === 'undefined' || typeof result.name === 'undefined') ? result.text : result.name + '[' + result.product_identifier + ']';
+        },
+        templateSelection: function (result)
+        {
+            return  (typeof result.product_identifier === 'undefined' || typeof result.name === 'undefined') ? result.text : result.name + '[' + result.product_identifier + ']';
+        }
+    }).on('select2:selecting', function (e)
+    {        
+        var item = e.params.args.data;        
+        $('input[name=\'products_upsell\']').val('');
+        $('#productUpsell' + item.id).remove();
+        $('#upsell-products').append('<li id="productUpsell' + item.id + '"><span> ' + item.name + '[' + item.product_identifier + ']' + '<i class="remove_upsell remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' + item.id + '" /></span></li>');
+        
+        setTimeout(function () {
+            $("select[name='products_upsell']").val('').trigger('change');
+        }, 200);
+
+    });  
+    
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
     $(this).parents('li').addClass("hover");
 });
 $(document).on('mouseout', "ul.list-tags li span i", function(){
     $(this).parents('li').removeClass("hover");
-});
-$(document).on('click', ".dvFocus-js", function(){
-   var input = $("input[name='product_name']");
-    input.show().focus();
-    var tmpStr = input.val();
-    input.val('');
-    input.val(tmpStr);
-    $('.dvFocus-js').hide();
-    $(this).html('');
-});
-$(document).on('keyup', "input[name='product_name']", function(){
-    var currObj = $(this);
-    var parentForm = currObj.closest('form').attr('id');
-    if('' != currObj.val()){
-        currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({
-            'classes': {
-                "ui-autocomplete": "custom-ui-autocomplete"
-            },
-            'source': function(request, response) {
-        		$.ajax({
-        			url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
-        			data: {fIsAjax:1,keyword:currObj.val()},
-        			dataType: 'json',
-        			type: 'post',
-        			success: function(json) {
-        				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['name'], id: item['id'] };
-        				}));
-        			},
-        		});
-        	},
-        	select: function(event, ui) {
-                $("#"+parentForm+" input[name='selprod_id']").val(ui.item.id);
-                fcom.ajax(fcom.makeUrl('SellerProducts', 'getUpsellProductsList', [ui.item.id]), '', function(t) {
-                    var ans = $.parseJSON(t);
-                    $('#upsell-products').empty();
-                    for (var key in ans.upsellProducts) {
-                        $("#upsell-products").append(
-                            "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></span></li>"
-                        );
-                    }
-                });
-                $('.dvFocus-js').html(ui.item.label).show();
-                currObj.hide();
-        	}
-        });
-    }else{
-        $("#"+parentForm+" input[name='selprod_id']").val('');
-    }
-});
-
-$(document).on('keyup', "input[name='products_upsell']", function(){
-    var currObj = $(this);
-    var parentForm = currObj.closest('form').attr('id');
-    var selprod_id = $("#"+parentForm+" input[name='selprod_id']").val();
-    var selected_products = [];
-    $('input[name="selected_products[]"]').each(function() {
-        selected_products.push($(this).val());
-    });
-    if(selprod_id != 0) {
-        currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({
-            'classes': {
-                "ui-autocomplete": "custom-ui-autocomplete"
-            },
-            'source': function(request, response) {
-                $.ajax({
-                    url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
-                    data: {
-                        keyword: request['term'],
-                        fIsAjax: 1,
-                        selProdId: selprod_id,
-                        selected_products: selected_products
-                    },
-                    dataType: 'json',
-                    type: 'post',
-                    success: function(json) {
-                        response($.map(json, function(item) {
-                            return {
-                                label: item['name'] + '[' + item['product_identifier'] + ']',
-                                value: item['name'] + '[' + item['product_identifier'] + ']',
-                                id: item['id']
-                            };
-                        }));
-                    },
-                });
-            },
-            select: function(event, ui) {
-                if(selprod_id == 0){
-                    return;
-                }
-                $('input[name=\'products_upsell\']').val('');
-                $('#productUpsell' + ui.item.id).remove();
-                $('#upsell-products').append('<li id="productUpsell' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_upsell remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' + ui.item.id + '" /></span></li>');
-                return false;
-            }
-        });
-    }
 });
 
 $(document).on('click', 'table.volDiscountList-js tr td .js--editCol', function(){
@@ -243,8 +268,8 @@ $(document).on('blur', ".js--volDiscountCol", function(){
 		fcom.updateWithAjax(fcom.makeUrl('SellerProducts', 'setupUpsellProduct'), data, function(t) {
             document.frmUpsellSellerProduct.reset();
             $("input[name='selprod_id']").val(''); 
-            $('#upsell-products').empty();
-            $(".dvFocus-js").trigger('click');
+            $('#upsell-products').empty();            
+            $(frm).find("select[name='product_name']").trigger('change.select2');
             searchUpsellProducts(document.frmUpsellSellerProduct);
 		});
 	};

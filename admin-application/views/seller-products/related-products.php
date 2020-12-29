@@ -30,8 +30,7 @@
                                 <div class="field-set">
                                     <div class="field-wraper">
                                         <div class="field_cover">
-                                            <?php echo $relProdFrm->getFieldHTML('product_name');?>
-                                            <div class='dvFocus-js form-control focused-div'></div>
+                                            <?php echo $relProdFrm->getFieldHTML('product_name');?>                                            
                                         </div>
                                     </div>
                                 </div>
