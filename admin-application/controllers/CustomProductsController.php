@@ -133,7 +133,7 @@ class CustomProductsController extends AdminBaseController
             $productTags = !(empty($row_data['product_tags'])) ? $row_data['product_tags'] : array();
 
             /*   */
-
+            $customProductFrm = $this->getForm(0, $productData['product_type']);
             $customProductFrm->fill($row_data);
         }
 
@@ -153,8 +153,9 @@ class CustomProductsController extends AdminBaseController
         $product_option = FatApp::getPostedData('product_option');
         $product_tags = FatApp::getPostedData('product_tags');
         $product_shipping = FatApp::getPostedData('product_shipping');
+        $product_type = FatApp::getPostedData('product_type', FatUtility::VAR_INT, Product::PRODUCT_TYPE_PHYSICAL);
 
-        $frm = $this->getForm(0);
+        $frm = $this->getForm(0, $product_type);
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         if (false === $post) {
@@ -1297,9 +1298,9 @@ class CustomProductsController extends AdminBaseController
         return $imgTypesArr;
     }
 
-    private function getForm($attrgrp_id = 0)
+    private function getForm($attrgrp_id = 0, $productType = Product::PRODUCT_TYPE_PHYSICAL)
     {
-        return $this->getProductCatalogForm($attrgrp_id, 'REQUESTED_CATALOG_PRODUCT');
+        return $this->getProductCatalogForm($attrgrp_id, 'REQUESTED_CATALOG_PRODUCT', $productType);
     }
 
     private function getLangForm($preqId, $langId)

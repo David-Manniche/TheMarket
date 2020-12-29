@@ -339,7 +339,7 @@ class AdminBaseController extends FatController
         return $frm;
     }
 
-    protected function getProductCatalogForm($attrgrp_id = 0, $type = 'CUSTOM_PRODUCT')
+    protected function getProductCatalogForm($attrgrp_id = 0, $type = 'CUSTOM_PRODUCT', $productType = Product::PRODUCT_TYPE_PHYSICAL)
     {
         $langId = $this->adminLangId;
         $this->objPrivilege->canViewProducts();
@@ -387,17 +387,21 @@ class AdminBaseController extends FatController
         $taxCategories = Tax::getSaleTaxCatArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Tax_Category', $this->adminLangId), 'ptt_taxcat_id', $taxCategories, '', array(), 'Select')->requirements()->setRequired(true);
 
-        $shipProfileArr = ShippingProfile::getProfileArr(0, true, true);
-        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
+        if (Product::PRODUCT_TYPE_PHYSICAL == $productType) {
+            $shipProfileArr = ShippingProfile::getProfileArr(0, true, true);
+            $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
 
-        if ($type == 'REQUESTED_CATALOG_PRODUCT') {
-            $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId, FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1));
-            $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'product_fulfillment_type', $fulFillmentArr, applicationConstants::NO, [])->requirements()->setRequired();
+            if ($type == 'REQUESTED_CATALOG_PRODUCT') {
+                $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId, FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1));
+                $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'product_fulfillment_type', $fulFillmentArr, applicationConstants::NO, [])->requirements()->setRequired();
+            }
         }
 
         if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
-            $shipPackArr = ShippingPackage::getAllNames();
-            $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
+            if (Product::PRODUCT_TYPE_PHYSICAL == $productType) {
+                $shipPackArr = ShippingPackage::getAllNames();
+                $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
+            }
 
             /* weight unit[ */
             $weightUnitsArr = applicationConstants::getWeightUnitsArr($langId);

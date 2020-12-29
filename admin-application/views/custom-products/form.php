@@ -12,7 +12,7 @@ $optionFld->setWrapperAttribute('class', 'ui-front');
 $tagFld = $customProductFrm->getField('tag_name');
 $tagFld->setWrapperAttribute('class', 'ui-front');
 
-if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {    
+if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
 
     $weightFld = $customProductFrm->getField('product_weight');
     $weightFld->setWrapperAttribute('class', 'product_weight_fld');
@@ -31,7 +31,7 @@ $shippingCountryFld->setWrapperAttribute('class', 'not-digital-js ui-front');
 
 $shippFreeFld = $customProductFrm->getField('ps_free');
 $shippFreeFld->setWrapperAttribute('class', 'not-digital-js'); */
-    
+
 /* $productEanUpcFld = $customProductFrm->getField('product_upc');
 $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.value)'); */
 /* if($product_added_by_admin == 1 && $totalProducts >0 ){
@@ -40,8 +40,8 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
 } */
 ?>
 <script>
-    var PRODUCT_TYPE_PHYSICAL = <?php echo Product::PRODUCT_TYPE_PHYSICAL; ?> ;
-    var PRODUCT_TYPE_DIGITAL = <?php echo Product::PRODUCT_TYPE_DIGITAL; ?> ;
+    var PRODUCT_TYPE_PHYSICAL = <?php echo Product::PRODUCT_TYPE_PHYSICAL; ?>;
+    var PRODUCT_TYPE_DIGITAL = <?php echo Product::PRODUCT_TYPE_DIGITAL; ?>;
 
     function showHideExtraFields() {
         var e = document.getElementById("product_type");
@@ -77,8 +77,7 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
             <div class="col-sm-12">
                 <div class="tabs_nav_container responsive flat">
                     <ul class="tabs_nav">
-                        <li><a class="active" <?php echo ($preqId) ? "onClick='productForm( " . $preqId . ", 0 );'" : ""; ?>
-                                href="javascript:void(0);">
+                        <li><a class="active" <?php echo ($preqId) ? "onClick='productForm( " . $preqId . ", 0 );'" : ""; ?> href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_General', $adminLangId); ?>
                             </a>
                         </li>
@@ -89,9 +88,8 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                             </a>
                         </li> */ ?>
                         <li>
-                            <a <?php echo (0 < $preqId) ? "onclick='customCatalogSpecifications( " . $preqId . " );'" : ""; ?>
-                                href="javascript:void(0);">
-                                <?php echo Labels::getLabel('LBL_Specifications', $adminLangId);?>
+                            <a <?php echo (0 < $preqId) ? "onclick='customCatalogSpecifications( " . $preqId . " );'" : ""; ?> href="javascript:void(0);">
+                                <?php echo Labels::getLabel('LBL_Specifications', $adminLangId); ?>
                             </a>
                         </li>
                         <li class="<?php echo (0 == $preqId) ? 'fat-inactive' : ''; ?>">
@@ -100,14 +98,12 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
                             </a>
                         </li>
                         <?php if (count($productOptions) > 0) { ?>
-                            <li><a <?php echo ($preqId) ? "onClick='customEanUpcForm(" . $preqId . ");'" : ""; ?>
-                                    href="javascript:void(0);">
+                            <li><a <?php echo ($preqId) ? "onClick='customEanUpcForm(" . $preqId . ");'" : ""; ?> href="javascript:void(0);">
                                     <?php echo Labels::getLabel('LBL_EAN/UPC_setup', $adminLangId); ?></a>
                             </li>
-                        <?php }?>
+                        <?php } ?>
                         <li>
-                            <a <?php echo ($preqId) ? "onClick='updateStatusForm( " . $preqId . ");'" : ""; ?>
-                                href="javascript:void(0);">
+                            <a <?php echo ($preqId) ? "onClick='updateStatusForm( " . $preqId . ");'" : ""; ?> href="javascript:void(0);">
                                 <?php echo Labels::getLabel('LBL_Change_Status', $adminLangId); ?>
                             </a>
                         </li>
@@ -233,10 +229,10 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
         });
 
         var options = new Array();
-        <?php  if (!empty($productOptions)) {
+        <?php if (!empty($productOptions)) {
             foreach ($productOptions as $key => $val) { ?>
                 options.push('<?php echo $val; ?>');
-            <?php }
+        <?php }
         } ?>
         var data = {
             'options': options
@@ -283,11 +279,11 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
         });
 
         var tags = new Array();
-        <?php 
+        <?php
         if (!empty($productTags)) {
             foreach ($productTags as $key => $val) { ?>
                 tags.push('<?php echo $val; ?>');
-            <?php }
+        <?php }
         } ?>
         var data = {
             'tags': tags
@@ -297,8 +293,8 @@ $productEanUpcFld->addFieldTagAttribute( 'onBlur', 'validateEanUpcCode(this.valu
         });
     });
 
-    var prodTypeDigital = <?php echo Product::PRODUCT_TYPE_DIGITAL;?> ;
-    var productId = <?php echo $preqId;?> ;
+    var prodTypeDigital = <?php echo Product::PRODUCT_TYPE_DIGITAL; ?>;
+    var productId = <?php echo $preqId; ?>;
 
     var productOptions = [];
     var dv = $("#listing");
