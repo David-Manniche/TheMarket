@@ -34,6 +34,8 @@ class ShopsController extends AdminBaseController
         $this->_template->addJs('js/cropper-main.js');
         $this->set("includeEditor", true);
         $this->set("frmSearch", $frmSearch);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('css/select2.min.css'));
         $this->_template->render();
     }
 
@@ -1209,8 +1211,8 @@ class ShopsController extends AdminBaseController
     private function getCollectionLinksFrm()
     {
         $frm = new Form('frmLinks1', array('id' => 'frmLinks1'));
-
-        $frm->addTextBox(Labels::getLabel('LBL_COLLECTION', $this->adminLangId), 'scp_selprod_id', '', array('id' => 'scp_selprod_id'));
+        $frm->addSelectBox(Labels::getLabel('LBL_COLLECTION', $this->adminLangId), 'scp_selprod_id', [], '', array('id' => 'scp_selprod_id'));
+        //$frm->addTextBox(Labels::getLabel('LBL_COLLECTION', $this->adminLangId), 'scp_selprod_id', '', array('id' => 'scp_selprod_id'));
 
         $frm->addHtml('', 'buy_together', '<div id="selprod-products"class="box--scroller"><ul class="links--vertical"></ul></div>');
         $frm->addHiddenField('', 'scp_scollection_id');
@@ -1247,8 +1249,12 @@ class ShopsController extends AdminBaseController
 
     public function autoCompleteProducts()
     {
-        $pagesize = 10;
+        $pagesize = 20;
         $post = FatApp::getPostedData();
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        if ($page < 2) {
+            $page = 1;
+        }
         $shopDetails = Shop::getAttributesById($post['shopId'], array('shop_user_id'));
         $srch = SellerProduct::getSearchObject($this->adminLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
@@ -1268,7 +1274,8 @@ class ShopsController extends AdminBaseController
                 'selprod_id as id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'credential_username'
             )
         );
-
+        $srch->setPageNumber($page);
+        $srch->setPageSize($pagesize);
         $srch->addOrder('selprod_active', 'DESC');
         $db = FatApp::getDb();
         $rs = $srch->getResultSet();
@@ -1277,6 +1284,7 @@ class ShopsController extends AdminBaseController
         if ($rs) {
             $products = $db->fetchAll($rs, 'id');
         }
+        $pageCount = $srch->pages();
         $json = array();
         foreach ($products as $key => $option) {
             $options = SellerProduct::getSellerProductOptions($key, true, $this->adminLangId);
@@ -1294,7 +1302,7 @@ class ShopsController extends AdminBaseController
                 'product_identifier' => strip_tags(html_entity_decode($option['product_identifier'], ENT_QUOTES, 'UTF-8'))
             );
         }
-        die(json_encode($json));
+        die(json_encode(['pageCount' => $pageCount, 'products' => $json]));
     }
     /*  - --- ] ----- */
 

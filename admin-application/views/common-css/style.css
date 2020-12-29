@@ -12084,3 +12084,5 @@ form[name="frmShippingProfile"] {
     fill: currentColor;
     margin-right: 5px;
 }
+
+.ui-autocomplete{ overflow-y:  auto; max-height: 350px;}

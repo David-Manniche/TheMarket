@@ -79,7 +79,10 @@ class HomeController extends MyAppController
         }
 
         $this->_template->addJs('js/slick.min.js');
-        $cacheKey = $this->siteLangId . '-' . $this->siteCurrencyId;
+        $apiCall = (true === MOBILE_APP_API_CALL) ? 1 : 0;
+        $geoAddress = Address::getYkGeoData();
+        $cacheKey = $this->siteLangId . '-' . $this->siteCurrencyId . '-' . $apiCall . '-' . serialize($geoAddress);
+
         $collectionTemplates = array();
         foreach ($collections as $collection) {
             switch ($collection['collection_layout_type']) {
@@ -583,7 +586,7 @@ class HomeController extends MyAppController
                     $banners = BannerLocation::getPromotionalBanners($collection_id, $langId);
                     if (true === MOBILE_APP_API_CALL) {
                         $collections[$i] = $collection;
-                        $collections[$i]['banners'] = is_array($banners) && 0 < count($banners) ? $banners : (object)[];
+                        $collections[$i]['banners'] = is_array($banners) && 0 < count($banners) ? $banners : (object) [];
                     } else {
                         $collections[$collection['collection_id']] = $collection;
                         $collections[$collection['collection_id']]['banners'] = $banners;
