@@ -4,7 +4,62 @@ $(document).ready(function(){
     $('#upsell-products').delegate('.remove_upsell', 'click', function() {
         $(this).parent().remove();
     });
-    $("input[name='product_name']").trigger('click');
+    $("select[name='product_name']").select2({
+        closeOnSelect: true,
+        dir: layoutDirection,
+        allowClear: true,
+        placeholder: $("select[name='product_name']").attr('placeholder'),
+        ajax: {
+            url: fcom.makeUrl('SellerProducts', 'autoCompleteProducts'),
+            dataType: 'json',
+            delay: 250,
+            method: 'post',
+            data: function (params) {
+                return {
+                    keyword: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.products,
+                    pagination: {
+                        more: params.page < data.pageCount
+                    }
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 0,
+        templateResult: function (result)
+        {
+            return result.name;
+        },
+        templateSelection: function (result)
+        {
+            return result.name || result.text;
+        }
+    }).on('select2:selecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');        
+        var item  = e.params.args.data;
+        $("#"+parentForm+" input[name='selprod_id']").val(item.id);
+            fcom.ajax(fcom.makeUrl('SellerProducts', 'getUpsellProductsList', [item.id]), '', function(t) {
+                var ans = $.parseJSON(t);
+                $('#upsell-products').empty();
+                for (var key in ans.upsellProducts) {
+                    $("#upsell-products").append(
+                        "<li id=productUpsell"+ans.upsellProducts[key]['selprod_id']+"><span>"+ans.upsellProducts[key]['selprod_title']+" ["+ans.upsellProducts[key]['product_identifier']+"]<i class=\"remove_upsell remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.upsellProducts[key]['selprod_id']+" /></span></li>"
+                    );
+                }
+        });
+  
+    }).on('select2:unselecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');
+        $("#" + parentForm + " input[name='selprod_id']").val('');
+    });
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
     $(this).parents('li').addClass("hover");

@@ -4870,6 +4870,8 @@ class SellerController extends SellerBaseController
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('custom/page-css/select2.min.css'));
         $this->_template->render();
     }
 

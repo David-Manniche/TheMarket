@@ -1,36 +1,57 @@
 $(document).ready(function(){
     searchVolumeDiscountProducts(document.frmSearch);
-});
-$(document).on('keyup', "input[name='product_name']", function(){
-    var currObj = $(this);
-    var parentForm = currObj.closest('form').attr('id');
-    if('' != currObj.val()){
-        currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({'source': function(request, response) {
-        		$.ajax({
-        			url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
-        			data: {fIsAjax:1,keyword:currObj.val()},
-        			dataType: 'json',
-        			type: 'post',
-        			success: function(json) {
-        				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['name'], id: item['id'] };
-        				}));
-        			},
-        		});
-        	},
-        	select: function (event, ui) {
-                $("#"+parentForm+" input[name='voldiscount_selprod_id']").val(ui.item.id);
-                currObj.val( ui.item.label );
-                $("input[name='voldiscount_min_qty']").removeAttr('disabled');
-                $("input[name='voldiscount_percentage']").removeAttr('disabled');
-        	}
-        });
-    }else{
+        $("select[name='product_name']").select2({
+        closeOnSelect: true,
+        dir: langLbl.layoutDirection,
+        allowClear: true,
+        placeholder: $("select[name='product_name']").attr('placeholder'),
+        ajax: {
+            url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
+            dataType: 'json',
+            delay: 250,
+            method: 'post',
+            data: function (params) {
+                return {
+                    keyword: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.products,
+                    pagination: {
+                        more: params.page < data.pageCount
+                    }
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 0,
+        templateResult: function (result)
+        {
+            return result.name;
+        },
+        templateSelection: function (result)
+        {
+            return result.name || result.text;
+        }
+    }).on('select2:selecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');
+        var item = e.params.args.data;
+        $("#"+parentForm+" input[name='voldiscount_selprod_id']").val(item.id);      
+        $("input[name='voldiscount_min_qty']").removeAttr('disabled');
+        $("input[name='voldiscount_percentage']").removeAttr('disabled');
+
+    }).on('select2:unselecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');
         $("#"+parentForm+" input[name='voldiscount_selprod_id']").val('');
         $("input[name='voldiscount_min_qty']").attr('disabled', 'disabled').val('');
         $("input[name='voldiscount_percentage']").attr('disabled', 'disabled').val('');
-    }
+    });
+    
 });
 
 $(document).on('blur', ".js-voldiscount_min_qty", function(){
@@ -168,6 +189,7 @@ $(document).on('blur', ".js--volDiscountCol", function(){
                 if (0 < $('.noResult--js').length) {
                     $('.noResult--js').remove();
                 }
+                $(frm).find("select[name='product_name']").trigger('change.select2');
             }
 			$(document).trigger('close.facebox');
             if (0 < frm.addMultiple.value) {

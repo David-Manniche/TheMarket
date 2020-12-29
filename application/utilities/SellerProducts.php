@@ -1985,8 +1985,12 @@ trait SellerProducts
 
     public function autoCompleteProducts()
     {
-        $pagesize = FatApp::getConfig('CONF_PAGE_SIZE', FatUtility::VAR_INT, 10);
-        $post = FatApp::getPostedData();
+        $pagesize = 20;
+        $post = FatApp::getPostedData();        
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        if ($page < 2) {
+            $page = 1;
+        }
         $srch = SellerProduct::getSearchObject($this->siteLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->siteLangId, 'p_l');
@@ -2019,11 +2023,13 @@ trait SellerProducts
             )
         );
         $srch->setPageSize($pagesize);
+        $srch->setPageNumber($page);
         $srch->addOrder('selprod_active', 'DESC');
         $db = FatApp::getDb();
         $rs = $srch->getResultSet();
         $products = $db->fetchAll($rs, 'id');
         $arrListing = $db->fetchAll($rs);
+        $pageCount = $srch->pages();
 
         $json = array();
         foreach ($products as $key => $option) {
@@ -2040,8 +2046,7 @@ trait SellerProducts
                 'price' => $option['selprod_price']
             );
         }
-        die(json_encode($json));
-        // return  $arrListing;
+        die(json_encode(['pageCount' => $pageCount, 'products' => $json]));
     }
 
     public function setupSellerProductLinks()
@@ -2652,6 +2657,8 @@ trait SellerProducts
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('custom/page-css/select2.min.css'));
         $this->_template->render();
     }
 
@@ -2973,9 +2980,10 @@ trait SellerProducts
         $frm = new Form('frmUpsellSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
-        $prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
-        $prodName->requirements()->setRequired();
-        $fld1 = $frm->addTextBox('', 'products_upsell');
+        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
+        //$prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
+        $prodName->requirements()->setRequired();        
+        $fld1 = $frm->addSelectBox(Labels::getLabel('LBL_Buy_Together_Products', $this->siteLangId), 'products_upsell', [], '');
         // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="upsell-products"></ul></div></div>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->siteLangId));
         return $frm;
@@ -3030,6 +3038,8 @@ trait SellerProducts
         $this->set("frmSearch", $srchFrm);
         $this->set("relProdFrm", $relProdFrm);
         $this->set("selProd_id", $selProd_id);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('custom/page-css/select2.min.css'));
         $this->_template->render();
     }
 
