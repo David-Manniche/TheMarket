@@ -2555,7 +2555,7 @@ class SellerProductsController extends AdminBaseController
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
         
-        $this->_template->addJs(array('js/select2.min.js'));
+        $this->_template->addJs(array('js/select2.js'));
         $this->_template->addCss(array('css/select2.min.css'));      
         
         $this->_template->render();
@@ -2604,6 +2604,8 @@ class SellerProductsController extends AdminBaseController
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('css/select2.min.css'));
         $this->_template->render();
     }
 
@@ -2929,7 +2931,7 @@ class SellerProductsController extends AdminBaseController
         $this->set("frmSearch", $srchFrm);
         $this->set("relProdFrm", $relProdFrm);
         $this->set("selProd_id", $selProd_id);
-        $this->_template->addJs(array('js/select2.min.js'));
+        $this->_template->addJs(array('js/select2.js'));
         $this->_template->addCss(array('css/select2.min.css'));
         $this->_template->render();
     }
@@ -3055,9 +3057,11 @@ class SellerProductsController extends AdminBaseController
         $frm = new Form('frmUpsellSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
-        $prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
+        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
+        //$prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
         $prodName->requirements()->setRequired();
-        $fld1 = $frm->addTextBox('', 'products_upsell');
+        //$fld1 = $frm->addTextBox('', 'products_upsell');
+        $fld1 = $frm->addSelectBox(Labels::getLabel('LBL_Buy_Together_Products', $this->adminLangId), 'products_upsell', [], '');
         // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="upsell-products"></ul></div></div>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->adminLangId));
         return $frm;
@@ -3110,6 +3114,8 @@ class SellerProductsController extends AdminBaseController
         $this->set("frmSearch", $srchFrm);
         $this->set("relProdFrm", $relProdFrm);
         $this->set("selProd_id", $selProd_id);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('css/select2.min.css'));
         $this->_template->render();
     }
 

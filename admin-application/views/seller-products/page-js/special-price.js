@@ -29,14 +29,6 @@ $(document).ready(function () {
             },
             cache: true
         },
-        language: {
-            loadingMore: function () {
-                return langLbl.processing;
-            },
-            noResults: function () {
-                return langLbl.noRecordFound;
-            },
-        },
         minimumInputLength: 0,
         templateResult: function (result)
         {
