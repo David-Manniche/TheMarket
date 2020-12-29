@@ -408,6 +408,41 @@ class PatchUpdateController extends AdminBaseController
         // ALTER TABLE tbl_affiliate_commission_settings MODIFY COLUMN afcommsetting_fees decimal(12,4)
     }
 
+    public function setKitData()
+    {
+        $confKeys = [
+            'CONF_ENABLE_GEO_LOCATION' => 0,
+            'CONF_ENABLE_SELLER_SUBSCRIPTION_MODULE' => 0,
+            'CONF_SITE_TRACKER_CODE' => '',
+            'CONF_TWITTER_USERNAME' => '',
+            'CONF_SITE_ROBOTS_TXT' => '',
+            'CONF_GOOGLE_PUSH_NOTIFICATION_API_KEY' => '',
+            'CONF_FACEBOOK_PIXEL_ID' => '',
+            'CONF_ENGAGESPOT_API_KEY' => '',
+            'CONF_ENGAGESPOT_PUSH_NOTIFICATION_CODE' => '',
+            'CONF_GOOGLEMAP_API_KEY' => '',
+            'CONF_MAILCHIMP_KEY' => '',
+            'CONF_MAILCHIMP_LIST_ID' => '',
+            'CONF_ANALYTICS_ID' => '',
+            'CONF_ANALYTICS_SECRET_KEY' => '',
+            'CONF_ANALYTICS_CLIENT_ID' => '',
+            'CONF_RECAPTCHA_SECRETKEY' => '',
+            'CONF_RECAPTCHA_SITEKEY' => '',
+            'CONF_TRANSLATOR_SUBSCRIPTION_KEY' => '',
+            'CONF_USE_SSL' => 0,
+        ];
+        foreach ($confKeys as $key => $val) {
+            FatApp::getDb()->query("UPDATE `tbl_configurations` SET `conf_val` = '" . $val . "' WHERE `tbl_configurations`.`conf_name` = '" . $key . "'");
+        }
+        FatApp::getDb()->query("TRUNCATE tbl_plugin_settings");
+        FatApp::getDb()->query("UPDATE tbl_plugins SET plugin_active = 0 where plugin_code not in ('CashOnDelivery','PayAtStore')");
+        FatApp::getDb()->query("INSERT INTO `tbl_plugin_settings` (`pluginsetting_plugin_id`, `pluginsetting_key`, `pluginsetting_value`) VALUES (21, 'otp_verification', '0'), (37, 'otp_verification', '0')");
+        FatApp::getDb()->query("TRUNCATE tbl_commission_settings");
+        FatApp::getDb()->query("TRUNCATE tbl_commission_setting_history");
+        FatApp::getDb()->query("INSERT INTO `tbl_commission_settings` (`commsetting_id`, `commsetting_product_id`, `commsetting_user_id`, `commsetting_prodcat_id`, `commsetting_fees`, `commsetting_is_mandatory`, `commsetting_deleted`, `commsetting_by_package`) VALUES (NULL, '', '', '', '2', '1', '', '0')");
+        echo "Done";
+    }
+
     public function truncateTables($type = 'orders')
     {
         if ($type == 'orders') {
