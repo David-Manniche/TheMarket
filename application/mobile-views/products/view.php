@@ -181,7 +181,7 @@ if (!empty($product['moreSellersArr']) && 0 < count($product['moreSellersArr']))
 }
 
 $productDetailPageBanner = [];
-if (isset($banners) && $banners['blocation_active'] && count($banners['banners'])) {
+if (!empty($banners) && $banners['blocation_active'] && count($banners['banners'])) {
     foreach ($banners['banners'] as &$val) {
         $bannerImageUrl = '';
         if (!AttachedFile::getMultipleAttachments(AttachedFile::FILETYPE_BANNER, $val['banner_id'], 0, $siteLangId)) {
