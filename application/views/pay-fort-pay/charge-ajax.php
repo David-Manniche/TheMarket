@@ -5,7 +5,7 @@ $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
 $frm->setFormTagAttribute('id', 'paymentForm-js');
 
 $btn = $frm->getField('btn_submit');
-$btn->addFieldTagAttribute('class', 'btn btn-brand');
+$btn->addFieldTagAttribute('class', 'btn btn-secondary');
 $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
 $cancelBtn = $frm->getField('btn_cancel');
 $cancelBtn->setWrapperAttribute('class', 'd-none'); // Not Required On ajax page

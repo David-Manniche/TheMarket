@@ -42,6 +42,7 @@ class PaystackPayController extends PaymentController
         if (false === $this->plugin->init($this->userId)) {
             $this->setErrorAndRedirect($this->plugin->getError(), FatUtility::isAjaxCall());
         }
+        $this->settings = $this->plugin->getSettings();        
         $this->secretKey = Plugin::ENV_PRODUCTION == $this->settings['env'] ? $this->settings['live_secret_key'] : $this->settings['secret_key'];
         $this->publicKey = Plugin::ENV_PRODUCTION == $this->settings['env'] ? $this->settings['live_public_key'] : $this->settings['public_key'];
     }
@@ -99,7 +100,7 @@ class PaystackPayController extends PaymentController
 
         $this->set('cancelBtnUrl', $cancelBtnUrl);
         if (FatUtility::isAjaxCall()) {
-            $json['html'] = $this->_template->render(false, false, 'pay-stack-pay/charge-ajax.php', true, false);
+            $json['html'] = $this->_template->render(false, false, 'paystack-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
         }
         $this->_template->render(true, false);

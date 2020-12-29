@@ -127,6 +127,7 @@ class RazorpayPayController extends PaymentController
 
         $frm->addHiddenField('', 'razorpay_payment_id', '', array('id' => 'razorpay_payment_id'));
         $frm->addHiddenField('', 'merchant_order_id', $orderId, array('id' => 'merchant_order_id'));
+        $frm->addButton('', 'btn_submit', Labels::getLabel('LBL_CONFIRM', $this->siteLangId));
         return $frm;
     }
 

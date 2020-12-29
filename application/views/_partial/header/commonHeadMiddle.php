@@ -22,15 +22,19 @@ if ($canonicalUrl == '') {
 <link rel="canonical" href="<?php echo $canonicalUrl; ?>" />
 <style>
     :root {
-        --brand-color: #<?php echo $themeDetail[ThemeColor::TYPE_BRAND]; ?>;
-        --brand-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_BRAND_INVERSE]; ?>;
-
+        <?php if (CommonHelper::isAppUser()) { ?>
+            --brand-color: #<?php echo FatApp::getConfig('CONF_PRIMARY_APP_THEME_COLOR', FatUtility::VAR_STRING, ''); ?>;
+            --brand-color-inverse: #<?php echo FatApp::getConfig('CONF_PRIMARY_INVERSE_APP_THEME_COLOR', FatUtility::VAR_STRING, ''); ?>;   
+            --secondary-color: #<?php echo FatApp::getConfig('CONF_SECONDARY_APP_THEME_COLOR', FatUtility::VAR_STRING, ''); ?>;
+            --secondary-color-inverse: #<?php echo FatApp::getConfig('CONF_SECONDARY_INVERSE_APP_THEME_COLOR', FatUtility::VAR_STRING, ''); ?>;
+        <?php } else { ?>
+            --brand-color: #<?php echo $themeDetail[ThemeColor::TYPE_BRAND]; ?>;
+            --brand-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_BRAND_INVERSE]; ?>;
+            --secondary-color: #<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY]; ?>;
+            --secondary-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY_INVERSE]; ?>;
+        <?php } ?>
         --primary-color: #<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY]; ?>;
         --primary-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_PRIMARY_INVERSE]; ?>;
-
-        --secondary-color: #<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY]; ?>;
-        --secondary-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_SECONDARY_INVERSE]; ?>;
-
         --third-color: #<?php echo $themeDetail[ThemeColor::TYPE_THIRD]; ?>;
         --third-color-inverse: #<?php echo $themeDetail[ThemeColor::TYPE_THIRD_INVERSE]; ?>;
 

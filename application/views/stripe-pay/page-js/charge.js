@@ -2,6 +2,7 @@
     sendPayment = function (frm, dv = '') {
         var data = fcom.frmData(frm);
         var action = $(frm).attr('action');
+        data +='&chargeAjax=0';       
         fcom.ajax(action, data, function (t) {
             // debugger;
             try {

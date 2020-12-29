@@ -41,10 +41,15 @@ class TransferBankPayController extends PaymentController
         $this->set('orderInfo', $orderInfo);
         $this->set('exculdeMainHeaderDiv', true);
         $this->set('settings', $this->settings);
+        $cancelBtnUrl = CommonHelper::getPaymentCancelPageUrl();
+        if ($orderInfo['order_type'] == Orders::ORDER_WALLET_RECHARGE) {
+            $cancelBtnUrl = CommonHelper::getPaymentFailurePageUrl();
+        }
+        $this->set('cancelBtnUrl', $cancelBtnUrl);
         if (FatUtility::isAjaxCall()) {
             $json['html'] = $this->_template->render(false, false, 'transfer-bank-pay/charge-ajax.php', true, false);
             FatUtility::dieJsonSuccess($json);
-        }
+        }       
         $this->_template->render(true, false);
     }
 

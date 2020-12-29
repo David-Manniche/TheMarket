@@ -36834,11 +36834,6 @@ body {
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%); }
 
-.logo-payment {
-  max-width: 200px;
-  text-align: center;
-  margin: 25px auto; }
-
 .logo-payment img, .logo-payment .post .post_media iframe, .post .post_media .logo-payment iframe, .logo-payment .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .logo-payment img, .logo-payment .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .logo-payment img,
 .logo-payment svg {
   margin: 0 auto;
@@ -36907,11 +36902,6 @@ body {
   border: solid 1px #dee2e6;
   border-radius: 4px; }
 
-.form--payment {
-  background: #fff;
-  border-radius: 4px;
-  border: solid 1px #dee2e6; }
-
 .make-payment-wrapper {
   border: 1px solid #ddd;
   padding: 30px 50px; }
@@ -36953,6 +36943,217 @@ body {
     content: "";
     cursor: not-allowed; }
 
+.payable-amount {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  flex: 1; }
+  .payable-amount .logo-payment {
+    max-width: 150px;
+    max-height: 100px; }
+
+.payable-amount--header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%; }
+
+.payable-amount__body {
+  flex: 1;
+  overflow: auto;
+  background: #fff;
+  padding: 40px 25px 25px 25px; }
+  @media (max-width: 767.98px) {
+    .payable-amount__body {
+      padding: 30px 20px 20px 20px; } }
+
+.payable-amount__head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+  background: var(--brand-color);
+  color: var(--brand-color-inverse); }
+
+.payable-amount--decription {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 1rem;
+  padding-bottom: 1rem; }
+
+.payable-amount--decription h2 {
+  font-weight: 900;
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem; }
+
+.payable-amount--decription p {
+  font-size: 1rem;
+  font-weight: 500; }
+
+.payable-amount--header a {
+  display: none; }
+
+.form--payment .caption-wraper .field_label {
+  font-size: .9rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin: 0;
+  display: block;
+  color: #2e384d; }
+  @media (max-width: 767.98px) {
+    .form--payment .caption-wraper .field_label {
+      font-size: 1rem; } }
+
+.form--payment .field-set {
+  margin-bottom: 35px; }
+
+.form--payment .field_cover input, .form--payment .field_cover .form select, .form .form--payment .field_cover select, .form--payment .field_cover .form .custom-select, .form .form--payment .field_cover .custom-select, .form--payment .field_cover .form textarea, .form .form--payment .field_cover textarea {
+  width: 100%;
+  border-bottom: 1px solid #707070;
+  box-shadow: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  height: 2rem;
+  border-radius: 0;
+  padding: 0;
+  font-size: 16px;
+  outline: none; }
+  @media (max-width: 767.98px) {
+    .form--payment .field_cover input, .form--payment .field_cover .form select, .form .form--payment .field_cover select, .form--payment .field_cover .form .custom-select, .form .form--payment .field_cover .custom-select, .form--payment .field_cover .form textarea, .form .form--payment .field_cover textarea {
+      font-size: .9rem; } }
+  .form--payment .field_cover input:focus, .form--payment .field_cover .form select:focus, .form .form--payment .field_cover select:focus, .form--payment .field_cover .form .custom-select:focus, .form .form--payment .field_cover .custom-select:focus, .form--payment .field_cover .form textarea:focus, .form .form--payment .field_cover textarea:focus {
+    outline: none; }
+
+.form--payment .field_cover input:focus, .form--payment .field_cover .form select:focus, .form .form--payment .field_cover select:focus, .form--payment .field_cover .form .custom-select:focus, .form .form--payment .field_cover .custom-select:focus, .form--payment .field_cover .form textarea:focus, .form .form--payment .field_cover textarea:focus,
+.form--payment .field_cover select:focus,
+.form--payment .field_cover .custom-select:focus {
+  outline: none; }
+
+.form--payment .field_cover select, .form--payment .field_cover .custom-select {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #707070;
+  box-shadow: none;
+  height: 2rem;
+  cursor: pointer;
+  padding: 0;
+  font-size: 16px;
+  padding-right: 35px;
+  background-image: url(../../images/select-arrow-2.png);
+  background-size: 17px 6px;
+  background-repeat: no-repeat;
+  background-position: center right;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0px;
+  outline: none; }
+  @media (max-width: 767.98px) {
+    .form--payment .field_cover select, .form--payment .field_cover .custom-select {
+      font-size: .9rem; } }
+  .form--payment .field_cover select:focus, .form--payment .field_cover .custom-select:focus {
+    outline: none; }
+
+.payment-section {
+  background: #f1f1f1;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  height: 100vh; }
+
+.payable-form__footer {
+  background-color: #fff; }
+  .payable-form__footer input.btn-secondary, .payable-form__footer .form select.btn-secondary, .form .payable-form__footer select.btn-secondary, .payable-form__footer .form .btn-secondary.custom-select, .form .payable-form__footer .btn-secondary.custom-select, .payable-form__footer .form textarea.btn-secondary, .form .payable-form__footer textarea.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--secondary-color-inverse);
+    text-align: center;
+    border: none;
+    cursor: pointer; }
+    .payable-form__footer input.btn-secondary:focus, .payable-form__footer .form select.btn-secondary:focus, .form .payable-form__footer select.btn-secondary:focus, .payable-form__footer .form .btn-secondary.custom-select:focus, .form .payable-form__footer .btn-secondary.custom-select:focus, .payable-form__footer .form textarea.btn-secondary:focus, .form .payable-form__footer textarea.btn-secondary:focus {
+      outline: none; }
+  .payable-form__footer input.btn-primary, .payable-form__footer .form select.btn-primary, .form .payable-form__footer select.btn-primary, .payable-form__footer .form .btn-primary.custom-select, .form .payable-form__footer .btn-primary.custom-select, .payable-form__footer .form textarea.btn-primary, .form .payable-form__footer textarea.btn-primary {
+    background: var(--primary-color);
+    color: var(--primary-color-inverse);
+    text-align: center;
+    border: none;
+    cursor: pointer; }
+    .payable-form__footer input.btn-primary:focus, .payable-form__footer .form select.btn-primary:focus, .form .payable-form__footer select.btn-primary:focus, .payable-form__footer .form .btn-primary.custom-select:focus, .form .payable-form__footer .btn-primary.custom-select:focus, .payable-form__footer .form textarea.btn-primary:focus, .form .payable-form__footer textarea.btn-primary:focus {
+      outline: none; }
+  .payable-form__footer .btn {
+    width: 100%;
+    height: 50px;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: normal;
+    padding: 10px 20px;
+    outline: none; }
+    .payable-form__footer .btn.btn-outline-gray {
+      color: #868686; }
+
+.payment-area input.btn-secondary, .payment-area .form select.btn-secondary, .form .payment-area select.btn-secondary, .payment-area .form .btn-secondary.custom-select, .form .payment-area .btn-secondary.custom-select, .payment-area .form textarea.btn-secondary, .form .payment-area textarea.btn-secondary {
+  background: var(--secondary-color);
+  color: var(--secondary-color-inverse); }
+  .payment-area input.btn-secondary:focus, .payment-area .form select.btn-secondary:focus, .form .payment-area select.btn-secondary:focus, .payment-area .form .btn-secondary.custom-select:focus, .form .payment-area .btn-secondary.custom-select:focus, .payment-area .form textarea.btn-secondary:focus, .form .payment-area textarea.btn-secondary:focus {
+    outline: none; }
+.payment-area input.btn-primary, .payment-area .form select.btn-primary, .form .payment-area select.btn-primary, .payment-area .form .btn-primary.custom-select, .form .payment-area .btn-primary.custom-select, .payment-area .form textarea.btn-primary, .form .payment-area textarea.btn-primary {
+  background: var(--primary-color);
+  color: var(--primary-color-inverse); }
+  .payment-area input.btn-primary:focus, .payment-area .form select.btn-primary:focus, .form .payment-area select.btn-primary:focus, .payment-area .form .btn-primary.custom-select:focus, .form .payment-area .btn-primary.custom-select:focus, .payment-area .form textarea.btn-primary:focus, .form .payment-area textarea.btn-primary:focus {
+    outline: none; }
+
+@media screen and (max-width: 767px) {
+  .payable-amount {
+    display: flex;
+    flex-direction: column;
+    max-width: 767px;
+    margin: 0 auto;
+    height: 100vh; }
+
+  .payable-amount__body {
+    border-radius: 40px 40px 0 0;
+    margin-top: -35px;
+    display: flex;
+    flex-direction: column; }
+    .payable-amount__body .form--payment {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; }
+      .payable-amount__body .form--payment .payable-form__body {
+        flex: 1;
+        overflow: hidden;
+        overflow-y: auto; }
+
+  .payable-form__footer {
+    position: sticky;
+    bottom: 0;
+    padding-top: 20px; }
+
+  .form--payment .field-set {
+    margin-bottom: 22px; }
+
+  .payable-amount--header a {
+    padding: 10px;
+    position: absolute;
+    left: 10px;
+    display: block; }
+
+  .payable-amount__head {
+    padding-top: 1.5rem;
+    padding-bottom: 4rem; }
+
+  .payable-amount__footer {
+    grid-template-columns: 100%; }
+
+  .payable-amount__footer .field-set:last-child {
+    display: none; } }
 .success-animation {
   margin: 2rem auto; }
 

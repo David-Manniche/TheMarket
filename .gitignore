@@ -111,3 +111,8 @@ php_errors.log
 # Php Unit Test
 .phpunit.result.cache
 /testcases/bootstrap.php
+
+#css
+
+/application/views/css/main-ltr.css.map
+/application/views/css/main-rtl.css.map

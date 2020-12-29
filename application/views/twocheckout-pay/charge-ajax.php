@@ -120,7 +120,7 @@ if (null != $btn) {
                         <div class="field_cover">
                             <?php
                             $btn = $frm->getField('btn_submit');
-                            $btn->addFieldTagAttribute('class', 'btn btn-brand');
+                            $btn->addFieldTagAttribute('class', 'btn btn-secondary');
                             echo $frm->getFieldHtml('btn_submit');
                             ?>
                             <a href="<?php echo $cancelBtnUrl; ?>" class="btn btn-outline-brand"><?php echo Labels::getLabel('LBL_Cancel', $siteLangId); ?></a>

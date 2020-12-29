@@ -11,7 +11,7 @@ $frm->setFormTagAttribute('id', 'paymentForm-js');
 $btn = $frm->getField('btn_submit');
 if (null != $btn) {
     $btn->developerTags['noCaptionTag'] = true;
-    $btn->setFieldTagAttribute('class', "btn btn-brand btn-wide");
+    $btn->setFieldTagAttribute('class', "btn btn-secondary btn-wide");
 }
 ?>
 <div class="text-center" id="paymentFormElement-js">
