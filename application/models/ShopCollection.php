@@ -118,9 +118,11 @@ class ShopCollection extends MyAppModel
         $srch->joinTable(static::DB_SELLER_PRODUCTS . '_lang', 'LEFT JOIN', 'slang.' . static::DB_SELLER_PRODUCTS_LANG_TBL_PREFIX . 'selprod_id = ' . static::DB_TBL_SHOP_COLLECTION_PRODUCTS_PREFIX . 'selprod_id AND ' . static::DB_SELLER_PRODUCTS_LANG_TBL_PREFIX . 'lang_id = ' . $lang_id, 'slang');
         $srch->joinTable(Product::DB_TBL, 'LEFT JOIN', Product::DB_TBL_PREFIX . 'id = ' . static::DB_SELLER_PRODUCTS_PREFIX . 'product_id');
         $srch->joinTable(Product::DB_TBL . '_lang', 'LEFT JOIN', 'lang.productlang_product_id = ' . static::DB_SELLER_PRODUCTS_LANG_TBL_PREFIX . 'selprod_id AND productlang_lang_id = ' . $lang_id, 'lang');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'selprod_user_id = seller_user.user_id and seller_user.user_is_supplier = ' . applicationConstants::YES . ' AND seller_user.user_deleted = ' . applicationConstants::NO, 'seller_user');
+        $srch->joinTable(User::DB_TBL_CRED, 'INNER JOIN', 'credential_user_id = seller_user.user_id and credential_active = ' . applicationConstants::ACTIVE . ' and credential_verified = ' . applicationConstants::YES, 'tuc');
         $srch->addMultipleFields(
             array(
-            'selprod_id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier')
+            'selprod_id', 'IFNULL(selprod_title ,product_name) as product_name', 'product_identifier', 'credential_username')
         );
 
 
