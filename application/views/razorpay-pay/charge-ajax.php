@@ -55,7 +55,7 @@ if (!FatUtility::isAjaxCall()) { ?>
                 razorpay_instance = new Razorpay(razorpay_options);
                 if (razorpay_submit_btn) {
                     razorpay_submit_btn.disabled = false;
-                    razorpay_submit_btn.value = "<?php echo $button_confirm; ?>";
+                    razorpay_submit_btn.value = $(el).data('value');
                 }
             }
             razorpay_instance.open();
