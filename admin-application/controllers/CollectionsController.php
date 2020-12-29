@@ -28,6 +28,8 @@ class CollectionsController extends AdminBaseController
         $typeLayouts = Collections::getTypeSpecificLayouts($this->adminLangId);
         $this->set('typeLayouts', $typeLayouts);
         $this->set('includeEditor', true);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('css/select2.min.css'));
         $this->_template->render();
     }
 
@@ -926,7 +928,8 @@ class CollectionsController extends AdminBaseController
         $fld->requirements()->setIntPositive();
         switch ($collectionType) {
             case Collections::COLLECTION_TYPE_PRODUCT:
-                $frm->addTextbox(Labels::getLabel('LBL_Products', $this->adminLangId), 'collection_records');
+                //$frm->addTextbox(Labels::getLabel('LBL_Products', $this->adminLangId), 'collection_records');
+                $frm->addSelectBox(Labels::getLabel('LBL_Products', $this->adminLangId), 'collection_records', [], '', array('placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
                 break;
             case Collections::COLLECTION_TYPE_CATEGORY:
                 $frm->addTextbox(Labels::getLabel('LBL_Categories', $this->adminLangId), 'collection_records');
@@ -954,6 +957,10 @@ class CollectionsController extends AdminBaseController
     {
         $this->objPrivilege->canViewCollections();
         $post = FatApp::getPostedData();
+        $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
+        if ($page < 2) {
+            $page = 1;
+        }
         $db = FatApp::getDb();
         $srch = new ProductSearch($this->adminLangId);
         $srch->setDefinedCriteria(0);
@@ -965,9 +972,10 @@ class CollectionsController extends AdminBaseController
             $srch->addDirectCondition("(selprod_title like " . $db->quoteVariable('%' . $post['keyword'] . '%') . " or product_name LIKE " . $db->quoteVariable('%' . $post['keyword'] . '%') . " or product_identifier LIKE " . $db->quoteVariable('%' . $post['keyword'] . '%') . " )", 'and');
         }
 
-        $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE', FatUtility::VAR_INT, 10));
+        $srch->setPageSize(20);
+        $srch->setPageNumber($page);
 
-        $srch->addMultipleFields(array('selprod_id', 'IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title'));
+        $srch->addMultipleFields(array('selprod_id', 'IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title', 'credential_username'));
         
         $collectionId = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
         $alreadyAdded = Collections::getRecords($collectionId);
@@ -978,14 +986,23 @@ class CollectionsController extends AdminBaseController
         $rs = $srch->getResultSet();
 
         $products = $db->fetchAll($rs, 'selprod_id');
+        $pageCount = $srch->pages();
         $json = array();
         foreach ($products as $key => $product) {
+            $options = SellerProduct::getSellerProductOptions($key, true, $this->adminLangId);
+            $variantsStr = '';
+            array_walk($options, function ($item, $key) use (&$variantsStr) {
+                $variantsStr .= ' | ' . $item['option_name'] . ' : ' . $item['optionvalue_name'];
+            });
+            $userName = isset($product["credential_username"]) ? " | " . $product["credential_username"] : '';
+            $productName = strip_tags(html_entity_decode(($product['selprod_title'] != '') ? $product['selprod_title'] : $product['product_name'], ENT_QUOTES, 'UTF-8'));
+            $productName .=  $variantsStr . $userName;
             $json[] = array(
                 'id' => $key,
-                'name' => strip_tags(html_entity_decode(($product['selprod_title'] != '') ? $product['selprod_title'] : $product['product_name'], ENT_QUOTES, 'UTF-8'))
+                'name' => $productName
             );
         }
-        die(json_encode($json));
+        die(json_encode(['pageCount' => $pageCount, 'products' => $json]));
     }
 
     public function mediaForm($collectionId = 0)

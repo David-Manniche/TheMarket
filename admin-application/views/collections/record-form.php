@@ -80,8 +80,59 @@ switch ($collection_type) {
 <script type="text/javascript">
     $("document").ready(function() {
         var controllerName = '<?php echo $controllerName; ?>';
-        var actionName = '<?php echo $actionName; ?>';
-		var collectionId = $("input[name='collection_id']").val();
+        var actionName = '<?php echo $actionName; ?>';        
+        var collectionId = $("input[name='collection_id']").val();
+        
+        <?php if($collection_type == Collections::COLLECTION_TYPE_PRODUCT){ ?>
+            $("select[name='collection_records']").select2({
+                closeOnSelect: true,
+                dir: layoutDirection,
+                allowClear: true,
+                placeholder: $("select[name='collection_records']").attr('placeholder'),
+                ajax: {
+                    url: fcom.makeUrl(controllerName, actionName),
+                    dataType: 'json',
+                    delay: 250,
+                    method: 'post',
+                    data: function (params) {
+                        return {
+                            keyword: params.term, // search term
+                            page: params.page,
+                            collection_id: collectionId
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.products,
+                            pagination: {
+                                more: params.page < data.pageCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0,
+                templateResult: function (result)
+                {
+                    return result.name;
+                },
+                templateSelection: function (result)
+                {
+                    return result.name || result.text;
+                }
+            }).on('select2:selecting', function (e)
+            {   
+                var item = e.params.args.data; 
+                updateRecord(<?php echo $collection_id; ?>, item.id);                
+                setTimeout(function () {
+                    $("select[name='collection_records']").val('').trigger('change.select2');
+                }, 200);
+
+            });
+            
+        <?php }else{ ?>    
+        
         $('input[name=\'collection_records\']').autocomplete({
             'classes': {
                 "ui-autocomplete": "custom-ui-autocomplete"
@@ -113,5 +164,6 @@ switch ($collection_type) {
                 return false;
             }
         });
+        <?php } ?>
     });
 </script>
