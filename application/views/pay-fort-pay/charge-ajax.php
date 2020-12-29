@@ -1,11 +1,11 @@
-<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); 
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->developerTags['colClassPrefix'] = 'col-lg-12 col-md-12 col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'confirmOrder(this); return(false);');
 $frm->setFormTagAttribute('id', 'paymentForm-js');
 
 $btn = $frm->getField('btn_submit');
-$btn->addFieldTagAttribute('class', 'btn btn-secondary');
+$btn->addFieldTagAttribute('class', 'btn btn-brand btn-wide');
 $btn->addFieldTagAttribute('data-processing-text', Labels::getLabel('LBL_PLEASE_WAIT..', $siteLangId));
 $cancelBtn = $frm->getField('btn_cancel');
 $cancelBtn->setWrapperAttribute('class', 'd-none'); // Not Required On ajax page
