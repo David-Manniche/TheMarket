@@ -58,25 +58,35 @@ class Notifications extends MyAppModel
 
     public static function sendPushNotification($serverKey, $deviceToken, $data = array())
     {
-        $url = "https://fcm.googleapis.com/fcm/send";
+        if (!array_key_exists('body', $data)) {
+            $data['body'] = '';
+        }
 
-        $notification = $data;
-        $arrayToSend = array('to' => $deviceToken, 'data' => $notification, 'priority' => 'high');
-        $json = json_encode($arrayToSend);
-        $headers = array();
-        $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: key=' . $serverKey;
+        if (array_key_exists('text', $data)) {
+            $data['body'] = $data['text'];
+        }
+
+        $fields = [
+            'registration_ids' => [$deviceToken],
+            'notification' => $data, /* Required For IOS */
+            'data' => $data, /* Required For ANDROID */
+            'priority' => 'high'
+        ];
+        $headers = [
+            'Authorization: key=' . $serverKey,
+            'Content-Type: application/json'
+        ];
+        $url = "https://fcm.googleapis.com/fcm/send";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        //Send the request
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
         $response = curl_exec($ch);
-        //Close request
+
         $data = array();
         if ($response === false) {
             $data['status'] = false;

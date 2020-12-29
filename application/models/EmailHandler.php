@@ -2313,6 +2313,10 @@ class EmailHandler extends FatModel
             return false;
         }
 
+        if (1 > abs($row['urp_points'])) {
+            return true;
+        }
+
         $arrReplacements = array(
             '{user_name}' => trim($row["user_name"]),
             '{debit_credit_type}' => $row['urp_points'] > 0 ? Labels::getLabel('LBL_credited', $langId) : Labels::getLabel('LBL_debited', $langId),
