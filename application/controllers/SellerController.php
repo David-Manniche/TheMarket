@@ -1816,6 +1816,8 @@ class SellerController extends SellerBaseController
         $this->set('shop_id', $shop_id);
         $this->set('language', Language::getAllNames());
         $this->set('siteLangId', $this->siteLangId);
+        $this->_template->addJs(array('js/select2.js'));
+        $this->_template->addCss(array('custom/page-css/select2.min.css'));
         $this->_template->render(true, true);
     }
 

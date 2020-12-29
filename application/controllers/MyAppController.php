@@ -161,6 +161,7 @@ class MyAppController extends FatController
                 'invalidTimeSlot' => Labels::getLabel('LBL_PLEASE_CONFIGURE_FROM_AND_TO_TIME', $this->siteLangId),
                 'changePickup' => Labels::getLabel('LBL_CHANGE_PICKUP', $this->siteLangId),
                 'selectProduct' => Labels::getLabel('LBL_PLEASE_SELECT_PRODUCT', $this->siteLangId),
+                'noRecordFound' => Labels::getLabel('LBL_No_Record_Found', $this->siteLangId),
             );
 
             $languages = Language::getAllNames(false);
