@@ -975,7 +975,7 @@ class CollectionsController extends AdminBaseController
         $srch->setPageSize(20);
         $srch->setPageNumber($page);
 
-        $srch->addMultipleFields(array('selprod_id', 'IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title'));
+        $srch->addMultipleFields(array('selprod_id', 'IFNULL(product_name,product_identifier) as product_name, IFNULL(selprod_title,product_identifier) as selprod_title', 'credential_username'));
         
         $collectionId = FatApp::getPostedData('collection_id', FatUtility::VAR_INT, 0);
         $alreadyAdded = Collections::getRecords($collectionId);
@@ -989,9 +989,17 @@ class CollectionsController extends AdminBaseController
         $pageCount = $srch->pages();
         $json = array();
         foreach ($products as $key => $product) {
+            $options = SellerProduct::getSellerProductOptions($key, true, $this->adminLangId);
+            $variantsStr = '';
+            array_walk($options, function ($item, $key) use (&$variantsStr) {
+                $variantsStr .= ' | ' . $item['option_name'] . ' : ' . $item['optionvalue_name'];
+            });
+            $userName = isset($product["credential_username"]) ? " | " . $product["credential_username"] : '';
+            $productName = strip_tags(html_entity_decode(($product['selprod_title'] != '') ? $product['selprod_title'] : $product['product_name'], ENT_QUOTES, 'UTF-8'));
+            $productName .=  $variantsStr . $userName;
             $json[] = array(
                 'id' => $key,
-                'name' => strip_tags(html_entity_decode(($product['selprod_title'] != '') ? $product['selprod_title'] : $product['product_name'], ENT_QUOTES, 'UTF-8'))
+                'name' => $productName
             );
         }
         die(json_encode(['pageCount' => $pageCount, 'products' => $json]));

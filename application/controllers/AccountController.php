@@ -1668,7 +1668,7 @@ class AccountController extends LoggedUserController
             $wishLists[] = Product::getUserFavouriteProducts($loggedUserId, $this->siteLangId);
         } else {
             $wishLists = UserWishList::getUserWishLists($loggedUserId, false);
-            if ($wishLists && false === MOBILE_APP_API_CALL) {
+            if ($wishLists) {
                 $srchObj = new UserWishListProductSearch($this->siteLangId);
                 $db = FatApp::getDb();
                 foreach ($wishLists as &$wishlist) {
