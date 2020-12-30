@@ -2069,3 +2069,4 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("APP_CANCELED", 1, "Request Canceled!", 2),
 ("APP_FAILED", 1, "Failed!", 2)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
+-- ----------------------------TV-9.2.4.20201230---------------
