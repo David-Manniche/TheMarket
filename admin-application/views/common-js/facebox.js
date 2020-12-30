@@ -73,7 +73,13 @@
 		else if (data.image) fillFaceboxFromImage(data.image, klass)
 		else if (data.div) fillFaceboxFromHref(data.div, klass)
 		else if ($.isFunction(data)) data.call($)
-		else $.facebox.reveal(data, klass)
+        else $.facebox.reveal(data, klass)
+        
+        setTimeout(function () {
+            $('#facebox').css({
+                top: getPageScroll()[1] + (getPageHeight() / 10)
+            })
+        }, 500);
 	}
 
 	/*
