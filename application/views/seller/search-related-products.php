@@ -42,12 +42,20 @@
                     $div = $td->appendElement('div', array("class" => "list-tag-wrapper", "data-scroll-height" => "150", "data-simplebar" => ""));
                     $ul = $div->appendElement("ul", array("class" => "list-tags"));
                     foreach ($relatedProds as $relatedProd) {
+                        $options = SellerProduct::getSellerProductOptions($relatedProd['selprod_id'], true, $siteLangId);
+                        $variantsStr = '';
+                        array_walk($options, function ($item, $key) use (&$variantsStr) {
+                            $variantsStr .= ' | ' . $item['option_name'] . ' : ' . $item['optionvalue_name'];
+                        });
+                        $productName = strip_tags(html_entity_decode(($relatedProd['selprod_title'] != '') ? $relatedProd['selprod_title'] :  $relatedProd['product_name'], ENT_QUOTES, 'UTF-8'));
+                        $productName .=  $variantsStr;
+
                         $li = $ul->appendElement("li");
                         $removeIcon = '';
                         if ($canEdit) {
                             $removeIcon = '<i class="remove_buyTogether remove_param fa fa-times" onClick="deleteSelprodRelatedProduct(' . $selProdId . ', ' . $relatedProd['selprod_id'] . ')"></i>';
                         }
-                        $li->appendElement('plaintext', array(), '<span>' . $relatedProd['selprod_title'] . ' ' . $removeIcon . '</span>', true);
+                        $li->appendElement('plaintext', array(), '<span>' . $productName . ' ' . $removeIcon . '</span>', true);
                         $li->appendElement('plaintext', array(), '<input type="hidden" name="product_related[]" value="' . $relatedProd['selprod_id'] . '">', true);
                     }
                     break;

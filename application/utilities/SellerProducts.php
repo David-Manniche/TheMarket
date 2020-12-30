@@ -183,10 +183,10 @@ trait SellerProducts
         }
 
         if (!UserPrivilege::isUserHasValidSubsription($this->userParentId)) {
-            LibHelper::exitWithError(Labels::getLabel('MSG_Please_buy_subscription', $this->siteLangId), false, true);            
+            LibHelper::exitWithError(Labels::getLabel('MSG_Please_buy_subscription', $this->siteLangId), false, true);
             FatApp::redirectUser(UrlHelper::generateUrl('Seller', 'Packages'));
         }
-        if ($selprod_id == 0 && !UserPrivilege::canSellerAddProductInCatalog($product_id, $this->userParentId)) {            
+        if ($selprod_id == 0 && !UserPrivilege::canSellerAddProductInCatalog($product_id, $this->userParentId)) {
             LibHelper::exitWithError(Labels::getLabel('LBL_Please_Upgrade_your_package_to_add_new_products', $this->siteLangId), false);
         }
 
@@ -197,13 +197,12 @@ trait SellerProducts
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($productRow['product_active'] != applicationConstants::ACTIVE) {           
+        if ($productRow['product_active'] != applicationConstants::ACTIVE) {
             LibHelper::exitWithError(Labels::getLabel('MSG_Catalog_is_no_more_active', $this->siteLangId), false);
         }
 
-        if ($productRow['product_approved'] != applicationConstants::YES) {        
+        if ($productRow['product_approved'] != applicationConstants::YES) {
             LibHelper::exitWithError(Labels::getLabel('MSG_Catalog_is_not_yet_approved', $this->siteLangId), false);
-
         }
 
         if (($productRow['product_seller_id'] != $this->userParentId) && $productRow['product_added_by_admin_id'] == 0) {
@@ -1986,7 +1985,7 @@ trait SellerProducts
     public function autoCompleteProducts()
     {
         $pagesize = 20;
-        $post = FatApp::getPostedData();        
+        $post = FatApp::getPostedData();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         if ($page < 2) {
             $page = 1;
@@ -2799,11 +2798,11 @@ trait SellerProducts
         $frm = new Form('frmRelatedSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
-        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
+        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'product_name', [], '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
         //$prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
         $prodName->requirements()->setRequired();
         //$fld1 = $frm->addTextBox('', 'products_related');
-        $fld1 =$frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'products_related', [], '');
+        $fld1 = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'products_related', [], '');
         // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="related-products"></ul></div></div>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->siteLangId));
         return $frm;
@@ -2984,9 +2983,9 @@ trait SellerProducts
         $frm = new Form('frmUpsellSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
-        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
+        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->siteLangId), 'product_name', [], '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
         //$prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->siteLangId)));
-        $prodName->requirements()->setRequired();        
+        $prodName->requirements()->setRequired();
         $fld1 = $frm->addSelectBox(Labels::getLabel('LBL_Buy_Together_Products', $this->siteLangId), 'products_upsell', [], '');
         // $fld1->htmlAfterField= '<div class="row"><div class="col-md-12"><ul class="list-vertical" id="upsell-products"></ul></div></div>';
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save', $this->siteLangId));
