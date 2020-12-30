@@ -2,7 +2,8 @@
     $selProdId = (!empty($data['voldiscount_selprod_id']) ? $data['voldiscount_selprod_id'] : 0);
     $frm = SellerProduct::volumeDiscountForm($siteLangId);
 
-    $prodName = $frm->addTextBox(Labels::getLabel('LBL_Product', $siteLangId), 'product_name', '', array('class'=>'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $siteLangId)));
+    //$prodName = $frm->addTextBox(Labels::getLabel('LBL_Product', $siteLangId), 'product_name', '', array('class'=>'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $siteLangId)));
+    $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $siteLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $siteLangId)));
     $prodName->requirements()->setRequired();
 
     $minQty = $frm->getField('voldiscount_min_qty');

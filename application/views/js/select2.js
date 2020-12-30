@@ -5578,3 +5578,18 @@ S2.define('jquery.select2',[
   // Return the Select2 instance for anyone who is importing it.
   return select2;
 }));
+
+$.fn.select2.defaults.set( 'language', {
+    errorLoading: function(){
+        return langLbl.noRecordFound;
+    },
+    loadingMore: function(){
+        return langLbl.processing;
+    },
+    noResults: function(){
+        return langLbl.noRecordFound;
+    },
+    searching: function(){
+        return langLbl.processing;
+    }
+});
