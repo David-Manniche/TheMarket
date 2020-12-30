@@ -15422,6 +15422,12 @@ CREATE TABLE `tbl_shipping_profile` (
   `shipprofile_default` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `tbl_shipping_profile`
+--
+
+INSERT INTO `tbl_shipping_profile` (`shipprofile_id`, `shipprofile_user_id`, `shipprofile_name`, `shipprofile_active`, `shipprofile_default`) VALUES
+(1, 0, 'Order Level Shipping', 1, 1);
 -- --------------------------------------------------------
 
 --
@@ -29653,7 +29659,7 @@ ALTER TABLE `tbl_shipping_packages`
 -- AUTO_INCREMENT for table `tbl_shipping_profile`
 --
 ALTER TABLE `tbl_shipping_profile`
-  MODIFY `shipprofile_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `shipprofile_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tbl_shipping_profile_zones`
 --
