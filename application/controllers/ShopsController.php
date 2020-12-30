@@ -97,6 +97,7 @@ class ShopsController extends MyAppController
         $srch->setPageSize($pagesize);
 
         $srch->addOrder('shop_created_on');
+        $srch->addGroupBy('shop_id');
         $shopRs = $srch->getResultSet();
         $allShops = $db->fetchAll($shopRs, 'shop_id');
 
