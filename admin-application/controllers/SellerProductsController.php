@@ -915,13 +915,13 @@ class SellerProductsController extends AdminBaseController
 
     public function autoCompleteProducts()
     {
-        $pagesize = 20;       
-        $post = FatApp::getPostedData();        
+        $pagesize = 20;
+        $post = FatApp::getPostedData();
         $page = FatApp::getPostedData('page', FatUtility::VAR_INT, 1);
         if ($page < 2) {
             $page = 1;
         }
-        
+
         $srch = SellerProduct::getSearchObject($this->adminLangId);
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', 'p.product_id = sp.selprod_product_id', 'p');
         $srch->joinTable(Product::DB_TBL_LANG, 'LEFT OUTER JOIN', 'p.product_id = p_l.productlang_product_id AND p_l.productlang_lang_id = ' . $this->adminLangId, 'p_l');
@@ -957,12 +957,12 @@ class SellerProductsController extends AdminBaseController
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
         $db = FatApp::getDb();
-        $rs = $srch->getResultSet();        
+        $rs = $srch->getResultSet();
         $products = array();
         if ($rs) {
             $products = $db->fetchAll($rs, 'id');
         }
-        $pageCount = $srch->pages();     
+        $pageCount = $srch->pages();
         $json = array();
         foreach ($products as $key => $option) {
             $options = SellerProduct::getSellerProductOptions($key, true, $this->adminLangId);
@@ -2554,10 +2554,10 @@ class SellerProductsController extends AdminBaseController
         $this->set("dataToEdit", $dataToEdit);
         $this->set("frmSearch", $srchFrm);
         $this->set("selProd_id", $selProd_id);
-        
+
         $this->_template->addJs(array('js/select2.js'));
-        $this->_template->addCss(array('css/select2.min.css'));      
-        
+        $this->_template->addCss(array('css/select2.min.css'));
+
         $this->_template->render();
     }
 
@@ -2874,7 +2874,7 @@ class SellerProductsController extends AdminBaseController
         $frm = new Form('frmRelatedSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
-        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
+        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product_name', [], '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
         //$prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
         $prodName->requirements()->setRequired();
         //$fld1 = $frm->addTextBox('', 'products_related');        
@@ -3057,7 +3057,7 @@ class SellerProductsController extends AdminBaseController
         $frm = new Form('frmUpsellSellerProduct');
 
         $frm->addHiddenField('', 'selprod_id', 0);
-        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product_name', [], '', array('class' => 'selProd--js','placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
+        $prodName = $frm->addSelectBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product_name', [], '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
         //$prodName = $frm->addTextBox('', 'product_name', '', array('class' => 'selProd--js', 'placeholder' => Labels::getLabel('LBL_Select_Product', $this->adminLangId)));
         $prodName->requirements()->setRequired();
         //$fld1 = $frm->addTextBox('', 'products_upsell');
