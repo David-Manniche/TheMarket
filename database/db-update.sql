@@ -2055,3 +2055,17 @@ ALTER TABLE `tbl_system_logs`
 ALTER TABLE `tbl_system_logs`
   MODIFY `slog_id` int(11) NOT NULL AUTO_INCREMENT;
 -- -------------------------------------TV-9.2.4.20201228---------------------------  
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`, `label_type`) VALUES
+("APP_MOVE_TO_WISHLIST", 1, "Move to WishList", 2),
+("APP_SPECIFICATION", 1, "Specification", 2),
+("APP_OOPS", 1, "OOPS!", 2),
+("APP_NO_INTERNET", 1, "NO INTERNET", 2),
+("APP_PLEASE_CHECK_NETWORK_CONNECTION", 1, "Please check your network connection", 2),
+("APP_UNKNOWN_ERROR_MSG", 1, "Bad server response received!", 2),
+("APP_SOMTHING_WRONG_MSG", 1, "Somthing wrong on server! Please try again later.", 2),
+("APP_NETWORK_TIMEOUT_MSG", 1, "Network response timeout", 2),
+("APP_INTERNAL_ERROR_MSG", 1, "Some internal error occured!", 2),
+("APP_UNAUTHORISED", 1, "Your session has been expired,\nPlease login again for authentication!", 2),
+("APP_CANCELED", 1, "Request Canceled!", 2),
+("APP_FAILED", 1, "Failed!", 2)
+ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
