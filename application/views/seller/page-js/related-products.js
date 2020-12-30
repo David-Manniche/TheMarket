@@ -1,123 +1,139 @@
-$(document).ready(function(){
-    $('.dvFocus-js').hide();
+var selected_products = [];
+$(document).ready(function(){ 
     searchRelatedProducts(document.frmSearch);
     $('#related-products').delegate('.remove_related', 'click', function() {
         $(this).parents('li').remove();
     });
-    $("input[name='product_name']").trigger('click');
+    $("select[name='product_name']").select2({
+        closeOnSelect: true,
+        dir: langLbl.layoutDirection,
+        allowClear: true,
+        placeholder: $("select[name='product_name']").attr('placeholder'),
+        ajax: {
+            url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
+            dataType: 'json',
+            delay: 250,
+            method: 'post',
+            data: function (params) {
+                return {
+                    keyword: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.products,
+                    pagination: {
+                        more: params.page < data.pageCount
+                    }
+                };
+            },
+            cache: true
+        },   
+        minimumInputLength: 0,
+        templateResult: function (result)
+        {
+            return result.name;
+        },
+        templateSelection: function (result)
+        {
+            return result.name || result.text;
+        }
+    }).on('select2:selecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');
+        var item = e.params.args.data;
+        $("#"+parentForm+" input[name='selprod_id']").val(item.id);
+      
+        fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [item.id]), '', function(t) {
+            var ans = $.parseJSON(t);
+            $('#related-products').empty();
+            for (var key in ans.relatedProducts) {
+                $('#related-products').append(
+                    "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></span></li>"
+                );
+            }
+        });          
+
+    }).on('select2:unselecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');
+        $("#" + parentForm + " input[name='selprod_id']").val('');
+    });
+
+    $("select[name='products_related']").select2({
+        closeOnSelect: true,
+        dir: langLbl.layoutDirection,
+        allowClear: true,
+        placeholder: $("select[name='products_related']").attr('placeholder'),
+        ajax: {
+            url: fcom.makeUrl('seller', 'autoCompleteProducts'),
+            dataType: 'json',
+            delay: 250,
+            method: 'post',
+            data: function (params) {
+                var parentForm = $("select[name='products_related']").closest('form').attr('id');
+                return {
+                    keyword: params.term, // search term
+                    page: params.page,
+                    fIsAjax: 1,
+                    selProdId: $("#" + parentForm + " input[name='selprod_id']").val(),
+                    selected_products: selected_products
+                };
+            },
+            beforeSend:
+                    function (xhr, opts) {
+                        var parentForm = $("select[name='products_related']").closest('form').attr('id');
+                        var selprod_id = $("#" + parentForm + " input[name='selprod_id']").val();
+                        if (1 > selprod_id)
+                        {
+                            xhr.abort();
+                        }
+                        $('input[name="selected_products[]"]').each(function () {
+                            selected_products.push($(this).val());
+                        });
+
+                    },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.products,
+                    pagination: {
+                        more: params.page < data.pageCount
+                    }
+                };
+            },
+            cache: true
+        }, 
+        minimumInputLength: 0,
+        templateResult: function (result)
+        {
+            return  (typeof result.product_identifier === 'undefined' || typeof result.name === 'undefined') ? result.text : result.name + '[' + result.product_identifier + ']';
+        },
+        templateSelection: function (result)
+        {
+            return  (typeof result.product_identifier === 'undefined' || typeof result.name === 'undefined') ? result.text : result.name + '[' + result.product_identifier + ']';
+        }
+    }).on('select2:selecting', function (e)
+    {
+        var parentForm = $(this).closest('form').attr('id');
+        var item = e.params.args.data;
+        $('input[name=\'products_related\']').val('');
+        $('#productRelated' + item.id).remove();
+        $('#related-products').append('<li id="productRelated' + item.id + '"><span> ' + item.name + '[' + item.product_identifier + ']' + '<i class="remove_related remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' +
+                    item.id + '" /></span></li>');
+        setTimeout(function () {
+            $("select[name='products_related']").val('').trigger('change');
+        }, 200);
+
+    });   
 });
 $(document).on('mouseover', "ul.list-tags li span i", function(){
     $(this).parents('li').addClass("hover");
 });
 $(document).on('mouseout', "ul.list-tags li span i", function(){
     $(this).parents('li').removeClass("hover");
-});
-$(document).on('click', ".dvFocus-js", function(){
-    var input = $("input[name='product_name']");
-    input.show().focus();
-    var tmpStr = input.val();
-    input.val('');
-    input.val(tmpStr);
-    $('.dvFocus-js').hide();
-    $(this).html('');
-});
-$(document).on('click', "input[name='product_name']", function(){
-    var currObj = $(this);
-    var parentForm = currObj.closest('form').attr('id');
-    /*if('' != currObj.val()){
-         if(currObj.val().length < 2){
-            return;
-        } */
-        currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({
-                minLength : 0,
-                'classes': {
-                    "ui-autocomplete": "custom-ui-autocomplete"
-                },
-                'source': function(request, response) {
-        		$.ajax({
-        			url: fcom.makeUrl('Seller', 'autoCompleteProducts'),
-        			data: {keyword: request['term'],fIsAjax:1,keyword:currObj.val()},
-        			dataType: 'json',
-        			type: 'post',
-        			success: function(json) {
-        				response($.map(json, function(item) {
-        					return { label: item['name'], value: item['name'], id: item['id'] };
-        				}));
-        			},
-        		});
-        	},
-        	select: function (event, ui) {
-                $("#"+parentForm+" input[name='selprod_id']").val(ui.item.id);
-                currObj.val(ui.item.label);
-                fcom.ajax(fcom.makeUrl('Seller', 'getRelatedProductsList', [ui.item.id]), '', function(t) {
-                    var ans = $.parseJSON(t);
-                    $('#related-products').empty();
-                    for (var key in ans.relatedProducts) {
-                        $('#related-products').append(
-                            "<li id=productRelated"+ans.relatedProducts[key]['selprod_id']+"><span>"+ans.relatedProducts[key]['selprod_title']+" ["+ans.relatedProducts[key]['product_identifier']+"]<i class=\"remove_related remove_param fas fa-times\"></i><input type=\"hidden\" name=\"selected_products[]\" value="+ans.relatedProducts[key]['selprod_id']+" /></span></li>"
-                        );
-                    }
-                });
-                $('.dvFocus-js').html(ui.item.label).show();
-                currObj.hide();
-                $("input[name='products_related']").trigger('click');
-                $("input[name='products_related']").focus();
-        	}
-        }).focus(function() {
-            currObj.autocomplete("search", currObj.val());
-        });
-    /*}else{
-        $("#"+parentForm+" input[name='selprod_id']").val('');
-    }*/
-});
-
-$(document).on('click', "input[name='products_related']", function(){
-    var currObj = $(this);
-    var parentForm = currObj.closest('form').attr('id');
-    var selprod_id = $("#"+parentForm+" input[name='selprod_id']").val();
-    var selected_products = [];
-    $('input[name="selected_products[]"]').each(function() {
-        selected_products.push($(this).val());
-    });
-    if(selprod_id != 0) {
-        currObj.siblings('ul.dropdown-menu').remove();
-        currObj.autocomplete({
-            minLength : 0,
-            autoFocus: true,
-            'classes': {
-                "ui-autocomplete": "custom-ui-autocomplete"
-            },
-            'source': function(request, response) {
-                $.ajax({
-                    url: fcom.makeUrl('seller', 'autoCompleteProducts'),
-                    data: {
-                        keyword: request['term'],
-                        fIsAjax: 1,
-                        selprod_id: selprod_id,
-                        selected_products: selected_products
-                    },
-                    dataType: 'json',
-                    type: 'post',
-                    success: function(json) {
-                        response($.map(json, function(item) {
-                            return { label: item['name'] + '[' + item['product_identifier'] + ']', value: item['name'] + '[' + item['product_identifier'] + ']', id: item['id'] };
-                        }));
-                    },
-                });
-            },
-            select: function (event, ui) {
-                $('input[name=\'products_related\']').val('');
-                $('#productRelated' + ui.item.id).remove();
-                $('#related-products').append('<li id="productRelated' + ui.item.id + '"><span> ' + ui.item.label + '<i class="remove_related remove_param fas fa-times"></i><input type="hidden" name="selected_products[]" value="' +
-                    ui.item.id + '" /></span></li>');
-                // currObj.focus();
-                return false;
-            }
-        }).focus(function() {
-            currObj.autocomplete("search", currObj.val());
-        });
-    }
 });
 
 (function() {
@@ -185,8 +201,8 @@ $(document).on('click', "input[name='products_related']", function(){
 		fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupRelatedProduct'), data, function(t) {
             document.frmRelatedSellerProduct.reset();
             $("input[name='selprod_id']").val(''); 
-            $('#related-products').empty();
-            $(".dvFocus-js").trigger('click');
+            $('#related-products').empty();            
+            $(frm).find("select[name='product_name']").trigger('change.select2');
             searchRelatedProducts(document.frmRelatedSellerProduct);
 		});
 	};

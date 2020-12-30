@@ -221,19 +221,19 @@ class Collections extends MyAppModel
                 self::TYPE_PRODUCT_LAYOUT1 => Labels::getLabel('LBL_Product_Layout1', $langId),
                 self::TYPE_PRODUCT_LAYOUT2 => Labels::getLabel('LBL_Product_Layout2', $langId),
                 self::TYPE_PRODUCT_LAYOUT3 => Labels::getLabel('LBL_Product_Layout3', $langId),
-            ],            
+            ],
             self::COLLECTION_TYPE_SHOP => [
                 self::TYPE_SHOP_LAYOUT1 => Labels::getLabel('LBL_Shop_Layout1', $langId),
-            ],            
+            ],
             self::COLLECTION_TYPE_SPONSORED_PRODUCTS => [
                 self::TYPE_SPONSORED_PRODUCT_LAYOUT => Labels::getLabel('LBL_Sponsored_Products', $langId),
             ],
             self::COLLECTION_TYPE_SPONSORED_SHOPS => [
                 self::TYPE_SPONSORED_SHOP_LAYOUT => Labels::getLabel('LBL_Sponsored_Shops', $langId),
-            ],            
+            ],
             self::COLLECTION_TYPE_TESTIMONIAL => [
                 self::TYPE_TESTIMONIAL_LAYOUT1 => Labels::getLabel('LBL_Testimonial', $langId),
-            ],            
+            ],
             /* self::COLLECTION_TYPE_CONTENT_BLOCK => [
                 self::TYPE_CONTENT_BLOCK_LAYOUT1 => Labels::getLabel('LBL_Content_Block', $langId),
             ] */
@@ -489,12 +489,12 @@ class Collections extends MyAppModel
 
         $srch = new SearchBase(static::DB_TBL_COLLECTION_TO_RECORDS);
         $srch->addCondition(static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collection_id);
-        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id');
+        $srch->joinTable(SellerProduct::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'id = ' . static::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'record_id', 'sp');
         $srch->joinTable(Product::DB_TBL, 'INNER JOIN', SellerProduct::DB_TBL_PREFIX . 'product_id = ' . Product::DB_TBL_PREFIX . 'id');
 
         $srch->joinTable(SellerProduct::DB_TBL . '_lang', 'LEFT JOIN', 'lang.selprodlang_selprod_id = ' . SellerProduct::DB_TBL_PREFIX . 'id AND selprodlang_lang_id = ' . $lang_id, 'lang');
-
-        $srch->addMultipleFields(array('ctr_display_order', 'selprod_id as record_id', 'COALESCE(selprod_title,product_identifier) as record_title'));
+        $srch->joinTable(User::DB_TBL_CRED, 'LEFT OUTER JOIN', 'tuc.credential_user_id = sp.selprod_user_id', 'tuc');
+        $srch->addMultipleFields(array('ctr_display_order', 'selprod_id as record_id', 'COALESCE(selprod_title, product_identifier) as record_title', 'credential_username'));
         $srch->addOrder('ctr_display_order', 'ASC');
         $srch->doNotLimitRecords();
         $srch->doNotCalculateRecords();
@@ -767,7 +767,7 @@ class Collections extends MyAppModel
         }
         return true;
     }
-    
+
     /**
      * getRecords
      *
@@ -779,7 +779,7 @@ class Collections extends MyAppModel
         if (1 > $collectionId) {
             return [];
         }
-        
+
         $srch = new SearchBase(self::DB_TBL_COLLECTION_TO_RECORDS);
         $srch->addCondition(Collections::DB_TBL_COLLECTION_TO_RECORDS_PREFIX . 'collection_id', '=', $collectionId);
         $srch->addMultipleFields(array('ctr_record_id', 'ctr_collection_id'));
