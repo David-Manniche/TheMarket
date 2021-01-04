@@ -4385,7 +4385,8 @@ S2.define('select2/i18n/en',[],function () {
   // English
   return {
     errorLoading: function () {
-      return 'The results could not be loaded.';
+      //return 'The results could not be loaded.';
+      return langLbl.noRecordFound;
     },
     inputTooLong: function (args) {
       var overChars = args.input.length - args.maximum;
@@ -4406,7 +4407,8 @@ S2.define('select2/i18n/en',[],function () {
       return message;
     },
     loadingMore: function () {
-      return 'Loading more results…';
+      //return 'Loading more results…';
+      return langLbl.processing;
     },
     maximumSelected: function (args) {
       var message = 'You can only select ' + args.maximum + ' item';
@@ -4418,10 +4420,12 @@ S2.define('select2/i18n/en',[],function () {
       return message;
     },
     noResults: function () {
-      return 'No results found';
+      //return 'No results found';
+      return langLbl.noRecordFound;
     },
     searching: function () {
-      return 'Searching…';
+      //return 'Searching…';
+      return langLbl.processing;
     }
   };
 });
@@ -5054,7 +5058,8 @@ S2.define('select2/core',[
   };
 
   Select2.prototype._placeContainer = function ($container) {
-    $container.insertAfter(this.$element);
+    /*$container.insertAfter(this.$element);*/ /* Commented because error string coming above the select field*/
+    $container.insertBefore(this.$element);
 
     var width = this._resolveWidth(this.$element, this.options.get('width'));
 
@@ -5578,18 +5583,3 @@ S2.define('jquery.select2',[
   // Return the Select2 instance for anyone who is importing it.
   return select2;
 }));
-
-$.fn.select2.defaults.set( 'language', {
-    errorLoading: function(){
-        return langLbl.noRecordFound;
-    },
-    loadingMore: function(){
-        return langLbl.processing;
-    },
-    noResults: function(){
-        return langLbl.noRecordFound;
-    },
-    searching: function(){
-        return langLbl.processing;
-    }
-});

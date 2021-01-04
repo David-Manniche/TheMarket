@@ -5054,7 +5054,8 @@ S2.define('select2/core',[
   };
 
   Select2.prototype._placeContainer = function ($container) {
-    $container.insertAfter(this.$element);
+    /*$container.insertAfter(this.$element);*/ /* Commented because error string coming above the select field*/
+    $container.insertBefore(this.$element);
 
     var width = this._resolveWidth(this.$element, this.options.get('width'));
 
