@@ -878,7 +878,7 @@ function bindAutoComplete() {
         var item = e.params.args.data;      
         $('input[name=\'scp_selprod_id\']').val('');
         $('#selprod-products' + item.id).remove();
-        $('#selprod-products ul ').append('<li id="selprod-products' + item.id + '"><i class="remove_link remove_param fa fa-remove"></i> ' + item.name + '[' + item.product_identifier + ']' + '<input type="hidden" name="product_ids[]" value="' + item.id + '" /></li>');
+        $('#selprod-products ul ').append('<li id="selprod-products' + item.id + '">' + item.name + '[' + item.product_identifier + ']' + '<i class="remove_link remove_param fa fa-times"></i> <input type="hidden" name="product_ids[]" value="' + item.id + '" /></li>');
         
         setTimeout(function () {
            $('select[name=\'scp_selprod_id\']').val('').trigger('change.select2');
