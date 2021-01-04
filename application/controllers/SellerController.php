@@ -2250,7 +2250,8 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($shopObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        $shop_id = $shopObj->getMainTableRecordId();
+        
         $post['ss_shop_id'] = $shop_id;
         $shopSpecificsObj = new ShopSpecifics($shop_id);
         $shopSpecificsObj->assignValues($post);
@@ -2259,8 +2260,6 @@ class SellerController extends SellerBaseController
             Message::addErrorMessage($shopSpecificsObj->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
-        $shop_id = $shopObj->getMainTableRecordId();
 
         /* $userObj = new User( $userId );
           $vendorReturnAddress = $userObj->getUserReturnAddress( $this->siteLangId );
