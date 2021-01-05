@@ -13,5 +13,5 @@ foreach ($paymentMethods as $key => $val) {
 $data = array(
     'orderId' => $order_id,
     'orderType' => $orderType,
-    'paymentMethods' => $paymentMethods,
+    'paymentMethods' => array_values($paymentMethods),
 );
