@@ -5,7 +5,6 @@ $selectedShippingProducts = (object)[];
 if (isset($cartOrderData['shopping_cart']['product_shipping_methods']['product'])) {
     $selectedShippingProducts = $cartOrderData['shopping_cart']['product_shipping_methods']['product'];
 }
-
 foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
     ksort($shippedByItemArr);
     foreach ($shippedByItemArr as $shipLevel => $items) {
@@ -37,7 +36,7 @@ foreach ($shippingRates as $shippedBy => $shippedByItemArr) {
                             $selectedRates['mshipapi_cost'] = CommonHelper::displayMoneyFormat($selectedRates['mshipapi_cost'], false, false, false);
                         }
                         
-                        $data['rates']['data'] = [(object)$selectedRates];
+                        $data['rates']['data'][] = (object)$selectedRates;
 
                         $data['products'][] = $product;
                     }
