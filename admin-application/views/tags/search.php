@@ -80,12 +80,12 @@ $this->includeTemplate('_partial/pagination.php', $pagingArr, false); ?>
 
 <?php if (count($arr_listing) > 0) { ?>
     <script>
-        var productsArr = [ <?php echo '"' . implode('","', $productsArr) . '"' ?> ];
-        var whitelist;
+        var productsArr = [ <?php echo '"' . implode('","', $productsArr) . '"' ?> ];      
         $("document").ready(function() {
-            getTagsAutoComplete = function() {
+            getTagsAutoComplete = function(e) {
+                var keyword = e.detail.value;
                 var list = [];
-                fcom.ajax(fcom.makeUrl('Tags', 'autoComplete'), '', function(t) {
+                fcom.ajax(fcom.makeUrl('Tags', 'autoComplete'), {keyword:keyword}, function(t) {
                     var ans = $.parseJSON(t);
                     for (i = 0; i < ans.length; i++) {
                         list.push({
@@ -93,16 +93,16 @@ $this->includeTemplate('_partial/pagination.php', $pagingArr, false); ?>
                             "value": ans[i].tag_identifier,
                         });
                     }
+                    e.detail.tagify.settings.whitelist = list;
                 });
-                return list;
-            }
-            whitelist = getTagsAutoComplete();
+                
+            }            
             $.each(productsArr, function(index, value) {
                 tagify = new Tagify(document.querySelector('input[name=tag_name' + value + ']'), {
-                    whitelist: whitelist,
+                    whitelist: [],
                     delimiters: "#",
                     editTags: false,
-                }).on('add', addTagData).on('remove', removeTagData);
+                }).on('add', addTagData).on('remove', removeTagData).on('input', getTagsAutoComplete);
             });
 
         });

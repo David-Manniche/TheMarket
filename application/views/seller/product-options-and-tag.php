@@ -90,8 +90,7 @@ $("document").ready(function() {
         var tag_name = e.detail.tag.title;   
         if(tag_id == ''){
             var data = 'tag_id=0&tag_identifier='+tag_name
-            fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupTag'), data, function(t) {
-                tagify.settings.whitelist.push({'id':t.tagId,value:tag_name});
+            fcom.updateWithAjax(fcom.makeUrl('Seller', 'setupTag'), data, function(t) {           
                 var dataLang = 'tag_id='+t.tagId+'&tag_name='+tag_name+'&lang_id=0';
                 fcom.updateWithAjax(fcom.makeUrl('Seller', 'tagLangSetup'), dataLang, function(t2) { 
                     fcom.updateWithAjax(fcom.makeUrl('Seller', 'updateProductTag'), 'product_id='+product_id+'&tag_id='+t.tagId, function(t3) { 
@@ -111,28 +110,29 @@ $("document").ready(function() {
         });
     }
     
-    getTagsAutoComplete = function(){
+    getTagsAutoComplete = function(e){
+        var keyword = e.detail.value;
+        tagify.loading(true).dropdown.hide.call(tagify)
         var list = [];
-        fcom.ajax(fcom.makeUrl('Seller', 'tagsAutoComplete'), '', function(t) {          
+        fcom.ajax(fcom.makeUrl('Seller', 'tagsAutoComplete'), {keyword:keyword}, function(t) {          
             var ans = $.parseJSON(t);
             for (i = 0; i < ans.length; i++) {            
                 list.push({
                     "id" : ans[i].id,
                     "value" : ans[i].tag_identifier, 
                 });
-            }           
-        });
-        return list;
+            } 
+            tagify.settings.whitelist = list;
+            tagify.loading(false).dropdown.show.call(tagify, keyword);
+        });       
     }
     
     tagify = new Tagify(document.querySelector('input[name=tag_name]'), {
-           whitelist : getTagsAutoComplete(),
+           whitelist : [],
            delimiters : "#",
            editTags : false,
-        }).on('add', addTagData).on('remove', removeTagData); 
-
-        
-            
+        }).on('add', addTagData).on('remove', removeTagData).on('input', getTagsAutoComplete); 
+         
     addOption = function(e){ 
         var option_id = e.detail.tag.id; 
         if(option_id == ''){
@@ -148,7 +148,9 @@ $("document").ready(function() {
         removeProductOption( product_id,option_id);
     }
     
-    getOptionsAutoComplete = function(){
+    getOptionsAutoComplete = function(e){
+        var keyword = e.detail.value;
+        tagifyOption.loading(true).dropdown.hide.call(tagifyOption);
         var listOptions = [];
         fcom.ajax(fcom.makeUrl('Seller', 'autoCompleteOptions'), '', function(t) {           
             var ans = $.parseJSON(t);
@@ -157,17 +159,18 @@ $("document").ready(function() {
                     "id" : ans[i].id,
                     "value" : ans[i].name+'('+ans[i].option_identifier+')',
                 });
-            }           
+            }            
+            tagifyOption.settings.whitelist = listOptions;
+            tagifyOption.loading(false).dropdown.show.call(tagifyOption, keyword);            
         });
-        return listOptions;
-    };
-     
+        
+    };     
     
     tagifyOption = new Tagify(document.querySelector('input[name=option_groups]'), {
-           whitelist : getOptionsAutoComplete(),
+           whitelist : [],
            delimiters : "#",
            editTags : false, 
-        }).on('add', addOption).on('remove', removeOption);         
+        }).on('add', addOption).on('remove', removeOption).on('input', getOptionsAutoComplete);         
 
 });
 </script>

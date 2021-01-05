@@ -66,11 +66,11 @@ $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 <?php if (count($arr_listing) > 0) { ?>
 <script>
 var productsArr = [<?php echo '"'.implode('","', $productsArr).'"' ?>];
-var whitelist;
 $("document").ready(function() {
-    getTagsAutoComplete = function(){
-        var list = [];
-        fcom.ajax(fcom.makeUrl('Seller', 'tagsAutoComplete'), '', function(t) {
+    getTagsAutoComplete = function(e){  
+        var keyword = e.detail.value;
+        var list = [];   
+        fcom.ajax(fcom.makeUrl('Seller', 'tagsAutoComplete'), {keyword:keyword}, function(t) {
             var ans = $.parseJSON(t);
             for (i = 0; i < ans.length; i++) {
                 list.push({
@@ -78,17 +78,17 @@ $("document").ready(function() {
                     "value" : ans[i].tag_identifier,
                 });
             }
-        });
-        return list;
+            e.detail.tagify.settings.whitelist = list;        
+        });       
     }
-    whitelist = getTagsAutoComplete();
+   
     $.each(productsArr, function( index, value ) {
         tagify = new Tagify(document.querySelector('input[name=tag_name'+value+']'), {
-               whitelist : whitelist,
+               whitelist : [],
                delimiters : "#",
                editTags : false,
                backspace : false
-            }).on('add', addTagData).on('remove', removeTagData);
+            }).on('add', addTagData).on('remove', removeTagData).on('input', getTagsAutoComplete);
     });
 
 });
