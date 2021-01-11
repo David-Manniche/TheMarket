@@ -643,7 +643,7 @@ function loadGeoLocation() {
     navigator.geolocation.getCurrentPosition(function (position) {
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
-        getGeoAddress(lat, lng);
+        codeLatLng(lat, lng, getGeoAddress);
     }, function (error) {
         if (1 == error.code) {
             $.mbsmessage(error.message, true, 'alert--danger');
@@ -684,17 +684,10 @@ function setGeoAddress(data) {
     return address;
 }
 
-function getGeoAddress(lat, lng) {
-    var data = 'lat=' + lat + "&lng=" + lng;
-    fcom.ajax(fcom.makeUrl('Home', 'getGeoAddress'), data, function (t) {
-        var res = $.parseJSON(t);
-        if (res.status) {
-            var data = res.data;
-            address = setGeoAddress(data);
-            $(document).trigger('close.facebox');
-            displayGeoAddress(address);
-        }
-    });
+function getGeoAddress(data) {    
+    address = setGeoAddress(data);
+    $(document).trigger('close.facebox');
+    displayGeoAddress(address);
 }
 
 var canSetCookie = false;

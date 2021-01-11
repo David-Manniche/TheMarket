@@ -612,7 +612,8 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection, a
 }
 
 
-function codeLatLng(lat, lng) {
+function codeLatLng(lat, lng, callback) {
+    initialize();
     var latlng = new google.maps.LatLng(lat, lng);
     geocoder.geocode({
         'latLng': latlng
@@ -620,12 +621,16 @@ function codeLatLng(lat, lng) {
         if (status == google.maps.GeocoderStatus.OK) {
             // console.log(results)
             if (results[1]) {
+                var lat = results[0]['geometry']['location'].lat();
+                var lng = results[0]['geometry']['location'].lng();                
                 //formatted address
                 for (var i = 0; i < results[0].address_components.length; i++) {
                     if (results[0].address_components[i].types[0] == "country") {
-                        var country = results[0].address_components[i].short_name;
+                        var country = results[0].address_components[i].long_name;
                     }
-
+                    if (results[0].address_components[i].types[0] == "country") {
+                        var country_code = results[0].address_components[i].short_name;
+                    }
                     if (results[0].address_components[i].types[0] == "administrative_area_level_1") {
                         var state_code = results[0].address_components[i].short_name;
                         var state = results[0].address_components[i].long_name;
@@ -634,12 +639,13 @@ function codeLatLng(lat, lng) {
                     if (results[0].address_components[i].types[0] == "administrative_area_level_2") {
                         var city = results[0].address_components[i].long_name;
                     }
-                }
-
-                var data = "country=" + country + "&state=" + state + "&state_code=" + state_code + "&city=" + city;
-                fcom.updateWithAjax(fcom.makeUrl('Home', 'setCurrentLocation'), data, function(ans) {
-                    window.location.reload();
-                });
+                    
+                    if (results[0].address_components[i].types[0] == "postal_code") {
+                        var postal_code = results[0].address_components[i].long_name;
+                    }                   
+                }                
+                var data = {country: country, country_code: country_code, state: state, state_code: state_code, city: city, lat: lat, lng: lng, postal_code: postal_code};
+                callback(data);                               
             } else {
                 Console.log("Geocoder No results found");
             }

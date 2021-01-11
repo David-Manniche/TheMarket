@@ -116,28 +116,6 @@
 <?php if (!isset($_SESSION['geo_location']) && FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '') != '') { ?>
 <script type="text/javascript" src='https://maps.google.com/maps/api/js?key=<?php echo FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '');?>&libraries=places'></script>
 
-<script>
-    window.onload = function() {
-        var startPos;
-        var geoOptions = {
-            enableHighAccuracy: true,
-        };
-        /* initialize(); */
-        var geocoder;
-        var geoSuccess = function(position) {
-            startPos = position;
-            codeLatLng(startPos.coords.latitude, startPos.coords.longitude);
-        };
-
-        var geoError = function(error) {
-            if (error.code == 1) {
-                alert("Allow google To Access Your Current Location");
-            }
-            console.log('Error occurred. Error code: ' + error.code);
-        };
-        /* navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions); */
-    }
-</script>
 <?php } ?>
 <?php if (FatApp::getConfig('CONF_ENABLE_LIVECHAT', FatUtility::VAR_STRING, '')) {
                                     echo FatApp::getConfig('CONF_LIVE_CHAT_CODE', FatUtility::VAR_STRING, '');
