@@ -230,6 +230,16 @@ class AddressesController extends LoggedUserController
             Message::addErrorMessage($message);
             FatUtility::dieWithError(Message::getHtml());
         }
+        
+        $addressArr = Address::getAttributesById($addressId,['addr_record_id','addr_type']);
+        if(!$addressArr){
+            $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+            if (true === MOBILE_APP_API_CALL) {
+                LibHelper::dieJsonError($message);
+            }
+            Message::addErrorMessage($message);
+            LibHelper::dieJsonError(Message::getHtml());
+        }
 
         $day = date('w', strtotime($selectedDate));
         $timeSlot = new TimeSlot();
@@ -242,8 +252,14 @@ class AddressesController extends LoggedUserController
             if (isset($value['tslot_to_time'])) {
                 $value['tslot_to_time'] = date("H:i", strtotime($value['tslot_to_time']));
             }
-        });
-
+        });        
+        
+        $pickupInterval = FatApp::getConfig('CONF_TIME_SLOT_ADDITION', FatUtility::VAR_INT, 2);
+        if($addressArr['addr_type'] == Address::TYPE_SHOP_PICKUP){ 
+            $pickupInterval = ShopSpecifics::getAttributesById($addressArr['addr_record_id'],'shop_pickup_interval');                                        
+        }
+        
+        $this->set('pickupInterval', $pickupInterval);
         $this->set('timeSlots', $timeSlots);
         $this->set('selectedDate', $selectedDate);
         $this->set('pickUpBy', $pickUpBy);
@@ -279,10 +295,24 @@ class AddressesController extends LoggedUserController
         $activeDate = '';
         if (!empty($slotDays)) {
             $daysArr = TimeSlot::getDaysArr($this->siteLangId);
-            $currentDay = date('w', strtotime(date('Y-m-d')));
-
-            if (in_array($currentDay, $slotDays)) {
-                $displayTime = date("H:i:s", strtotime('+' . FatApp::getConfig('CONF_TIME_SLOT_ADDITION', FatUtility::VAR_INT, 2) . ' hour'));
+            $currentDay = date('w', strtotime(date('Y-m-d')));            
+            if (in_array($currentDay, $slotDays)) {                
+                $addressArr = Address::getAttributesById($addrId,['addr_record_id','addr_type']);
+                if(!$addressArr){
+                    $message = Labels::getLabel('MSG_Invalid_Access', $this->siteLangId);
+                    if (true === MOBILE_APP_API_CALL) {
+                        LibHelper::dieJsonError($message);
+                    }
+                    Message::addErrorMessage($message);
+                    LibHelper::dieJsonError(Message::getHtml());
+                }
+                $pickupInterval = FatApp::getConfig('CONF_TIME_SLOT_ADDITION', FatUtility::VAR_INT, 2);
+                if($addressArr['addr_type'] == Address::TYPE_SHOP_PICKUP){ 
+                    $pickupInterval = ShopSpecifics::getAttributesById($addressArr['addr_record_id'],'shop_pickup_interval');                                        
+                }
+                
+                $displayTime = date("H:i:s", strtotime('+' . $pickupInterval . ' hour'));
+             
                 $currentDateSlots = $timeSlot->timeSlotsByAddrIdAndDay($addrId, $currentDay);
                 foreach ($currentDateSlots as $data) {
                     if (strtotime($data['tslot_from_time']) > strtotime($displayTime)) {

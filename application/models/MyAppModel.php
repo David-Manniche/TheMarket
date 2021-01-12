@@ -12,6 +12,7 @@ class MyAppModel extends FatModel
     protected $mainTableRecordId;
     protected $mainTableName;
     protected $commonLangId;
+    public const DB_TBL_FOREIGN_PREFIX = '';
 
     public function __construct($tblName, $keyFld, $id)
     {
@@ -25,7 +26,7 @@ class MyAppModel extends FatModel
 
     public static function tblFld($key)
     {
-        return static::DB_TBL_PREFIX . $key;
+        return static::DB_TBL_PREFIX . static::DB_TBL_FOREIGN_PREFIX . $key;
     }
 
     public static function getAllNames($assoc = true, $recordId = 0, $activeFld = null, $deletedFld = null)

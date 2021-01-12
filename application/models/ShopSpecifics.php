@@ -4,6 +4,7 @@ class ShopSpecifics extends MyAppModel
 {
     public const DB_TBL = 'tbl_shop_specifics';
     public const DB_TBL_PREFIX = 'ss_';
+    public const DB_TBL_FOREIGN_PREFIX = 'shop_';
 
     public function __construct($shopId = 0)
     {
