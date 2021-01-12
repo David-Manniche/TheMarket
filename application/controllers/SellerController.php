@@ -3571,6 +3571,10 @@ class SellerController extends SellerBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_CANCELLATION_AGE', $this->siteLangId), 'shop_cancellation_age');
         $fld->requirements()->setInt();
         $fld->requirements()->setPositive();
+        
+        $fld = $frm->addTextBox(Labels::getLabel('LBL_Display_Time_Slots_After_Order', $this->siteLangId) . ' [' . Labels::getLabel('LBL_Hours', $this->siteLangId) . ']', 'shop_pickup_interval');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setPositive();
 
         $shopDetails = Shop::getAttributesByUserId(UserAuthentication::getLoggedUserId(), null, false);
         $address = new Address(0, $this->siteLangId);

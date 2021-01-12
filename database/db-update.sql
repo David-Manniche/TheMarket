@@ -2070,3 +2070,5 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ("APP_FAILED", 1, "Failed!", 2)
 ON DUPLICATE KEY UPDATE label_caption = VALUES(label_caption);
 -- ----------------------------TV-9.2.4.20201230---------------
+
+ALTER TABLE `tbl_shop_specifics` ADD `shop_pickup_interval` TINYINT(1) NOT NULL COMMENT 'In Hours' AFTER `shop_invoice_codes`;
