@@ -12,12 +12,13 @@ class PatchUpdateController extends AdminBaseController
     /**
      * updateShippingProfiles
      * @Description : For V9.3 to update default shipping profile for all seller and admin if not created and products are not bound.
+     * @$bindProducts : Send 1 in case shipping profiles already created but products not bound.
      * @return void
      */
-    public function updateShippingProfiles()
+    public function updateShippingProfiles(int $bindProducts = 0)
     {
         /* For Admin */
-        ShippingProfile::getDefaultProfileId(0);
+        ShippingProfile::getDefaultProfileId(0, 0, $bindProducts);
         /* For Admin */
 
         /* For All Sellers */
@@ -30,7 +31,7 @@ class PatchUpdateController extends AdminBaseController
         $db = FatApp::getDb();
         $users = $db->fetchAllAssoc($rs);
         foreach ($users as $userId) {
-            ShippingProfile::getDefaultProfileId($userId);
+            ShippingProfile::getDefaultProfileId($userId, 0, $bindProducts);
         }
         /* For All Sellers */
         echo 'Done!';
