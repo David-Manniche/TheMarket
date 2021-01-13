@@ -65,3 +65,6 @@
         </div>
     </div>
 </div>
+<script>
+    langLbl['confirmSellerAsBuyer'] = '<?php echo Labels::getLabel('LBL_DO_YOU_WANT_TO_MAKE_SELLER_AS_BUYER', $adminLangId); ?>';
+</script>

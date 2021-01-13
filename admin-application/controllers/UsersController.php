@@ -1841,6 +1841,30 @@ class UsersController extends AdminBaseController
         $this->set('msg', Labels::getLabel('LBL_Your_Message_Sent_To', $this->adminLangId) . ' - ' . $user["credential_email"]);
         $this->_template->render(false, false, 'json-success.php');
     }
+    
+    public function markSellerAsBuyer()
+    {
+        $this->objPrivilege->canEditUsers();
+        $userId = FatApp::getPostedData('userId', FatUtility::VAR_INT, 0);
+        if (1 > $userId) {
+            Message::addErrorMessage($this->str_invalid_request_id);
+            FatUtility::dieWithError(Message::getHtml());
+        }
+
+        $userObj = new User($userId);
+        $user = $userObj->getUserInfo(null, false, false);
+        if (!$user) {
+            Message::addErrorMessage($this->str_invalid_request);
+            FatUtility::dieJsonError(Message::getHtml());
+        }
+        $userObj->assignValues(['user_is_buyer' => User::USER_TYPE_BUYER]);
+        if (!$userObj->save()) {
+            Message::addErrorMessage($userObj->getError());
+            FatUtility::dieWithError(Message::getHtml());
+        }
+        $this->set('msg', $this->str_update_record);
+        $this->_template->render(false, false, 'json-success.php');
+    }
 
     /* public function image($userId, $sizeType = '', $afile_id = 0){
     $default_image = 'user_deafult_image.jpg';
