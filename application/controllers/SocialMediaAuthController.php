@@ -50,9 +50,10 @@ class SocialMediaAuthController extends PluginBaseController
         } catch (\Error $e) {
             $this->setErrorAndRedirect($e->getMessage(), (!MOBILE_APP_API_CALL));
         }
+        $referralToken = FatApp::getPostedData('referralToken', FatUtility::VAR_STRING, '');
 
         $userObj = new User();
-        $userInfo = $userObj->validateUser($email, $userName, $socialAccountID, $keyName, $userType);
+        $userInfo = $userObj->validateUser($email, $userName, $socialAccountID, $keyName, $userType, $referralToken);
         if (false === $userInfo) {
             $this->setErrorAndRedirect($userObj->getError(), (!MOBILE_APP_API_CALL));
         }

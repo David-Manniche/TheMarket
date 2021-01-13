@@ -1931,7 +1931,6 @@ class CommonHelper extends FatUtility
 
 
         $arr = array_values(array_filter(explode('/', $url)));
-
         $controller = (isset($arr[0])) ? $arr[0] : '';
         array_shift($arr);
         $action = (isset($arr[0])) ? $arr[0] : '';
@@ -1981,6 +1980,12 @@ class CommonHelper extends FatUtility
                 break;
             case 'blog/post-detail':
                 $urlType = applicationConstants::URL_TYPE_BLOG;
+                break;
+            case 'home/referral':
+                $urlType = applicationConstants::URL_TYPE_REGISTER;
+                $extra = [
+                    'referralToken' => $recordId
+                ];
                 break;
             default:
                 $recordId = applicationConstants::NO;
