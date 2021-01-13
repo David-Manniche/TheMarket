@@ -367,6 +367,7 @@ class GuestUserController extends MyAppController
         $post['user_is_advertiser'] = (FatApp::getConfig("CONF_ADMIN_APPROVAL_SUPPLIER_REGISTRATION", FatUtility::VAR_INT, 1) || FatApp::getConfig("CONF_ACTIVATE_SEPARATE_SIGNUP_FORM", FatUtility::VAR_INT, 1)) ? 0 : 1;
         $post['user_active'] = FatApp::getConfig('CONF_ADMIN_APPROVAL_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
         $post['user_verify'] = FatApp::getConfig('CONF_EMAIL_VERIFICATION_REGISTRATION', FatUtility::VAR_INT, 1) ? 0 : 1;
+        $post['referralToken'] = FatApp::getPostedData('referralToken', FatUtility::VAR_STRING, '');
 
         $userObj = new User();
         $returnUserId = (true == MOBILE_APP_API_CALL && 0 < $signUpWithPhone ? true : false);
