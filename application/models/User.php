@@ -2474,6 +2474,30 @@ class User extends MyAppModel
             $affiliateReferrerCodeSignup = $_COOKIE['affiliate_referrer_code_signup'];
         }
 
+        if (true === MOBILE_APP_API_CALL) {
+            $referralToken = array_key_exists('referralToken', $postedData) ? $postedData['referralToken'] : $referrerCodeSignup;
+            if (!empty($referralToken)) {
+                $userSrchObj = User::getSearchObject();
+                $userSrchObj->doNotCalculateRecords();
+                $userSrchObj->setPageSize(1);
+                $userSrchObj->addCondition('user_referral_code', '=', $referralToken);
+                $userSrchObj->addMultipleFields(['user_is_buyer', 'user_is_affiliate']);
+                $rs = $userSrchObj->getResultSet();
+                $row = FatApp::getDb()->fetch($rs);
+
+                if (!empty($row)){
+                    $referral = serialize(array('data' => $referralToken, 'creation_time' => time()));
+                    if (0 < $row['user_is_buyer']) {
+                        $referrerCodeSignup = $referral;
+                    }
+
+                    if (0 < $row['user_is_affiliate']) {
+                        $affiliateReferrerCodeSignup = $referral;
+                    }
+                }
+            }
+        }
+
         $this->setUpRewardEntry($this->getMainTableRecordId(), $this->commonLangId, $referrerCodeSignup, $affiliateReferrerCodeSignup);
         return true === $returnUserId ? $this->getMainTableRecordId() : true;
     }
@@ -2596,9 +2620,10 @@ class User extends MyAppModel
      * @param  string $socialAccountId
      * @param  string $keyName
      * @param  string $userType
+     * @param  string $referralToken
      * @return mixed
      */
-    public function validateUser($email, $username, $socialAccountId, $keyName, $userType)
+    public function validateUser($email, $username, $socialAccountId, $keyName, $userType, $referralToken = '')
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2672,7 +2697,7 @@ class User extends MyAppModel
 
             unset($row[$socialIdColumn]);
         } else {
-            $userId = $this->setupUser($email, $username, $socialAccountId, $keyName, $userType);
+            $userId = $this->setupUser($email, $username, $socialAccountId, $keyName, $userType, $referralToken);
             if (false === $userId) {
                 return false;
             }
@@ -2691,7 +2716,7 @@ class User extends MyAppModel
         return $row;
     }
 
-    public function setupUser($email, $username, $socialAccountId, $keyName, $userType)
+    public function setupUser($email, $username, $socialAccountId, $keyName, $userType, $referralToken = '')
     {
         $db = FatApp::getDb();
         $socialIdColumn = strtolower($keyName) . '_account_id';
@@ -2769,7 +2794,39 @@ class User extends MyAppModel
         }
 
         $db->commitTransaction();
-        $this->setUpRewardEntry($userId, $this->commonLangId);
+
+        $referrerCodeSignup = '';
+        if (isset($_COOKIE['referrer_code_signup']) && $_COOKIE['referrer_code_signup'] != '') {
+            $referrerCodeSignup = $_COOKIE['referrer_code_signup'];
+        }
+        $affiliateReferrerCodeSignup = '';
+        if (isset($_COOKIE['affiliate_referrer_code_signup']) && $_COOKIE['affiliate_referrer_code_signup'] != '') {
+            $affiliateReferrerCodeSignup = $_COOKIE['affiliate_referrer_code_signup'];
+        }
+
+        if (true === MOBILE_APP_API_CALL && !empty($referralToken)) {
+            $userSrchObj = User::getSearchObject();
+            $userSrchObj->doNotCalculateRecords();
+            $userSrchObj->setPageSize(1);
+            $userSrchObj->addCondition('user_referral_code', '=', $referralToken);
+            $userSrchObj->addMultipleFields(['user_is_buyer', 'user_is_affiliate']);
+            $rs = $userSrchObj->getResultSet();
+            $row = FatApp::getDb()->fetch($rs);
+
+            if (!empty($row)){
+                $referral = serialize(array('data' => $referralToken, 'creation_time' => time()));
+                if (0 < $row['user_is_buyer']) {
+                    $referrerCodeSignup = $referral;
+                }
+
+                if (0 < $row['user_is_affiliate']) {
+                    $affiliateReferrerCodeSignup = $referral;
+                }
+            }
+        }
+
+        $this->setUpRewardEntry($this->getMainTableRecordId(), $this->commonLangId, $referrerCodeSignup, $affiliateReferrerCodeSignup);
+
         return $userId;
     }
 

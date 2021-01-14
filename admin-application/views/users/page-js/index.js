@@ -420,5 +420,19 @@ $(document).ready(function() {
         }
         $("#frmUsersListing").attr("action",fcom.makeUrl('Users','deleteSelected')).submit();
     };
+    
+    markSellerAsBuyer = function (userId) {
+        if (!confirm(langLbl.confirmSellerAsBuyer)) {
+            return;
+        }
+        var userId = parseInt(userId);
+        if (1 > userId) {
+            fcom.displayErrorMessage(langLbl.invalidRequest);
+            return false;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Users', 'markSellerAsBuyer'), {userId: userId}, function (t) {
+            reloadUserList();
+        });
+    };
 
 })();

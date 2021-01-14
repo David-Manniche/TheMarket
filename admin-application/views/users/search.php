@@ -89,6 +89,9 @@ foreach ($arr_listing as $sn => $row) {
                 }
                 if ($row['user_is_affiliate']) {
                     $str .= $arr[User::USER_TYPE_AFFILIATE] . '<br/>';
+                }                
+                if ($row['user_is_supplier'] && !$row['user_is_buyer']) {
+                    $str .= '<a href="javascript:void(0)" onclick="markSellerAsBuyer(' . $row['user_id'] . ')">' . Labels::getLabel('LBL_MARK_AS_BUYER', $adminLangId) . '</a>';
                 }
 
                 if ($str == '' && $row['user_registered_initially_for'] != 0) {
@@ -97,7 +100,7 @@ foreach ($arr_listing as $sn => $row) {
 
                 if (0 < $row['user_parent']) {
                     $str = Labels::getLabel('LBL_Sub_User', $adminLangId);
-                }
+                }              
 
                 $td->appendElement('plaintext', array(), $str, true);
 
@@ -131,7 +134,7 @@ foreach ($arr_listing as $sn => $row) {
                     $innerLi = $innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Labels::getLabel('LBL_Change_Password', $adminLangId), "onclick" => "changePasswordForm(" . $row['user_id'] . ")"), Labels::getLabel('LBL_Change_Password', $adminLangId), true);
 
-                    $innerLi = $innerUl->appendElement('li');
+                        $innerLi = $innerUl->appendElement('li');
                     $innerLi->appendElement('a', array('href' => UrlHelper::generateUrl('Users', 'login', array($row['user_id'])), 'target' => '_blank', 'class' => 'button small green redirect--js', 'title' => Labels::getLabel('LBL_Login_to_user_profile', $adminLangId)), Labels::getLabel('LBL_Login_to_user_profile', $adminLangId), true);
 
                     $innerLi = $innerUl->appendElement('li');
