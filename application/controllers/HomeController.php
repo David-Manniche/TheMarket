@@ -310,7 +310,7 @@ class HomeController extends MyAppController
         }
 
         $isDefaultLangId = false;
-        if ($langId == FatApp::getConfig('CONF_CURRENCY', FatUtility::VAR_INT, 1)) {
+        if ($langId == FatApp::getConfig('CONF_DEFAULT_SITE_LANG', FatUtility::VAR_INT, 1)) {
             $isDefaultLangId = true;
         }
 
