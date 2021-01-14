@@ -354,7 +354,7 @@ array_walk($orderFulFillmentTypeArr, function ($row) use (&$fulfillmentType) {
                 $productTitle = ($product['op_selprod_title']) ? $product['op_selprod_title'] : $product['op_product_name'];
                 echo EcommerceTrackingHelper::getItemJs($orderInfo['order_id'], [
                     'name' => $productTitle,
-                    'sku' => $product['op_invoice_number'],
+                    'sku' => $product['op_selprod_sku'],
                     'price' => $product["op_unit_price"],
                     'quantity' => $product['op_qty']
                 ]);
