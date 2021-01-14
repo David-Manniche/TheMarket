@@ -10,6 +10,7 @@ Fixes:
 Enhancements :
    => Make provision to made seller
    => At shop level  pickup interval option given
+   => Tracking order with Google Analytics ecommerce 
     
 Known Issues and Problems :
 
