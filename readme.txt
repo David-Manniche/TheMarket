@@ -6,6 +6,7 @@ Fixes:
     => 047746 - Get current location not working
     => 046939 - Add product tag giving error
     => 047306 - On shop collection while linking product remove icon not coming 
+    => 047899 - Default lang url issue when we enable language specific url
 
 Enhancements :
    => Make provision to made seller
