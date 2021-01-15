@@ -8,6 +8,7 @@ Fixes:
     => 047306 - On shop collection while linking product remove icon not coming
     => 047899 - Default lang url issue when we enable language specific url
     => 047929 - When uploading file for 3rd party APIs Google webmaster and Bing, file name is not saved
+    => 047992 - on product search page product coming with wrong option while search
 
 Enhancements :
    => Make provision to made seller
