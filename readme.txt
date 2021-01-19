@@ -7,6 +7,7 @@ Fixes:
     => 046939 - Add product tag giving error
     => 047306 - On shop collection while linking product remove icon not coming 
     => 047899 - Default lang url issue when we enable language specific url
+    => 048292 - Handled case insenstive for Admin url.
 
 Enhancements :
    => Make provision to made seller
