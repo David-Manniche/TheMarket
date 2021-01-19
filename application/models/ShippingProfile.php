@@ -117,6 +117,14 @@ class ShippingProfile extends MyAppModel
 
         return $shipProZoneId;
     }
+    
+    public static function getShippingZoneArr(int $userId): array
+    {
+        $shippingZoneSrch = ShippingZone::getSearchObject();
+        $shippingZoneSrch->addCondition('shipzone_user_id', '=', $userId);
+        $rs = $shippingZoneSrch->getResultSet();
+        return (array) FatApp::getDb()->fetchAll($rs);
+    }
 
     public static function setDefaultRates($shipProZoneId, $shippingProfileId)
     {
@@ -149,10 +157,9 @@ class ShippingProfile extends MyAppModel
         return $shippingRate->getMainTableRecordId();
     }
 
-    public static function getDefaultProfileId($userId, $shippingProfileId = 0, $bindProducts = 0)
+    public static function getDefaultProfileId($userId, $shippingProfileId = 0)
     {
         $shippingProfileId = FatUtility::int($shippingProfileId);
-        $bindProducts = FatUtility::int($bindProducts);
 
         $srch = self::getSearchObject();
         $srch->addCondition('shipprofile_user_id', '=', $userId);
@@ -186,11 +193,8 @@ class ShippingProfile extends MyAppModel
             self::setDefaultRates($shipProZoneId, $shippingProfileId);
         }
 
-        if (0 < $bindProducts && !empty($row) && array_key_exists('shipprofile_id', $row)) {
-            $shippingProfileId = $row['shipprofile_id'];
-        }
-
-        if (0 < $shippingProfileId && (true == $createDefaultShipProfile || 0 < $bindProducts)) {
+        
+        if (0 < $shippingProfileId && true == $createDefaultShipProfile) {
             $srch = new ProductSearch(CommonHelper::getLangId(), null, null, false, false);
             $srch->joinProductShippedBySeller($userId);
             if (User::canAddCustomProduct()) {

@@ -210,7 +210,7 @@ class EmailTemplatesController extends AdminBaseController
         if ($langData) {
             $langFrm->fill($langData);
         }
-        if ($langData['etpl_replacements'] == '') {
+        if (is_array($langData) && array_key_exists('etpl_replacements', $langData) && $langData['etpl_replacements'] == '') {
             $etplData = $etplObj->getEtpl($etplCode);
             $langFrm->getField('etpl_replacements')->value = $etplData['etpl_replacements'];
         }

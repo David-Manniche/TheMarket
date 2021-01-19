@@ -2250,7 +2250,7 @@ class EmailHandler extends FatModel
             '{product_link}' => $prodTitleAnchor
         );
 
-        self::sendMailTpl($spreviewData["credential_email"], "buyer_notification_review_order_product", $langId, $arrReplacements);
+        self::sendMailTpl($spreviewData["credential_email"], "buyer_notification_review_status_updated", $langId, $arrReplacements);
         $phone = !empty($spreviewData['user_phone']) ? $spreviewData['user_dial_code'] . $spreviewData['user_phone'] : '';
         $this->sendSms("buyer_notification_review_status_updated", $phone, $arrReplacements, $langId);
         return true;

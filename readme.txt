@@ -5,13 +5,17 @@ Multivendor - Released Version : RV-9.3.0
 Fixes:
     => 047746 - Get current location not working
     => 046939 - Add product tag giving error
-    => 047306 - On shop collection while linking product remove icon not coming 
+    => 047306 - On shop collection while linking product remove icon not coming
     => 047899 - Default lang url issue when we enable language specific url
     => 048292 - Handled case insenstive for Admin url.
+    => 047929 - When uploading file for 3rd party APIs Google webmaster and Bing, file name is not saved
+    => 047992 - on product search page product coming with wrong option while search
+    => 048123 - On Buyer Review Status Updated Notification wrong email template passed
 
 Enhancements :
    => Make provision to made seller
    => At shop level  pickup interval option given
+   => Tracking order with Google Analytics ecommerce 
     
 Known Issues and Problems :
 

@@ -845,7 +845,7 @@ class ProductSearch extends SearchBase
                 if (1 > FatUtility::int($val)) {
                     continue;
                 }
-                $str .= $orCnd . " " . $alias . "selprod_code like '%_" . $val . "_%' or " . $alias . "selprod_code like '%_" . $val . "'";
+                $str .= $orCnd . " " . $alias . "selprod_code like '%\_" . $val . "\_%' or " . $alias . "selprod_code like '%\_" . $val . "'";
                 $orCnd = ' or';
                 //$andCnd = ") and (";
             }
@@ -859,7 +859,7 @@ class ProductSearch extends SearchBase
             }
 
             $opVal = FatUtility::int($opVal);
-            $obj->addDirectCondition(" (" . $alias . "selprod_code like '%_" . $opVal . "_%' or " . $alias . "selprod_code like '%_" . $opVal . "') ");
+            $obj->addDirectCondition(" (" . $alias . "selprod_code like '%\_" . $opVal . "\_%' or " . $alias . "selprod_code like '%\_" . $opVal . "') ");
         } else {
             $optionValueArr = explode(",", $optionValue);
             sort($optionValueArr);
@@ -877,7 +877,7 @@ class ProductSearch extends SearchBase
                     if (1 > FatUtility::int($val)) {
                         continue;
                     }
-                    $str .= $orCnd . " " . $alias . "selprod_code like '%_" . $val . "_%' or " . $alias . "selprod_code like '%_" . $val . "'";
+                    $str .= $orCnd . " " . $alias . "selprod_code like '%\_" . $val . "\_%' or " . $alias . "selprod_code like '%\_" . $val . "'";
                     $orCnd = 'or';
                 }
                 $orCnd = "";
