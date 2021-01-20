@@ -95,7 +95,10 @@ $cancelBtnFld->developerTags['noCaptionTag'] = true;
                                     <div class="col-lg-6">
                                         <div class="replaced amount-added-box border h-100 rounded text-center p-3">
                                             <h6 class="card-title mb-4">
-                                                <?php echo Labels::getLabel('LBL_Add_Wallet_Credits' . '_[' . CommonHelper::getDefaultCurrencySymbol() . ']', $siteLangId); ?></h6>
+                                                <?php 
+                                                $str = Labels::getLabel('LBL_Add_Wallet_Credits_[{CURRENCY-SYMBOL}]', $siteLangId);
+                                                echo CommonHelper::replaceStringData($str, ['{CURRENCY-SYMBOL}' => CommonHelper::getDefaultCurrencySymbol()]); ?>
+                                            </h6>
                                             <div id="rechargeWalletDiv" class="cellright nopadding--bottom">
                                                 <?php
                                                 $frmRechargeWallet->setFormTagAttribute('onSubmit', 'setUpWalletRecharge(this); return false;');
