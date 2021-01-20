@@ -226,7 +226,7 @@ class ImportexportCommon extends FatModel
                 $arr['urlrewrite_custom'] = Labels::getLabel('LBL_Seo_friendly_url', $langId);
                 /*$arr['prodcat_featured'] = Labels::getLabel('LBL_Featured', $langId);*/
                 $arr['prodcat_active'] = Labels::getLabel('LBL_Active', $langId);
-                $arr['prodcat_status'] = Labels::getLabel('LBL_STATUS', $langId);
+                /* $arr['prodcat_status'] = Labels::getLabel('LBL_STATUS', $langId); */  // Not Required. It is being used in category request from seller.
                 $arr['prodcat_display_order'] = Labels::getLabel('LBL_Display_Order', $langId);
                 $arr['prodcat_deleted'] = Labels::getLabel('LBL_Deleted', $langId);
             }
