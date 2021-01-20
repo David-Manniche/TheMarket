@@ -321,7 +321,7 @@ class SellerController extends SellerBaseController
 
         $rs = $srch->getResultSet();
         $orders = FatApp::getDb()->fetchAll($rs);
-
+        // CommonHelper::printArray($orders);
         $oObj = new Orders();
         foreach ($orders as &$order) {
             $charges = $oObj->getOrderProductChargesArr($order['op_id']);
