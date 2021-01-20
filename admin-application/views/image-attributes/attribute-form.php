@@ -13,6 +13,12 @@ $btn->setFieldTagAttribute('class', "btn-block");
 $btn = $frm->getField('btn_discard');
 $btn->addFieldTagAttribute('onClick', "discardForm()");
 $btn->setFieldTagAttribute('class', "btn-block");
+
+$optionIdFld = $frm->getField('option_id');
+if($optionIdFld !== null){
+    $optionIdFld->addFieldTagAttribute('class', 'option-js');        
+}  
+
 ?>
 <?php echo $frm->getFormTag(); ?>
 <div class="sectionhead">
@@ -22,6 +28,23 @@ $btn->setFieldTagAttribute('class', "btn-block");
 </div>
 <div class="sectionbody space">
     <div class="row">
+        <?php if($optionIdFld !== null){ ?>
+        <div class="col-md-6">
+            <div class="field-set">
+                <div class="caption-wraper">
+                    <label class="field_label">
+                    <?php  
+                        echo $optionIdFld->getCaption();
+                    ?></label>
+                </div>
+                <div class="field-wraper">
+                    <div class="field_cover">
+                    <?php echo $frm->getFieldHtml('option_id'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php  } ?>
         <div class="col-md-6">
             <div class="field-set">
                 <div class="caption-wraper">
