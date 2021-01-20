@@ -97,6 +97,18 @@ class TranslateLangData
                     $this->langTablePrimaryFields['langIdCol'] => $langArr[$lang],
                 ];
             }
+            
+            if (0 < count($this->ignoreVariables)) {
+                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate='no'>", $this->ignoreVariables));
+                $replacements = array_combine($this->ignoreVariables, $replacements);
+                foreach ($dataToupdate as &$value) {
+                    foreach ($replacements as $key => $val) {
+                        $value = str_replace($val, $key, $value);
+                        $value = preg_replace('/<qt(?:\s[^>]*)?>([^<]+)<\/qt>/i', '"\1"', $value);
+                    }
+                }
+            }
+
             $translatedDataToUpdate[$langArr[$lang]] = array_merge($langRecordData, $dataToupdate);
         }
         return $translatedDataToUpdate;
@@ -142,7 +154,7 @@ class TranslateLangData
             $dataToupdate = array_combine(array_keys($recordData), $langData);
 
             if (0 < count($this->ignoreVariables)) {
-                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate=\'no\'>", $this->ignoreVariables));
+                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate='no'>", $this->ignoreVariables));
                 $replacements = array_combine($this->ignoreVariables, $replacements);
                 foreach ($dataToupdate as &$value) {
                     foreach ($replacements as $key => $val) {
@@ -178,7 +190,7 @@ class TranslateLangData
             foreach ($dataToUpdate as $value) {
                 preg_match_all("/{([^:}]*):?([^}]*)}/", $value, $matches);
                 $this->ignoreVariables = array_unique(array_merge($this->ignoreVariables, (array)current($matches)));
-                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate=\'no\'>", $this->ignoreVariables));
+                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate='no'>", $this->ignoreVariables));
                 $replacements = array_combine($this->ignoreVariables, $replacements);
                 $value = preg_replace('/"([^"]+)"/', '"<qt>\1</qt>"', $value);
                 foreach ($replacements as $key => $val) {
