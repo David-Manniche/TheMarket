@@ -64,8 +64,20 @@ $(document).on('change','.language-js',function(){
     var langId = $(this).val();
     var recordId = $('#frmImgAttribute input[name=record_id]').val();
     var module = $('#frmImgAttribute input[name=module_type]').val();
-    fcom.ajax(fcom.makeUrl('ImageAttributes', 'attributeForm', [recordId, module, langId]), '', function(t) {
+    var option_id = $('.option-js').length ? $('.option-js').val() : 0 ;
+    fcom.ajax(fcom.makeUrl('ImageAttributes', 'attributeForm', [recordId, module, langId ,option_id]), '', function(t) {
 		$("#dvForm").html(t);
 		$('#frmImgAttribute input[name=lang_id]').val(langId);
 	});
+});
+
+$(document).on('change','.option-js',function(){
+    var option_id = $(this).val();
+    var recordId = $('#frmImgAttribute input[name=record_id]').val();
+    var module = $('#frmImgAttribute input[name=module_type]').val();
+    var langId = $('.language-js').val() || 0;
+    fcom.ajax(fcom.makeUrl('ImageAttributes', 'attributeForm', [recordId, module, langId ,option_id]), '', function(t) {
+        $("#dvForm").html(t);
+        $('#frmImgAttribute input[name=lang_id]').val(langId);
+    });
 });

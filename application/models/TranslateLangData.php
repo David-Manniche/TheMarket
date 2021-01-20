@@ -13,6 +13,7 @@ class TranslateLangData
     private $error;
     private $translateObj;
     private $toLangQueryString;
+    private $ignoreVariables = [];
 
     public function __construct($tbl)
     {
@@ -55,9 +56,9 @@ class TranslateLangData
         for ($i = 0; $i < $langCount; $i++) {
             $convertedData = array_column($data, $i);
             $targetLang = $convertedData[0]['to'];
-            $formatedData[$targetLang] = array_column($convertedData, 'text');
+            $convertedText = array_column($convertedData, 'text');
+            $formatedData[$targetLang] = $convertedText;
         }
-
         return $formatedData;
     }
 
@@ -96,6 +97,18 @@ class TranslateLangData
                     $this->langTablePrimaryFields['langIdCol'] => $langArr[$lang],
                 ];
             }
+            
+            if (0 < count($this->ignoreVariables)) {
+                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate='no'>", $this->ignoreVariables));
+                $replacements = array_combine($this->ignoreVariables, $replacements);
+                foreach ($dataToupdate as &$value) {
+                    foreach ($replacements as $key => $val) {
+                        $value = str_replace($val, $key, $value);
+                        $value = preg_replace('/<qt(?:\s[^>]*)?>([^<]+)<\/qt>/i', '"\1"', $value);
+                    }
+                }
+            }
+
             $translatedDataToUpdate[$langArr[$lang]] = array_merge($langRecordData, $dataToupdate);
         }
         return $translatedDataToUpdate;
@@ -139,9 +152,19 @@ class TranslateLangData
                 $this->langTablePrimaryFields['langIdCol'] => $langArr[$lang],
             ];
             $dataToupdate = array_combine(array_keys($recordData), $langData);
+
+            if (0 < count($this->ignoreVariables)) {
+                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate='no'>", $this->ignoreVariables));
+                $replacements = array_combine($this->ignoreVariables, $replacements);
+                foreach ($dataToupdate as &$value) {
+                    foreach ($replacements as $key => $val) {
+                        $value = str_replace($val, $key, $value);
+                        $value = preg_replace('/<qt(?:\s[^>]*)?>([^<]+)<\/qt>/i', '"\1"', $value);
+                    }
+                }
+            }
             $translatedDataToUpdate[$langArr[$lang]] = array_merge($langRecordData, $dataToupdate);
         }
-
         return $translatedDataToUpdate;
     }
 
@@ -165,6 +188,14 @@ class TranslateLangData
         $inputData = [];
         if (count($dataToUpdate) == count($dataToUpdate, COUNT_RECURSIVE)) {
             foreach ($dataToUpdate as $value) {
+                preg_match_all("/{([^:}]*):?([^}]*)}/", $value, $matches);
+                $this->ignoreVariables = array_unique(array_merge($this->ignoreVariables, (array)current($matches)));
+                $replacements = preg_filter('/$/', '</span>', preg_filter('/^/', "<span translate='no'>", $this->ignoreVariables));
+                $replacements = array_combine($this->ignoreVariables, $replacements);
+                $value = preg_replace('/"([^"]+)"/', '"<qt>\1</qt>"', $value);
+                foreach ($replacements as $key => $val) {
+                    $value = str_replace($key, $val, $value);
+                }
                 $inputData[] = ['Text' => $value];
             }
         }

@@ -48,7 +48,6 @@ class TranslateApi
         $url .= $to . "&from=" . $this->fromLang . "&textType=html";
 
         $ch = curl_init();
-        $curl_content = ['content' => $content];
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
