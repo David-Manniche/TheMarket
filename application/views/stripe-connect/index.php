@@ -32,18 +32,20 @@
                             </a>
                         </div>
                     </div>
-                    <?php } else {
-                    if ('custom' == $stripeAccountType) { ?>
+                    <?php } else { ?>
                         <div class="text-center">
                             <h5>
-                                <?php echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId); ?> : <?php echo $accountId; ?>
-                                <a class="btn btn-brand btn-sm" onClick="deleteAccount(this)" href="javascript:void(0)" data-href="<?php echo UrlHelper::generateUrl($keyName, 'deleteAccount') ?>" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+                                <?php 
+                                    echo Labels::getLabel('LBL_ACCOUNT_ID', $siteLangId); ?> : <?php echo $accountId; 
+                                    if ('custom' == $stripeAccountType) {
+                                ?>
+                                    <a class="btn btn-brand btn-sm" onClick="deleteAccount(this)" href="javascript:void(0)" data-href="<?php echo UrlHelper::generateUrl($keyName, 'deleteAccount') ?>" title="<?php echo Labels::getLabel('LBL_DELETE_ACCOUNT', $siteLangId); ?>">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                <?php } ?>
                             </h5>
                         </div>
-                <?php }
-                } ?>
+                <?php } ?>
                 <?php if (!empty($loginUrl)) { ?>
                     <a class="btn btn-brand btn-sm" href="<?php echo $loginUrl; ?>" target="_blank">
                         <?php echo Labels::getLabel('LBL_STRIPE_DASHBOARD', $siteLangId); ?>
