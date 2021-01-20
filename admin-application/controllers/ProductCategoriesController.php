@@ -197,7 +197,7 @@ class ProductCategoriesController extends AdminBaseController
             Message::addErrorMessage($productCategory->getError());
             FatUtility::dieJsonError(Message::getHtml());
         }
-
+        $productCategory->updateCatCode();
         $this->set('msg', Labels::getLabel('LBL_SETUP_SUCCESSFUL', $this->adminLangId));
         $this->_template->render(false, false, 'json-success.php');
     }

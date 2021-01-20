@@ -294,19 +294,8 @@ class ProductsController extends AdminBaseController
     }
 
     private function getSeparateImageOptions($product_id, $lang_id)
-    {
-        $imgTypesArr = array(0 => Labels::getLabel('LBL_For_All_Options', $this->adminLangId));
-        $productOptions = Product::getProductOptions($product_id, $lang_id, true, 1);
-
-        foreach ($productOptions as $val) {
-            if (!empty($val['optionValues'])) {
-                foreach ($val['optionValues'] as $k => $v) {
-                    $option_name = (isset($val['option_name']) && $val['option_name']) ? $val['option_name'] : $val['option_identifier'];
-                    $imgTypesArr[$k] = $v;
-                }
-            }
-        }
-        return $imgTypesArr;
+    {               
+        return Product::getSeparateImageOptions($product_id, $lang_id);     
     }
 
     public function countries_autocomplete()
