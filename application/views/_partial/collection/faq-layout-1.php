@@ -4,7 +4,7 @@
         $faqCategories[$faq['faqcat_id']]['faqcat_name'] = $faq['faqcat_name'];
         $faqCategories[$faq['faqcat_id']]['faqs'][$faq['faq_id']] = $faq;
     }  ?>
-    <section class="section" role="faqs">
+    <section class="section">
         <div class="container">
             <div class="section-head  section--head--center">
                 <div class="section__heading">

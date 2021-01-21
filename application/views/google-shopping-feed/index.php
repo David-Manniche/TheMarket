@@ -3,7 +3,7 @@ $this->includeTemplate('_partial/dashboardNavigation.php');
 $merchantId = isset($userData[$keyName . '_merchantId']) ? $userData[$keyName . '_merchantId'] : '';
 $serviceAccInfo = isset($userData['service_account']) ? $userData['service_account'] : '';
 ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col">

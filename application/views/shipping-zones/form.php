@@ -89,7 +89,7 @@ if (!empty($excludeLocations)) {
                                                 </div>
                                                 <?php if (!empty($countries)) { ?>
                                                     <div class="col-auto">
-                                                        <a class="btn btn-sm containCountries-js-<?php echo $zone['zone_id']; ?>" data-toggle="collapse" href="#countries_list_<?php echo $zone['zone_id']; ?>" role="button" aria-expanded="false" aria-controls="countries_list_<?php echo $zone['zone_id']; ?>"><span class="fa fa-angle-down" aria-hidden="true"></span> </a>
+                                                        <a class="btn btn-sm containCountries-js-<?php echo $zone['zone_id']; ?>" data-toggle="collapse" href="#countries_list_<?php echo $zone['zone_id']; ?>" aria-expanded="false" aria-controls="countries_list_<?php echo $zone['zone_id']; ?>"><span class="fa fa-angle-down" aria-hidden="true"></span> </a>
                                                     </div>
                                                 <?php } ?>
                                             </div>
@@ -125,7 +125,7 @@ if (!empty($excludeLocations)) {
 
                                                                 <div class="col-auto">
                                                                     <?php if ($statesCount > 0) { ?>
-                                                                        <a class="btn  btn-sm link_<?php echo $countryId; ?> containChild-js" data-toggle="collapse" href="#state_list_<?php echo $countryId; ?>" role="button" aria-expanded="false" aria-controls="state_list_<?php echo $countryId; ?>" data-zone="<?php echo $zone['zone_id']; ?>" data-countryid="<?php echo $countryId; ?>" data-loadedstates="0" onclick="getStates(<?php echo $countryId . ',' . $zone['zone_id'] . ',' . $profile_id; ?>);"><span class="statecount--js selectedStateCount--js_<?php echo $countryId; ?> " data-totalcount="<?php echo $statesCount; ?>">0</span>
+                                                                        <a class="btn  btn-sm link_<?php echo $countryId; ?> containChild-js" data-toggle="collapse" href="#state_list_<?php echo $countryId; ?>" aria-expanded="false" aria-controls="state_list_<?php echo $countryId; ?>" data-zone="<?php echo $zone['zone_id']; ?>" data-countryid="<?php echo $countryId; ?>" data-loadedstates="0" onclick="getStates(<?php echo $countryId . ',' . $zone['zone_id'] . ',' . $profile_id; ?>);"><span class="statecount--js selectedStateCount--js_<?php echo $countryId; ?> " data-totalcount="<?php echo $statesCount; ?>">0</span>
                                                                             <?php echo Labels::getLabel("LBL_of", $siteLangId); ?>
                                                                             <span class="totalStates "><?php echo $statesCount; ?></span>
                                                                             <span class="fa fa-angle-down" aria-hidden="true"></span>

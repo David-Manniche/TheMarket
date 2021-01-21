@@ -18,7 +18,7 @@ $clearFld->setFieldTagAttribute('onclick', 'clearSearch()');
 $clearFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 ?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col">
@@ -63,7 +63,7 @@ $clearFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
                         <div class="card-body h-100">
                             <div id="dvForm"></div>
                             <div class="alert-aligned" id="dvAlert">
-                                <div class="cards-message" role="alert">
+                                <div class="cards-message">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
                                     <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_a_product_to_add_/_edit_meta_tags_data', $siteLangId); ?></div>
                                 </div>

@@ -7,7 +7,7 @@ if (null != $btn) {
   $btn->addFieldTagAttribute('class', 'btn btn-brand');
 }
 ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
   <div class="content-wrapper content-space">
     <div class="content-header row">
       <div class="col">

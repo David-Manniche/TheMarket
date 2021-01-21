@@ -4,7 +4,7 @@
 events.viewContent();
 </script>
 
-<div id="body" class="body" role="main">
+<div id="body" class="body"   >
     <!--slider[-->
 <?php if (isset($slides) && count($slides)) {
     $this->includeTemplate('_partial/homePageSlides.php', array( 'slides' =>$slides, 'siteLangId' => $siteLangId ), false);

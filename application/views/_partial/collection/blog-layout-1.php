@@ -1,5 +1,5 @@
 <?php if (isset($collection['blogs']) && count($collection['blogs']) > 0) { ?>
-    <section class="section" role="blog">
+    <section class="section" >
         <div class="container">
             <div class="section-head">
                 <?php echo (isset($collection['collection_name']) && $collection['collection_name'] != '') ? ' <div class="section__heading"><h2>' . $collection['collection_name'] . '</h2></div>' : ''; ?>

@@ -10,7 +10,7 @@ $orRequestTypeFld->setOptionListTagAttribute('class', 'list-inline');
 $btn = $frmOrderReturnRequest->getField('btn_submit');
 $btn->setFieldTagAttribute('class', 'btn btn-brand');
 
-$this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
+$this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>

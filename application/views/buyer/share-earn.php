@@ -8,7 +8,7 @@ $submitFld->setFieldTagAttribute('class', 'btn btn-brand btn-block');
 $submitFld->developerTags['col'] = 2;
 
 $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>

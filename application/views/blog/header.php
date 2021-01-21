@@ -49,7 +49,7 @@ echo $this->getJsCssIncludeHtml(!CONF_DEVELOPMENT_MODE);
 $this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData, false);
 ?>
 
-<header class="header header-blog <?php echo (true === CommonHelper::isAppUser()) ? 'd-none' : ''; ?>" role="Blog-header">
+<header class="header header-blog <?php echo (true === CommonHelper::isAppUser()) ? 'd-none' : ''; ?>">
 	<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) { 
 		$this->includeTemplate('restore-system/top-header.php');    
 	} ?>

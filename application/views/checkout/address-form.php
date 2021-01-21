@@ -48,7 +48,7 @@ $cancelFld->developerTags['colWidthValues'] = [null, null, null, null];
 $cancelFld->setFieldTagAttribute('onclick', 'resetAddress(' . $addressType . ')');
 //$cancelFld->developerTags['fieldWrapperRowExtraClass'] = 'form-group-btn'; */
 ?>
-<div class="step active" role="step:2">
+<div class="step active">
     <div class="step__section">
         <div class="step__section__head">
             <h5 class="step__section__head__title"><?php echo Labels::getLabel('LBL_ADDRESS_DETAILS', $siteLangId); ?></h5>

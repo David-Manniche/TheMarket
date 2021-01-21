@@ -4,7 +4,7 @@ $buyQuantity = $frmBuyProduct->getField('quantity');
 $buyQuantity->addFieldTagAttribute('class', 'qty-input cartQtyTextBox productQty-js');
 $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
 ?>
-<div id="body" class="body detail-page" role="main">
+<div id="body" class="body detail-page"   >
     <section class="">
         <div class="container">
             <div class="py-4">
@@ -659,7 +659,7 @@ $buyQuantity->addFieldTagAttribute('data-page', 'product-view');
                                             <source data-aspect-ratio="4:3" srcset="<?php echo $mobile_url; ?>" media="(max-width: 767px)">
                                             <source data-aspect-ratio="4:3" srcset="<?php echo $tablet_url; ?>" media="(max-width: 1024px)">
                                             <source data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>">
-                                            <img data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>" alt="">
+                                            <img data-aspect-ratio="4:1" src="<?php echo $desktop_url; ?>" alt="">
                                         </picture>
                                     </a>
                                 </div>

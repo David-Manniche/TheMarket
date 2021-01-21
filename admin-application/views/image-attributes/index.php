@@ -63,7 +63,7 @@
 						<section class="section" id="attrForm">
 							<div id="dvForm"></div>
 							<div class="alert-aligned" id="dvAlert">
-                                <div class="cards-message" role="alert">
+                                <div class="cards-message">
                                     <div class="cards-message-icon"><i class="fas fa-exclamation-triangle"></i></div>
                                     <div class="cards-message-text"><?php echo Labels::getLabel('LBL_Select_A_Product_To_Add/Edit_Image_Attributes', $adminLangId); ?></div>
                                 </div>

@@ -45,35 +45,35 @@ if ($totReviews) {
                                     <li>
                                         <span class="progress_count">5 <?php echo Labels::getLabel('Lbl_Star', $siteLangId); ?></span>
                                         <div class="progress__bar">
-                                            <div title="<?php echo $rate_5_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_5_stars', $siteLangId); ?>" style="width: <?php echo $rate_5_width; ?>%" role="progressbar" class="progress__fill">
+                                            <div title="<?php echo $rate_5_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_5_stars', $siteLangId); ?>" style="width: <?php echo $rate_5_width; ?>%" class="progress__fill">
                                             </div>
                                         </div>
                                     </li>
                                     <li>
                                         <span class="progress_count">4 <?php echo Labels::getLabel('Lbl_Star', $siteLangId); ?></span>
                                         <div class="progress__bar">
-                                            <div title="<?php echo $rate_4_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_4_stars', $siteLangId); ?>" style="width: <?php echo $rate_4_width; ?>%" role="progressbar" class="progress__fill">
+                                            <div title="<?php echo $rate_4_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_4_stars', $siteLangId); ?>" style="width: <?php echo $rate_4_width; ?>%" class="progress__fill">
                                             </div>
                                         </div>
                                     </li>
                                     <li>
                                         <span class="progress_count">3 <?php echo Labels::getLabel('Lbl_Star', $siteLangId); ?></span>
                                         <div class="progress__bar">
-                                            <div title="<?php echo $rate_3_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_3_stars', $siteLangId); ?>" style="width: <?php echo $rate_3_width; ?>%" role="progressbar" class="progress__fill">
+                                            <div title="<?php echo $rate_3_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_3_stars', $siteLangId); ?>" style="width: <?php echo $rate_3_width; ?>%" class="progress__fill">
                                             </div>
                                         </div>
                                     </li>
                                     <li>
                                         <span class="progress_count">2 <?php echo Labels::getLabel('Lbl_Star', $siteLangId); ?></span>
                                         <div class="progress__bar">
-                                            <div title="<?php echo $rate_2_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_2_stars', $siteLangId); ?>" style="width: <?php echo $rate_2_width; ?>%" role="progressbar" class="progress__fill">
+                                            <div title="<?php echo $rate_2_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_2_stars', $siteLangId); ?>" style="width: <?php echo $rate_2_width; ?>%" class="progress__fill">
                                             </div>
                                         </div>
                                     </li>
                                     <li>
                                         <span class="progress_count">1 <?php echo Labels::getLabel('Lbl_Star', $siteLangId); ?></span>
                                         <div class="progress__bar">
-                                            <div title="<?php echo $rate_1_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_1_stars', $siteLangId); ?>" style="width: <?php echo $rate_1_width; ?>%" role="progressbar" class="progress__fill">
+                                            <div title="<?php echo $rate_1_width,'% ',Labels::getLabel('LBL_Number_of_reviews_have_1_stars', $siteLangId); ?>" style="width: <?php echo $rate_1_width; ?>%" class="progress__fill">
                                             </div>
                                         </div>
                                     </li>

@@ -41,7 +41,7 @@ $cancelBtnFld->setFieldTagAttribute('class', 'btn btn-outline-brand btn-block');
 $cancelBtnFld->developerTags['col'] = 2;
 $cancelBtnFld->setWrapperAttribute('class', 'col-6');
 $cancelBtnFld->developerTags['noCaptionTag'] = true;
-?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
+?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_My_Subscriptions', $siteLangId);?></h2>
