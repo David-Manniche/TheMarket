@@ -4,8 +4,7 @@
 
             <p class="restore__content">Database Restores in</p>
             <div class="restore__progress">
-                <div class="restore__progress-bar" style="width:25%" aria-valuenow="25"
-                    aria-valuemin="0" aria-valuemax="100">
+                <div class="restore__progress-bar" style="width:25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                 </div>
             </div>
             <span class="restore__counter" id="restoreCounter">00:00:00</span>
