@@ -13,7 +13,7 @@
                     </h2>
                 </div>
             </div>
-            <div id="" class="tabs faqTabs--flat-js tabs-faqs justify-content-md-center">
+            <div class="tabs faqTabs--flat-js tabs-faqs justify-content-md-center">
                 <ul>
                     <?php $count = 0;
                     foreach ($faqCategories as $faqCatId => $faqCat) { ?>
