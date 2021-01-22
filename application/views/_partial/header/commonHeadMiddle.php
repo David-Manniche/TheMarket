@@ -91,6 +91,7 @@ if ($canonicalUrl == '') {
                 }
             })();
     <?php }
+    $pixelId = FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '');
     if ('' != $pixelId) { ?>
             ! function(f, b, e, v, n, t, s) {
                 if (f.fbq) return;
@@ -110,7 +111,7 @@ if ($canonicalUrl == '') {
                 s.parentNode.insertBefore(t, s)
             }(window, document, 'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '<?php echo FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, ''); ?>');
+        fbq('init', '<?php echo $pixelId; ?>');
         fbq('track', 'PageView');
         var fbPixel = true;
     <?php } ?>
