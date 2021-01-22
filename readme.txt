@@ -16,6 +16,7 @@ Fixes:
     => 048604 - Fatal error in View Order API.
     => 048534 - Design issue of blank li tag adding in header if single language and single currency 
     => 048605 - getting error while creating shipping profile IN ADMIN
+    => 048634 - Users are unable to see products in the favourite list if brand is not selected for the product
 
 Enhancements :
    => Make provision to made seller

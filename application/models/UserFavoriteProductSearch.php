@@ -156,10 +156,10 @@ class UserFavoriteProductSearch extends SearchBase
             $langId = $this->langId;
         }
         $this->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'p.product_brand_id = brand.brand_id', 'brand');
-        if ($isActive) {
+        if ($isActive && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1) ) {
             $this->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
         }
-        if ($isDeleted) {
+        if ($isDeleted && FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1)) {
             $this->addCondition('brand.brand_deleted', '=', '0');
         }
 
