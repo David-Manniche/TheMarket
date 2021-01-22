@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
 $this->includeTemplate('_partial/dashboardNavigation.php');?>
 
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <input type='hidden' name='adsBatchId' value="<?php echo $adsBatchId; ?>">
     <div class="content-wrapper content-space">
         <div class="content-header row">

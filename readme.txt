@@ -13,12 +13,15 @@ Fixes:
     => 048123 - On Buyer Review Status Updated Notification wrong email template passed
     => 048408 - Admin - While creating a new category catcode not updated
     => 048194 - Unable to add alt tag for image with different options
+    => 048604 - Fatal error in View Order API.
     => 048534 - Design issue of blank li tag adding in header if single language and single currency 
     => 048605 - getting error while creating shipping profile IN ADMIN
+
 Enhancements :
    => Make provision to made seller
    => At shop level  pickup interval option given
    => Tracking order with Google Analytics ecommerce 
+   => W3c validator.
     
 Known Issues and Problems :
 

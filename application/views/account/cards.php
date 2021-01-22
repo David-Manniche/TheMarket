@@ -2,7 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $this->includeTemplate('_partial/dashboardNavigation.php');
 ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main">
     <main class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col">

@@ -5,7 +5,7 @@ if (FatApp::getConfig('CONF_ENABLE_GEO_LOCATION', FatUtility::VAR_INT, 0)) {
     $displayProductNotAvailableLable = true;
 }
 ?>
-<div id="productsList" role="main-listing">
+<div id="productsList">
     <div class="product-listing" data-view="<?php echo $colMdVal; ?>">
         <?php if ($products) {
             $showActionBtns = !empty($showActionBtns) ? $showActionBtns : false;

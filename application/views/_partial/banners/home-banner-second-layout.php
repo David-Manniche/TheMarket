@@ -4,7 +4,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage');
 $bCount = 1;
 
 if (!empty($bannerLayout1['banners']) && $bannerLayout1['blocation_active']) { ?>
- <section class="section" role="banners">
+ <section class="section" >
  <div class="container">
     <div class="banner-wrappers">
 	<?php foreach ($bannerLayout1['banners'] as $val) {
@@ -54,7 +54,7 @@ if (!empty($bannerLayout1['banners']) && $bannerLayout1['blocation_active']) { ?
 					<source data-aspect-ratio="4:3" srcset="<?php echo $mobile_url; ?>" media="(max-width: 767px)">
 					<source data-aspect-ratio="4:3" srcset="<?php echo $tablet_url; ?>" media="(max-width: 1024px)">
 					<source data-aspect-ratio="10:3" srcset="<?php echo $desktop_url; ?>">
-					<img data-aspect-ratio="10:3" srcset="<?php echo $desktop_url; ?>" alt="">
+					<img data-aspect-ratio="10:3" src="<?php echo $desktop_url; ?>" alt="">
 				</picture>
 			</a>
 		</div>

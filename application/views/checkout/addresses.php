@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="step active" role="step:2">
+<div class="step active">
     <form class="form ">
         <div class="step__section">
             <div class="step__section__head">

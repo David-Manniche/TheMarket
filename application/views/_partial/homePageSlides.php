@@ -45,10 +45,10 @@
 			if( $haveUrl ){ $out .= '<a target="'.$slide['slide_target'].'" href="'.$slideUrl.'">'; }
 			$out .= '<div class="hero-media">
 				<picture>
-					<source data-aspect-ratio="4:3" srcset="'. $mobile_url .'" media="(max-width: 767px)">
-					<source data-aspect-ratio="4:3" srcset="'. $tablet_url .'" media="(max-width: 1024px)">
-					<source data-aspect-ratio="10:3" srcset="'. $desktop_url .'">
-					<img data-aspect-ratio="10:3" srcset="'. $desktop_url .'" alt="">
+					<source data-aspect-ratio="4:3" srcset="'. rtrim($mobile_url, ',') .'" media="(max-width: 767px)">
+					<source data-aspect-ratio="4:3" srcset="'. rtrim($tablet_url, ',') .'" media="(max-width: 1024px)">
+					<source data-aspect-ratio="10:3" srcset="'. rtrim($desktop_url, ',') .'">
+					<img data-aspect-ratio="10:3" src="'. rtrim($desktop_url, ',') .'" alt="">
 				</picture>
 			</div>';
 			if( $haveUrl ){ $out .= '</a>'; }

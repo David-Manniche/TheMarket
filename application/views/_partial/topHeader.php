@@ -32,14 +32,13 @@
 </div>
 <div class="wrapper">
     <div id="loader-wrapper">
-        <div class="yokart-loader"><img
-                src="<?php echo CONF_WEBROOT_URL;?>images/retina/yokart-loader.svg">
+        <div class="yokart-loader"><img alt="" src="<?php echo CONF_WEBROOT_URL;?>images/retina/yokart-loader.svg">
         </div>
         <div class="loader-section section-left"></div>
         <div class="loader-section section-right"></div>
     </div>
     <!--header start here-->
-    <header id="header" class="header no-print" role="site-header">
+    <header id="header" class="header no-print">
 		<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
 			$this->includeTemplate('restore-system/top-header.php');
 		} ?>

@@ -2,7 +2,7 @@
 <?php if (!$print) { ?>
     <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?>
 <?php } ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <?php if (!$print) { ?>
             <div class="content-header row">

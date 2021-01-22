@@ -113,7 +113,7 @@ if ($user_is_buyer > 0 || (!UserAuthentication::isUserLogged())) { ?>
     </div>
 <?php } ?>
 
-<script type="text/javascript">
+<script>
 $(document).ready(function () {
     
     $('body').find('*[data-trigger-cart]').click(function () {

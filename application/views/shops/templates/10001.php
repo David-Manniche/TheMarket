@@ -27,7 +27,7 @@ foreach ($catBannerArr as $slideScreen) {
 			<source data-aspect-ratio="4:3" srcset="<?php echo $mobile_url; ?>" media="(max-width: 767px)">
 			<source data-aspect-ratio="4:3" srcset="<?php echo $tablet_url; ?>" media="(max-width: 1024px)">
 			<source data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>">
-			<img data-aspect-ratio="4:1" srcset="<?php echo $desktop_url; ?>" alt="">
+			<img data-aspect-ratio="4:1" src="<?php echo $desktop_url; ?>" alt="">
 		</picture>
    </div>
 </section>

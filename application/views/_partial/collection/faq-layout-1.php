@@ -4,7 +4,7 @@
         $faqCategories[$faq['faqcat_id']]['faqcat_name'] = $faq['faqcat_name'];
         $faqCategories[$faq['faqcat_id']]['faqs'][$faq['faq_id']] = $faq;
     }  ?>
-    <section class="section" role="faqs">
+    <section class="section">
         <div class="container">
             <div class="section-head  section--head--center">
                 <div class="section__heading">
@@ -13,7 +13,7 @@
                     </h2>
                 </div>
             </div>
-            <div id="" class="tabs faqTabs--flat-js tabs-faqs justify-content-md-center">
+            <div class="tabs faqTabs--flat-js tabs-faqs justify-content-md-center">
                 <ul>
                     <?php $count = 0;
                     foreach ($faqCategories as $faqCatId => $faqCat) { ?>
