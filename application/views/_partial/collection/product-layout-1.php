@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php if (isset($collection['products']) && count($collection['products']) > 0) { ?>
-    <section class="section" role="products">
+    <section class="section">
         <div class="container">
             <div class="section-head">
                 <div class="section__heading">

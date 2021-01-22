@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div id="body" class="body" role="main">
+<div id="body" class="body">
     <?php $this->includeTemplate('productSearch/listing-page.php', $data, false); ?>
 </div>
 <script>

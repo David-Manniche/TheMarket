@@ -23,7 +23,7 @@ $cancelBtnFld->setWrapperAttribute('class', 'col-lg-3');
 $cancelBtnFld->developerTags['col'] = 3;
 $cancelBtnFld->developerTags['noCaptionTag'] = true;?>
 <?php $this->includeTemplate('_partial/seller/sellerDashboardNavigation.php'); ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row justify-content-between mb-3 ffdgdf">
             <?php //$this->includeTemplate('_partial/dashboardTop.php'); ?>

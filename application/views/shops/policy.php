@@ -14,7 +14,7 @@ $shopPolicyArr = array(
 );
 ?>
 
-<div id="body" class="body template-<?php echo $template_id;?>" role="main">
+<div id="body" class="body template-<?php echo $template_id;?>"   >
     <?php
         $variables= array('shop'=>$shop, 'siteLangId'=>$siteLangId,'frmProductSearch'=>$frmProductSearch,'template_id'=>$template_id,'collectionData'=>$collectionData,'action'=>$action,'shopId'=>$shopId,'shopTotalReviews'=>$shopTotalReviews,'shopRating'=>$shopRating);
         $this->includeTemplate('shops/templates/'.$template_id.'.php', $variables, false);

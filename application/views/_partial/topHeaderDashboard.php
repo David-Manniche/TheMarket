@@ -4,7 +4,7 @@
 
 <?php if ($controllerName != 'SubscriptionCheckout') { ?>
     <div class="wrapper">
-        <header id="header-dashboard" class="header-dashboard no-print" role="header-dashboard">
+        <header id="header-dashboard" class="header-dashboard no-print">
 
             <?php if ((User::canViewSupplierTab() && User::canViewBuyerTab()) || (User::canViewSupplierTab() && User::canViewAdvertiserTab() && $userPrivilege->canViewPromotions(0, true)) || (User::canViewBuyerTab() && User::canViewAdvertiserTab())) { ?>
                 <div class="dropdown dashboard-user">

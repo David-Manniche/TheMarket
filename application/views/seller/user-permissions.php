@@ -5,7 +5,7 @@ $allAccessfrm->developerTags['fld_default_col'] = 4;
 $submitFld = $allAccessfrm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', "btn btn-brand btn-wide");
 ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col">

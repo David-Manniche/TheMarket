@@ -45,7 +45,7 @@ echo $this->getJsCssIncludeHtml(!CONF_DEVELOPMENT_MODE);
 $this->includeTemplate('_partial/header/commonHeadBottom.php', $commonHeadData, false);
 ?>
 <div class="wrapper">
-	<div id="header" class="header header-affiliate" role="header-affiliate">
+	<div id="header" class="header header-affiliate">
 		<?php if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonHelper::demoUrl()) {
 			$this->includeTemplate('restore-system/top-header.php');
 		} ?>

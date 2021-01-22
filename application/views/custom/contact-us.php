@@ -20,7 +20,7 @@ $fld->developerTags['col'] = 12;
 <script>
     events.contactUs();
 </script>
-<div id="body" class="body" role="main">
+<div id="body" class="body"   >
     <div class="bg-second pt-3 pb-3">
         <div class="container container--fixed">
             <div class="row align-items-center justify-content-center">

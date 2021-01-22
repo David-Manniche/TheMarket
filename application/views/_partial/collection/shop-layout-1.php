@@ -1,6 +1,6 @@
 <?php
 if (isset($collection['shops']) && count($collection['shops'])) { ?>
-<section class="section" role="shops">
+<section class="section" >
     <div class="container">
         <div class="section-head">
             <div class="section__heading">
