@@ -121,7 +121,7 @@ class ShippingProfileController extends AdminBaseController
         }
         
         if (1 > $profileId) {
-            $shipProZoneId = ShippingProfile::setDefaultZone(UserAuthentication::getLoggedUserId(), $spObj->getMainTableRecordId());
+            $shipProZoneId = ShippingProfile::setDefaultZone(AdminAuthentication::getLoggedAdminId(), $spObj->getMainTableRecordId());
             ShippingProfile::setDefaultRates($shipProZoneId, $spObj->getMainTableRecordId());
         }
 
