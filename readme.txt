@@ -13,6 +13,7 @@ Fixes:
     => 048123 - On Buyer Review Status Updated Notification wrong email template passed
     => 048408 - Admin - While creating a new category catcode not updated
     => 048194 - Unable to add alt tag for image with different options
+    => 048604 - Fatal error in View Order API.
 
 Enhancements :
    => Make provision to made seller

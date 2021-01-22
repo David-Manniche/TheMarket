@@ -47,9 +47,9 @@ $reviewAllowed = FatApp::getConfig('CONF_ALLOW_REVIEWS', FatUtility::VAR_INT, 0)
 
 $canCancelOrder = true;
 $canReturnRefund = true;
-
 foreach ($childArr as $index => $childOrder) {
-    $childArr[$index]['orderstatus_color_code'] = applicationConstants::getClassColor($childOrder['orderstatus_color_class']);
+    $colorClass = !empty($childOrder['orderstatus_color_class']) ? $childOrder['orderstatus_color_class'] : '';
+    $childArr[$index]['orderstatus_color_code'] = applicationConstants::getClassColor($colorClass);
     $rating = isset($childArr[$index]['prod_rating']) ? $childArr[$index]['prod_rating'] : 0;
     $childArr[$index]['prod_rating'] =  (1 == $defaultOrderStatus || (isset($childArr[$index]['spreview_status']) && $childArr[$index]['spreview_status'] == 1)) ? $rating : 0;
     $childArr[$index]['reviewsAllowed'] =  $reviewAllowed;
