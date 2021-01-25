@@ -33,6 +33,8 @@
                     $urlFld= $frmSellerProduct->getField('selprod_url_keyword');
                     $urlFld->htmlAfterField = "<small class='text--small'>" . UrlHelper::generateFullUrl('Products', 'View', array($selprod_id), CONF_WEBROOT_FRONT_URL).'</small>';
                     $urlFld->setFieldTagAttribute('onkeyup', "getSlugUrl(this,this.value,$selprod_id,'post')");
+                    $urlFld->requirements()->setRequired();
+                    //$urlFld->addFieldTagAttribute('class', 'hide');
                     $selprodCodEnabledFld = $frmSellerProduct->getField('selprod_cod_enabled');
                     $selprodCodEnabledFld->setWrapperAttribute('class', 'selprod_cod_enabled_fld');
 
@@ -48,6 +50,17 @@
                     $fld->developerTags['cbLabelAttributes'] = array('class' => 'checkbox');
                     $fld->developerTags['cbHtmlAfterCheckbox'] = '<i class="input-helper"></i>'; ?>
                     <?php echo $frmSellerProduct->getFormTag(); ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper"><label class="field_label"><?php echo $frmSellerProduct->getField('selprod_url_keyword')->getCaption(); ?><span
+                                                class="spn_must_field">*</span></label></div>
+                                    <div class="field-wraper">
+                                        <div class="field_cover"><?php echo $frmSellerProduct->getFieldHtml('selprod_url_keyword'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                            
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set">
