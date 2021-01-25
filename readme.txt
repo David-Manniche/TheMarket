@@ -17,6 +17,8 @@ Fixes:
     => 048534 - Design issue of blank li tag adding in header if single language and single currency 
     => 048605 - getting error while creating shipping profile IN ADMIN
     => 048634 - Users are unable to see products in the favourite list if brand is not selected for the product
+    => 048649 - whenever seller/admin edits the catalog/inventory then on updating it updates the url and changes it to id
+
 
 Enhancements :
    => Make provision to made seller
