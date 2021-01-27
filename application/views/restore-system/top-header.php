@@ -83,41 +83,7 @@
             </a>
         </li>
     </ul>
-    <style>
-     .version-num { line-height: 1; font-size: 0.85rem; margin:0 20px;} 
- 
-    .version-num a{ color: var(--brand-color);  line-height: 1;text-decoration: underline; font-size: 16px;font-weight: 400;} 
-    .animate-flicker {
-    opacity:1;  
-    animation: flickerAnimation 1s infinite;
-}
-    @keyframes flickerAnimation {
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
-}
-@-o-keyframes flickerAnimation{
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
-}
-@-moz-keyframes flickerAnimation{
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
-}
-@-webkit-keyframes flickerAnimation{
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
-}
-.animate-flicker {
-   -webkit-animation: flickerAnimation 1s infinite;
-   -moz-animation: flickerAnimation 1s infinite;
-   -o-animation: flickerAnimation 1s infinite;
-    animation: flickerAnimation 1s infinite;
-}   
-    </style>
+   
     
     <div class="demo-cta">
     <div class="version-num animate-flicker">  <a target="_blank" rel="noopener" href="https://www.yo-kart.com/blog/yokart-releases-v9-3-0-to-personalize-shopping-experiences-automate-payouts-taxes-shipping/?q=demov9.3 ">Learn about <?php echo str_replace('RV-', 'V', CONF_WEB_APP_VERSION);?></a></div>
