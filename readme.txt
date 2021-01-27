@@ -25,6 +25,7 @@ Enhancements :
    => At shop level  pickup interval option given
    => Tracking order with Google Analytics ecommerce 
    => W3c validator.
+   => Performance optimization
     
 Known Issues and Problems :
 

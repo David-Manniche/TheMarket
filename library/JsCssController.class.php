@@ -13,9 +13,9 @@ class JsCssController
     private function setHeaders($contentType)
     {
         header('Content-Type: ' . $contentType);
-        header('Cache-Control: public, max-age=2592000, stale-while-revalidate=604800');
+        header('Cache-Control: public, max-age=31536000, stale-while-revalidate=604800');
         header("Pragma: public");
-        header("Expires: " . date('r', strtotime("+30 days")));
+        header("Expires: " . date('r', strtotime("+1 year")));
         $this->checkModifiedHeader();
         if (isset($_GET['sid'])) {
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $_GET['sid']).' GMT', true, 200);

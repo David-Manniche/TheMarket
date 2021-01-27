@@ -608,9 +608,9 @@ class AttachedFile extends MyAppModel
 
     public static function setHeaders()
     {
-        header('Cache-Control: public, max-age=2592000, stale-while-revalidate=604800');
+        header('Cache-Control: public, max-age=31536000, stale-while-revalidate=604800');
         header("Pragma: public");
-        header("Expires: " . date('r', strtotime("+30 days")));
+        header("Expires: " . date('r', strtotime("+1 year")));
     }
 
     public static function setContentType($imagePath, $fileMimeType = '')
