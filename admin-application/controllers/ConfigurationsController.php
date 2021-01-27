@@ -585,6 +585,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_cookies_policies_section_will_be_shown_on_frontend", $this->adminLangId) . "</small>";
 
                 $frm->addCheckBox(Labels::getLabel("LBL_Header_Mega_Menu", $this->adminLangId), 'CONF_LAYOUT_MEGA_MENU', 1, array(), false, 0);
+                $frm->addCheckBox(Labels::getLabel("LBL_Home_page_loader", $this->adminLangId), 'CONF_LOADER', 1, array(), false, 0);
 
                 $fld3 = $frm->addTextBox(Labels::getLabel("LBL_Admin_Default_Items_Per_Page", $this->adminLangId), "CONF_ADMIN_PAGESIZE");
                 $fld3->requirements()->setInt();
@@ -652,7 +653,7 @@ class ConfigurationsController extends AdminBaseController
 
                 $frm->addHtml('', 'Analytics', '<h3>' . Labels::getLabel("LBL_Google_Webmaster", $this->adminLangId) . '</h3>');
                 $fld = $frm->addFileUpload(Labels::getLabel('LBL_HTML_file_Verification', $this->adminLangId), 'google_file_verification', array('accept' => '.html', 'onChange' => 'updateVerificationFile(this, "google")'));
-                $htmlAfterField = '';              
+                $htmlAfterField = '';
                 if (file_exists(CONF_UPLOADS_PATH . '/google-site-verification.html')) {
                     $htmlAfterField .= $fld->htmlAfterField = '<a href="' . UrlHelper::generateFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . 'google-site-verification.html" target="_blank" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_View_File", $this->adminLangId) . '"><i class="fas fa-eye icon"></i></a><a href="javascript:void();" class="btn btn-clean btn-sm btn-icon" title="' . Labels::getLabel("LBL_Delete_File", $this->adminLangId) . '" onclick="deleteVerificationFile(\'google\')"><i class="fa fa-trash  icon"></i></a>';
                 }
@@ -1794,7 +1795,7 @@ class ConfigurationsController extends AdminBaseController
                 }
                 $ul->htmlAfterField .= '</ul>';
 
-                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"><small>'.Labels::getLabel('MSG_PLEASE_UPLOAD_WHITE_PNG_IMAGE', $this->adminLangId).'</small></div>';
+                $ul->htmlAfterField .= '<input type="file" onChange="popupImage(this)" name="payment_page_logo" id="payment_page_logo" data-min_width = "150" data-min_height = "150" data-file_type=' . AttachedFile::FILETYPE_PAYMENT_PAGE_LOGO . ' value="Upload file"><small>' . Labels::getLabel('MSG_PLEASE_UPLOAD_WHITE_PNG_IMAGE', $this->adminLangId) . '</small></div>';
 
                 $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_Select_Watermark_Image', $this->adminLangId) . '</h3><div class="logoWrap"><div class="uploaded--image">';
 
