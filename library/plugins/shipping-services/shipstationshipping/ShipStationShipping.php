@@ -230,7 +230,7 @@ class ShipStationShipping extends ShippingServicesBase
         $this->address = [];
 
         $this->address['name'] = $name; // This has to be a String... If you put NULL the API cries...
-        // $this->address['company']       = null;
+        $this->address['company'] = $name;
         $this->address['street1'] = $stt1;
         $this->address['street2'] = $stt2;
         $this->address['city'] = $city;

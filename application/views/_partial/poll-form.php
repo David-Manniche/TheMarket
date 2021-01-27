@@ -10,7 +10,7 @@
 	   $pollForm->developerTags['colClassPrefix'] = 'col-md-';
 	   $pollForm->developerTags['fld_default_col'] = '12';
 	   echo $pollForm->getFormHtml(); ?>
-	   <div role="alert" class="alert alert--success alert--positoned poll--msg-js" style="display:none;">
+	   <div class="alert alert--success alert--positoned poll--msg-js" style="display:none;">
 			<a href="javascript:void(0)" onclick='$(this).parent().hide();' class="close poll--link-js"></a>
 			<div class="alert__content">
 				<h4><?php echo Labels::getLabel('MSG_Congratulations',$siteLangId); ?></h4>
@@ -18,7 +18,7 @@
 			</div>
 	   </div>
 
-	   <!--<div role="alert" class="alert alert--info alert--positoned poll--results-js" style="">
+	   <!--<div class="alert alert--info alert--positoned poll--results-js" style="">
 		   <a href="javascript:void(0)" onclick='$(this).parent().hide();' class="close view--link-js"></a>
 		   <div class="alert__content">
 				<h4>Polling Result</h4>

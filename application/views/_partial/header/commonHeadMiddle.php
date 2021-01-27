@@ -40,8 +40,8 @@ if ($canonicalUrl == '') {
 
         --body-color: #<?php echo $themeDetail[ThemeColor::TYPE_BODY]; ?>;
 
-        --dark-color: ;
-        --light-color: ;
+        /* --dark-color: ;
+        --light-color: ; */
 
         --gray-color: #<?php echo $themeDetail[ThemeColor::TYPE_GREY]; ?>;
         --gray-light: #<?php echo $themeDetail[ThemeColor::TYPE_GREY_LIGHT]; ?>;
@@ -54,7 +54,7 @@ if ($canonicalUrl == '') {
         --font-color2: #<?php echo $themeDetail[ThemeColor::TYPE_FONT_SECONDARY]; ?>;
     }
 </style>
-<script type="text/javascript">
+<script>
     <?php
 
     $isUserDashboard = ($isUserDashboard) ? 1 : 0;
@@ -91,7 +91,6 @@ if ($canonicalUrl == '') {
                 }
             })();
     <?php }
-
     $pixelId = FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '');
     if ('' != $pixelId) { ?>
             ! function(f, b, e, v, n, t, s) {
@@ -117,11 +116,7 @@ if ($canonicalUrl == '') {
         var fbPixel = true;
     <?php } ?>
 </script>
-<?php if ('' !=  $pixelId) {  ?>
-    <noscript>
-        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo $pixelId; ?>&ev=PageView&noscript=1" />
-    </noscript>
-<?php }
+<?php 
 
 if (FatApp::getConfig("CONF_GOOGLE_TAG_MANAGER_HEAD_SCRIPT", FatUtility::VAR_STRING, '')) {
     echo FatApp::getConfig("CONF_GOOGLE_TAG_MANAGER_HEAD_SCRIPT", FatUtility::VAR_STRING, '');
@@ -133,5 +128,5 @@ if (FatApp::getConfig("CONF_DEFAULT_SCHEMA_CODES_SCRIPT", FatUtility::VAR_STRING
     echo FatApp::getConfig("CONF_DEFAULT_SCHEMA_CODES_SCRIPT", FatUtility::VAR_STRING, '');
 }
 if (isset($layoutTemplate) && $layoutTemplate != '') { ?>
-    <link rel="stylesheet" href="<?php echo UrlHelper::generateUrl('ThemeColor', $layoutTemplate, array($layoutRecordId)); ?>">
+    <link rel="stylesheet" href="<?php echo UrlHelper::generateUrl('ThemeColor', $layoutTemplate, array($layoutRecordId)); ?>"/>
 <?php }

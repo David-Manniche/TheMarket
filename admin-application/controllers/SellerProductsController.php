@@ -191,6 +191,18 @@ class SellerProductsController extends AdminBaseController
             if (!$sellerProductRow) {
                 FatUtility::dieWithError(Labels::getLabel('MSG_Invalid_Request', $this->adminLangId));
             }
+            $urlSrch = UrlRewrite::getSearchObject();
+            $urlSrch->doNotCalculateRecords();
+            $urlSrch->doNotLimitRecords();
+            $urlSrch->addFld('urlrewrite_custom');
+            $urlSrch->addCondition('urlrewrite_original', '=', 'products/view/' . $selprod_id);
+            $rs = $urlSrch->getResultSet();
+            $urlRow = FatApp::getDb()->fetch($rs);
+            if ($urlRow) {
+                $data['urlrewrite_custom'] = $urlRow['urlrewrite_custom'];
+            }
+            $customUrl = explode("/", $urlRow['urlrewrite_custom']);
+            $sellerProductRow['selprod_url_keyword'] = $customUrl[0];
         } else {
             $sellerProductRow['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($productLangRow['product_url_keyword']));
         }
@@ -309,13 +321,7 @@ class SellerProductsController extends AdminBaseController
         if (false === $post) {
             Message::addErrorMessage(current($frm->getValidationErrors()));
             FatUtility::dieWithError(Message::getHtml());
-        }
-        //Validate product belongs to current logged seller[
-        if ($selprod_id) {
-            $sellerProductRow = SellerProduct::getAttributesById($selprod_id, array('selprod_user_id'));
-        }
-        //]
-        $post['selprod_url_keyword'] = strtolower(CommonHelper::createSlug($post['selprod_url_keyword']));
+        }       
 
         unset($post['selprod_id']);
         $sellerProdObj = new SellerProduct($selprod_id);

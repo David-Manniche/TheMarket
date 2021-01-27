@@ -89,7 +89,7 @@ class StripeConnectController extends PaymentMethodBaseController
         $this->stripeConnect->createLoginLink();
 
         $this->set('loginUrl', $this->stripeConnect->getLoginUrl());
-        $this->set('accountId', $this->stripeConnect->getAccountId());
+        $this->set('accountId', $accountId);
         $this->set('requiredFields', $requiredFields);
         $this->set('keyName', self::KEY_NAME);
         $this->set('pluginName', $this->getPluginData()['plugin_name']);

@@ -11,13 +11,21 @@ Fixes:
     => 047929 - When uploading file for 3rd party APIs Google webmaster and Bing, file name is not saved
     => 047992 - on product search page product coming with wrong option while search
     => 048123 - On Buyer Review Status Updated Notification wrong email template passed
+    => 048408 - Admin - While creating a new category catcode not updated
     => 048194 - Unable to add alt tag for image with different options
+    => 048604 - Fatal error in View Order API.
+    => 048534 - Design issue of blank li tag adding in header if single language and single currency 
+    => 048605 - getting error while creating shipping profile IN ADMIN
+    => 048634 - Users are unable to see products in the favourite list if brand is not selected for the product
+    => 048649 - whenever seller/admin edits the catalog/inventory then on updating it updates the url and changes it to id
     => 048457 - on seller credit page unable to edit label BL_Add_Wallet_Credits_[ Br]
 
 Enhancements :
    => Make provision to made seller
    => At shop level  pickup interval option given
    => Tracking order with Google Analytics ecommerce 
+   => W3c validator.
+   => Performance optimization
     
 Known Issues and Problems :
 

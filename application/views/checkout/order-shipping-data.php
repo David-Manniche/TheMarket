@@ -5,7 +5,7 @@ if(!empty($orderShippingData)){
 	<ul class="list-group review-block">
 		<?php foreach($orderShippingData as $shipData) { ?>
 		<li class="list-group-item">
-			<div class="review-block__content" role="cell">  
+			<div class="review-block__content">  
 				<div class="shipping-data">
 					<ul class="media-more media-more-sm show">
 

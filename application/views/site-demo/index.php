@@ -3,7 +3,7 @@ $this->includeTemplate('restore-system/top-header.php');
 $this->includeTemplate('restore-system/page-content.php');
 ?>
 
-<main role="main" id="main">
+<main    id="main">
     <div class="device-preview">
         <div class="device-preview__container <?php echo $deviceClass; ?>">
             <div class="device-preview__content">

@@ -20,7 +20,7 @@ $cancelBtnFld = $frmSrch->getField('btn_clear');
 $cancelBtnFld->setFieldTagAttribute('class', 'btn-block');
 $cancelBtnFld->setWrapperAttribute('class', 'col-lg-3');
 $cancelBtnFld->developerTags['col'] = 3;
-$cancelBtnFld->developerTags['noCaptionTag'] = true; ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main" role="main">
+$cancelBtnFld->developerTags['noCaptionTag'] = true; ?> <?php $this->includeTemplate('_partial/dashboardNavigation.php'); ?> <main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Products_Inventory_Stock_Status_Report', $siteLangId);?></h2>

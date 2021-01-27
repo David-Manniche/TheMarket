@@ -1,6 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 
-<div id="body" class="body" role="main">
+<div id="body" class="body"   >
     <section class="enter-page sign-in">
         <div class="container-info">
             <div class="info-item" style="background-image: url(<?php echo CONF_WEBROOT_URL; ?>images/bg-signup.png);">

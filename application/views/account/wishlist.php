@@ -11,7 +11,7 @@ if (FatApp::getConfig('CONF_ADD_FAVORITES_TO_WISHLIST', FatUtility::VAR_INT, 1) 
     $function = 'searchWishList()';
 }
 ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?>

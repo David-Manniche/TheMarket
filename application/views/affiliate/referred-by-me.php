@@ -27,7 +27,7 @@ $cancelBtnFld->setWrapperAttribute('class', 'col-lg-2');
 $cancelBtnFld->developerTags['col'] = 2;
 ?>
 <?php $this->includeTemplate('_partial/affiliate/affiliateDashboardNavigation.php'); ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col">

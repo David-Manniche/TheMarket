@@ -5,7 +5,7 @@ $sharingFrm->addFormTagAttribute('onsubmit', 'setUpMailAffiliateSharing(this);re
 $sharingFrm->developerTags['colClassPrefix'] = 'col-xs-12 col-md-';
 $sharingFrm->developerTags['fld_default_col'] = 12;
 ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col"> <?php $this->includeTemplate('_partial/dashboardTop.php'); ?> <h2 class="content-header-title"><?php echo Labels::getLabel('LBL_Affiliate', $siteLangId); ?></h2>

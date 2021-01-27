@@ -8,7 +8,7 @@ if(!empty($orderPickUpData)){
                      <div class="review-block__label">
                          <strong><?php echo ($address['opshipping_by_seller_user_id'] > 0) ? $address['op_shop_name'] : FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, null, ''); ?></strong>
                      </div>
-                    <div class="review-block__content" role="cell">  
+                    <div class="review-block__content">  
                         <div class="delivery-address"> 
 							<?php echo $address['oua_name']; ?>
 							<p><?php echo $address['oua_address1'] ;?> 

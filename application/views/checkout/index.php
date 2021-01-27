@@ -2,7 +2,7 @@
 <script>
     events.initiateCheckout();
 </script>
-<aside role="complementary">
+<aside>
     <button class="order-summary-toggle" data-trigger="order-summary">
         <div class="container">
             <span class="order-summary-toggle__inner">
@@ -35,7 +35,7 @@
         <div class="main checkout-content-js">
 
         </div>
-        <aside class="sidebar" role="complementary">
+        <aside class="sidebar">
             <div class="sidebar__content">
                 <div id="order-summary" class="order-summary summary-listing-js">
 

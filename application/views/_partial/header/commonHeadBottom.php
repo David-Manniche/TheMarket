@@ -31,7 +31,6 @@ if (CommonHelper::demoUrl()) {
     $bodyClass .= ' have-fixed-btn';
 }
 ?>
-
 <body class="<?php echo $bodyClass; ?> ">
     <?php
     $alertClass = '';

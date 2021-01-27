@@ -107,7 +107,7 @@ class FatTemplate
         }
 
         /* Include JS */
-        $str .= '<script type="text/javascript">
+        $str .= '<script>
 				var siteConstants = ' . json_encode(array(
             'webroot' => CONF_WEBROOT_URL . $landCode,
             'webroot_traditional' => CONF_WEBROOT_URL_TRADITIONAL,
@@ -142,14 +142,12 @@ class FatTemplate
                 if ($mergeFiles) {
                     $last_updated = max($last_updated, $time);
                 } else {
-                    $str .= '<script type="text/javascript" language="javascript"
-							src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'jsCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.js') . '"></script>' . "\n";
+                    $str .= '<script src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'jsCommon', array(), $use_root_url, false) . '&f=' . rawurlencode($fl) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.js') . '"></script>' . "\n";
                 }
             }
 
             if ($mergeFiles) {
-                $str .= '<script type="text/javascript" language="javascript"
-							src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'jsCommon', array(), $use_root_url, false) . '&min=0&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js') . '"></script>' . "\n";
+                $str .= '<script src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'jsCommon', array(), $use_root_url, false) . '&min=0&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js') . '"></script>' . "\n";
             }
         }
         if (count($this->arr_page_js) > 0) {
@@ -159,13 +157,11 @@ class FatTemplate
                 if ($mergeFiles) {
                     $last_updated = max($last_updated, $time);
                 } else {
-                    $str .= '<script type="text/javascript" language="javascript"
-							src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode($val) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.js') . '" ></script>' . "\n";
+                    $str .= '<script src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode($val) . '&min=0&sid=' . $time, CONF_DEF_CACHE_TIME, '.js') . '" ></script>' . "\n";
                 }
             }
             if ($mergeFiles) {
-                $str .= '<script type="text/javascript" language="javascript"
-						src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode(implode(',', $this->arr_page_js)) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js') . '" ></script>' . "\n";
+                $str .= '<script src="' . UrlHelper::getCachedUrl(UrlHelper::generateFileUrl('JsCss', 'js', array(), $use_root_url, false) . '&f=' . rawurlencode(implode(',', $this->arr_page_js)) . '&min=1&sid=' . $last_updated, CONF_DEF_CACHE_TIME, '.js') . '" ></script>' . "\n";
             }
         }
         /* Include JS Ends */

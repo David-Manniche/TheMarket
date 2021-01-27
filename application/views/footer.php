@@ -1,6 +1,8 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-
-<?php if (CommonHelper::demoUrl()) { ?>
+<?php if ('' !=  FatApp::getConfig("CONF_FACEBOOK_PIXEL_ID", FatUtility::VAR_STRING, '')) {  ?>
+        <img alt="Facebook Pixel" height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo $pixelId; ?>&ev=PageView&noscript=1" />
+ <?php }
+if (CommonHelper::demoUrl()) { ?>
 <div class="feedback-btn">
     <a href="https://www.yo-kart.com/yokart-marketing-website-feedback.html<?php /* echo UrlHelper::generateUrl('Custom','feedback'); */?>" class="crcle-btn" data-toggle="tooltip" data-placement="left"  title="Give Feedback">
        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comments-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M416 224V64c0-35.3-28.7-64-64-64H64C28.7 0 0 28.7 0 64v160c0 35.3 28.7 64 64 64v54.2c0 8 9.1 12.6 15.5 7.8l82.8-62.1H352c35.3.1 64-28.6 64-63.9zm96-64h-64v64c0 52.9-43.1 96-96 96H192v64c0 35.3 28.7 64 64 64h125.7l82.8 62.1c6.4 4.8 15.5.2 15.5-7.8V448h32c35.3 0 64-28.7 64-64V224c0-35.3-28.7-64-64-64z" class=""></path></svg>
@@ -9,7 +11,7 @@
 </div>
 <?php } ?>
 <?php if (!$isUserDashboard) { ?>
-<footer class="footer section pb-0 no-print" id="footer"  role="site-footer">
+<footer class="footer section pb-0 no-print" id="footer" >
      
         
      
@@ -114,7 +116,7 @@
 </div>
 <?php }?>
 <?php if (!isset($_SESSION['geo_location']) && FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '') != '') { ?>
-<script type="text/javascript" src='https://maps.google.com/maps/api/js?key=<?php echo FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '');?>&libraries=places'></script>
+<script src='https://maps.google.com/maps/api/js?key=<?php echo FatApp::getConfig('CONF_GOOGLEMAP_API_KEY', FatUtility::VAR_STRING, '');?>&libraries=places'></script>
 
 <?php } ?>
 <?php if (FatApp::getConfig('CONF_ENABLE_LIVECHAT', FatUtility::VAR_STRING, '')) {
@@ -124,14 +126,14 @@
                                     echo FatApp::getConfig('CONF_SITE_TRACKER_CODE', FatUtility::VAR_STRING, '');
                                 }?>
 
-<?php /*?><script type="text/javascript" src="<?php
+<?php /*?><script src="<?php
 $fl = 'js/variables.js';
 echo FatUtility::generateUrl('JsCss', 'js', array(), '', false). '&f=' . rawurlencode($fl);
 ?>"></script> <?php */?>
 <div class="no-print">
     <?php if (CommonHelper::demoUrl()) { ?>
     <!--Start of Tawk.to Script-->
-    <script type="text/javascript">
+    <script>
         var Tawk_API = Tawk_API || {},
             Tawk_LoadStart = new Date();
         (function() {

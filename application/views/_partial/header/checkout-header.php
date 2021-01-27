@@ -4,7 +4,7 @@ if (FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1) && CommonH
     $this->includeTemplate('restore-system/page-content.php');
 } ?>
 <section class="checkout">
-    <header class="header-checkout" data-header="" role="header-checkout">
+    <header class="header-checkout" data-header="" >
         <div class="container header-checkout_inner">
             <?php
             $fileData = AttachedFile::getAttachment(AttachedFile::FILETYPE_FRONT_LOGO, 0, 0, $siteLangId, false);

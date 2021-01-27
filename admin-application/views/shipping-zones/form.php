@@ -118,7 +118,7 @@ if (!empty($excludeLocations)) {
 
                                                     <div class="col-auto mr-3">
                                                         <?php if ($statesCount > 0) { ?>
-                                                            <a class="link font-bolder link_<?php echo $countryId; ?> containChild-js" data-toggle="collapse" href="#state_list_<?php echo $countryId; ?>" role="button" aria-expanded="false" aria-controls="state_list_<?php echo $countryId; ?>" data-countryid="<?php echo $countryId; ?>" data-loadedstates="0" onclick="getStates(<?php echo $countryId . ',' . $zone['zone_id'] . ',' . $profile_id; ?>);">
+                                                            <a class="link font-bolder link_<?php echo $countryId; ?> containChild-js" data-toggle="collapse" href="#state_list_<?php echo $countryId; ?>" aria-expanded="false" aria-controls="state_list_<?php echo $countryId; ?>" data-countryid="<?php echo $countryId; ?>" data-loadedstates="0" onclick="getStates(<?php echo $countryId . ',' . $zone['zone_id'] . ',' . $profile_id; ?>);">
                                                                 <span class="statecount--js selectedStateCount--js_<?php echo $countryId; ?> " data-totalcount="<?php echo $statesCount; ?>">0</span>
                                                                 <?php echo Labels::getLabel("LBL_of", $adminLangId); ?>
                                                                 <span class="totalStates "><?php echo $statesCount; ?></span>

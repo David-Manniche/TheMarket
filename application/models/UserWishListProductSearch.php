@@ -100,8 +100,10 @@ class UserWishListProductSearch extends SearchBase
         }
 
         $this->joinTable(Brand::DB_TBL, 'LEFT OUTER JOIN', 'p.product_brand_id = brand.brand_id', 'brand');
-        $this->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
-        $this->addCondition('brand.brand_deleted', '=', '0');
+        if ( FatApp::getConfig("CONF_PRODUCT_BRAND_MANDATORY", FatUtility::VAR_INT, 1) ) {
+            $this->addCondition('brand.brand_active', '=', applicationConstants::ACTIVE);
+            $this->addCondition('brand.brand_deleted', '=', '0');
+        }
 
         if ($langId) {
             $this->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = ' . $langId, 'tb_l');

@@ -11975,7 +11975,7 @@ form.custom-form {
 
 /* Ion.RangeSlider
 // css version 2.0.3
-// ┬⌐ 2013-2014 Denis Ineshin | IonDen.com
+// © 2013-2014 Denis Ineshin | IonDen.com
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // RangeSlider */
@@ -12131,8 +12131,8 @@ form.custom-form {
 
 /* Ion.RangeSlider, Simple Skin
 // css version 2.0.3
-// ┬⌐ Denis Ineshin, 2014    https://github.com/IonDen
-// ┬⌐ guybowden, 2014        https://github.com/guybowden
+// © Denis Ineshin, 2014    https://github.com/IonDen
+// © guybowden, 2014        https://github.com/guybowden
 // ===================================================================================================================*/
 /* =====================================================================================================================
 // Skin details */
@@ -16002,6 +16002,56 @@ img.mfp-img, .post .post_media iframe.mfp-img, .post .post_media .posted-content
       height: 20px;
       width: 20px;
       fill: #fff; }
+
+.version-num {
+  line-height: 1;
+  font-size: 0.85rem;
+  margin: 0 20px; }
+
+.version-num a {
+  color: var(--brand-color);
+  line-height: 1;
+  text-decoration: underline;
+  font-size: 16px;
+  font-weight: 400; }
+
+.animate-flicker {
+  opacity: 1;
+  animation: flickerAnimation 1s infinite; }
+
+@keyframes flickerAnimation {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+@-o-keyframes flickerAnimation {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+@-moz-keyframes flickerAnimation {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+@-webkit-keyframes flickerAnimation {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+.animate-flicker {
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite; }
 
 #mbsmessage,
 .system_message {
@@ -35540,6 +35590,7 @@ div.faqanswer {
         padding: 0 5px; } }
   .hero-slider .hero-media {
     /*background: #000;*/
+    background-color: #f3f4f5;
     border-radius: 4px;
     overflow: hidden; }
     .hero-slider .hero-media img, .hero-slider .hero-media .post .post_media iframe, .post .post_media .hero-slider .hero-media iframe, .hero-slider .hero-media .post .post_media .posted-content .posted-media .post__pic .media-wrapper img, .post .post_media .posted-content .posted-media .post__pic .media-wrapper .hero-slider .hero-media img, .hero-slider .hero-media .posted-content .posted-media .post__pic .media-wrapper .post .post_media img, .posted-content .posted-media .post__pic .media-wrapper .post .post_media .hero-slider .hero-media img {

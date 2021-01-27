@@ -1,6 +1,6 @@
 <?php  defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php $this->includeTemplate('_partial/advertiser/advertiserDashboardNavigation.php'); ?>
-<main id="main-area" class="main" role="main">
+<main id="main-area" class="main"   >
     <div class="content-wrapper content-space">
         <div class="content-header row">
             <div class="col">
