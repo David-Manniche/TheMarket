@@ -18,7 +18,7 @@ Fixes:
     => 048605 - getting error while creating shipping profile IN ADMIN
     => 048634 - Users are unable to see products in the favourite list if brand is not selected for the product
     => 048649 - whenever seller/admin edits the catalog/inventory then on updating it updates the url and changes it to id
-
+    => 048457 - on seller credit page unable to edit label BL_Add_Wallet_Credits_[ Br]
 
 Enhancements :
    => Make provision to made seller
