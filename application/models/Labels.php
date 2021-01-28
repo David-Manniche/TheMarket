@@ -117,14 +117,16 @@ class Labels extends MyAppModel
         $key = strtoupper($lblKey);
 
         $str = '';
-        /* global $langFileData;
-        if (!isset($langFileData[$langId][$key])) {
-            $str = $langFileData[$langId][$key] = static::readDataFromFile($langId, $key_original, $type);
-        } else {
-            if (array_key_exists($key, $langFileData[$langId])) {
-                $str = $langFileData[$langId][$key];
+        if (FatApp::getConfig('CONF_READ_LABELS_FROM_FILE', FatUtility::VAR_INT, 1)) {
+            global $langFileData;
+            if (!isset($langFileData[$langId][$key])) {
+                $str = $langFileData[$langId][$key] = static::readDataFromFile($langId, $key_original, $type);
+            } else {
+                if (array_key_exists($key, $langFileData[$langId])) {
+                    $str = $langFileData[$langId][$key];
+                }
             }
-        } */
+        }
 
         if (empty($str)) {
             $db = FatApp::getDb();

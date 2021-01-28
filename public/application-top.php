@@ -21,9 +21,7 @@ if (CommonHelper::demoUrl()) {
 } else {
     date_default_timezone_set('America/New_York');
 }
-
-$timeZone = FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get());
-date_default_timezone_set($timeZone);
+date_default_timezone_set(FatApp::getConfig('CONF_TIMEZONE', FatUtility::VAR_STRING, date_default_timezone_get()));
 
 /* setting Time Zone of Mysql Server with same as of PHP[ */
 $now = new DateTime();
@@ -45,24 +43,23 @@ FatApp::getDb()->query("SET NAMES utf8mb4");
 FatApp::getDb()->logQueries(true,CONF_UPLOADS_PATH.'logQuery.txt'); */
 
 /* --- Redirect SSL --- */
-$protocol = (FatApp::getConfig('CONF_USE_SSL', FatUtility::VAR_INT, 0) == 1) ? 'https://' : 'http://';
-
 if (true == USE_X_FORWARDED_PROTO) {
     /* USE when $_SERVER['HTTPS'] will not provided by server . Generally in AWS server when load balance used for SSL. */
-    if ((!isset($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https')  && (FatApp::getConfig('CONF_USE_SSL') == 1)) {
+    if ((!isset($_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https')  && (FatApp::getConfig('CONF_USE_SSL', FatUtility::VAR_INT, 0) == 1)) {
         $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         FatApp::redirectUser($redirect);
     }
 } else {
-    if ((!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')  && (FatApp::getConfig('CONF_USE_SSL') == 1)) {
+    if ((!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')  && (FatApp::getConfig('CONF_USE_SSL', FatUtility::VAR_INT, 0) == 1)) {
         $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         FatApp::redirectUser($redirect);
     }
 }
 /* --- Redirect SSL --- */
 $_SESSION['WYSIWYGFileManagerRequirements'] = CONF_INSTALLATION_PATH . 'public/WYSIWYGFileManagerRequirements.php';
-require_once CONF_INSTALLATION_PATH . 'library/aws/aws-autoloader.php';
-AttachedFile::registerS3ClientStream();
-
+if (strpos(CONF_UPLOADS_PATH, 's3://') !== false) {
+    require_once CONF_INSTALLATION_PATH . 'library/aws/aws-autoloader.php';
+    AttachedFile::registerS3ClientStream();
+}
 define('SYSTEM_INIT', true);
 define('CONF_WEB_APP_VERSION', 'RV-9.3.0');
