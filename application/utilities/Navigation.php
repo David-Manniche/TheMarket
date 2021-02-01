@@ -253,8 +253,15 @@ class Navigation
             if ($navigationCatCache) {
                 $categoriesMainRootArr = unserialize($navigationCatCache);
             } else {
-                $rs = $prodSrchObj->getResultSet();
-                $productRows = FatApp::getDb()->fetchAll($rs);
+                $prodCatCache = FatCache::get('prodCatCache' . $siteLangId, CONF_HOME_PAGE_CACHE_TIME, '.txt');
+                if ($prodCatCache) {
+                    $productRows = unserialize($prodCatCache);
+                } else {
+                    $rs = $prodSrchObj->getResultSet();
+                    $productRows = FatApp::getDb()->fetchAll($rs);
+                    FatCache::set('prodCatCache' . $siteLangId, serialize($productRows), '.txt');
+                }
+
                 $categoriesMainRootArr = array_column($productRows, 'prodrootcat_code');
                 array_walk(
                     $categoriesMainRootArr,
