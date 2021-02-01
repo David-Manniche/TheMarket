@@ -38,7 +38,7 @@ class ProductsController extends MyAppController
         $keyword = '';
         if (array_key_exists('keyword', $get)) {
             $includeKeywordRelevancy = true;
-            $keyword = $get['keyword'];
+            $keyword = trim($get['keyword']);
         }
 
         if ($validateBrand && array_key_exists('keyword', $get)) {
@@ -49,14 +49,15 @@ class ProductsController extends MyAppController
             $prodSrchObj->setGeoAddress();
             $prodSrchObj->joinShops();
             $prodSrchObj->validateAndJoinDeliveryLocation();
-            $prodSrchObj->joinBrands($this->siteLangId);
+            $prodSrchObj->joinBrands();
+            $prodSrchObj->joinBrandsLang($this->siteLangId, $keyword);
             $prodSrchObj->joinProductToCategory();
             $prodSrchObj->joinSellerSubscription(0, false, true);
             $prodSrchObj->addSubscriptionValidCondition();
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->setPageSize(1);
             $prodSrchObj->doNotCalculateRecords();
-            $prodSrchObj->addHaving('brand_name', 'like', trim($get['keyword']));
+            $prodSrchObj->addHaving('brand_name', 'like', $keyword);
             $brandRs = $prodSrchObj->getResultSet();
             $brandArr = FatApp::getDb()->fetchAllAssoc($brandRs);
             if (!empty($brandArr)) {
@@ -1847,7 +1848,8 @@ class ProductsController extends MyAppController
             if ($pageSize) {
                 $srch->setPageSize($pageSize);
             }
-            //echo $srch->getQuery();exit;
+            /* echo $srch->getQuery();
+            exit; */
             $rs = $srch->getResultSet();
             $db = FatApp::getDb();
             $products = $db->fetchAll($rs);

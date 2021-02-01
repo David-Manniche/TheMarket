@@ -50,7 +50,7 @@ class ProductCategory extends MyAppModel
     {
         $langId = FatUtility::int($langId);
         $prodcatStatus = FatUtility::int($prodcatStatus);
-        $srch = new SearchBase(static::DB_TBL, 'm');        
+        $srch = new SearchBase(static::DB_TBL, 'm');
 
         if ($includeChildCount) {
             $childSrchbase = new SearchBase(static::DB_TBL);
@@ -538,7 +538,7 @@ class ProductCategory extends MyAppModel
         if ($ignoreCategoryId > 0) {
             $srch->addHaving('prodcat_code', 'NOT LIKE', '%' . str_pad($ignoreCategoryId, 6, '0', STR_PAD_LEFT) . '%');
         }
-        
+
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         /* echo $srch->getQuery(); die; */
@@ -723,13 +723,13 @@ class ProductCategory extends MyAppModel
         }
         return $return;
     }
-    
+
     public static function getProdCatParentChildWiseArr(int $langId = 0, int $parentId = 0, bool $includeChildCat = true, bool $forSelectBox = false, bool $sortByName = false, $prodCatSrchObj = false, bool $excludeCategoriesHavingNoProducts = false)
     {
         if (!$langId) {
             trigger_error("Language not specified", E_USER_ERROR);
         }
-        
+
         if (is_object($prodCatSrchObj)) {
             $prodCatSrch = clone $prodCatSrchObj;
         } else {
@@ -906,7 +906,7 @@ class ProductCategory extends MyAppModel
             }
             //$globalCatTree[$catId]['prodcat_id']['children'] = '';
             if (count($remainingCatCods) > 0) {
-                self::getCategoryTreeForSearch($siteLangId, $remainingCatCods, $globalCatTree[$catId]['children'], $attr);
+                $this->getCategoryTreeForSearch($siteLangId, $remainingCatCods, $globalCatTree[$catId]['children'], $attr);
             }
         }
     }
@@ -948,7 +948,7 @@ class ProductCategory extends MyAppModel
             if (!isset($this->categoryTreeArr[$parentId]['children'])) {
                 $this->categoryTreeArr[$parentId]['children'] = array();
             }
-            productCategory::getCategoryTreeForSearch($siteLangId, $remaingCategories, $this->categoryTreeArr[$parentId]['children'], $attr);
+            $this->getCategoryTreeForSearch($siteLangId, $remaingCategories, $this->categoryTreeArr[$parentId]['children'], $attr);
         }
         return $this->categoryTreeArr;
     }
@@ -1002,15 +1002,15 @@ class ProductCategory extends MyAppModel
 
         $prodSrchObj->addMultipleFields(array('count(selprod_id) as productCounts', 'prodcat_id'));
         /* $prodSrchObj->addMultipleFields(array('substr(prodcat_code,1,6) AS prodrootcat_code','count(selprod_id) as productCounts', 'prodcat_id')); */
-		
-		$cnd = $prodSrchObj->addCondition('c.prodcat_id', '=', $this->mainTableRecordId);
-		$cnd->attachCondition('c.prodcat_code', 'like', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%');
-		
-		/*  if (0 < $this->mainTableRecordId) {
+
+        $cnd = $prodSrchObj->addCondition('c.prodcat_id', '=', $this->mainTableRecordId);
+        $cnd->attachCondition('c.prodcat_code', 'like', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%');
+
+        /*  if (0 < $this->mainTableRecordId) {
             $prodSrchObj->addHaving('prodrootcat_code', 'LIKE', '%' . str_pad($this->mainTableRecordId, 6, '0', STR_PAD_LEFT) . '%', 'AND', true);
         } */
-        
-		$prodSrchObj->addHaving('productCounts', '>', 0);
+
+        $prodSrchObj->addHaving('productCounts', '>', 0);
 
         $rs = $prodSrchObj->getResultSet();
         $productRows = FatApp::getDb()->fetch($rs);
@@ -1076,7 +1076,7 @@ class ProductCategory extends MyAppModel
         }
 
         $this->assignValues($post);
-        if ($this->save()) { 
+        if ($this->save()) {
             $this->updateCatCode();
             $this->rewriteUrl($post['prodcat_identifier'], true, $parentCatId);
             Product::updateMinPrices();
@@ -1263,7 +1263,7 @@ class ProductCategory extends MyAppModel
         FatApp::getDb()->updateFromArray(static::DB_TBL, array(static::DB_TBL_PREFIX . 'parent' => $parentCatId), array('smt' => static::DB_TBL_PREFIX . 'id = ?', 'vals' => array($this->mainTableRecordId)));
         return true;
     }
-    
+
     /**
      * updateCategoryRelations
      *
@@ -1292,8 +1292,10 @@ class ProductCategory extends MyAppModel
                 $deleted = false;
                 foreach (array_reverse($catCodeArr) as $level => $code) {
                     $catId = ltrim($code, 0);
-                    
-                    if (!$catId) { continue; }
+
+                    if (!$catId) {
+                        continue;
+                    }
 
                     if (false === $deleted) {
                         $db->deleteRecords(self::DB_TBL_PROD_CAT_RELATIONS, ['smt' => self::DB_TBL_PROD_CAT_REL_PREFIX . 'prodcat_id = ?', 'vals' => [$prodCatId]]);

@@ -1579,8 +1579,7 @@ END,   special_price_found ) as special_price_found'
         $srch->addCondition('selprod_deleted', '=', applicationConstants::NO);
         // $srch->addCondition('selprod_available_from', '>=', FatDate::nowInTimezone(FatApp::getConfig('CONF_TIMEZONE'), 'Y-m-d'));
 
-        $srch->addGroupBy('product_id');
-        // echo $srch->getQuery();
+        $srch->addGroupBy('product_id');        
         if (!empty($keyword)) {
             $srch->addGroupBy('keywordmatched');
             $srch->addOrder('keywordmatched', 'desc');

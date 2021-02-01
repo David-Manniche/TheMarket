@@ -624,9 +624,15 @@ class ProductSearch extends SearchBase
         }
     }
 
-    public function joinBrandsLang($langId)
+    public function joinBrandsLang($langId, $keyword = '')
     {
-        $this->joinTable(Brand::DB_TBL_LANG, 'LEFT OUTER JOIN', 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = ' . $langId, 'tb_l');
+        $joinCondition = '';
+        $joinBy = 'LEFT OUTER JOIN';
+        if (!empty($keyword)) {
+            $joinBy = 'INNER JOIN';
+            $joinCondition = ' and tb_l.brand_name like ' . FatApp::getDb()->quoteVariable($keyword);
+        }
+        $this->joinTable(Brand::DB_TBL_LANG, $joinBy, 'brand.brand_id = tb_l.brandlang_brand_id AND brandlang_lang_id = ' . $langId . $joinCondition, 'tb_l');
     }
 
     public function joinProductToCategory($langId = 0, $isActive = true, $isDeleted = true, $useInnerJoin = true)
@@ -757,7 +763,7 @@ class ProductSearch extends SearchBase
                 foreach ($arr_keywords as $value) {
                     $cnd->attachCondition('product_tags_string', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('selprod_title', 'LIKE', '%' . $value . '%');
-                   /*  $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%'); */
+                    /*  $cnd->attachCondition('product_name', 'LIKE', '%' . $value . '%'); */
                     $cnd->attachCondition('brand_name', 'LIKE', '%' . $value . '%');
                     $cnd->attachCondition('prodcat_name', 'LIKE', '%' . $value . '%');
                 }

@@ -31,16 +31,16 @@ $mins = abs($mins);
 $hrs = floor($mins / 60);
 $mins -= $hrs * 60;
 $offset = sprintf('%+d:%02d', $hrs * $sgn, $mins);
-FatApp::getDb()->query("SET sql_mode = 'NO_ENGINE_SUBSTITUTION'");
-FatApp::getDb()->query("SET time_zone = '" . $offset . "'");
+/* FatApp::getDb()->query("SET sql_mode = 'NO_ENGINE_SUBSTITUTION'");
+FatApp::getDb()->query("SET time_zone = '" . $offset . "'"); */
 /* ] */
 
 ini_set('session.cookie_httponly', true);
 ini_set('session.cookie_path', CONF_WEBROOT_FRONT_URL);
 session_start();
 FatApp::getDb()->query("SET NAMES utf8mb4");
-/* FatApp::getDb()->clearQueryLog();
-FatApp::getDb()->logQueries(true,CONF_UPLOADS_PATH.'logQuery.txt'); */
+FatApp::getDb()->clearQueryLog();
+FatApp::getDb()->logQueries(true,CONF_UPLOADS_PATH.'logQuery.txt');
 
 /* --- Redirect SSL --- */
 if (true == USE_X_FORWARDED_PROTO) {
