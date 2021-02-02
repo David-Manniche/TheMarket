@@ -75,7 +75,7 @@ class CommonHelper extends FatUtility
             self::$_currency_id,
             array('currency_code', 'currency_symbol_left', 'currency_symbol_right', 'currency_value')
         );
-
+        
         self::$_lang_code = Language::getAttributesById(
             self::$_lang_id,
             'language_code'

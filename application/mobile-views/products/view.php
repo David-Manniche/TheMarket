@@ -77,10 +77,11 @@ foreach ($shippingRates as $sn => $row) {
 }
 
 if (!empty($product)) {
+    $product['productPolicies'] = [];
     $product['selprod_price'] = CommonHelper::displayMoneyFormat($product['selprod_price'], false, false, false);
     $product['theprice'] = CommonHelper::displayMoneyFormat($product['theprice'], false, false, false);
     $product['inclusiveTax'] = FatUtility::int(FatApp::getConfig("CONF_PRODUCT_INCLUSIVE_TAX", FatUtility::VAR_INT, 0) && 0 == Tax::getActivatedServiceId());
-    if (!empty($product['selprod_return_age'])) {
+    if (!empty($product['selprod_return_age']) && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) {
         $lbl = Labels::getLabel('LBL_{DAYS}_DAYS_RETURN_BACK_POLICY', $siteLangId);
         $returnAge = !empty($product['selprod_return_age']) ? $product['selprod_return_age'] : $product['shop_return_age'];
         $returnAge = !empty($returnAge) ? $returnAge : 0;
@@ -91,7 +92,7 @@ if (!empty($product)) {
             'icon' => CONF_WEBROOT_URL . 'images/easyreturns.png'
         );
     }
-    if (!empty($product['selprod_cancellation_age'])) {
+    if (!empty($product['selprod_cancellation_age']) && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) {
         $lbl = Labels::getLabel('LBL_{DAYS}_DAYS_CANCELLATION_POLICY', $siteLangId);
         $cancellationAge = !empty($product['selprod_cancellation_age']) ? $product['selprod_cancellation_age'] : $product['shop_cancellation_age'];
         $cancellationAge = !empty($cancellationAge) ? $cancellationAge : 0;
@@ -111,27 +112,32 @@ if (!empty($product)) {
             'icon' => CONF_WEBROOT_URL . 'images/yearswarranty.png'
         );
     }
-    if (isset($shippingDetails['ps_free']) && $shippingDetails['ps_free'] == applicationConstants::YES) {
-        $product['productPolicies'][] = array(
-            'title' => Labels::getLabel('LBL_Free_Shipping_on_this_Order', $siteLangId),
-            'isSvg' => Plugin::RETURN_FALSE,
-            'icon' => CONF_WEBROOT_URL . 'images/freeshipping.png'
-        );
-    } elseif (count($shippingRates) > 0) {
-        $product['productPolicies'][] = array(
-            'title' => Labels::getLabel('LBL_Shipping_Rates', $siteLangId),
-            'isSvg' => Plugin::RETURN_FALSE,
-            'icon' => CONF_WEBROOT_URL . 'images/shipping-policies.png',
-            'shippingRatesDetail' => $shippingRatesDetail,
-        );
+
+    if (Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) {
+        if (isset($shippingDetails['ps_free']) && $shippingDetails['ps_free'] == applicationConstants::YES) {
+            $product['productPolicies'][] = array(
+                'title' => Labels::getLabel('LBL_Free_Shipping_on_this_Order', $siteLangId),
+                'isSvg' => Plugin::RETURN_FALSE,
+                'icon' => CONF_WEBROOT_URL . 'images/freeshipping.png'
+            );
+        } elseif (count($shippingRates) > 0) {
+            $product['productPolicies'][] = array(
+                'title' => Labels::getLabel('LBL_Shipping_Rates', $siteLangId),
+                'isSvg' => Plugin::RETURN_FALSE,
+                'icon' => CONF_WEBROOT_URL . 'images/shipping-policies.png',
+                'shippingRatesDetail' => $shippingRatesDetail,
+            );
+        }
     }
-    if (0 < $codEnabled) {
+
+    if (0 < $codEnabled && Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) {
         $product['productPolicies'][] = array(
             'title' => Labels::getLabel('LBL_Cash_on_delivery_is_available', $siteLangId),
             'isSvg' => Plugin::RETURN_FALSE,
             'icon' => CONF_WEBROOT_URL . 'images/safepayments.png'
         );
     }
+
     $product['youtubeUrlThumbnail'] = '';
     if (!empty($product['product_youtube_video'])) {
         $youtubeVideoUrl = $product['product_youtube_video'];
@@ -144,32 +150,34 @@ if (!empty($product)) {
 $product['selprod_return_policies'] = !empty($product['selprod_return_policies']) ? $product['selprod_return_policies'] : (object) array();
 $product['selprod_warranty_policies'] = !empty($product['selprod_warranty_policies']) ? $product['selprod_warranty_policies'] : (object) array();
 
-$fulfillmentLabel = Labels::getLabel('LBL_INVALID_FULFILLMENT', $siteLangId);
-$icon = CONF_WEBROOT_URL . 'images/';
-switch ($fulfillmentType) {
-    case Shipping::FULFILMENT_SHIP:
-        $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
-        $icon .= 'shipping_30x30.png';
-        break;
-    case Shipping::FULFILMENT_PICKUP:
-        $fulfillmentLabel = Labels::getLabel('LBL_PICKUP_ONLY', $siteLangId);
-        $icon .= 'item_pickup_30x30.png';
-        break;
-    case Shipping::FULFILMENT_ALL:
-        $fulfillmentLabel = Labels::getLabel('LBL_SHIPPMENT_AND_PICKUP', $siteLangId);
-        $icon .= 'shipping_30x30.png';
-        break;
-    default:
-        $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
-        $icon .= 'shipping_30x30.png';
-        break;
-}
+if (Product::PRODUCT_TYPE_PHYSICAL == $product['product_type']) {
+    $fulfillmentLabel = Labels::getLabel('LBL_INVALID_FULFILLMENT', $siteLangId);
+    $icon = CONF_WEBROOT_URL . 'images/';
+    switch ($fulfillmentType) {
+        case Shipping::FULFILMENT_SHIP:
+            $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
+            $icon .= 'shipping_30x30.png';
+            break;
+        case Shipping::FULFILMENT_PICKUP:
+            $fulfillmentLabel = Labels::getLabel('LBL_PICKUP_ONLY', $siteLangId);
+            $icon .= 'item_pickup_30x30.png';
+            break;
+        case Shipping::FULFILMENT_ALL:
+            $fulfillmentLabel = Labels::getLabel('LBL_SHIPPMENT_AND_PICKUP', $siteLangId);
+            $icon .= 'shipping_30x30.png';
+            break;
+        default:
+            $fulfillmentLabel = Labels::getLabel('LBL_SHIPPED_ONLY', $siteLangId);
+            $icon .= 'shipping_30x30.png';
+            break;
+    }
 
-$product['productPolicies'][] = array(
-    'title' => $fulfillmentLabel,
-    'isSvg' => Plugin::RETURN_TRUE,
-    'icon' => $icon
-);
+    $product['productPolicies'][] = array(
+        'title' => $fulfillmentLabel,
+        'isSvg' => Plugin::RETURN_TRUE,
+        'icon' => $icon
+    );
+}
 
 $product['product_description'] = strip_tags(html_entity_decode($product['product_description'], ENT_QUOTES, 'utf-8'), applicationConstants::ALLOWED_HTML_TAGS_FOR_APP);
 

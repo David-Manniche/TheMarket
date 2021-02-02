@@ -21,6 +21,7 @@ Fixes:
     => 048457 - on seller credit page unable to edit label BL_Add_Wallet_Credits_[ Br]
     => 049052 - Category icon not displayed in Android and iOS mobile applications
     => 049066 - when admin product is available for pickup only then on buyer end it's listing- price 0 and getting problem on further step
+    => 049147 - Digital product details page >> Available for shipping and pickup should be removed.
 
 Enhancements :
    => Make provision to made seller
