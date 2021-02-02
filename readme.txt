@@ -20,6 +20,7 @@ Fixes:
     => 048649 - whenever seller/admin edits the catalog/inventory then on updating it updates the url and changes it to id
     => 048457 - on seller credit page unable to edit label BL_Add_Wallet_Credits_[ Br]
     => 049052 - Category icon not displayed in Android and iOS mobile applications
+    => 049066 - when admin product is available for pickup only then on buyer end it's listing- price 0 and getting problem on further step
 
 Enhancements :
    => Make provision to made seller

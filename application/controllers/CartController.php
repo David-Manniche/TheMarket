@@ -162,9 +162,10 @@ class CartController extends MyAppController
             $this->set('hasPhysicalProduct', $cartObj->hasPhysicalProduct());
 
             $templateName = 'cart/ship-listing.php';
-            if ($fulfilmentType == Shipping::FULFILMENT_PICKUP || count($fulfillmentProdArr[Shipping::FULFILMENT_SHIP]) == 0) {
+            if ($fulfilmentType == Shipping::FULFILMENT_PICKUP) {
                 $templateName = 'cart/pickup-listing.php';
             }
+            
         } else {
             $srch = EmptyCartItems::getSearchObject($this->siteLangId);
             $srch->doNotCalculateRecords();
