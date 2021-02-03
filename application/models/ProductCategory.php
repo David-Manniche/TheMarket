@@ -234,21 +234,21 @@ class ProductCategory extends MyAppModel
         }
 
         if ($excludeCatHavingNoProducts) {
-            $prodSrchObj = new ProductSearch();
-            $prodSrchObj->setDefinedCriteria(0, 0, ['doNotJoinSpecialPrice' => true]);
+            $prodSrchObj = new ProductSearch($langId);
+            $prodSrchObj->setDefinedCriteria();
+            $prodSrchObj->joinProductToCategory();
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->doNotLimitRecords();
             $prodSrchObj->joinSellerSubscription($langId, true);
             $prodSrchObj->addSubscriptionValidCondition();
-            $prodSrchObj->addMultipleFields(array('product_id'));
+
+            $prodSrchObj->addGroupBy('c.prodcat_id');
+            $prodSrchObj->addMultipleFields(array('count(selprod_id) as productCounts', 'c.prodcat_id as qryProducts_prodcat_id'));
+            //$prodSrchObj->addMultipleFields( array('count(selprod_id) as productCounts', 'c.prodcat_code as qryProducts_prodcat_code') );
             $prodSrchObj->addCondition('selprod_deleted', '=', applicationConstants::NO);
-            $prodSrchObj->addGroupBy('product_id');
-
-            $prodCatSrch->joinProductCategoryRelations();
-            $prodCatSrch->addFld('COALESCE(COUNT(ptc.ptc_product_id), 0) as productCounts', 'c.prodcat_id as qryProducts_prodcat_id');
-            $prodCatSrch->joinTable('(' . $prodSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'qryProducts.product_id = ptc.ptc_product_id', 'qryProducts');
-
-            $prodCatSrch->addHaving('productCounts', '>', 0);
+            $prodCatSrch->joinTable('(' . $prodSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'qryProducts.qryProducts_prodcat_id = c.prodcat_id', 'qryProducts');
+            //$prodCatSrch->joinTable( '('.$prodSrchObj->getQuery().')', 'LEFT OUTER JOIN', 'qryProducts.qryProducts_prodcat_code like CONCAT(c.prodcat_code, "%")', 'qryProducts' );
+            $prodCatSrch->addCondition('qryProducts.productCounts', '>', 0);
         }
 
         if ($sortByName) {
