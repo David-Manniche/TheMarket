@@ -118,11 +118,11 @@ class Common
                 $prodSrchObj->addSubscriptionValidCondition();
                 $prodSrchObj->addGroupBy('prodcat_id');
                 $prodSrchObj->addMultipleFields(array('prodcat_code AS prodrootcat_code', 'count(selprod_id) as productCounts', 'prodcat_id', 'IFNULL(prodcat_name, prodcat_identifier) as prodcat_name', 'prodcat_parent'));
-                $prodSrchObj->addOrder('prodcat_display_order', 'asc');                
+                $prodSrchObj->addOrder('prodcat_display_order', 'asc');
                 $rs = $prodSrchObj->getResultSet();
                 $productRows = FatApp::getDb()->fetchAll($rs);
                 FatCache::set('prodCatCache' . $siteLangId, serialize($productRows), '.txt');
-            }            
+            }
             $mainRootCategories = FatUtility::int(array_column($productRows, 'prodrootcat_code'));
 
             $categoriesMainRootArr = array();
