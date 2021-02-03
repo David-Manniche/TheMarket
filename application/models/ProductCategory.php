@@ -235,20 +235,20 @@ class ProductCategory extends MyAppModel
 
         if ($excludeCatHavingNoProducts) {
             $prodSrchObj = new ProductSearch();
-            $prodSrchObj->setDefinedCriteria(0, 0, array('doNotJoinSpecialPrice' => true));
+            $prodSrchObj->setDefinedCriteria(0, 0, ['doNotJoinSpecialPrice' => true]);
             $prodSrchObj->doNotCalculateRecords();
             $prodSrchObj->doNotLimitRecords();
-            $prodSrchObj->joinProductToCategory();
             $prodSrchObj->joinSellerSubscription($langId, true);
             $prodSrchObj->addSubscriptionValidCondition();
-
-            $prodSrchObj->addGroupBy('c.prodcat_id');
-            $prodSrchObj->addMultipleFields(array('count(selprod_id) as productCounts', 'c.prodcat_id as qryProducts_prodcat_id'));
-            //$prodSrchObj->addMultipleFields( array('count(selprod_id) as productCounts', 'c.prodcat_code as qryProducts_prodcat_code') );
+            $prodSrchObj->addMultipleFields(array('product_id'));
             $prodSrchObj->addCondition('selprod_deleted', '=', applicationConstants::NO);
-            $prodSrchObj->addHaving('productCounts', '>', 0);
-            $prodCatSrch->joinTable('(' . $prodSrchObj->getQuery() . ')', 'INNER JOIN', 'qryProducts.qryProducts_prodcat_id = c.prodcat_id', 'qryProducts');
-            //$prodCatSrch->joinTable( '('.$prodSrchObj->getQuery().')', 'LEFT OUTER JOIN', 'qryProducts.qryProducts_prodcat_code like CONCAT(c.prodcat_code, "%")', 'qryProducts' );
+            $prodSrchObj->addGroupBy('product_id');
+
+            $prodCatSrch->joinProductCategoryRelations();
+            $prodCatSrch->addFld('COALESCE(COUNT(ptc.ptc_product_id), 0) as productCounts', 'c.prodcat_id as qryProducts_prodcat_id');
+            $prodCatSrch->joinTable('(' . $prodSrchObj->getQuery() . ')', 'LEFT OUTER JOIN', 'qryProducts.product_id = ptc.ptc_product_id', 'qryProducts');
+
+            $prodCatSrch->addHaving('productCounts', '>', 0);
         }
 
         if ($sortByName) {
@@ -263,7 +263,6 @@ class ProductCategory extends MyAppModel
         $categoriesArr = FatApp::getDb()->fetchAll($rs, 'prodcat_id');
         static::addMissingParentDetails($categoriesArr, $langId);
         $categoriesArr = static::parseTree($categoriesArr, $parentId);
-
         return $categoriesArr;
     }
 
@@ -776,7 +775,7 @@ class ProductCategory extends MyAppModel
         if (true === $includeChildCat && $categoriesArr) {
             foreach ($categoriesArr as $key => $cat) {
                 $categoriesArr[$key]['icon'] = UrlHelper::generateFullUrl('Category', 'icon', array($cat['prodcat_id'], $langId, 'COLLECTION_PAGE'));
-                $categoriesArr[$key]['children'] = self::getProdCatParentChildWiseArr($langId, $cat['prodcat_id']);
+                $categoriesArr[$key]['children'] = self::getProdCatParentChildWiseArr($langId, $cat['prodcat_id'], $includeChildCat, $forSelectBox, $sortByName, $prodCatSrchObj, $excludeCategoriesHavingNoProducts);
             }
         }
         return $categoriesArr;

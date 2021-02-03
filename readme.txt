@@ -19,6 +19,10 @@ Fixes:
     => 048634 - Users are unable to see products in the favourite list if brand is not selected for the product
     => 048649 - whenever seller/admin edits the catalog/inventory then on updating it updates the url and changes it to id
     => 048457 - on seller credit page unable to edit label BL_Add_Wallet_Credits_[ Br]
+    => 049052 - Category icon not displayed in Android and iOS mobile applications
+    => 049066 - when admin product is available for pickup only then on buyer end it's listing- price 0 and getting problem on further step
+    => 049147 - Digital product details page >> Available for shipping and pickup should be removed.
+    => 049029 - when hamburger menu is selected for categories then on web- all categories are listing while on app only categories containing data are listing
 
 Enhancements :
    => Make provision to made seller

@@ -1,4 +1,4 @@
-<section class="section certified-bar">
+<section class="section certified-bar shippingBar-js">
     <ul>
         <?php
         if (!empty($product['product_warranty'])) { ?>
@@ -106,3 +106,12 @@
         <?php } ?>
     </ul>
 </section>
+
+<!-- Below code used to remove above bar if empty. -->
+<script>
+    $(document).ready(function(){
+        if (1 > $('.shippingBar-js ul li').length) {
+            $('.shippingBar-js').remove();
+        }
+    });
+</script>
