@@ -52,7 +52,7 @@ class Navigation
             if ($headerCategoriesCache) {
                 $headerCategories = unserialize($headerCategoriesCache);
             } else {
-                $headerCategories = ProductCategory::getTreeArr($siteLangId);
+                $headerCategories = ProductCategory::getTreeArr($siteLangId, 0, false, false, true);
                 FatCache::set('headerCategories_' . $siteLangId, serialize($headerCategories), '.txt');
             }
         }

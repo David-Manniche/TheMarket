@@ -334,7 +334,6 @@ class CategoryController extends MyAppController
         }
 
         $categoriesArr = $this->resetKeyValues(array_values($categoriesArr), $this->siteLangId);
-
         if (empty($categoriesArr)) {
             $categoriesArr = array();
         }
