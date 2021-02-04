@@ -25,6 +25,7 @@ Fixes:
     => 049029 - when hamburger menu is selected for categories then on web- all categories are listing while on app only categories containing data are listing
     => 049317 - Mpesa Payment Gateway argument type Issue reported with live credentials
     => 049365 - When you order more than one item with only one allowing for COD, it completes the order as so with all the items, even the ones that don’t have COD option eligible 
+    => 049364 - About Us image is not getting updated in cms due to cache.
 
 Enhancements :
    => Make provision to made seller
