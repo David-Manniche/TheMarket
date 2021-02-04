@@ -174,12 +174,12 @@ class Mpesa extends PaymentMethodBase
      * STKPushSimulation - Use this function to initiate an STKPush Simulation
      * 
      * @param  float $amount - This is the Amount transacted normaly a numeric value. Money that customer pays to the Shorcode. Only whole numbers are supported.
-     * @param  int $customerPhone - The phone number sending money. The parameter expected is a Valid Safaricom Mobile Number that is M-Pesa registered in the format 2547XXXXXXXX. The MSISDN sending the funds
+     * @param  string $customerPhone - The phone number sending money. The parameter expected is a Valid Safaricom Mobile Number that is M-Pesa registered in the format 2547XXXXXXXX. The MSISDN sending the funds
      * @param  string $transactionDesc - This is any additional information/comment that can be sent along with the request from your system. Maximum of 13 Characters.
      * @return bool
      */
 
-    public function STKPushSimulation(string $orderId, float $amount, int $customerPhone, string $transactionDesc): bool
+    public function STKPushSimulation(string $orderId, float $amount, string $customerPhone, string $transactionDesc): bool
     {
         if (false === $this->generateToken()) {
             return false;
