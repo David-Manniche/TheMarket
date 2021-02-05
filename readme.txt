@@ -26,6 +26,7 @@ Fixes:
     => 049317 - Mpesa Payment Gateway argument type Issue reported with live credentials
     => 049365 - When you order more than one item with only one allowing for COD, it completes the order as so with all the items, even the ones that don’t have COD option eligible 
     => 049364 - About Us image is not getting updated in cms due to cache.
+    => 049390 - Shipping is listing twice on front end when cart products from multiple sellers and admin shipping only enabled.
 
 Enhancements :
    => Make provision to made seller
