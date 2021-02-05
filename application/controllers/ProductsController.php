@@ -425,7 +425,7 @@ class ProductsController extends MyAppController
                 'splprice_display_dis_type', 'splprice_display_dis_val', 'splprice_display_list_price', 'product_attrgrp_id', 'product_youtube_video', 'product_cod_enabled', 'selprod_cod_enabled', 'selprod_available_from', 'selprod_min_order_qty', 'product_updated_on', 'product_warranty', 'selprod_return_age', 'selprod_cancellation_age', 'shop_return_age', 'shop_cancellation_age', 'selprod_fulfillment_type', 'shop_fulfillment_type', 'product_fulfillment_type'
             )
         );
-
+        
         $productRs = $prodSrch->getResultSet();
         $product = FatApp::getDb()->fetch($productRs);
         /* ] */
@@ -518,7 +518,8 @@ class ProductsController extends MyAppController
 
         //abled and Get Shipping Rates [*/
         $codEnabled = false;
-        if (Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id'])) {
+        $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
+        if ($isProductShippedBySeller) {
             $walletBalance = User::getUserBalance($product['selprod_user_id']);
             if ($product['selprod_cod_enabled']) {
                 $codEnabled = true;
@@ -547,7 +548,7 @@ class ProductsController extends MyAppController
             $shippingRates = array();
             $shippingDetails = array();
         }
-        $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
+        // $isProductShippedBySeller = Product::isProductShippedBySeller($product['product_id'], $product['product_seller_id'], $product['selprod_user_id']);
         $fulfillmentType = $product['selprod_fulfillment_type'];
         if (true == $isProductShippedBySeller) {
             if ($product['shop_fulfillment_type'] != Shipping::FULFILMENT_ALL) {
@@ -812,6 +813,7 @@ class ProductsController extends MyAppController
         $moreSellerSrch->addHaving('in_stock', '>', 0);
         $moreSellerSrch->addOrder('theprice');
         $moreSellerSrch->addGroupBy('selprod_id');
+        // echo $moreSellerSrch->getQuery(); exit;
         $moreSellerRs = $moreSellerSrch->getResultSet();
         return FatApp::getDb()->fetchAll($moreSellerRs);
     }
