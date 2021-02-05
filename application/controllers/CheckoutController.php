@@ -1160,6 +1160,12 @@ class CheckoutController extends MyAppController
         $totalRoundingOff = 0;
         if ($cartProducts) {
             foreach ($cartProducts as $cartProduct) {
+                $codEnabled = $cartProduct['isProductShippedBySeller'] ? $cartProduct['selprod_cod_enabled'] : $cartProduct['product_cod_enabled'];
+                if (applicationConstants::NO == $codEnabled) {
+                    $key = array_search('CashOnDelivery', array_column($paymentMethods, 'plugin_code'));
+                    if (false !== $key) unset($paymentMethods[$key]);
+                }
+
                 $productShippingData = array();
                 $productTaxChargesData = array();
                 $productInfo = $this->getCartProductInfo($cartProduct['selprod_id']);
