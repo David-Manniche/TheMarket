@@ -138,6 +138,7 @@ class PaypalPayController extends PaymentController
         $paymentAmount = $orderPaymentObj->getOrderPaymentGatewayAmount();
 
         if (false === $this->plugin->validatePaymentRequest($paypalOrderId, $orderId, $currencyCode, $paymentAmount)) {
+            TransactionFailureLog::set(TransactionFailureLog::LOG_TYPE_CHECKOUT, $orderId, json_encode($post));
             FatUtility::dieJsonError($this->plugin->getError());
         }
 
