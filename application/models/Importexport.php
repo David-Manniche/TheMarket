@@ -813,7 +813,8 @@ class Importexport extends ImportexportCommon
                         $prodCatDataArr['prodcat_parent'] = 0;
                     }
                 }
-
+                
+                $prodCatDataArr['prodcat_status'] = applicationConstants::YES;
                 if (!empty($categoryData) && $categoryData['prodcat_id']) {
                     $where = array('smt' => 'prodcat_id = ?', 'vals' => array($categoryId));
                     $this->db->updateFromArray(ProductCategory::DB_TBL, $prodCatDataArr, $where);
