@@ -29,6 +29,7 @@ Fixes:
     => 049390 - Shipping is listing twice on front end when cart products from multiple sellers and admin shipping only enabled.
     => 049439 - payment status is not getting updated through paypal
     => 049425 - Seller >> shop >> pickup address tab >> if we click on "pickup address " tab before adding shop details then blank page gets displayed
+    => 049682 - unable to save seller inventory if quantity is zero
 
 Enhancements :
    => Make provision to made seller
