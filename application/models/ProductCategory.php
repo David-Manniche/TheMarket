@@ -1276,7 +1276,7 @@ class ProductCategory extends MyAppModel
         if (!empty($prodcatCode)) {
             $prodCatCodeArr = [$recordId => $prodcatCode];
         } else {
-            $prodCatSrch = new ProductCategorySearch();
+            $prodCatSrch = new ProductCategorySearch(0, false);
             if (0 < $recordId) {
                 $prodCatSrch->addCondition('prodcat_id', '=',  $recordId);
             }
