@@ -31,6 +31,7 @@ Fixes:
     => 049425 - Seller >> shop >> pickup address tab >> if we click on "pickup address " tab before adding shop details then blank page gets displayed
     => 049682 - unable to save seller inventory if quantity is zero
     => 049811 - While uploading user profile image profile link is wrong in response
+    => 049777 - The - button (QUANTITY reducer) is not functional when we order a product through pickup
 
 Enhancements :
    => Make provision to made seller
