@@ -8,7 +8,7 @@ class TwocheckoutSettingsController extends PaymentMethodSettingsController
         $frm = new Form('frmPaymentMethods');
 
         $envoirment = Plugin::getEnvArr($langId);
-        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment);
+        $envFld = $frm->addSelectBox(Labels::getLabel('LBL_ENVOIRMENT', $langId), 'env', $envoirment, '', [], Labels::getLabel('LBL_Select', $langId));
         $envFld->requirement->setRequired(true);
 
         /* $paymentTypesArr = array(

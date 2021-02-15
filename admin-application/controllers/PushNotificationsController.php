@@ -124,7 +124,7 @@ class PushNotificationsController extends AdminBaseController
 
         $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'pnotification_lang_id', Language::getAllNames(), $this->adminLangId, array(), '');
         
-        $userAuthType = $frm->addSelectBox(Labels::getLabel('LBL_USER_AUTH_TYPE', $this->adminLangId), 'pnotification_user_auth_type', User::getUserAuthTypeArr($this->adminLangId));
+        $userAuthType = $frm->addSelectBox(Labels::getLabel('LBL_USER_AUTH_TYPE', $this->adminLangId), 'pnotification_user_auth_type', User::getUserAuthTypeArr($this->adminLangId), '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $userAuthType->requirements()->setRequired(true);
         $userAuthType->htmlAfterField = '<small>' . Labels::getLabel('LBL_YOU_CAN_CLONE_TO_SEND_THIS_NOTIFICATION_TO_OTHER_USER_AUTH_TYPE', $this->adminLangId) . '</small>';
 
@@ -137,7 +137,7 @@ class PushNotificationsController extends AdminBaseController
         $dateFld = $frm->addDateTimeField(Labels::getLabel('LBL_SCHEDULE_DATE', $this->adminLangId), 'pnotification_notified_on', date('Y-m-d H:00'), ['readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender date_js']);
         $dateFld->requirements()->setRequired(true);
 
-        $deviceType = $frm->addSelectBox(Labels::getLabel('LBL_DEVICE_OPERATING_SYSTEM', $this->adminLangId), 'pnotification_device_os', User::getDeviceTypeArr($this->adminLangId));
+        $deviceType = $frm->addSelectBox(Labels::getLabel('LBL_DEVICE_OPERATING_SYSTEM', $this->adminLangId), 'pnotification_device_os', User::getDeviceTypeArr($this->adminLangId), '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $deviceType->requirements()->setRequired(true);
 
         // $frm->addCheckBox(Labels::getLabel('LBL_NOTIFY_TO_BUYERS', $this->adminLangId), 'pnotification_for_buyer', 1, [], false, 0);

@@ -110,7 +110,7 @@ class CategoryRequestsController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Category_Request_Identifier', $this->adminLangId), 'scategoryreq_identifier');
         $statusArr = CategoryRequest::getCategoryReqStatusArr($this->adminLangId);
         unset($statusArr[CategoryRequest::CATEGORY_REQUEST_PENDING]);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '')->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
         $frm->addTextArea('', 'comments', '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;

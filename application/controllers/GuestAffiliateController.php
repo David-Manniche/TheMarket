@@ -354,7 +354,7 @@ class GuestAffiliateController extends MyAppController
                 $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $siteLangId), 'user_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY'), array(), Labels::getLabel('LBL_Select', $siteLangId));
                 $fld->requirement->setRequired(true);
 
-                $frm->addSelectBox(Labels::getLabel('LBL_State', $siteLangId), 'user_state_id', array())->requirement->setRequired(true);
+                $frm->addSelectBox(Labels::getLabel('LBL_State', $siteLangId), 'user_state_id', array(), '', [], Labels::getLabel('LBL_Select', $this->siteLangId)->requirement->setRequired(true);
                 $frm->addTextBox(Labels::getLabel('LBL_City', $this->siteLangId), 'user_city');
                 $frm->addRequiredField(Labels::getLabel('LBL_Postalcode', $siteLangId), 'user_zip');
 

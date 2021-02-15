@@ -235,7 +235,7 @@ class BlogContributionsController extends AdminBaseController
 
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class' => 'search-input'));
         $statusArr = applicationConstants::getBlogContributionStatusArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Contribution_Status', $this->adminLangId), 'bcontributions_status', $statusArr, '', array(), 'Select');
+        $frm->addSelectBox(Labels::getLabel('LBL_Contribution_Status', $this->adminLangId), 'bcontributions_status', $statusArr, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addHiddenField('', 'page');
         $frm->addHiddenField('', 'bcontributions_id');
         $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));

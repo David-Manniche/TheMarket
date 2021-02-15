@@ -1908,7 +1908,7 @@ class UsersController extends AdminBaseController
 
         $statusArr = User::getSupplierReqStatusArr($this->adminLangId);
         unset($statusArr[User::SUPPLIER_REQUEST_PENDING]);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '')->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
         $frm->addHiddenField('', 'requestId', 0);
         $frm->addTextArea('', 'comments', '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
@@ -2015,10 +2015,10 @@ class UsersController extends AdminBaseController
 
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'user_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'user_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223), [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld->requirement->setRequired(true);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'user_state_id', array())->requirement->setRequired(true);
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'user_state_id', array(), '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirement->setRequired(true);
         $frm->addTextBox(Labels::getLabel('LBL_City', $this->adminLangId), 'user_city');
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
@@ -2087,7 +2087,7 @@ class UsersController extends AdminBaseController
 
         $statusArr = User::getCatalogReqStatusArr($this->adminLangId);
         unset($statusArr[User::CATALOG_REQUEST_PENDING]);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '')->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
         $frm->addHiddenField('', 'requestId', 0);
         $frm->addTextArea('', 'comments', '');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
@@ -2112,7 +2112,7 @@ class UsersController extends AdminBaseController
         $frm = new Form('frmUserTransaction');
         $frm->addHiddenField('', 'user_id');
         $typeArr = Transactions::getCreditDebitTypeArr($langId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'type', $typeArr)->requirements()->setRequired(true);
+        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'type', $typeArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired(true);
         $frm->addRequiredField(Labels::getLabel('LBL_Amount', $this->adminLangId), 'amount')->requirements()->setFloatPositive();
         $frm->addTextArea(Labels::getLabel('LBL_Description', $this->adminLangId), 'description')->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
@@ -2145,10 +2145,10 @@ class UsersController extends AdminBaseController
 
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($langId);
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'addr_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY'));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'addr_country_id', $countriesArr, FatApp::getConfig('CONF_COUNTRY'), [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld->requirement->setRequired(true);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'addr_state_id', array())->requirement->setRequired(true);
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'addr_state_id', array(), '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirement->setRequired(true);
         $frm->addTextBox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'addr_zip');
         $phnFld = $frm->addTextBox(Labels::getLabel('LBL_Phone', $this->adminLangId), 'addr_phone', '', array('class' => 'phone-js ltr-right', 'placeholder' => ValidateElement::PHONE_NO_FORMAT, 'maxlength' => ValidateElement::PHONE_NO_LENGTH));
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);

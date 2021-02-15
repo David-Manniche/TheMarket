@@ -572,10 +572,10 @@ class NavigationsController extends AdminBaseController
         $frm->addSelectBox(Labels::getLabel('LBL_Login_Protected', $this->adminLangId), 'nlink_login_protected', NavigationLinks::getLinkLoginTypeArr($this->adminLangId), '', array(), '')->requirements()->setRequired();
 
         $contentPages = ContentPage::getPagesForSelectBox($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Link_to_CMS_Page', $this->adminLangId), 'nlink_cpage_id', $contentPages);
+        $frm->addSelectBox(Labels::getLabel('LBL_Link_to_CMS_Page', $this->adminLangId), 'nlink_cpage_id', $contentPages, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
         $categoryPages = ProductCategory::getProdCatParentChildWiseArr($this->adminLangId, 0, false, true);
-        $frm->addSelectBox(Labels::getLabel('LBL_Link_to_Category', $this->adminLangId), 'nlink_category_id', $categoryPages);
+        $frm->addSelectBox(Labels::getLabel('LBL_Link_to_Category', $this->adminLangId), 'nlink_category_id', $categoryPages, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_External_Page', $this->adminLangId), 'nlink_url');
         $fld->htmlAfterField = '<br/>' . Labels::getLabel('LBL_Prefix_with_{SITEROOT}_if_u_want_to_generate_system_site_url', $this->adminLangId) . '<br/>E.g: {SITEROOT}products, {SITEROOT}contact_us' . Labels::getLabel('LBL_etc', $this->adminLangId) . '.';

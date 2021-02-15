@@ -415,7 +415,7 @@ class SocialPlatformController extends AdminBaseController
 		$urlFld->requirements()->setRegularExpressionToValidate(ValidateElement::URL_REGEX);
         $urlFld->requirements()->setCustomErrorMessage(Labels::getLabel('LBL_This_must_be_an_absolute_URL', $this->adminLangId));
 		$urlFld->requirements()->setRequired();
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Icon_Type_From_CSS', $this->adminLangId), 'splatform_icon_class', SocialPlatform::getIconArr($this->adminLangId));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Icon_Type_From_CSS', $this->adminLangId), 'splatform_icon_class', SocialPlatform::getIconArr($this->adminLangId), '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld->htmlAfterField = '<small>' . Labels::getLabel('LBL_If_you_have_to_add_a_platform_icon_except_this_select_list', $this->adminLangId) . '</small>';
 
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);

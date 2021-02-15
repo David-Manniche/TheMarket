@@ -283,7 +283,7 @@ class ManualShippingApiController extends AdminBaseController
         $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
         $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'country_id', array( -1 => 'Does not Matter' ) + $countriesArr, '', array(), '');
         
-        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'state_id', array());
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'state_id', array(), '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
@@ -307,9 +307,9 @@ class ManualShippingApiController extends AdminBaseController
         
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'mshipapi_country_id', $countriesArr, '');
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'mshipapi_country_id', $countriesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         
-        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'mshipapi_state_id', array());
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'mshipapi_state_id', array(), '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addTextbox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'mshipapi_zip');
                 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

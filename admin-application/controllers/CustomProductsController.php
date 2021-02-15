@@ -1332,7 +1332,7 @@ class CustomProductsController extends AdminBaseController
 
         $statusArr = ProductRequest::getStatusArr($this->adminLangId);
         unset($statusArr[ProductRequest::STATUS_PENDING]);
-        $frm->addSelectBox(Labels::getLabel('LBL_Select_Status', $this->adminLangId), 'preq_status', $statusArr, '', array(), 'Select')->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Select_Status', $this->adminLangId), 'preq_status', $statusArr, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
 
         /*$frm->addCheckbox(Labels::getLabel('LBL_Move_seller_data_along_with_catalog_request_data', $this->adminLangId), 'preq_update_withselprod', 1, array(), true, 0);*/
         $frm->addHiddenField('', 'preq_id');
@@ -1347,7 +1347,7 @@ class CustomProductsController extends AdminBaseController
         $frm->addTextBox('Keyword', 'keyword', '');
 
         $statusArr = array('-1' => Labels::getLabel('LBL_All', $this->adminLangId)) + ProductRequest::getStatusArr($this->adminLangId);
-        $frm->addSelectBox('Status', 'status', $statusArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'status', $statusArr, '', array(), '');
         $frm->addDateField('Date From', 'date_from', '', array('readonly' => 'readonly', 'class' => 'field--calender'));
         $frm->addDateField('Date To', 'date_to', '', array('readonly' => 'readonly', 'class' => 'field--calender'));
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', 'Search');

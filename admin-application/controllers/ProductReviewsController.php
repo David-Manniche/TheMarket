@@ -215,7 +215,7 @@ class ProductReviewsController extends AdminBaseController
 
         $statusArr = SelProdReview::getReviewStatusArr($this->adminLangId);
         //unset($statusArr[SelProdReview::STATUS_PENDING]);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'spreview_status', $statusArr, '')->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'spreview_status', $statusArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
         $frm->addHiddenField('', 'spreview_id', 0);
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Update', $this->adminLangId));
         return $frm;

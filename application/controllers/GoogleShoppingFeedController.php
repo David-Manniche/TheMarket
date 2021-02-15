@@ -212,12 +212,12 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $frm = new Form('frmAdsBatch');
         $frm->addHiddenField('', 'adsbatch_id');
         $frm->addRequiredField(Labels::getLabel('LBL_BATCH_NAME', $this->siteLangId), 'adsbatch_name');
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'adsbatch_lang_id', Language::getAllNames());
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->siteLangId), 'adsbatch_lang_id', Language::getAllNames(), '', [], Labels::getLabel('LBL_Select', $this->siteLangId));
         $fld->requirement->setRequired(true);
 
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->siteLangId);
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_TARGET_COUNTRY', $this->siteLangId), 'adsbatch_target_country_id', $countriesArr);
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_TARGET_COUNTRY', $this->siteLangId), 'adsbatch_target_country_id', $countriesArr, '', [], Labels::getLabel('LBL_Select', $this->siteLangId));
         $fld->requirement->setRequired(true);
 
         $frm->addDateField(Labels::getLabel('LBL_EXPIRY_DATE', $this->siteLangId), 'adsbatch_expired_on', '', array('readonly' => 'readonly'));
@@ -243,7 +243,7 @@ class GoogleShoppingFeedController extends AdvertisementFeedBaseController
         $fld = $frm->addTextBox(Labels::getLabel('LBL_GOOGLE_PRODUCT_CATEGORY', $this->siteLangId), 'google_product_category');
         $fld->requirement->setRequired(true);
 
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_AGE_GROUP', $this->siteLangId), 'abprod_age_group', (self::KEY_NAME)::ageGroup($this->siteLangId));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_AGE_GROUP', $this->siteLangId), 'abprod_age_group', (self::KEY_NAME)::ageGroup($this->siteLangId), '', [], Labels::getLabel('LBL_Select', $this->siteLangId));
         $fld->requirement->setRequired(true);
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_SAVE', $this->siteLangId));

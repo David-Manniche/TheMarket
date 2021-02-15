@@ -32,6 +32,7 @@ Fixes:
     => 049682 - unable to save seller inventory if quantity is zero
     => 049811 - While uploading user profile image profile link is wrong in response
     => 049777 - The - button (QUANTITY reducer) is not functional when we order a product through pickup
+    => 049919 - labels missing in system
 
 Enhancements :
    => Make provision to made seller

@@ -526,10 +526,10 @@ class OrderReturnRequestsController extends AdminBaseController
         $frm->addTextBox(Labels::getLabel('LBL_Reference_No.', $this->adminLangId), 'ref_no');
         $frm->addTextBox(Labels::getLabel('LBL_Vender_Details', $this->adminLangId), 'seller');
         $frm->addTextBox(Labels::getLabel('LBL_Product', $this->adminLangId), 'product');
-        $frm->addSelectBox(Labels::getLabel('LBL_Request_Status', $this->adminLangId), 'orrequest_status', OrderReturnRequest::getRequestStatusArr($langId), '', array(), 'All Request Status');
+        $frm->addSelectBox(Labels::getLabel('LBL_Request_Status', $this->adminLangId), 'orrequest_status', OrderReturnRequest::getRequestStatusArr($langId), '', array(), Labels::getLabel('LBL_All_Request_Status', $this->adminLangId));
         $requestType = OrderReturnRequest::getRequestTypeArr($langId);
         if (count($requestType) > 1) {
-            $frm->addSelectBox(Labels::getLabel('LBL_Request_Type', $this->adminLangId), 'orrequest_type', OrderReturnRequest::getRequestTypeArr($langId), '', array(), 'All Request Types');
+            $frm->addSelectBox(Labels::getLabel('LBL_Request_Type', $this->adminLangId), 'orrequest_type', OrderReturnRequest::getRequestTypeArr($langId), '', array(), Labels::getLabel('LBL_All_Request_Type', $this->adminLangId));
         }
         $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly'));
         $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array('readonly' => 'readonly'));

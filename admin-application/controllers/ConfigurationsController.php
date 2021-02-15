@@ -572,15 +572,15 @@ class ConfigurationsController extends AdminBaseController
 
                 $cpagesArr = ContentPage::getPagesForSelectBox($this->adminLangId);
 
-                $frm->addSelectBox(Labels::getLabel('LBL_About_Us', $this->adminLangId), 'CONF_ABOUT_US_PAGE', $cpagesArr);
-                $frm->addSelectBox(Labels::getLabel('LBL_Privacy_Policy_Page', $this->adminLangId), 'CONF_PRIVACY_POLICY_PAGE', $cpagesArr);
-                $frm->addSelectBox(Labels::getLabel('LBL_Terms_and_Conditions_Page', $this->adminLangId), 'CONF_TERMS_AND_CONDITIONS_PAGE', $cpagesArr);
-                $frm->addSelectBox(Labels::getLabel('LBL_GDPR_policy_page', $this->adminLangId), 'CONF_GDPR_POLICY_PAGE', $cpagesArr);
+                $frm->addSelectBox(Labels::getLabel('LBL_About_Us', $this->adminLangId), 'CONF_ABOUT_US_PAGE', $cpagesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
+                $frm->addSelectBox(Labels::getLabel('LBL_Privacy_Policy_Page', $this->adminLangId), 'CONF_PRIVACY_POLICY_PAGE', $cpagesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
+                $frm->addSelectBox(Labels::getLabel('LBL_Terms_and_Conditions_Page', $this->adminLangId), 'CONF_TERMS_AND_CONDITIONS_PAGE', $cpagesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
+                $frm->addSelectBox(Labels::getLabel('LBL_GDPR_policy_page', $this->adminLangId), 'CONF_GDPR_POLICY_PAGE', $cpagesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
                 /* $taxStructureArr = TaxStructure::getAllAssoc($this->adminLangId);
                 $frm->addSelectBox(Labels::getLabel('LBL_TAX_STRUCTURE', $this->adminLangId), 'CONF_TAX_STRUCTURE', $taxStructureArr, array(), array(), ''); */
 
-                $frm->addSelectBox(Labels::getLabel('LBL_Cookies_Policies_Page', $this->adminLangId), 'CONF_COOKIES_BUTTON_LINK', $cpagesArr);
+                $frm->addSelectBox(Labels::getLabel('LBL_Cookies_Policies_Page', $this->adminLangId), 'CONF_COOKIES_BUTTON_LINK', $cpagesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
                 $fld1 = $frm->addCheckBox(Labels::getLabel('LBL_Cookies_Policies', $this->adminLangId), 'CONF_ENABLE_COOKIES', 1, array(), false, 0);
                 $fld1->htmlAfterField = "<br><small>" . Labels::getLabel("LBL_cookies_policies_section_will_be_shown_on_frontend", $this->adminLangId) . "</small>";
 
@@ -614,9 +614,9 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = '<small>' . Labels::getLabel("LBL_Current", $this->adminLangId) . ' <span id="currentDate">' . CommonHelper::currentDateTime(null, true) . '</span></small>';
                 $countryObj = new Countries();
                 $countriesArr = $countryObj->getCountriesArr($this->adminLangId);
-                $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'CONF_COUNTRY', $countriesArr);
+                $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'CONF_COUNTRY', $countriesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
-                $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'CONF_STATE', array());
+                $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'CONF_STATE', array(), '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
                 $frm->addTextBox(Labels::getLabel("LBL_Postal_Code", $this->adminLangId), 'CONF_ZIP_CODE');
                 $frm->addSelectBox(Labels::getLabel('LBL_date_Format', $this->adminLangId), 'CONF_DATE_FORMAT', Configurations::dateFormatPhpArr(), false, array(), '');
 
@@ -626,8 +626,8 @@ class ConfigurationsController extends AdminBaseController
                 $faqCategoriesArr = FaqCategory::getFaqPageCategories();
                 $sellerCategoriesArr = FaqCategory::getSellerPageCategories();
 
-                $frm->addSelectBox(Labels::getLabel('LBL_Faq_Page_Main_Category', $this->adminLangId), 'CONF_FAQ_PAGE_MAIN_CATEGORY', $faqCategoriesArr);
-                $frm->addSelectBox(Labels::getLabel('LBL_Seller_Page_Main_Faq_Category', $this->adminLangId), 'CONF_SELLER_PAGE_MAIN_CATEGORY', $sellerCategoriesArr);
+                $frm->addSelectBox(Labels::getLabel('LBL_Faq_Page_Main_Category', $this->adminLangId), 'CONF_FAQ_PAGE_MAIN_CATEGORY', $faqCategoriesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
+                $frm->addSelectBox(Labels::getLabel('LBL_Seller_Page_Main_Faq_Category', $this->adminLangId), 'CONF_SELLER_PAGE_MAIN_CATEGORY', $sellerCategoriesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
                 break;
 
@@ -1772,7 +1772,7 @@ class ConfigurationsController extends AdminBaseController
                     $ul->htmlAfterField .= '<img src="' . $image . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeSocialFeedImage(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="social_feed_image" id="social_feed_image" data-min_width = "160" data-min_height = "240" data-file_type=' . AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE . ' value="Upload file"><small>Dimensions 160*240</small></div>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="social_feed_image" id="social_feed_image" data-min_width = "160" data-min_height = "240" data-file_type=' . AttachedFile::FILETYPE_SOCIAL_FEED_IMAGE . ' value="Upload file"><small>'.Labels::getLabel('LBL_Dimensions', $this->adminLangId).' 160*240</small></div>';
 
 
 
@@ -1806,7 +1806,7 @@ class ConfigurationsController extends AdminBaseController
                     $ul->htmlAfterField .= '<img src="' . $image . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeWatermarkImage(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="watermark_image" id="watermark_image" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_WATERMARK_IMAGE . ' value="Upload file"><small>Dimensions 168*37</small></div>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="watermark_image" id="watermark_image" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_WATERMARK_IMAGE . ' value="Upload file"><small>'.Labels::getLabel('LBL_Dimensions', $this->adminLangId).' 168*37</small></div>';
 
 
                 $ul->htmlAfterField .= '<div class="col-md-4  mb-5"> <h3>' . Labels::getLabel('LBL_Select_Apple_Touch_Icon', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
@@ -1830,7 +1830,7 @@ class ConfigurationsController extends AdminBaseController
                     $ul->htmlAfterField .= '<img src="' . $image . '"><a  class="remove--img" href="javascript:void(0);" onclick="removeMobileLogo(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="mobile_logo" id="mobile_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_MOBILE_LOGO . ' value="Upload file"><small>Dimensions 168*37</small></div>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="mobile_logo" id="mobile_logo" data-min_width = "168" data-min_height = "37" data-file_type=' . AttachedFile::FILETYPE_MOBILE_LOGO . ' value="Upload file"><small>'.Labels::getLabel('LBL_Dimensions', $this->adminLangId).' 168*37</small></div>';
                 //
                 // $ul->htmlAfterField .= '<li>'.Labels::getLabel('LBL_Select_Categories_Background_Image', $this->adminLangId) . '<div class="logoWrap"><div class="uploaded--image">';
                 //
@@ -1881,7 +1881,7 @@ class ConfigurationsController extends AdminBaseController
                     $ul->htmlAfterField .= '<img src="' . $image . '"> <a  class="remove--img" href="javascript:void(0);" onclick="removeFavicon(' . $langId . ')" ><i class="ion-close-round"></i></a>';
                 }
 
-                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="purchase_discount" id="purchase_discount" data-min_width = "120" data-min_height = "120" data-file_type=' . AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE . ' value="Upload file"><small>Dimensions 120*120</small></div>';
+                $ul->htmlAfterField .= ' </div></div><input type="file" onChange="popupImage(this)" name="purchase_discount" id="purchase_discount" data-min_width = "120" data-min_height = "120" data-file_type=' . AttachedFile::FILETYPE_FIRST_PURCHASE_DISCOUNT_IMAGE . ' value="Upload file"><small>'.Labels::getLabel('LBL_Dimensions', $this->adminLangId).' 120*120</small></div>';
 
                 $ul->htmlAfterField .= '<div class="col-md-4 mb-5"> <h3>' . Labels::getLabel('LBL_SELECT_META_IMAGE', $this->adminLangId) . '</h3> <div class="logoWrap"><div class="uploaded--image">';
 

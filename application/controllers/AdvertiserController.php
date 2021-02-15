@@ -1421,7 +1421,7 @@ class AdvertiserController extends AdvertiserBaseController
 
         $fldDuration = $frm->addSelectBox(Labels::getLabel('LBL_Duration', $this->siteLangId), 'promotion_duration', Promotion::getPromotionBudgetDurationArr($this->siteLangId), '', array(
             'id' => 'promotion_duration'
-        ))->requirements()->setRequired();
+        ), Labels::getLabel('LBL_Select', $this->siteLangId))->requirements()->setRequired();
 
         $frm->addDateField(Labels::getLabel('LBL_Start_Date', $this->siteLangId), 'promotion_start_date', '', array(
             'placeholder' => Labels::getLabel('LBL_Date_From', $this->siteLangId),

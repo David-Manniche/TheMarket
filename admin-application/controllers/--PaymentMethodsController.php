@@ -288,7 +288,7 @@ class PaymentMethodsController extends AdminBaseController
 
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'pmethod_active', $activeInactiveArr, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'pmethod_active', $activeInactiveArr, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addHiddenField('', 'min_width');
         $frm->addHiddenField('', 'min_height');
         $ratioArr = AttachedFile::getRatioTypeArray($this->adminLangId);
@@ -306,7 +306,7 @@ class PaymentMethodsController extends AdminBaseController
         $this->objPrivilege->canViewPaymentMethods();
         $frm = new Form('frmGatewayLang');
         $frm->addHiddenField('', 'pmethod_id', $pMethodId);
-        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_LANGUAGE', $this->adminLangId), 'lang_id', Language::getAllNames(), $lang_id, array(), Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addRequiredField(Labels::getLabel('LBL_Gateway_Name', $this->adminLangId), 'pmethod_name');
         $frm->addTextarea(Labels::getLabel('LBL_Details', $this->adminLangId), 'pmethod_description');
 

@@ -559,7 +559,7 @@ class QuestionnairesController extends AdminBaseController
         $frm->addDateField(Labels::getLabel('LBL_Start_Date', $this->adminLangId), 'questionnaire_start_date', '', array('readonly' => 'readonly'));
         $frm->addDateField(Labels::getLabel('LBL_End_Date', $this->adminLangId), 'questionnaire_end_date', '', array('readonly' => 'readonly'));
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'questionnaire_active', $activeInactiveArr);
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'questionnaire_active', $activeInactiveArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

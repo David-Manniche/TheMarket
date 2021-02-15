@@ -12,7 +12,7 @@ class GoogleShoppingFeedSettingsController extends AdvertisementFeedSettingsCont
             'local' => Labels::getLabel('LBL_LOCAL', $langId),
             'online' => Labels::getLabel('LBL_ONLINE', $langId),
         ];
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_CHANNEL', $langId), 'channel', $channel);
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_CHANNEL', $langId), 'channel', $channel, '', [], Labels::getLabel('LBL_Select', $langId));
         $fld->requirement->setRequired(true);
         $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $langId));
         return $frm;

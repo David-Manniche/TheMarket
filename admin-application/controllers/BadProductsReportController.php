@@ -41,7 +41,7 @@ class BadProductsReportController extends AdminBaseController
     private function getSearchForm()
     {
         $frm = new Form('frmBadProductsReportSearch');
-        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'report_type', $this->getReportTypeArr(), '', array(), 'OverAll');
+        $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'report_type', $this->getReportTypeArr(), '', array(), Labels::getLabel('LBL_overAll', $this->adminLangId));
         $frm->addSelectBox(Labels::getLabel('LBL_Records_Per_Page', $this->adminLangId), 'pagesize', array( 10 => '10', 20 => '20', 30 => '30', 50 => '50'), '', array(), '');
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'top_perfomed', 0);

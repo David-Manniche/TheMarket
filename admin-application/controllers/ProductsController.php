@@ -150,7 +150,7 @@ class ProductsController extends AdminBaseController
     {
         $groupsArr = AttributeGroup::getAllNames();
         $frm = new Form('frmProductAttributeGroup');
-        $frm->addSelectBox(Labels::getLabel('LBL_Seller_Attribute_Group', $this->adminLangId), 'attrgrp_id', $groupsArr, '', array(), '-None-');
+        $frm->addSelectBox(Labels::getLabel('LBL_Seller_Attribute_Group', $this->adminLangId), 'attrgrp_id', $groupsArr, '', array(), Labels::getLabel('LBL_None', $this->adminLangId));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Next', $this->adminLangId));
         return $frm;
     }
@@ -436,7 +436,7 @@ class ProductsController extends AdminBaseController
         $approveUnApproveArr = Product::getApproveUnApproveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Approval_Status', $this->adminLangId), 'product_approved', array(-1 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)) + $approveUnApproveArr, '', array(), '');
 
-        $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), array());
+        $frm->addSelectBox(Labels::getLabel('LBL_Product_Type', $this->adminLangId), 'product_type', Product::getProductTypes($this->adminLangId), array(), [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
         $frm->addDateField(Labels::getLabel('LBL_Date_From', $this->adminLangId), 'date_from', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
         $frm->addDateField(Labels::getLabel('LBL_Date_To', $this->adminLangId), 'date_to', '', array('readonly' => 'readonly', 'class' => 'small dateTimeFld field--calender'));
@@ -1336,15 +1336,15 @@ class ProductsController extends AdminBaseController
         $productData = Product::getAttributesById($productId, ['product_type', 'product_seller_id']);
 
         $shipProfileArr = ShippingProfile::getProfileArr($shippedByUserId, true, true);
-        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr)->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Profile', $this->adminLangId), 'shipping_profile', $shipProfileArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
 
         if ($productData['product_type'] == Product::PRODUCT_TYPE_PHYSICAL) {
             if (FatApp::getConfig("CONF_PRODUCT_DIMENSIONS_ENABLE", FatUtility::VAR_INT, 1)) {
                 $shipPackArr = ShippingPackage::getAllNames();
-                $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr)->requirements()->setRequired();
+                $frm->addSelectBox(Labels::getLabel('LBL_Shipping_Package', $this->adminLangId), 'product_ship_package', $shipPackArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
 
                 $weightUnitsArr = applicationConstants::getWeightUnitsArr($this->adminLangId);
-                $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->adminLangId), 'product_weight_unit', $weightUnitsArr)->requirements()->setRequired();
+                $frm->addSelectBox(Labels::getLabel('LBL_Weight_Unit', $this->adminLangId), 'product_weight_unit', $weightUnitsArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
 
                 $weightFld = $frm->addFloatField(Labels::getLabel('LBL_Weight', $this->adminLangId), 'product_weight', '0.00');
                 $weightFld->requirements()->setRequired(true);
@@ -1363,7 +1363,7 @@ class ProductsController extends AdminBaseController
 
             if (!$shippedByUserId) {
                 $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId, FatApp::getConfig('CONF_FULFILLMENT_TYPE', FatUtility::VAR_INT, -1));
-                $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'product_fulfillment_type', $fulFillmentArr, applicationConstants::NO, []);
+                $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'product_fulfillment_type', $fulFillmentArr, applicationConstants::NO, [], Labels::getLabel('LBL_Select', $this->adminLangId));
             }
         }
 

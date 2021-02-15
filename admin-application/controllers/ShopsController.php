@@ -577,10 +577,10 @@ class ShopsController extends AdminBaseController
         $phnFld->requirements()->setRegularExpressionToValidate(ValidateElement::PHONE_REGEX);
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->adminLangId, true, 'country_code');
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'shop_country_code', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223));
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'shop_country_code', $countriesArr, FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 223), [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld->requirement->setRequired(true);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'shop_state', array())->requirement->setRequired(true);
+        $frm->addSelectBox(Labels::getLabel('LBL_State', $this->adminLangId), 'shop_state', array(), '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirement->setRequired(true);
         $frm->addTextBox(Labels::getLabel('LBL_Postal_Code', $this->adminLangId), 'shop_postalcode');
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
         $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'shop_active', $activeInactiveArr, '', array(), '');
@@ -592,7 +592,7 @@ class ShopsController extends AdminBaseController
         $frm->addCheckBox(Labels::getLabel('LBL_Featured', $this->adminLangId), 'shop_featured', 1, array(), false, 0);
 
         $fulFillmentArr = Shipping::getFulFillmentArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO);
+        $frm->addSelectBox(Labels::getLabel('LBL_FULFILLMENT_METHOD', $this->adminLangId), 'shop_fulfillment_type', $fulFillmentArr, applicationConstants::NO, [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
         $fld = $frm->addTextBox(Labels::getLabel('LBL_ORDER_RETURN_AGE', $this->adminLangId), 'shop_return_age');
         $fld->requirements()->setInt();
@@ -1211,7 +1211,7 @@ class ShopsController extends AdminBaseController
     private function getCollectionLinksFrm()
     {
         $frm = new Form('frmLinks1', array('id' => 'frmLinks1'));
-        $frm->addSelectBox(Labels::getLabel('LBL_COLLECTION', $this->adminLangId), 'scp_selprod_id', [], '', array('id' => 'scp_selprod_id'));
+        $frm->addSelectBox(Labels::getLabel('LBL_COLLECTION', $this->adminLangId), 'scp_selprod_id', [], '', array('id' => 'scp_selprod_id'), Labels::getLabel('LBL_Select', $this->adminLangId));
         //$frm->addTextBox(Labels::getLabel('LBL_COLLECTION', $this->adminLangId), 'scp_selprod_id', '', array('id' => 'scp_selprod_id'));
 
         $frm->addHtml('', 'buy_together', '<div id="selprod-products"class="box--scroller"><ul class="links--vertical"></ul></div>');

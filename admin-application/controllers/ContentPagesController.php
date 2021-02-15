@@ -401,7 +401,7 @@ class ContentPagesController extends AdminBaseController
         $frm->addRequiredField(Labels::getLabel('LBL_Page_Identifier', $this->adminLangId), 'cpage_identifier');
         $fld = $frm->addTextBox(Labels::getLabel('LBL_SEO_Friendly_URL', $this->adminLangId), 'urlrewrite_custom');
         $fld->requirements()->setRequired();
-        $frm->addSelectBox(Labels::getLabel('LBL_Layout_Type', $this->adminLangId), 'cpage_layout', $this->getAvailableLayouts(), '', array('id' => 'cpage_layout'))->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Layout_Type', $this->adminLangId), 'cpage_layout', $this->getAvailableLayouts(), '', array('id' => 'cpage_layout'), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
 
 
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));

@@ -294,7 +294,7 @@ class StripeConnectController extends PaymentMethodBaseController
                     'government_entity' => Labels::getLabel('LBL_GOVERNMENT_ENTITY_(_US_ONLY_)', $this->siteLangId)
                 ];
                 // echo $businessType;
-                $fld = $frm->addSelectBox($labelStr, 'business_type', $options, $businessType);
+                $fld = $frm->addSelectBox($labelStr, 'business_type', $options, $businessType, [], Labels::getLabel('LBL_Select', $this->siteLangId));
             } elseif (in_array($field, $this->stripeConnect->readonlyParams)) {
                 $fld = $frm->addTextBox($labelStr, $name, '', ['readonly' => 'readonly']);
             } elseif (in_array(end($labelParts), $this->stripeConnect->boolParams)) {
@@ -302,7 +302,7 @@ class StripeConnectController extends PaymentMethodBaseController
                     0 => Labels::getLabel('LBL_NO', $this->siteLangId),
                     1 => Labels::getLabel('LBL_YES', $this->siteLangId)
                 ];
-                $fld = $frm->addSelectBox($labelStr, $name, $options);
+                $fld = $frm->addSelectBox($labelStr, $name, $options, '', [], Labels::getLabel('LBL_Select', $this->siteLangId));
             } elseif (false !== strpos($field, 'verification.document')) {
                 if (empty($this->stripeConnect->getRelationshipPersonId())) {
                     continue;
@@ -335,30 +335,30 @@ class StripeConnectController extends PaymentMethodBaseController
                     }
                 }
 
-                $fld = $frm->addSelectBox($labelStr, $name, [], '', ['class' => (empty($stateFldClass) ? 'state' : $stateFldClass), 'disabled' => 'disabled', 'data-country' => $country]);
+                $fld = $frm->addSelectBox($labelStr, $name, [], '', ['class' => (empty($stateFldClass) ? 'state' : $stateFldClass), 'disabled' => 'disabled', 'data-country' => $country], Labels::getLabel('LBL_Select', $this->siteLangId));
             } elseif (false !== strpos($field, 'month')) {
                 $months = [];
                 for ($i = 1; $i <= 12; $i++) {
                     $months[$i] = $i;
                 }
-                $fld = $frm->addSelectBox($labelStr, $name, $months);
+                $fld = $frm->addSelectBox($labelStr, $name, $months, '', [], Labels::getLabel('LBL_Select', $this->siteLangId));
             } elseif (false !== strpos($field, 'day')) {
                 $days = [];
                 for ($i = 1; $i <= 31; $i++) {
                     $days[$i] = $i;
                 }
-                $fld = $frm->addSelectBox($labelStr, $name, $days);
+                $fld = $frm->addSelectBox($labelStr, $name, $days, '', [], Labels::getLabel('LBL_Select', $this->siteLangId));
             } elseif (false !== strpos($field, 'year')) {
                 $years = [];
                 for ($i = 1900; $i <= (date('Y') - 13); $i++) {
                     $years[$i] = $i;
                 }
-                $fld = $frm->addSelectBox($labelStr, $name, $years);
+                $fld = $frm->addSelectBox($labelStr, $name, $years, '', [], Labels::getLabel('LBL_Select', $this->siteLangId));
             } elseif (false !== strpos($field, 'country')) {
                 $stateFldClass = md5($name);
                 $countryObj = new Countries();
                 $countriesArr = $countryObj->getCountriesArr($this->siteLangId, true, 'country_code');
-                $fld = $frm->addSelectBox($labelStr, $name, $countriesArr, '', ['class' => 'country', 'data-statefield' => $stateFldClass]);
+                $fld = $frm->addSelectBox($labelStr, $name, $countriesArr, '', ['class' => 'country', 'data-statefield' => $stateFldClass], Labels::getLabel('LBL_Select', $this->siteLangId));
             } elseif ('tos_acceptance' == $field) {
                 $fld = $frm->addCheckBox('', 'tos_acceptance', 1);
             } elseif (false !== strpos($field, 'mcc')) {

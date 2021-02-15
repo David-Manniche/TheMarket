@@ -923,7 +923,7 @@ class SellerOrdersController extends AdminBaseController
         $rs = $srch->getResultSet();
         $records = FatApp::getDb()->fetchAllAssoc($rs);
 
-        $frm->addSelectBox('Shipping User', 'optsu_user_id', $records)->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Shipping_User', $this->adminLangId), 'optsu_user_id', $records, '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
         $frm->addHiddenField('', 'op_id', 0);
         if ($displayShippingUserForm) {
             $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
@@ -938,10 +938,10 @@ class SellerOrdersController extends AdminBaseController
 
         $orderStatusArr = Orders::getOrderProductStatusArr($this->adminLangId, $processingOrderStatus, $orderData['op_status_id']);
 
-        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'op_status_id', $orderStatusArr);
+        $fld = $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'op_status_id', $orderStatusArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld->requirements()->setRequired();
 
-        $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->adminLangId), 'customer_notified', applicationConstants::getYesNoArr($this->adminLangId))->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('LBL_Notify_Customer', $this->adminLangId), 'customer_notified', applicationConstants::getYesNoArr($this->adminLangId), '', [], Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
 
         $attr = [];
         $labelGenerated = false;

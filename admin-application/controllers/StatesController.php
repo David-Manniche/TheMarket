@@ -32,7 +32,7 @@ class StatesController extends AdminBaseController
         $countryObj = new Countries();
         $countriesArr = $countryObj->getCountriesArr($this->adminLangId, true);
 
-        $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'country', $countriesArr);
+        $frm->addSelectBox(Labels::getLabel('LBL_Country', $this->adminLangId), 'country', $countriesArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));
         $fld_submit->attachField($fld_cancel);

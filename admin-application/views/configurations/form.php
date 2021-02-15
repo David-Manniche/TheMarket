@@ -84,7 +84,7 @@ switch ($frmType) {
     } ?>
     <?php if ($frmType != Configurations::FORM_MEDIA && $frmType != Configurations::FORM_SHARING) {
     ?>
-        <li><a class="<?php echo ($lang_id == 0) ? 'active' : ''; ?>" href="javascript:void(0)" onClick="getForm(<?php echo $frmType; ?>,'<?php echo $tbid; ?>')">Basic</a>
+        <li><a class="<?php echo ($lang_id == 0) ? 'active' : ''; ?>" href="javascript:void(0)" onClick="getForm(<?php echo $frmType; ?>,'<?php echo $tbid; ?>')"><?php echo Labels::getLabel('LBL_Basic', $adminLangId); ?></a>
         </li>
     <?php
     } ?>

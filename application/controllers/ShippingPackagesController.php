@@ -91,7 +91,7 @@ class ShippingPackagesController extends SellerBaseController
         $frm->addFloatField(Labels::getLabel('LBL_Width', $this->siteLangId), 'shippack_width');
         $frm->addFloatField(Labels::getLabel('LBL_Height', $this->siteLangId), 'shippack_height');
         
-        $frm->addSelectBox(Labels::getLabel('LBL_Unit', $this->siteLangId), 'shippack_units', $unitTypeArray);
+        $frm->addSelectBox(Labels::getLabel('LBL_Unit', $this->siteLangId), 'shippack_units', $unitTypeArray, '', [], Labels::getLabel('LBL_Select', $this->siteLangId);
         
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->siteLangId));
         

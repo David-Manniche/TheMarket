@@ -179,7 +179,7 @@ class AbusiveWordsController extends AdminBaseController
         $frm = new Form('frmWordSearch');
         $f1 = $frm->addTextBox('Keyword', 'keyword', '');
         $languages = Language::getAllNames();
-        $frm->addSelectBox('Language', 'lang_id', array(0 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)) + $languages, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'lang_id', array(0 => Labels::getLabel('LBL_Does_not_Matter', $this->adminLangId)) + $languages, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', 'Search');
         $fld_cancel = $frm->addButton("", "btn_clear", "Clear Search");
         $fld_submit->attachField($fld_cancel);
@@ -192,7 +192,7 @@ class AbusiveWordsController extends AdminBaseController
         $frm = new Form('frmAbusiveWord');
         $frm->addHiddenField('', 'abusive_id', $abusiveId);
         $languages = Language::getAllNames();
-        $frm->addSelectBox('Language', 'abusive_lang_id', $languages, '', array(), '');
+        $frm->addSelectBox(Labels::getLabel('LBL_Language', $this->adminLangId), 'abusive_lang_id', $languages, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addTextbox('Keyword', 'abusive_keyword');
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;

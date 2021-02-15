@@ -205,7 +205,7 @@ class ProductsReportController extends AdminBaseController
         $frm->addHiddenField('', 'brand_id', 0);
         $prodCatObj = new ProductCategory();
         $categoriesAssocArr = $prodCatObj->getProdCatTreeStructure(0, $this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_id', $categoriesAssocArr);
+        $frm->addSelectBox(Labels::getLabel('LBL_Category', $this->adminLangId), 'category_id', $categoriesAssocArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
 
         $frm->addTextBox(Labels::getLabel('LBL_Price_From', $this->adminLangId), 'price_from');
         $frm->addTextBox(Labels::getLabel('LBL_Price_To', $this->adminLangId), 'price_to');

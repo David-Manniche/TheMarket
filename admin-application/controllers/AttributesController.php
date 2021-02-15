@@ -397,7 +397,7 @@ class AttributesController extends AdminBaseController
             //$frm->addHiddenField('','attr_id_num_'.$i);
             $frm->addCheckBox(Labels::getLabel('LBL_Select_This', $this->adminLangId), 'prodnumattr_num_' . $i, $i);
             $frm->addTextBox(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'attr_identifier_num_' . $i);
-            $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'attr_type_num_' . $i, AttrGroupAttribute::getNumericAttributeTypeArr($langId));
+            $frm->addSelectBox(Labels::getLabel('LBL_Type', $this->adminLangId), 'attr_type_num_' . $i, AttrGroupAttribute::getNumericAttributeTypeArr($langId), '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         }
         /* ] */
 

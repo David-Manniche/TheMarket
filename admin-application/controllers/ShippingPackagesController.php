@@ -117,7 +117,7 @@ class ShippingPackagesController extends AdminBaseController
         $frm->addFloatField(Labels::getLabel('LBL_Width', $this->adminLangId), 'shippack_width');
         $frm->addFloatField(Labels::getLabel('LBL_Height', $this->adminLangId), 'shippack_height');
         
-        $frm->addSelectBox(Labels::getLabel('LBL_Unit', $this->adminLangId), 'shippack_units', $unitTypeArray);
+        $frm->addSelectBox(Labels::getLabel('LBL_Unit', $this->adminLangId), 'shippack_units', $unitTypeArray, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         

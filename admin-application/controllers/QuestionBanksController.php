@@ -263,7 +263,7 @@ class QuestionBanksController extends AdminBaseController
         $frm->addHiddenField('', 'qbank_id', 0);
         $frm->addRequiredField(Labels::getLabel('LBL_Identifier', $this->adminLangId), 'qbank_identifier');
         $activeInactiveArr = applicationConstants::getActiveInactiveArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'qbank_active', $activeInactiveArr);
+        $frm->addSelectBox(Labels::getLabel('LBL_Status', $this->adminLangId), 'qbank_active', $activeInactiveArr, '', [], Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addSubmitButton('', 'btn_submit', Labels::getLabel('LBL_Save_Changes', $this->adminLangId));
         return $frm;
     }

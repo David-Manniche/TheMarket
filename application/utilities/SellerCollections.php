@@ -410,7 +410,7 @@ trait SellerCollections
     private function getCollectionLinksFrm()
     {
         $frm = new Form('frmLinks1', array('id' => 'frmLinks1'));
-        $frm->addSelectBox(Labels::getLabel('LBL_COLLECTION', $this->siteLangId), 'scp_selprod_id', [], '', array('id' => 'scp_selprod_id'));
+        $frm->addSelectBox(Labels::getLabel('LBL_COLLECTION', $this->siteLangId), 'scp_selprod_id', [], '', array('id' => 'scp_selprod_id'), Labels::getLabel('LBL_Select', $this->siteLangId));
         //$frm->addTextBox(Labels::getLabel('LBL_COLLECTION', $this->siteLangId), 'scp_selprod_id', '', array('id' => 'scp_selprod_id'));
 
         $frm->addHtml('', 'buy_together', '<div id="selprod-products"><ul class="list-vertical" ></ul></div><div class="gap"></div>');

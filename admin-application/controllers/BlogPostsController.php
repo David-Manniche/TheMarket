@@ -563,7 +563,7 @@ class BlogPostsController extends AdminBaseController
 
         $frm->addTextBox(Labels::getLabel('LBL_Keyword', $this->adminLangId), 'keyword', '', array('class' => 'search-input'));
         $postStatusArr = applicationConstants::getBlogPostStatusArr($this->adminLangId);
-        $frm->addSelectBox(Labels::getLabel('LBL_Post_Status', $this->adminLangId), 'post_published', $postStatusArr, '', array(), 'Select');
+        $frm->addSelectBox(Labels::getLabel('LBL_Post_Status', $this->adminLangId), 'post_published', $postStatusArr, '', array(), Labels::getLabel('LBL_Select', $this->adminLangId));
         $frm->addHiddenField('', 'page');
         $fld_submit = $frm->addSubmitButton('&nbsp;', 'btn_submit', Labels::getLabel('LBL_Search', $this->adminLangId));
         $fld_cancel = $frm->addButton("", "btn_clear", Labels::getLabel('LBL_Clear_Search', $this->adminLangId));

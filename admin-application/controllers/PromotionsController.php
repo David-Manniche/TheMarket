@@ -1014,7 +1014,7 @@ class PromotionsController extends AdminBaseController
         $fld->requirements()->setRequired();
         $fld->requirements()->setFloatPositive(true);
 
-        $fldDuration = $frm->addSelectBox(Labels::getLabel('LBL_Duration', $this->adminLangId), 'promotion_duration', Promotion::getPromotionBudgetDurationArr($this->adminLangId), '', array('id' => 'promotion_duration'))->requirements()->setRequired();
+        $fldDuration = $frm->addSelectBox(Labels::getLabel('LBL_Duration', $this->adminLangId), 'promotion_duration', Promotion::getPromotionBudgetDurationArr($this->adminLangId), '', array('id' => 'promotion_duration'), Labels::getLabel('LBL_Select', $this->adminLangId))->requirements()->setRequired();
 
         $frm->addDateField(Labels::getLabel('LBL_Start_Date', $this->adminLangId), 'promotion_start_date', '', array('placeholder' => Labels::getLabel('LBL_Date_From', $this->adminLangId), 'readonly' => 'readonly' ))->requirements()->setRequired();
         $frm->addDateField(Labels::getLabel('LBL_End_Date', $this->adminLangId), 'promotion_end_date', '', array('placeholder' => Labels::getLabel('LBL_Date_To', $this->adminLangId), 'readonly' => 'readonly'))->requirements()->setRequired();

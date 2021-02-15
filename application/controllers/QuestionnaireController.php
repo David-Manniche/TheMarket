@@ -123,7 +123,7 @@ class QuestionnaireController extends MyAppController
         $frm->addHiddenField('', 'qfeedback_questionnaire_id', $questionnaireId);
         $frm->addRequiredField(Labels::getLabel('Lbl_Name', $langId), 'qfeedback_user_name');
         $frm->addEmailField(Labels::getLabel('Lbl_Email', $langId), 'qfeedback_user_email');
-        $frm->addSelectBox(Labels::getLabel('Lbl_Gender', $langId), 'qfeedback_user_gender', applicationConstants::getGenderArr($langId))->requirements()->setRequired();
+        $frm->addSelectBox(Labels::getLabel('Lbl_Gender', $langId), 'qfeedback_user_gender', applicationConstants::getGenderArr($langId), '', [], Labels::getLabel('LBL_Select', $langId)->requirements()->setRequired();
 
         $srch = new QuestionnairesSearch();
         $srch->joinQuestionnarieToQuestions();
