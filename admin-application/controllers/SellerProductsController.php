@@ -304,12 +304,12 @@ class SellerProductsController extends AdminBaseController
             $post['selprod_threshold_stock_level'] = 0;
         }
 
-        if ($selprod_threshold_stock_level >= $selprod_stock) {
+        if ($post['selprod_threshold_stock_level'] == 1 && $selprod_threshold_stock_level >= $selprod_stock) {
             Message::addErrorMessage(Labels::getLabel('MSG_Alert_stock_level_should_be_less_than_stock_quantity.', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }
 
-        if ($selprod_min_order_qty > $selprod_stock || 1 > $selprod_min_order_qty) {
+        if ($post['selprod_threshold_stock_level'] == 1 && ($selprod_min_order_qty > $selprod_stock || 1 > $selprod_min_order_qty)) {
             Message::addErrorMessage(Labels::getLabel('MSG_Minimum_quantity_should_be_less_than_equal_to_stock_quantity.', $this->adminLangId));
             FatUtility::dieWithError(Message::getHtml());
         }

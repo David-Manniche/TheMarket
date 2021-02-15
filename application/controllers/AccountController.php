@@ -1043,10 +1043,10 @@ class AccountController extends LoggedUserController
         }
 
         if (false === MOBILE_APP_API_CALL) {
-            $profileImg = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Account', 'userProfileImage', array($userId, 'croped', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $profileImg = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Account', 'userProfileImage', array($userId, 'croped', 1)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $this->set('file', $profileImg);
         } else {
-            $profileImg = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'user', array($userId, 'mini', true)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
+            $profileImg = UrlHelper::getCachedUrl(UrlHelper::generateFullFileUrl('Image', 'user', array($userId, 'mini', 1)) . $uploadedTime, CONF_IMG_CACHE_TIME, '.jpg');
             $this->set('file', $profileImg);
         }
         $this->set('file', $profileImg);
