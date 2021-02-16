@@ -33,6 +33,7 @@ Fixes:
     => 049811 - While uploading user profile image profile link is wrong in response
     => 049777 - The - button (QUANTITY reducer) is not functional when we order a product through pickup
     => 049919 - labels missing in system
+    => 049995 - If order is placed with digital product then unable to cancel the order even if it is allow from admin
 
 Enhancements :
    => Make provision to made seller

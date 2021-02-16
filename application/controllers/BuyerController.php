@@ -911,16 +911,7 @@ class BuyerController extends BuyerBaseController
                 FatUtility::dieWithError(Message::getHtml());
             }
         }
-
-        if (!in_array($opDetail["op_status_id"], (array) Orders::getBuyerAllowedOrderCancellationStatuses())) {
-            $message = Labels::getLabel('MSG_Order_Cancellation_cannot_placed', $this->siteLangId);
-            if (true === MOBILE_APP_API_CALL) {
-                LibHelper::dieJsonError($message);
-            }
-            Message::addErrorMessage($message);
-            FatUtility::dieWithError(Message::getHtml());
-        }
-
+        
         $ocRequestSrch = new OrderCancelRequestSearch();
         $ocRequestSrch->doNotCalculateRecords();
         $ocRequestSrch->doNotLimitRecords();
