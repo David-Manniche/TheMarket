@@ -12085,4 +12085,11 @@ form[name="frmShippingProfile"] {
     margin-right: 5px;
 }
 
-.ui-autocomplete{ overflow-y:  auto; max-height: 350px;}
+.ui-autocomplete {
+    overflow-y: auto;
+    max-height: 350px;
+}
+
+.tagify {
+    min-height: 35px;
+}

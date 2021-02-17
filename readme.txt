@@ -34,7 +34,7 @@ Fixes:
     => 049777 - The - button (QUANTITY reducer) is not functional when we order a product through pickup
     => 049919 - labels missing in system
     => 049995 - If order is placed with digital product then unable to cancel the order even if it is allow from admin
-
+    => 049981 - seller/admin> attribute tab> some UI issue while adding product
 Enhancements :
    => Make provision to made seller
    => At shop level  pickup interval option given
