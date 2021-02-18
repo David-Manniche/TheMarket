@@ -35,6 +35,7 @@ Fixes:
     => 049919 - labels missing in system
     => 049995 - If order is placed with digital product then unable to cancel the order even if it is allow from admin
     => 049981 - seller/admin> attribute tab> some UI issue while adding product
+    => 050083 - On admin dashboard under statistics tab subscription earning data is wrong
 Enhancements :
    => Make provision to made seller
    => At shop level  pickup interval option given

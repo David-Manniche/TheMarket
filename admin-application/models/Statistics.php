@@ -416,15 +416,15 @@ class Statistics extends MyAppModel
                 break;
 
             case 'total_subscription_earnings':
-                $sql = "SELECT 1 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE DATE(ossubs_from_date)=DATE(NOW())
-				UNION ALL
-				SELECT 7 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub  WHERE YEARWEEK(ossubs_from_date) = YEARWEEK(NOW())
-				UNION ALL
-				SELECT 30 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE MONTH(ossubs_from_date)=MONTH(NOW())
-				UNION ALL
-				SELECT 90 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub WHERE ossubs_from_date>date_sub(date_add(date_add(LAST_DAY(now()),interval 1 DAY),interval -1 MONTH), INTERVAL 3 MONTH)
-				UNION ALL
-				SELECT -1 AS num_days,SUM(ossubs_price) AS earnings FROM `tbl_order_seller_subscriptions` osub ";
+                $sql = "SELECT 1 AS num_days,SUM(order_net_amount) AS earnings FROM `tbl_order_seller_subscriptions` osub  INNER JOIN tbl_orders on order_id = ossubs_order_id WHERE DATE(ossubs_from_date)=DATE(NOW()) and order_payment_status = 1
+                                UNION ALL
+                                SELECT 7 AS num_days,SUM(order_net_amount) AS earnings FROM `tbl_order_seller_subscriptions` osub INNER JOIN tbl_orders on order_id = ossubs_order_id  WHERE YEARWEEK(ossubs_from_date) = YEARWEEK(NOW()) and order_payment_status = 1
+                                UNION ALL
+                                SELECT 30 AS num_days,SUM(order_net_amount) AS earnings FROM `tbl_order_seller_subscriptions` osub INNER JOIN tbl_orders on order_id = ossubs_order_id WHERE MONTH(ossubs_from_date)=MONTH(NOW()) and order_payment_status = 1
+                                UNION ALL
+                                SELECT 90 AS num_days,SUM(order_net_amount) AS earnings FROM `tbl_order_seller_subscriptions` osub INNER JOIN tbl_orders on order_id = ossubs_order_id  WHERE ossubs_from_date>date_sub(date_add(date_add(LAST_DAY(now()),interval 1 DAY),interval -1 MONTH), INTERVAL 3 MONTH) and order_payment_status = 1
+                                UNION ALL
+                                SELECT -1 AS num_days,SUM(order_net_amount) AS earnings FROM `tbl_order_seller_subscriptions` osub INNER JOIN tbl_orders on order_id = ossubs_order_id where order_payment_status = 1";
                 $rs = $this->db->query($sql);
                 return  $this->db->fetchAllAssoc($rs);
                 break;
